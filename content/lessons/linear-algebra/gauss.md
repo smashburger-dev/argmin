@@ -77,4 +77,4 @@ ist ein Widerspruch: Es gibt keine Lösung. Eine Zeile $0=0$ enthält dagegen ke
 
 ## Direkter Check
 
-Löse die [Kernaufgabe](#/family/transform-system-2x2-elimination/system-w05-e6/0/core) und danach die [Kernaufgabe](#/family/transform-system-2x2-elimination/system-w05-e11/0/core). Beide werden als exakte ganzzahlige Paare geprüft.
+Löse die [Kernaufgabe: System $2x+y=5$, $x-3y=-8$](#/family/transform-system-2x2-elimination/system-w05-e6/0/core) und danach die [Kernaufgabe: System $-x-3y=-20$, $2x+3y=28$](#/family/transform-system-2x2-elimination/system-w05-e11/0/core). Beide werden als exakte ganzzahlige Paare geprüft.

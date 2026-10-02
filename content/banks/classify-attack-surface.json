@@ -126,7 +126,7 @@
         },
         {
           "key": "output-xss",
-          "prompt": "Ein Assistent gibt unmaskiertes HTML samt <script>-Tag aus; der Client rendert es, und das Skript läuft im Browser der Nutzerin. Welche Angriffsfläche wurde ausgenutzt?",
+          "prompt": "Ein Assistent gibt unmaskiertes HTML samt &lt;script&gt;-Tag aus; der Client rendert es, und das Skript läuft im Browser der Nutzerin. Welche Angriffsfläche wurde ausgenutzt?",
           "correct": "Unsichere Ausgabebehandlung — unmaskiertes Markup aus der Modellausgabe wird im Client als Code ausgeführt.",
           "wrong": [
             "Prompt-Injection — die Schwachstelle liegt in der Ausgabe, nicht in einer eingeschleusten Anweisung.",

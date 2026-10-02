@@ -186,7 +186,7 @@
         "value": 2
       },
       "prompt": "Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}-7&10&13&-9\\\\11&-5&9&-12\\\\7&-10&-13&9\\\\-11&5&-9&12\\end{pmatrix}\\] mit Gauß-Elimination (Zeilenstufenform) und gib ihn als ganze Zahl ein.",
-      "fullSolution": "Zeile III ist $-1$-mal Zeile I und Zeile IV ist $-1$-mal Zeile II: $-( -7,10,13,-9 )=(7,-10,-13,9)$ und $-( 11,-5,9,-12 )=(-11,5,-9,12)$.\n\nNach Elimination bleiben die zwei unabhängigen Pivotzeilen I und II (keine Vielfachen voneinander); zwei Nullzeilen entstehen. Daher ist $\\operatorname{rang}(A)=2$.",
+      "fullSolution": "<p>Zeile III ist $-1$-mal Zeile I und Zeile IV ist $-1$-mal Zeile II: $-( -7,10,13,-9 )=(7,-10,-13,9)$ und $-( 11,-5,9,-12 )=(-11,5,-9,12)$.</p><p>Nach Elimination bleiben die zwei unabhängigen Pivotzeilen I und II (keine Vielfachen voneinander); zwei Nullzeilen entstehen. Daher ist $\\operatorname{rang}(A)=2$.</p>",
       "hints": [
         "Prüfe zuerst, ob Zeilen Vielfache oder Summen anderer Zeilen sind — hier sind zwei Zeilen negierte Kopien.",
         "Nach der Elimination zählen nur die Pivotzeilen; die zwei entstehenden Nullzeilen erhöhen den Rang nicht."

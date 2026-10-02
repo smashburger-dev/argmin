@@ -206,7 +206,7 @@
       "competencyIds": [
         "c-dl-tokenizer"
       ],
-      "prompt": "Ein Subword-Tokenizer startet mit 31 Zeichen-Tokens. Ein BPE-Lauf lernt 62 Merges; jeder Merge fügt genau ein neues Symbol ins Vokabular ein. Zusätzlich kommen 4 Sondertokens (etwa <pad>, <unk>, <eos>) dazu. Wie groß ist das Vokabular danach?",
+      "prompt": "Ein Subword-Tokenizer startet mit 31 Zeichen-Tokens. Ein BPE-Lauf lernt 62 Merges; jeder Merge fügt genau ein neues Symbol ins Vokabular ein. Zusätzlich kommen 4 Sondertokens (etwa &lt;pad&gt;, &lt;unk&gt;, &lt;eos&gt;) dazu. Wie groß ist das Vokabular danach?",
       "fullSolution": "Vokabulargröße = Zeichen + Merges + Sondertokens; jeder Merge fügt genau ein neues Symbol hinzu. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
         "Das Vokabular setzt sich aus drei Posten zusammen: Zeichen-Tokens am Anfang, genau ein neues Symbol pro gelerntem Merge, dazu reservierte Sondertokens.",

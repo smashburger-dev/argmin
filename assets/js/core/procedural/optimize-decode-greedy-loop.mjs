@@ -122,8 +122,9 @@ const CODE_REFERENCE = anchor('greedy-decode-function').expected.referenceSolver
 
 const CODE_PROMPT = 'Implementiere <code>greedy_decode(step_fn, init_ids, max_len, eos)</code>. Vertrag: Die Startfolge wird <strong>kopiert</strong> (die Eingabe des Aufrufers darf nicht mutiert werden); solange die Folge kürzer als <code>max_len</code> ist, liefert <code>step_fn(ids)</code> das nächste Token (aufrufen mit einer Kopie der aktuellen Folge); das Token wird angehängt; ist es <code>eos</code>, stoppt die Schleife sofort — das <code>eos</code> bleibt Teil der Folge. Rückgabe: Liste von ints. <strong>Dies ist eine Toy-Pipeline mit gestellten Gewichten — sie demonstriert Mechanik, keine Sprachfähigkeit; echte LLM-Inferenz bleibt lokales Projekt.</strong> Der Testcode benutzt Fixtur-<code>step_fn</code>s (Tabellen und Konstanten) und prüft Stoppen, Längengrenze, Kopie-Vertrag und Randfälle.';
 
-const CODE_SOLUTION = `${CODE_REFERENCE}# greedy_decode(table_step, [], 8, 9) -> [5, 7, 9] (eos mitgezählt)
-# greedy_decode(always_four, [], 3, 9) -> [4, 4, 4] (max_len schneidet ab).`;
+// Authored anchor is the single source for the learner-facing markup —
+// <pre><code> wrap and escaping live in the JSON, not in a second copy.
+const CODE_SOLUTION = anchor('greedy-decode-function').fullSolution;
 
 // __ref_-copy of the reference loop for the seeded blocks: drawn fixtures
 // are asserted with == against this copy, never hardcoded.

@@ -42,4 +42,4 @@ Die Regel, die alle drei Quellen deckt: **fit nur auf Train-Folds**. Ein Schritt
 
 ## Direkter Check
 
-Berechne in einer Einstiegsaufgabe die Spannweite von Fold-Scores. Diagnostiziere in der [Kernaufgabe](#/family/classify-cv-leakage/impute-before-split/0/core) eine beschriebene Pipeline. In der [Kernaufgabe](#/family/reproduce-seeded-split/kfold-indices-numpy/0/core) baust du kfold_indices und cv_scores deterministisch; die [Vertiefungsaufgabe](#/family/validate-leakage-rule-audit/pipeline-leakage-audit/0/stretch) verlangt einen Leakage-Auditor für beschriebene Pipelines.
+Berechne in einer Einstiegsaufgabe die Spannweite von Fold-Scores. Diagnostiziere in der [Kernaufgabe: Leakage-Diagnose](#/family/classify-cv-leakage/impute-before-split/0/core) eine beschriebene Pipeline. In der [Kernaufgabe: K-Fold-Indizes](#/family/reproduce-seeded-split/kfold-indices-numpy/0/core) baust du kfold_indices und cv_scores deterministisch; die [Vertiefungsaufgabe: Leakage-Auditor](#/family/validate-leakage-rule-audit/pipeline-leakage-audit/0/stretch) verlangt einen Leakage-Auditor für beschriebene Pipelines.

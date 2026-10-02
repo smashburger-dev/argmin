@@ -33,27 +33,27 @@
           "correct": false
         }
       ],
-      "prompt": "Gegeben:\n\n<code>a = {\"ki\", \"lern\", \"ki\"}\nb = {\"lern\", \"plattform\"}</code>\n\nWelche Aussage über <code>len(a)</code> und <code>a &amp; b</code> ist korrekt?",
+      "prompt": "<p>Gegeben:</p><pre><code>a = {\"ki\", \"lern\", \"ki\"}\nb = {\"lern\", \"plattform\"}</code></pre><p>Welche Aussage über <code>len(a)</code> und <code>a &amp; b</code> ist korrekt?</p>",
       "fullSolution": "a = {\"ki\", \"lern\"} (Duplikat entfällt), len(a) = 2. a & b = {\"lern\"}. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "feedbackRules": [
         {
-                  "if": "choice === 'b'",
-                  "then": "Mengen speichern jedes Element nur einmal — das zweite „ki“ fällt beim Anlegen weg. len(a) ist 2."
+          "if": "choice === 'b'",
+          "then": "Mengen speichern jedes Element nur einmal — das zweite „ki“ fällt beim Anlegen weg. len(a) ist 2."
         },
         {
-                  "if": "choice === 'c'",
-                  "then": "`&` ist der Durchschnitt, nicht die Vereinigung: nur „lern“ liegt in beiden Mengen. Die Vereinigung wäre `a | b`."
+          "if": "choice === 'c'",
+          "then": "`&` ist der Durchschnitt, nicht die Vereinigung: nur „lern“ liegt in beiden Mengen. Die Vereinigung wäre `a | b`."
         },
         {
-                  "if": "choice === 'd'",
-                  "then": "Beides vermischt: Duplikate fallen in Mengen weg (len(a) = 2), und `&` bildet den Durchschnitt ({„lern“}), nicht die Vereinigung."
+          "if": "choice === 'd'",
+          "then": "Beides vermischt: Duplikate fallen in Mengen weg (len(a) = 2), und `&` bildet den Durchschnitt ({„lern“}), nicht die Vereinigung."
         }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
         {
-          "prompt": "Gegeben:\n\n<code>a = {1, 2, 2, 3}\nb = {2, 3, 4}</code>\n\nWelche Aussage über <code>len(a)</code> und <code>a | b</code> ist korrekt?",
+          "prompt": "<p>Gegeben:</p><pre><code>a = {1, 2, 2, 3}\nb = {2, 3, 4}</code></pre><p>Welche Aussage über <code>len(a)</code> und <code>a | b</code> ist korrekt?</p>",
           "choices": [
             {
               "id": "a",
@@ -93,7 +93,7 @@
           ]
         },
         {
-          "prompt": "Gegeben:\n\n<code>a = {\"rot\", \"grün\", \"rot\", \"blau\"}\nb = {\"blau\", \"gelb\"}</code>\n\nWelche Aussage über <code>len(a)</code> und <code>a - b</code> ist korrekt?",
+          "prompt": "<p>Gegeben:</p><pre><code>a = {\"rot\", \"grün\", \"rot\", \"blau\"}\nb = {\"blau\", \"gelb\"}</code></pre><p>Welche Aussage über <code>len(a)</code> und <code>a - b</code> ist korrekt?</p>",
           "choices": [
             {
               "id": "a",

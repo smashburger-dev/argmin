@@ -38,7 +38,7 @@
       ],
       "expected": {},
       "prompt": "Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit $r \\approx 0{,}9$. Was ist die sauberste Schlussfolgerung?",
-      "fullSolution": "Eisverkäufe und Badeunfälle steigen beide mit der Sommertemperatur (**Confounder**). Das $r \\approx 0{,}9$ beschreibt nur den linearen Zusammenhang; die kausale Erklärung ist die Drittvariable. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "Eisverkäufe und Badeunfälle steigen beide mit der Sommertemperatur (<strong>Confounder</strong>). Das $r \\approx 0{,}9$ beschreibt nur den linearen Zusammenhang; die kausale Erklärung ist die Drittvariable. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
         "Suche eine Größe, die beide Variablen gemeinsam erklärt — was passiert gleichzeitig im Sommer?",
         "$r$ misst nur die Stärke des linearen Zusammenhangs; über Ursache sagt er nichts."

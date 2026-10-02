@@ -112,7 +112,7 @@
         "kind": "variable-values"
       },
       "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile — und welche Liste steht jeweils hinter y? Beide Referenzen im Blick behalten, jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2]).",
-      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: y = x erzeugt keine Kopie, sondern einen zweiten Namen für dieselbe Liste — der x-Zustand ist daher ab Zeile 2 zugleich der y-Zustand.\n\nJede Mutation über y (append) ist sofort in x sichtbar, und die Indexzuweisung über x gilt ebenso für y: beide Referenzen zeigen zu jeder Zeile dasselbe Objekt.",
+      "fullSolution": "<p>Verlauf von {varName}: {verlauf}. Kern: y = x erzeugt keine Kopie, sondern einen zweiten Namen für dieselbe Liste — der x-Zustand ist daher ab Zeile 2 zugleich der y-Zustand.</p><p>Jede Mutation über y (append) ist sofort in x sichtbar, und die Indexzuweisung über x gilt ebenso für y: beide Referenzen zeigen zu jeder Zeile dasselbe Objekt.</p>",
       "hints": [
         "y = x erzeugt keinen zweiten Speicher: beide Namen zeigen auf dieselbe Liste — eine Mutation über die eine Referenz verändert beide Sichten.",
         "Tracke die Liste zeilenweise: append über y verlängert die gemeinsame Liste, die Indexzuweisung über x überschreibt Position 0 derselben Liste. Der y-Zustand ist zu jeder Zeile der x-Stand."

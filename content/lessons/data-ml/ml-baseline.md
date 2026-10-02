@@ -55,4 +55,4 @@ scikit-learn bietet `train_test_split` mit `random_state` und `shuffle=False` f�
 
 ## Direkter Check
 
-Löse die [Einstiegsaufgabe](#/family/classify-task-type/failure-next-cycle-supervised/0/intro) zur Problemeinordnung, danach eine Einstiegsaufgabe zur Majority-Baseline. Die Umsetzung des deterministischen Splits prüfst du in der [Kernaufgabe](#/family/reproduce-seeded-split/deterministic-split-numpy/0/core); als Abschluss baust du in der [Vertiefungsaufgabe](#/family/fit-predict-metrics/baseline-experiment-report/0/stretch) ein komplettes, reproduzierbares Mini-Experiment.
+Löse die [Einstiegsaufgabe: Problemeinordnung](#/family/classify-task-type/failure-next-cycle-supervised/0/intro) zur Problemeinordnung, danach eine Einstiegsaufgabe zur Majority-Baseline. Die Umsetzung des deterministischen Splits prüfst du in der [Kernaufgabe: Deterministischer Split](#/family/reproduce-seeded-split/deterministic-split-numpy/0/core); als Abschluss baust du in der [Vertiefungsaufgabe: Mini-Experiment](#/family/fit-predict-metrics/baseline-experiment-report/0/stretch) ein komplettes, reproduzierbares Mini-Experiment.

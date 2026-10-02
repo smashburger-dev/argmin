@@ -264,7 +264,7 @@
         ]
       },
       "prompt": "Vervollständige den Lösungsweg für $6x + 3 = -7x + 94$. Die Gleichung hat x auf beiden Seiten — ergänze beide Umformungsoperationen, beide Zwischenzeilen und die Lösung vollständig. Fülle jede Lücke mit dem vollständigen Wert inklusive Vorzeichen (z. B. −5 oder +7) — in den Operationslücken steht, was beidseitig verrechnet wird. <br> $6x + 3 = -7x + 94 \\;|\\;[[gap]]x$<br>$[[gap]]x + 3 = 94 \\;|\\;[[gap]]$<br>$[[gap]]x = [[gap]]$<br>$x = [[gap]]$",
-      "fullSolution": "Vollständiger Lösungsweg:<br>$6x + 3 = -7x + 94 \\;|\\;+ 7x$<br>$13x + 3 = 94 \\;|\\;- 3$<br>$13x = 91$<br>$x = 7$<br>Probe: $6 \\cdot 7 + 3 = -7 \\cdot 7 + 94$ stimmt.\n\nStrategie: erst die x-Terme auf eine Seite (+ 7x beidseitig), dann die Konstanten auf die andere (- 3 beidseitig) — die umgekehrte Reihenfolge führt zum selben Ergebnis.",
+      "fullSolution": "<p>Vollständiger Lösungsweg:<br>$6x + 3 = -7x + 94 \\;|\\;+ 7x$<br>$13x + 3 = 94 \\;|\\;- 3$<br>$13x = 91$<br>$x = 7$<br>Probe: $6 \\cdot 7 + 3 = -7 \\cdot 7 + 94$ stimmt.</p><p>Strategie: erst die x-Terme auf eine Seite (+ 7x beidseitig), dann die Konstanten auf die andere (- 3 beidseitig) — die umgekehrte Reihenfolge führt zum selben Ergebnis.</p>",
       "hints": [
         "Strategie: erst alle x-Terme auf eine Seite — die erste Operationslücke ist der rechte x-Koeffizient mit umgekehrtem Vorzeichen; der zusammengefasste Koeffizient auf der linken Seite ist a − c.",
         "Danach die Konstante auf die andere Seite (zweite Operationslücke = −b). Die letzte Lücke teilt die rechte Seite durch den zusammengefassten Koeffizienten — ein Komma-Ergebnis ist erlaubt."

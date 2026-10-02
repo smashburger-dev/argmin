@@ -112,7 +112,7 @@
         "kind": "output-lines"
       },
       "prompt": "Was gibt dieses Programm aus? Zwei Zähler gleichzeitig mitführen: summe sammelt die durchlaufenen n-Werte, n läuft gegen die Abbruchgrenze — beide Zahlen am Ende in einer Zeile.",
-      "fullSolution": "Durchläufe: {durchlaeufe}.\n\nDie Schleife bricht ab, sobald n > {stop} falsch wird — der Endwert ist n = {nEnd}. Ausgabe: {output}.",
+      "fullSolution": "<p>Durchläufe: {durchlaeufe}.</p><p>Die Schleife bricht ab, sobald n > {stop} falsch wird — der Endwert ist n = {nEnd}. Ausgabe: {output}.</p>",
       "hints": [
         "Tracke die beiden Größen getrennt: in jeder Runde wird zuerst summe um n erhöht, danach n um den Schritt verringert.",
         "Die Iterationsgrenze ist n > stop: nach dem letzten Durchlauf steht in n ein Wert ≤ stop. Die Ausgabe ist summe gefolgt von diesem Endwert — nicht der letzte addierte n-Wert."

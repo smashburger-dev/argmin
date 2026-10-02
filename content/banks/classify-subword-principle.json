@@ -23,7 +23,7 @@
             "Das Kompositum wird komplett durch <code>&lt;unk&gt;</code> ersetzt.",
             "Das Wort wird auf sein erstes Zeichen gekürzt und der Rest verworfen."
           ],
-          "solution": "Lange Komposita sind der Grund für Subwords: die Einzelteile sind häufig genug fürs Vokabular, die Vollform nicht. Zerlegt bleibt das Wort repräsentiert — die Folge wird länger, nicht <unk>."
+          "solution": "Lange Komposita sind der Grund für Subwords: die Einzelteile sind häufig genug fürs Vokabular, die Vollform nicht. Zerlegt bleibt das Wort repräsentiert — die Folge wird länger, nicht &lt;unk&gt;."
         },
         {
           "key": "neologismus",
@@ -45,7 +45,7 @@
             "Das ganze Wort wird zu <code>&lt;unk&gt;</code>, wie bei Wort-Tokens.",
             "Die falschen Zeichen werden gelöscht, der Rest bleibt ein Token."
           ],
-          "solution": "Tippfehler sind OOV-Kandidaten für Wort-Tokenizer. Subwords fangen sie teilweise auf, weil Teilstrings oft bekannt sind — kein perfektes Verständnis, aber besser als <unk>."
+          "solution": "Tippfehler sind OOV-Kandidaten für Wort-Tokenizer. Subwords fangen sie teilweise auf, weil Teilstrings oft bekannt sind — kein perfektes Verständnis, aber besser als &lt;unk&gt;."
         },
         {
           "key": "zeichen-fallback",
@@ -133,7 +133,7 @@
             "Der Wort-Tokenizer löscht die unbekannten Wörter aus dem Text.",
             "Der Subword-Tokenizer trainiert sein Vokabular zur Laufzeit nach."
           ],
-          "solution": "Der Unterschied liegt im Rückfall: Wort-Tokenizer kennen nur Vollformen und melden sonst <unk>; Subword-Tokenizer zerlegen bis auf bekannte Atome — dieselbe Abdeckung mit festem, kleinem Vokabular."
+          "solution": "Der Unterschied liegt im Rückfall: Wort-Tokenizer kennen nur Vollformen und melden sonst &lt;unk&gt;; Subword-Tokenizer zerlegen bis auf bekannte Atome — dieselbe Abdeckung mit festem, kleinem Vokabular."
         }
       ]
     },

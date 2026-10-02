@@ -33,27 +33,27 @@
           "correct": false
         }
       ],
-      "prompt": "Was passiert beim Ausführen dieses Programms?\n\n<code>name = \"Ada\"\nname[0] = \"M\"\nprint(name)</code>",
+      "prompt": "<p>Was passiert beim Ausführen dieses Programms?</p><pre><code>name = \"Ada\"\nname[0] = \"M\"\nprint(name)</code></pre>",
       "fullSolution": "name[0] = \"M\" wirft TypeError: 'str' object does not support item assignment. Strings sind unveränderlich; jede Änderung erzeugt einen neuen String. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "feedbackRules": [
         {
-                  "if": "choice === 'b'",
-                  "then": "Strings sind unveränderlich: `name[0] = \"M\"` ersetzt nichts — die Zeile wirft sofort einen TypeError, die Ausgabe kommt nie zustande."
+          "if": "choice === 'b'",
+          "then": "Strings sind unveränderlich: `name[0] = \"M\"` ersetzt nichts — die Zeile wirft sofort einen TypeError, die Ausgabe kommt nie zustande."
         },
         {
-                  "if": "choice === 'c'",
-                  "then": "Auch ein Einfügen ist eine Zuweisung an ein Zeichen. Strings erlauben keine Item-Zuweisung: TypeError statt „MAda“."
+          "if": "choice === 'c'",
+          "then": "Auch ein Einfügen ist eine Zuweisung an ein Zeichen. Strings erlauben keine Item-Zuweisung: TypeError statt „MAda“."
         },
         {
-                  "if": "choice === 'd'",
-                  "then": "Python ignoriert fehlerhafte Zuweisungen nicht still. `name[0] = \"M\"` wirft einen TypeError und bricht ab."
+          "if": "choice === 'd'",
+          "then": "Python ignoriert fehlerhafte Zuweisungen nicht still. `name[0] = \"M\"` wirft einen TypeError und bricht ab."
         }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
         {
-          "prompt": "Was passiert beim Ausführen dieses Programms?\n\n<code>wort = \"Haus\"\nwort[-1] = \"t\"\nprint(wort)</code>",
+          "prompt": "<p>Was passiert beim Ausführen dieses Programms?</p><pre><code>wort = \"Haus\"\nwort[-1] = \"t\"\nprint(wort)</code></pre>",
           "choices": [
             {
               "id": "a",
@@ -93,7 +93,7 @@
           ]
         },
         {
-          "prompt": "Was passiert beim Ausführen dieses Programms?\n\n<code>titel = \"python\"\ntitel[0] = titel[0].upper()\nprint(titel)</code>",
+          "prompt": "<p>Was passiert beim Ausführen dieses Programms?</p><pre><code>titel = \"python\"\ntitel[0] = titel[0].upper()\nprint(titel)</code></pre>",
           "choices": [
             {
               "id": "a",

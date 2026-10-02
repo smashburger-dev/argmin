@@ -249,11 +249,10 @@ function buildTwoSidedCase(p, caseId) {
       lines.map((line) => `$${line}$`).join('<br>'),
     ].join(' '),
     fullSolution: [
-      'Vollständiger Lösungsweg:<br>',
+      '<p>Vollständiger Lösungsweg:<br>',
       solved.map((line) => `$${line}$`).join('<br>'),
-      `<br>Probe: $${p.a} \\cdot ${xText} ${signed(p.b)} = ${p.c} \\cdot ${xText} ${signed(p.d)}$ stimmt.`,
-      '\n\n',
-      `Strategie: erst die x-Terme auf eine Seite (${signed(-p.c)}x beidseitig), dann die Konstanten auf die andere (${signed(-p.b)} beidseitig) — die umgekehrte Reihenfolge führt zum selben Ergebnis.`,
+      `<br>Probe: $${p.a} \\cdot ${xText} ${signed(p.b)} = ${p.c} \\cdot ${xText} ${signed(p.d)}$ stimmt.</p>`,
+      `<p>Strategie: erst die x-Terme auf eine Seite (${signed(-p.c)}x beidseitig), dann die Konstanten auf die andere (${signed(-p.b)} beidseitig) — die umgekehrte Reihenfolge führt zum selben Ergebnis.</p>`,
     ].join(''),
   };
 }

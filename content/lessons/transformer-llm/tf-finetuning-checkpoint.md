@@ -7,4 +7,4 @@ Selbsttest:
 3. Was genau muss in einem Head-only-Experiment eingefroren sein, und mit welchem Test weist du es nach?
 4. Warum ist „Rang 4 war besser“ ohne festgehaltenen Seed und festgelegte Metrik keine Aussage?
 
-Vertiefung: eine Einstiegsaufgabe fürs Zählen, die [Kernaufgabe](#/family/formula-lora-delta-apply/lora-delta-apply/0/core) für die Arithmetik, die [Vertiefungsaufgabe](#/family/optimize-gradient-update-rule/head-only-finetune/0/stretch) und die [Herausforderung](#/family/optimize-gradient-update-rule/lora-fit-toy/0/challenge) für die laufenden Experimente am Toy-MLP.
+Vertiefung: eine Einstiegsaufgabe fürs Zählen, die [Kernaufgabe: LoRA-Arithmetik](#/family/formula-lora-delta-apply/lora-delta-apply/0/core) für die Arithmetik, die [Vertiefungsaufgabe: Head-Only-Finetuning](#/family/optimize-gradient-update-rule/head-only-finetune/0/stretch) und die [Herausforderung](#/family/optimize-gradient-update-rule/lora-fit-toy/0/challenge) für die laufenden Experimente am Toy-MLP.

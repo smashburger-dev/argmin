@@ -79,9 +79,9 @@ const DEMO_REFERENCE = `${DEMO_IMPL}
 
 const DEMO_PROMPT = 'Demo-Disziplin: <code>demo_aus_bericht(bericht, frisch)</code> erhält die eingefrorenen Messwerte (dict) und eine frisch berechnete Kopie. Stimmen beide überein (==), liefert die Funktion <code>{"metriken": bericht, "quelle": "eingefroren", "geprueft": True}</code>. Weichen sie ab, wirft sie <code>AssertionError("demo-abweichung")</code> — kein stiller Fallback auf alte Werte. Die Funktion verändert weder bericht noch frisch.';
 
-const DEMO_SOLUTION = `${DEMO_IMPL}
-
-# Ein Vergleich, ein Fehlerweg, ein Rückgabewert — die Demo lügt nicht.`;
+// Authored anchor is the single source for the learner-facing markup —
+// <pre><code> wrap lives in the JSON, not in a second copy.
+const DEMO_SOLUTION = anchor('demo-from-frozen-report').fullSolution;
 
 // Returns (exception type, message) or ("ok", result): lets one comparison
 // cover both value returns and the contracted AssertionError path.

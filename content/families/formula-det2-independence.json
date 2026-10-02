@@ -27,7 +27,7 @@
       "expected": {
         "kind": "integer"
       },
-      "prompt": "Die Spalten der Matrix\n\nA =\n{matrix}\n\nsollen auf lineare Unabhängigkeit geprüft werden. Berechne die Determinante det(A) als ganze Zahl — det(A) ≠ 0 beweist die Unabhängigkeit der Spalten.",
+      "prompt": "<p>Die Spalten der Matrix</p><pre><code>A =\n{matrix}</code></pre><p>sollen auf lineare Unabhängigkeit geprüft werden. Berechne die Determinante det(A) als ganze Zahl — det(A) ≠ 0 beweist die Unabhängigkeit der Spalten.</p>",
       "fullSolution": "det(A) = a·d − b·c = {m00}·{m11} − {m01}·{m10} = {ad} − {bc} = {det}. Da det(A) ≠ 0, sind die Spalten linear unabhängig.",
       "hints": [
         "Berechne die Determinante als a·d − b·c — Hauptdiagonale minus Nebendiagonale.",

@@ -85,7 +85,7 @@ export function genVocabAfterMerges(seed) {
       return {
         parameters: { variant, chars, merges, specials },
         expected: answer,
-        prompt: `Ein Subword-Tokenizer startet mit ${chars} Zeichen-Tokens. Ein BPE-Lauf lernt ${merges} Merges; jeder Merge fügt genau ein neues Symbol ins Vokabular ein. Zusätzlich kommen ${specials} Sondertokens (etwa <pad>, <unk>, <eos>) dazu. Wie groß ist das Vokabular danach?`,
+        prompt: `Ein Subword-Tokenizer startet mit ${chars} Zeichen-Tokens. Ein BPE-Lauf lernt ${merges} Merges; jeder Merge fügt genau ein neues Symbol ins Vokabular ein. Zusätzlich kommen ${specials} Sondertokens (etwa &lt;pad&gt;, &lt;unk&gt;, &lt;eos&gt;) dazu. Wie groß ist das Vokabular danach?`,
         fullSolution: `Vokabular = Zeichen ${chars} + Merges ${merges} + Sondertokens ${specials} = ${answer}.`,
       };
     }
@@ -108,7 +108,7 @@ export function genVocabAfterMerges(seed) {
     return {
       parameters: { variant, chars, merges, target },
       expected: answer,
-      prompt: `Ein Vokabular hat nach dem Training ${target} Einträge: ${chars} Zeichen-Tokens am Anfang und ${merges} durch BPE-Merges gelernte Symbole. Wie viele Sondertokens (<pad>, <unk>, …) wurden zusätzlich reserviert?`,
+      prompt: `Ein Vokabular hat nach dem Training ${target} Einträge: ${chars} Zeichen-Tokens am Anfang und ${merges} durch BPE-Merges gelernte Symbole. Wie viele Sondertokens (&lt;pad&gt;, &lt;unk&gt;, …) wurden zusätzlich reserviert?`,
       fullSolution: `Sondertokens = ${target} − ${chars} − ${merges} = ${answer}.`,
     };
   });
@@ -172,8 +172,8 @@ export function genGreedyToken(seed) {
     return {
       parameters: { variant, init, steps, maxLen },
       expected: answer,
-      prompt: `Eine Greedy-Decoding-Schleife startet mit ${init} Tokens und hängt pro Schritt genau ein Token an. Nach ${steps} weiteren Schritten gibt das Modell das <eos>-Token aus und stoppt; die Längenbegrenzung von ${maxLen} Tokens wird nicht erreicht. Wie lang ist die Tokenfolge am Ende?`,
-      fullSolution: `${init} Start-Tokens + ${steps} angehängte Schritte (das letzte ist <eos>) = ${answer} Tokens.`,
+      prompt: `Eine Greedy-Decoding-Schleife startet mit ${init} Tokens und hängt pro Schritt genau ein Token an. Nach ${steps} weiteren Schritten gibt das Modell das &lt;eos&gt;-Token aus und stoppt; die Längenbegrenzung von ${maxLen} Tokens wird nicht erreicht. Wie lang ist die Tokenfolge am Ende?`,
+      fullSolution: `${init} Start-Tokens + ${steps} angehängte Schritte (das letzte ist &lt;eos&gt;) = ${answer} Tokens.`,
     };
   });
 }

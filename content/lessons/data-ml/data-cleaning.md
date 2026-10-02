@@ -66,4 +66,4 @@ Jeder Schritt ändert die Zeilenzahl nachvollziehbar; nichts wird still interpol
 
 ## Direkter Check
 
-Bearbeite die [Einstiegsaufgabe](#/family/classify-missingness/target-dependent-missingness/0/intro) (Konzeptfrage Verzerrung), danach die Abrufinstanzen dieser Lektion. Dann implementiere `profile_table` in der [Kernaufgabe](#/family/validate-data-quality-contract/profile-table-schema-counts/0/core) und den Datenqualitätsvertrag als Final Boss in der [Vertiefungsaufgabe](#/family/validate-data-quality-contract/validate-rows-contract-errors/0/stretch).
+Bearbeite die [Einstiegsaufgabe: Zielwertabhängige Fehlstellen](#/family/classify-missingness/target-dependent-missingness/0/intro) (Konzeptfrage Verzerrung), danach die Abrufinstanzen dieser Lektion. Dann implementiere `profile_table` in der [Kernaufgabe: Tabellenprofil-Implementierung](#/family/validate-data-quality-contract/profile-table-schema-counts/0/core) und den Datenqualitätsvertrag als Final Boss in der [Vertiefungsaufgabe: Datenqualitätsvertrag](#/family/validate-data-quality-contract/validate-rows-contract-errors/0/stretch).

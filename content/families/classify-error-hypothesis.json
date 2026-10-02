@@ -47,8 +47,8 @@
           "correct": false
         }
       ],
-      "prompt": "Beobachtung: Bei genau fünf Durchläufen fehlt dir am Ende immer das letzte Element; bei vier Durchläufen passt alles.\n\nWelcher nächste Schritt des Debug-Prozesses (Beobachtung → Reproduktion → Hypothese → frischer Test) passt am besten zu dieser Beobachtung?",
-      "fullSolution": "Richtig ist: Die Schleifengrenze an der Grenze zwischen vier und fünf Durchläufen prüfen (Typ: Off-by-one) und die Grenze gezielt testen.\nDie Beobachtung passt zum Fehlerbild „off-by-one“. Ein guter Debug-Schritt benennt die Hypothese explizit und prüft sie an einem frischen, gezielten Testfall — statt umzubauen, umzudeklarieren oder nur die Vorlage zu wiederholen.",
+      "prompt": "<p>Beobachtung: Bei genau fünf Durchläufen fehlt dir am Ende immer das letzte Element; bei vier Durchläufen passt alles.</p><p>Welcher nächste Schritt des Debug-Prozesses (Beobachtung → Reproduktion → Hypothese → frischer Test) passt am besten zu dieser Beobachtung?</p>",
+      "fullSolution": "<p>Richtig ist: Die Schleifengrenze an der Grenze zwischen vier und fünf Durchläufen prüfen (Typ: Off-by-one) und die Grenze gezielt testen. Die Beobachtung passt zum Fehlerbild „off-by-one“. Ein guter Debug-Schritt benennt die Hypothese explizit und prüft sie an einem frischen, gezielten Testfall — statt umzubauen, umzudeklarieren oder nur die Vorlage zu wiederholen.</p>",
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -93,18 +93,18 @@
       ],
       "feedbackRules": [
         {
-                  "if": "choice === 'b'",
-                  "then": "Ein pauschales Urteil nennt weder Ursache noch nächsten Test. Die ganze Lektion zu lesen trifft den konkreten Fehler nur zufällig.",
-                  "misconception": "pauschales-selbsturteil"
+          "if": "choice === 'b'",
+          "then": "Ein pauschales Urteil nennt weder Ursache noch nächsten Test. Die ganze Lektion zu lesen trifft den konkreten Fehler nur zufällig.",
+          "misconception": "pauschales-selbsturteil"
         },
         {
-                  "if": "choice === 'c'",
-                  "then": "Abschreiben behebt dieses eine Mal, aber nicht das Verständnis. Beim nächsten Vorzeichenproblem stehst du wieder da.",
-                  "misconception": "musterloesung-mit-eigenem-abruf-verwechseln"
+          "if": "choice === 'c'",
+          "then": "Abschreiben behebt dieses eine Mal, aber nicht das Verständnis. Beim nächsten Vorzeichenproblem stehst du wieder da.",
+          "misconception": "musterloesung-mit-eigenem-abruf-verwechseln"
         },
         {
-                  "if": "choice === 'd'",
-                  "then": "Der Status beschreibt, was du kannst — er erzeugt keinen Lernerfolg. Ein Nachweis kommt aus überprüfter Arbeit, nicht aus einem Häkchen."
+          "if": "choice === 'd'",
+          "then": "Der Status beschreibt, was du kannst — er erzeugt keinen Lernerfolg. Ein Nachweis kommt aus überprüfter Arbeit, nicht aus einem Häkchen."
         }
       ],
       "typicalErrors": [

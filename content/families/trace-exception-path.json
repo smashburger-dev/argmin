@@ -22,7 +22,7 @@
       "expected": {
         "correctText": "ValueError — Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError."
       },
-      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "prompt": "<p>Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?</p><pre><code>{code}</code></pre>",
       "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
       "distractors": [
         "TypeError — die Operation ist für diese Typen nicht definiert.",
@@ -63,7 +63,7 @@
       "expected": {
         "correctText": "TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verkettet keine Typen automatisch."
       },
-      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "prompt": "<p>Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?</p><pre><code>{code}</code></pre>",
       "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
       "distractors": [
         "ValueError — das Literal passt nicht zum erwarteten Typ.",
@@ -104,7 +104,7 @@
       "expected": {
         "correctText": "KeyError — Der Schlüssel existiert im Dictionary nicht; der Zugriff über eckige Klammern wirft KeyError."
       },
-      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "prompt": "<p>Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?</p><pre><code>{code}</code></pre>",
       "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
       "distractors": [
         "ValueError — das Literal passt nicht zum erwarteten Typ.",
@@ -145,7 +145,7 @@
       "expected": {
         "correctText": "FileNotFoundError — Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError."
       },
-      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "prompt": "<p>Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?</p><pre><code>{code}</code></pre>",
       "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
       "distractors": [
         "ValueError — das Literal passt nicht zum erwarteten Typ.",
@@ -186,7 +186,7 @@
       "expected": {
         "correctText": "IndexError — Der Index liegt hinter dem Listenende; der Zugriff wirft IndexError."
       },
-      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "prompt": "<p>Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?</p><pre><code>{code}</code></pre>",
       "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
       "distractors": [
         "ValueError — das Literal passt nicht zum erwarteten Typ.",
@@ -227,7 +227,7 @@
       "expected": {
         "correctText": "TypeError — len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine."
       },
-      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "prompt": "<p>Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?</p><pre><code>{code}</code></pre>",
       "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
       "distractors": [
         "ValueError — das Literal passt nicht zum erwarteten Typ.",
@@ -268,7 +268,7 @@
       "expected": {
         "correctText": "Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl {literal}."
       },
-      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "prompt": "<p>Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?</p><pre><code>{code}</code></pre>",
       "fullSolution": "Richtig: {correctText}",
       "distractors": [
         "ValueError — das Literal passt nicht zum erwarteten Typ.",
@@ -309,7 +309,7 @@
       "expected": {
         "correctText": "Kein Fehler — der Ausdruck liefert problemlos den String \"{repeated}\"."
       },
-      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "prompt": "<p>Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?</p><pre><code>{code}</code></pre>",
       "fullSolution": "Richtig: {correctText}",
       "distractors": [
         "ValueError — das Literal passt nicht zum erwarteten Typ.",

@@ -68,4 +68,4 @@ Wie in der Lektion „Cross-Validation und Leakage-Kontrolle“: Der Vergleich B
 
 ## Direkter Check
 
-Trace einen handgeschriebenen Baum in der [Kernaufgabe](#/family/trace-assignment-state/tree-majority-vote-trace/0/core), rechne das Stimm-Ensemble in einer Einstiegsaufgabe und implementiere Gini plus Split-Suche in der [Kernaufgabe](#/family/optimize-tree-best-split/gini-best-binary-split/0/core). Transfer: Die [Vertiefungsaufgabe](#/family/construct-ensemble-predictor-comparison/voting-tree-linear-rmse/0/stretch) vergleicht Baum, Voting und lineare Baseline auf identischen Daten.
+Trace einen handgeschriebenen Baum in der [Kernaufgabe: Entscheidungsbaum-Trace](#/family/trace-assignment-state/tree-majority-vote-trace/0/core), rechne das Stimm-Ensemble in einer Einstiegsaufgabe und implementiere Gini plus Split-Suche in der [Kernaufgabe: Gini und Split-Suche](#/family/optimize-tree-best-split/gini-best-binary-split/0/core). Transfer: Die [Vertiefungsaufgabe: Ensemble-Vergleich](#/family/construct-ensemble-predictor-comparison/voting-tree-linear-rmse/0/stretch) vergleicht Baum, Voting und lineare Baseline auf identischen Daten.

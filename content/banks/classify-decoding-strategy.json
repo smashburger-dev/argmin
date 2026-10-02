@@ -15,7 +15,7 @@
             "Es wählt gelegentlich das Token mit der niedrigsten Punktzahl, um Wiederholungen zu vermeiden.",
             "Es generiert mehrere Kandidatenfolgen parallel und wählt am Ende die beste."
           ],
-          "solution": "Greedy Decoding hängt pro Schritt das Token mit der höchsten Logit-Punktzahl an (argmax, Gleichstand geht an die kleinste ID) und stoppt bei <eos> oder max_len — vollständig deterministisch. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis."
+          "solution": "Greedy Decoding hängt pro Schritt das Token mit der höchsten Logit-Punktzahl an (argmax, Gleichstand geht an die kleinste ID) und stoppt bei &lt;eos&gt; oder max_len — vollständig deterministisch. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis."
         },
         {
           "key": "determinismus",
