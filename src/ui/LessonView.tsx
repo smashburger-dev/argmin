@@ -142,7 +142,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
       <header class="lesson-header">
         <p class="eyebrow">Lektion · {summary.estimatedMinutes} Min.</p>
         <h1 id="lesson-title" tabIndex={-1}>{summary.title}</h1>
-        <p class="lesson-subtitle">{summary.objectives[0]}</p>
+        <p class="lesson-subtitle">{summary.objectives[0] ? <MathMarkup inline html={summary.objectives[0]} /> : null}</p>
       </header>
       <div class="objectives-mini">
         <details class="objectives-drop-mini">
@@ -151,7 +151,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
           </summary>
           <div class="objectives-panel" aria-label="Danach kannst du">
             <p><strong>Danach kannst du</strong></p>
-            <ul>{summary.objectives.map((objective) => <li key={objective}>{objective}</li>)}</ul>
+            <ul>{summary.objectives.map((objective) => <li key={objective}><MathMarkup inline html={objective} /></li>)}</ul>
           </div>
         </details>
       </div>
@@ -171,7 +171,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
                 const smooth = typeof window.matchMedia !== 'function' || !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                 document.getElementById(segment.anchor!)?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
               }}
-            >{segment.heading}</a>
+            ><MathMarkup inline html={segment.heading!} /></a>
           ))}
           </div>
         </nav>
