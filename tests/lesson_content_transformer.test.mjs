@@ -352,14 +352,14 @@ test('transformer-llm lessons pair a worked example with a checkpoint block', as
   }
 });
 
-test('transformer-llm worked examples are German essays of 500-900 words', async () => {
+test('transformer-llm worked examples are German essays of 500-1300 words', async () => {
   for (const lesson of LESSONS) {
     const doc = JSON.parse(await readFile(join(root, 'content', 'lessons', 'transformer-llm', lesson.file), 'utf8'));
     const worked = doc.blocks.find((block) => block.type === 'worked-example');
     const markdown = readFileSync(join(root, 'content', worked.contentRef), 'utf8');
     const words = markdown.split(/\s+/).filter(Boolean).length;
-    assert.ok(words >= 500 && words <= 900,
-      `${lesson.file} worked example has ${words} words (expected 500-900)`);
+    assert.ok(words >= 500 && words <= 1300,
+      `${lesson.file} worked example has ${words} words (expected 500-1300)`);
     assert.match(markdown, /\$[^$]+\$/, `${lesson.file} worked example lacks math`);
     assert.match(markdown, /Direkter Check/, `${lesson.file} worked example lacks exercise links`);
   }

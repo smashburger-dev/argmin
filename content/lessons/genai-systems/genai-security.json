@@ -6,7 +6,7 @@
   "title": "Injection regelbasiert erkennen",
   "objectives": [
     "Prompt-Injection in synthetischen, deutschsprachigen Beispielen regelbasiert erkennen und die Detektorqualität mit Precision/Recall messen",
-    "Datenabfluss-Kanäle und Toolberechtigungen über Vertrauensgrenzen (untrusted Retrieval → Modell → Tool) analysieren und Least-Privilege-Policies prüfen",
+    "Datenabfluss-Kanäle und Toolberechtigungen über Vertrauensgrenzen (nicht vertrauenswürdige Eingaben → Modell → Tool) analysieren und Least-Privilege-Policies prüfen",
     "Threat-Model-Entscheidungen treffen, Befunde auf die OWASP GenAI LLM Top 10 (nur verlinkt/paraphrasiert) beziehen und als Security-Regressionstests festschreiben"
   ],
   "competencyIds": [
@@ -16,7 +16,7 @@
     "c-genai-rag",
     "c-testing-debugging"
   ],
-  "estimatedMinutes": 75,
+  "estimatedMinutes": 80,
   "blocks": [
     {
       "blockId": "genai-security-core",

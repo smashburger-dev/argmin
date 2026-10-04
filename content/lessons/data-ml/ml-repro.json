@@ -11,7 +11,7 @@
   ],
   "competencyIds": ["c-ml-repro"],
   "requires": ["c-ml-erroranalysis", "c-ml-regularization", "c-ml-ensembles", "c-ml-svm-pca", "c-git-basics", "c-testing-debugging"],
-  "estimatedMinutes": 60,
+  "estimatedMinutes": 65,
   "blocks": [{ "blockId": "ml-repro-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-repro.md" }],
   "sourceRefs": [
     { "sourceId": "sklearn-user-guide", "role": "primary", "locator": "Common pitfalls: Controlling randomness — nur Lektüre" },

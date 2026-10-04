@@ -3,8 +3,8 @@
   "moduleId": "lm-ml-linear",
   "version": 1,
   "locale": "de",
-  "title": "Lineare Regression: Fit, Fehlermaße und Residuenanalyse",
-  "description": "Lerne lineare Modelle zu fitten, Fehlermaße zu berechnen und Residuen systematisch zu analysieren.",
+  "title": "Lineare Regression: Anpassung, Fehlermaße und Residuenanalyse",
+  "description": "Lerne lineare Modelle anzupassen, Fehlermaße zu berechnen und Residuen systematisch zu analysieren.",
   "competencyIds": [
     "c-ml-linear"
   ],

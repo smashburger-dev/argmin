@@ -3,7 +3,7 @@
   "moduleId": "lm-linalg-numpy-shape-contracts",
   "version": 1,
   "locale": "de",
-  "title": "NumPy-Arrays mit Shape-Verträgen",
+  "title": "Dimensionsverträge in NumPy prüfen",
   "description": "Normalisierung, Dimensionsverträge und sichere Matrixoperationen in NumPy verbinden.",
   "competencyIds": [
     "c-numpy-basics"

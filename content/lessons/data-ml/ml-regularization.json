@@ -5,21 +5,46 @@
   "locale": "de",
   "title": "Ridge-Formel herleiten und anwenden",
   "objectives": [
-    "die Ridge-Geschlossene-Formel herleiten und auf kleine Matrizen anwenden",
+    "die geschlossene Ridge-Lösung herleiten und auf kleine Matrizen anwenden",
     "Lasso-Soft-Thresholding in einer Dimension berechnen und Sparsity begründen",
-    "lambda per Cross-Validation wählen und Feature Engineering leakage-frei vorbereiten"
+    "λ per Kreuzvalidierung wählen und die Merkmalsaufbereitung leakage-frei vorbereiten"
   ],
-  "competencyIds": ["c-ml-regularization"],
-  "requires": ["c-ml-cv", "c-ml-linear"],
-  "estimatedMinutes": 55,
+  "competencyIds": [
+    "c-ml-regularization"
+  ],
+  "requires": [
+    "c-ml-cv",
+    "c-ml-linear"
+  ],
+  "estimatedMinutes": 65,
   "blocks": [
-    { "blockId": "ml-regularization-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-regularization.md" },
-    { "blockId": "ml-regularization-viz", "type": "visualization", "contentRef": "lessons/data-ml/ridge-shrink.viz.json" }
+    {
+      "blockId": "ml-regularization-core",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/ml-regularization.md"
+    },
+    {
+      "blockId": "ml-regularization-viz",
+      "type": "visualization",
+      "contentRef": "lessons/data-ml/ridge-shrink.viz.json"
+    }
   ],
   "sourceRefs": [
-    { "sourceId": "islr-book", "role": "primary", "locator": "Ch 6 Linear Model Selection and Regularization (nur Zitation)" },
-    { "sourceId": "sklearn-user-guide", "role": "practice", "locator": "Ridge regression / Lasso — nur Lektüre" },
-    { "sourceId": "devries-ml", "role": "practice", "locator": "Kapitel Regularisierung" }
+    {
+      "sourceId": "islr-book",
+      "role": "primary",
+      "locator": "Ch 6 Linear Model Selection and Regularization (nur Zitation)"
+    },
+    {
+      "sourceId": "sklearn-user-guide",
+      "role": "practice",
+      "locator": "Ridge regression / Lasso — nur Lektüre"
+    },
+    {
+      "sourceId": "devries-ml",
+      "role": "practice",
+      "locator": "Kapitel Regularisierung"
+    }
   ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"

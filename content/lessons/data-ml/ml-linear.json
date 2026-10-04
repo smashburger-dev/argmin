@@ -6,21 +6,50 @@
   "title": "Fit und Fehlermaße berechnen",
   "objectives": [
     "MSE, RMSE und R² von Hand berechnen und die Einheiten der Fehlermaße angeben",
-    "eine Kleinste-Quadrate-Anpassung mit Intercept über eine Design-Matrix und np.linalg.lstsq berechnen",
+    "eine Kleinste-Quadrate-Anpassung mit Achsenabschnitt über die Design-Matrix und np.linalg.lstsq berechnen",
     "Residuenplots auf Trend, Trichterform und Ausreißer untersuchen"
   ],
-  "competencyIds": ["c-ml-linear"],
-  "requires": ["c-ml-baseline", "c-grad-regression"],
-  "estimatedMinutes": 55,
+  "competencyIds": [
+    "c-ml-linear"
+  ],
+  "requires": [
+    "c-ml-baseline",
+    "c-grad-regression"
+  ],
+  "estimatedMinutes": 65,
   "blocks": [
-    { "blockId": "ml-linear-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-linear.md" },
-    { "blockId": "ml-linear-viz", "type": "visualization", "contentRef": "lessons/data-ml/residuals.viz.json" }
+    {
+      "blockId": "ml-linear-core",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/ml-linear.md"
+    },
+    {
+      "blockId": "ml-linear-viz",
+      "type": "visualization",
+      "contentRef": "lessons/data-ml/residuals.viz.json"
+    }
   ],
   "sourceRefs": [
-    { "sourceId": "islr-book", "role": "primary", "locator": "Ch 3 Linear Regression (nur Zitation/Verweis)" },
-    { "sourceId": "mit-ocw-18-06sc", "role": "practice", "locator": "Lecture 16: Least Squares" },
-    { "sourceId": "openintro-statistics", "role": "practice", "locator": "Ch 8 Introduction to Linear Regression" },
-    { "sourceId": "sklearn-user-guide", "role": "practice", "locator": "Linear Models — nur Lektüre, sklearn läuft nicht im Browser" }
+    {
+      "sourceId": "islr-book",
+      "role": "primary",
+      "locator": "Ch 3 Linear Regression (nur Zitation/Verweis)"
+    },
+    {
+      "sourceId": "mit-ocw-18-06sc",
+      "role": "practice",
+      "locator": "Lecture 16: Least Squares"
+    },
+    {
+      "sourceId": "openintro-statistics",
+      "role": "practice",
+      "locator": "Ch 8 Introduction to Linear Regression"
+    },
+    {
+      "sourceId": "sklearn-user-guide",
+      "role": "practice",
+      "locator": "Linear Models — nur Lektüre, sklearn läuft nicht im Browser"
+    }
   ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"

@@ -256,6 +256,14 @@ export interface CatalogData {
   families?: Array<{ familyId: string; summary: string; activityType?: string }>;
 }
 
+export interface GlossaryEntry {
+  termId: string;
+  term: string;
+  english: string | null;
+  definitionHtml: string;
+  lessonIds: string[];
+}
+
 export interface VisualizationSummary {
   visualizationId: string;
   lessonId: string;

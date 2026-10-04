@@ -3,7 +3,7 @@
   "moduleId": "lm-dl-training",
   "version": 1,
   "locale": "de",
-  "title": "Training Loops: Loss, Lernrate, Lernkurven",
+  "title": "Trainingsschleifen: Verlust, Lernrate, Lernkurven",
   "description": "Lerne Trainingsloops, SGD-Schritte und Lernkurven deterministisch zu zählen, zu implementieren und zu diagnostizieren.",
   "competencyIds": [
     "c-dl-training"

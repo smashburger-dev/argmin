@@ -5,21 +5,47 @@
   "locale": "de",
   "title": "Gradienten von Hand herleiten",
   "objectives": [
-    "die Ableitung als Steigungsrate lesen und den Gradienten von MSE bzgl. w und b herleiten",
-    "Gradientenabstieg-Updates w ← w − lr·grad ausführen und gegen lstsq prüfen",
+    "die Ableitung als Steigungsrate lesen und den Gradienten des mittleren quadratischen Fehlers nach w und b herleiten",
+    "Updates w ← w − η·∇ ausführen und gegen lstsq prüfen",
     "numerische Gradientenchecks mit (f(x+h) − f(x−h))/2h durchführen"
   ],
-  "competencyIds": ["c-grad-regression"],
-  "requires": ["c-algebra", "c-linalg-matrices", "c-numpy-basics"],
-  "estimatedMinutes": 60,
+  "competencyIds": [
+    "c-grad-regression"
+  ],
+  "requires": [
+    "c-algebra",
+    "c-linalg-matrices",
+    "c-numpy-basics"
+  ],
+  "estimatedMinutes": 70,
   "blocks": [
-    { "blockId": "gradient-regression-core", "type": "worked-example", "contentRef": "lessons/data-ml/gradient-regression.md" },
-    { "blockId": "gradient-regression-viz", "type": "visualization", "contentRef": "lessons/data-ml/mse-bowl.viz.json" }
+    {
+      "blockId": "gradient-regression-core",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/gradient-regression.md"
+    },
+    {
+      "blockId": "gradient-regression-viz",
+      "type": "visualization",
+      "contentRef": "lessons/data-ml/mse-bowl.viz.json"
+    }
   ],
   "sourceRefs": [
-    { "sourceId": "devries-ml", "role": "primary", "locator": "Kapitel Lineare Regression und Gradientenabstieg (deutschsprachiges Skript)" },
-    { "sourceId": "mit-ocw-18-06sc", "role": "practice", "locator": "Lecture 16: Projection Matrices and Least Squares" },
-    { "sourceId": "numpy-docs", "role": "remedial", "locator": "np.linalg.lstsq" }
+    {
+      "sourceId": "devries-ml",
+      "role": "primary",
+      "locator": "Kapitel Lineare Regression und Gradientenabstieg (deutschsprachiges Skript)"
+    },
+    {
+      "sourceId": "mit-ocw-18-06sc",
+      "role": "practice",
+      "locator": "Lecture 16: Projection Matrices and Least Squares"
+    },
+    {
+      "sourceId": "numpy-docs",
+      "role": "remedial",
+      "locator": "np.linalg.lstsq"
+    }
   ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"

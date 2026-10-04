@@ -1,14 +1,20 @@
 # Forschungsfrage und Experimentprotokoll
 
-Die Lektionen zu Retrieval, Evaluation und defensiven Kontrollen haben dir Werkzeuge gebaut: Retrieval, Fixtur-Evaluation, defensive Kontrolle, ein Prototyp. Ab dieser Lektion behandelst du dieses Werkzeug wie ein Forschungsgegenstand. Der erste Schritt ist nicht das Experiment, sondern die **Forschungsfrage** — und zwar eine, die scheitern kann.
+Benchmark-Ergebnisse, bei denen Metrik, Testset oder Prompt erst nach dem Blick auf die Resultate gewählt wurden, überschätzen die Leistung systematisch. Gegen dieses Muster gibt es genau ein Gegenmittel, und diese Lektion übt es: die Forschungsfrage, die vor dem Lauf feststeht und scheitern kann.
+
+## Das Bild dahinter: der Wettschein
+
+Stell dir einen Wettschein vor: Du gibst die Wette mit festen Regeln ab, bevor das Spiel läuft. Danach wird nichts mehr geändert. Ein **Goal-Shift** ist in diesem Bild, die Torpfosten zu verschieben, nachdem der Ball geflogen ist.
+
+Wo der Vergleich hinkt: Bei einer Wette willst du gewinnen. Im Experiment ist „Hypothese verworfen“ ein gültiges und wertvolles Ergebnis; die Präregistrierung schützt die Aussagekraft, nicht das Wunschergebnis.
 
 ## Was eine Frage prüfbar macht
 
-Eine Frage ist nur dann prüfbar, wenn drei Dinge feststehen, bevor irgendein Lauf startet:
+Die Werkzeuge stehen: Retrieval aus [Chunks und Index deterministisch bauen](#/lesson/l-genai-rag), Evaluation aus [Fragenkataloge einfrieren und messen](#/lesson/l-genai-eval), Kontrollen aus [Injection regelbasiert erkennen](#/lesson/l-genai-security) und der Prototyp aus [Retrieval, Evaluation und Kontrolle verbinden](#/lesson/l-genai-prototype). Ab jetzt behandelst du dieses Werkzeug als Forschungsgegenstand. Eine Frage ist nur dann **prüfbar**, wenn drei Dinge feststehen, bevor irgendein Lauf startet:
 
-1. **Eine feste Metrik** mit festem Namen und Berechnungsvorschrift, z. B. recall@k über eingefrorene Queries — nicht „das System wirkt besser“.
+1. **Eine feste Metrik** mit festem Namen und Berechnungsvorschrift, z. B. recall@k über eingefrorene Queries, nicht „das System wirkt besser“.
 2. **Ein fester Vergleich**: eine unabhängige Variable (UV), die du gezielt veränderst, und eine abhängige Variable (DV), an der du die Wirkung misst.
-3. **Eine Baseline**, gegen die der Vergleich läuft — beim GenAI-Prototyp ist das der unveränderte Lauf mit dem deterministischen Stub-Generator.
+3. **Eine Baseline**, gegen die der Vergleich läuft; beim GenAI-Prototyp ist das der unveränderte Lauf mit dem deterministischen Stub-Generator.
 
 Eine klassische deutsche Formulierung für Hypothesen ist das Je-desto-Muster: „Je größer die Chunkgröße, desto höher der Anteil korrekt beantworteter Fixtur-Fragen.“ Die Wörter zwischen „Je“ und dem Komma benennen die UV samt Richtung, die Wörter nach „desto“ die DV samt erwarteter Richtung. Alles, was sich nicht so zerlegen lässt, ist noch keine Hypothese, sondern eine Vermutung.
 
@@ -16,50 +22,63 @@ Unprüfbar sind Fragen mit absoluten Behauptungen („immer“, „niemals“, �
 
 ## Das Protokoll vor dem Lauf
 
-Ein Forschungsprotokoll hält schriftlich fest, was vor dem Hauptlauf gilt:
+Ein **Protokoll** hält schriftlich fest, was vor dem Hauptlauf gilt:
 
 - **Frage und Hypothese** in prüfbarer Form,
 - **Metrik und Erfolgsschwelle** (z. B. „recall@5 mindestens 0,75“),
-- **primärer und sekundäre Endpunkte** — der primäre Endpunkt ist der eine Wert, über den die Studie entscheidet,
+- **primärer und sekundäre Endpunkte**: der primäre Endpunkt ist der eine Wert, über den die Studie entscheidet,
 - **Subgruppen**, die von Anfang an mitgeplant werden (bei „nach Freeze ergänzt“ gilt: nachträgliche Auswahl),
 - **Baseline und Abbruchregel** (wann brichst du den Lauf ab, statt weiter zu optimieren?),
-- **datum_prereg vor datum_hauptlauf** — die Reihenfolge ist der Beweischarakter der ganzen Übung.
+- **datum_prereg vor datum_hauptlauf**: die Reihenfolge ist der Beweischarakter der ganzen Übung.
 
-Diese Reihenfolge ist kein Bürokratie-Ritual, sondern der Unterschied zwischen einer Vorhersage und einer nachträglichen Erklärung. Wer die Schwelle erst nach dem ersten Lauf festlegt, kann nicht mehr scheitern — und was nicht scheitern kann, sagt nichts aus.
+Diese Reihenfolge ist kein Bürokratie-Ritual, sondern der Unterschied zwischen einer Vorhersage und einer nachträglichen Erklärung. Wer die Schwelle erst nach dem ersten Lauf festlegt, kann nicht mehr scheitern, und was nicht scheitern kann, sagt nichts aus.
 
 ## Goal-Shifts erkennen
 
-Trotz Preregistrierung passiert es: Nachdem erste Ergebnisse sichtbar sind, „entwickelt sich“ das Protokoll weiter. Vier Changes sind Goal-Shifts, also Wechsel des Forschungsziels, und nicht nur Kosmetik — die Contracts beim Vergleich zweier Versionen:
+Trotz Präregistrierung passiert es: Nachdem erste Ergebnisse sichtbar sind, „entwickelt sich“ das Protokoll weiter. Vier Änderungen sind **Goal-Shifts**, also Wechsel des Forschungsziels, und nicht nur Kosmetik; sie sind die Contracts beim Vergleich zweier Versionen:
 
-1. **metrik_geaendert** — die Metrik wechselt (z. B. recall@5 wird durch token-f1 ersetzt),
-2. **schwelle_geaendert** — die Erfolgsschwelle wird angepasst,
-3. **primaer_demoted** — der primäre Endpunkt rutscht in die sekundären Endpunkte,
-4. **subgruppe_nach_freeze** — eine Subgruppe kommt dazu, nachdem der Plan eingefroren war.
+1. **metrik_geaendert**: die Metrik wechselt (z. B. recall@5 wird durch token-f1 ersetzt),
+2. **schwelle_geaendert**: die Erfolgsschwelle wird angepasst,
+3. **primaer_demoted**: der primäre Endpunkt rutscht in die sekundären Endpunkte,
+4. **subgruppe_nach_freeze**: eine Subgruppe kommt dazu, nachdem der Plan eingefroren war.
 
-Jede dieser Änderungen einzeln kann gut begründet sein. Aber sie alle gemeinsam zu ändern und dann trotzdem „die Hypothese war richtig“ zu berichten, ist Overclaiming: Du berichtest über ein anderes Ziel als das preregisterierte. Deterministisch erkennbar sind alle vier — ein Vergleich zweier Protokoll-Dicts genügt, ohne jedes Sprachmodell.
+Jede dieser Änderungen einzeln kann gut begründet sein. Aber sie alle gemeinsam zu ändern und dann trotzdem „die Hypothese war richtig“ zu berichten, ist Overclaiming: Du berichtest über ein anderes Ziel als das preregisterierte. Deterministisch erkennbar sind alle vier; ein Vergleich zweier Protokoll-Dicts genügt, ganz ohne Sprachmodell.
 
 ## Worked Example am GenAI-Prototyp
 
-Nimm den RAG-Prototyp mit seinem deterministischen Stub-Generator, der über die eingefrorenen Fixtur-Queries läuft und dabei die Injektions-Fixture erkennt und blockiert. Die Ablation aus dem GenAI-Prototyp kennt zwei Zahlen: recall 0,6 mit Kontrolle, 0,8 ohne — die Differenz ist beabsichtigte Verweigerung, kein Defekt. Eine prüfbare Frage daraus:
+Nimm den RAG-Prototyp mit seinem deterministischen Stub-Generator, der über die eingefrorenen Fixtur-Queries läuft und dabei die Injektions-Fixture erkennt und blockiert. Die Ablation kennt zwei Zahlen: recall 0,6 mit Kontrolle, 0,8 ohne; die Differenz ist beabsichtigte Verweigerung, kein Defekt. Eine prüfbare Frage daraus:
 
-- **Frage**: Steigt der Anteil korrekt beantworteter Fixtur-Fragen, wenn die Chunkgröße von 200 auf 400 Zeichen verdoppert wird?
+- **Frage**: Steigt der Anteil korrekt beantworteter Fixtur-Fragen, wenn die Chunkgröße von 200 auf 400 Zeichen verdoppelt wird?
 - **Hypothese (Je-desto)**: Je größer die Chunkgröße, desto höher der Anteil korrekt beantworteter Fixtur-Fragen.
 - **UV**: Chunkgröße (200 vs. 400). **DV**: Anteil korrekt beantworteter Fixtur-Fragen.
 - **Metrik und Schwelle**: recall@5 als primärer Endpunkt, Erfolgsschwelle 0,75; bearbeitungszeit und ablehnungsquote als sekundäre Endpunkte.
 - **Subgruppen vor Freeze**: neukunden-Fragen und mobil formulierte Fragen.
 - **Baseline**: unveränderter Lauf des GenAI-Prototyps mit Chunkgröße 200.
-- **Abbruchregel**: nach zwei aufeinanderfolgenden Läufen ohne Änderung der Kennzahl wird abgebrochen — weiterer Tuning-Aufwand ist nicht mehr Teil des Experiments.
+- **Abbruchregel**: nach zwei aufeinanderfolgenden Läufen ohne Änderung der Kennzahl wird abgebrochen; weiterer Tuning-Aufwand ist nicht mehr Teil des Experiments.
 - **datum_prereg** liegt vor **datum_hauptlauf**; erst danach startet der Hauptlauf.
 
-Würde nach dem ersten Lauf die Schwelle von 0,75 auf 0,6 gesenkt, weil 0,75 „unrealistisch“ war — schwelle_geaendert. Würde der primäre Endpunkt auf die ablehnungsquote verschoben, weil recall@5 schlechter aussieht als erhofft — primaer_demoted. Beides darfst du tun; du darfst es nur nicht unbemerkt tun.
+Würde nach dem ersten Lauf die Schwelle von 0,75 auf 0,6 gesenkt, weil 0,75 „unrealistisch“ war: schwelle_geaendert. Würde der primäre Endpunkt auf die ablehnungsquote verschoben, weil recall@5 schlechter aussieht als erhofft: primaer_demoted. Beides darfst du tun; du darfst es nur nicht unbemerkt tun.
 
 ## Typische Fehlvorstellungen
 
-- „Eine gute Frage ist offen.“ — Für Exploration stimmt das, für ein Experiment brauchst du die feste Metrik und den festen Vergleich; Offenheit gehört in die Recherche vor der Frage, nicht in deren Auswertung.
-- „Die Schwelle kann ich anpassen, solange ich es dokumentiere.“ — Dokumentieren ist nötig, aber nicht hinreichend: Ein Goal-Shift macht aus dem neuen Lauf eine neue Studie, und die alte Frage bleibt unbeantwortet.
-- „Subgruppen suche ich aus, wenn die Daten da sind.“ — Nachträgliche Subgruppen laden zum selektiven Berichten ein; was verglichen werden soll, steht vor dem Freeze im Protokoll.
-- „Eine Baseline brauche ich nur bei echten Modellen.“ — Gerade beim deterministischen Stub ist die Baseline der Lauf unveränderten Codes; nur gegen ihn ist eine Änderung überhaupt messbar.
+- „Eine gute Frage ist offen.“ Für Exploration stimmt das; für ein Experiment brauchst du die feste Metrik und den festen Vergleich. Offenheit gehört in die Recherche vor der Frage, nicht in deren Auswertung.
+- „Die Schwelle kann ich anpassen, solange ich es dokumentiere.“ Dokumentieren ist nötig, aber nicht hinreichend: Ein Goal-Shift macht aus dem neuen Lauf eine neue Studie, und die alte Frage bleibt unbeantwortet.
+- „Subgruppen suche ich aus, wenn die Daten da sind.“ Nachträgliche Subgruppen laden zum selektiven Berichten ein; was verglichen werden soll, steht vor dem Freeze im Protokoll.
+- „Eine Baseline brauche ich nur bei echten Modellen.“ Gerade beim deterministischen Stub ist die Baseline der Lauf unveränderten Codes; nur gegen ihn ist eine Änderung überhaupt messbar.
+
+## Wo dir das in der KI begegnet
+
+Modellberichte konkurrieren um Benchmark-Tabellen, und die Versuchung ist überall dieselbe: Metrik, Testset oder Prompt erst nach dem Blick auf die Resultate zu wählen. Den Begriff dafür prägte Kerr (1998): **HARKing**, Hypothesizing After the Results are Known. Ein Protokoll mit festem Datum ist der strukturelle Schutz dagegen.
 
 ## Direkter Check
 
-In einer Einstiegsaufgabe zählst du Goal-Shift-Flags zwischen zwei Protokollversionen. Die [Kernaufgabe: Prüfbarkeit von Forschungsfragen](#/family/validate-text-normalize-match/text-normalize-match/0/core) prüft Fragen auf Prüfbarkeit und zerlegt Je-desto-Hypothesen in UV und DV; die [Vertiefungsaufgabe: Protokoll-Validator](#/family/validate-required-field-raise/protocol-validator/0/stretch) validiert ein Protokoll auf Pflichtfelder und Datumreihenfolge; die [Herausforderung](#/family/validate-goalshift-flag-rules/detect-goal-shift/0/challenge) als Boss implementiert die volle Goal-Shift-Erkennung für zwei Versionen.
+In einer Einstiegsaufgabe zählst du Goal-Shift-Flags zwischen zwei Protokollversionen. Die [Kernaufgabe: Prüfbarkeit von Forschungsfragen](#/family/validate-text-normalize-match/text-normalize-match/0/core) prüft Fragen auf Prüfbarkeit und zerlegt Je-desto-Hypothesen in UV und DV; die [Vertiefungsaufgabe: Protokoll-Validator](#/family/validate-required-field-raise/protocol-validator/0/stretch) validiert ein Protokoll auf Pflichtfelder und Datumreihenfolge; die [Herausforderung](#/family/validate-goalshift-flag-rules/detect-goal-shift/0/challenge) implementiert die volle Goal-Shift-Erkennung für zwei Versionen.
+
+## Begriffe auf einen Blick
+
+- **Prüfbare Frage**: Forschungsfrage mit fester Metrik, festem Vergleich und fester Baseline vor dem Lauf.
+- **Hypothese**: prüfbare Vorhersage, oft im Je-desto-Muster mit unabhängiger und abhängiger Variable.
+- **Präregistrierung**: das Festhalten von Frage, Metrik und Schwelle vor dem ersten Messlauf.
+- **Protokoll**: schriftliche Festlegung von Frage, Metrik, Endpunkten, Subgruppen, Baseline und Abbruchregel.
+- **Goal-Shift**: nachträglicher Wechsel des Forschungsziels, etwa Metrik, Schwelle oder primärer Endpunkt.
+- **HARKing** (englisch *hypothesizing after the results are known*): die Hypothese erst nach dem Blick auf die Ergebnisse formulieren.

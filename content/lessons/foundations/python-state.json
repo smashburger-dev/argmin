@@ -7,7 +7,7 @@
   "objectives": ["Zuweisungen als Zustandsänderung lesen", "Werte und Typen von Variablennamen unterscheiden", "kurze Programme mit einer Tracetabelle prüfen"],
   "competencyIds": ["c-python-basics"],
   "requires": [],
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 55,
   "blocks": [{ "blockId": "python-state-core", "type": "worked-example", "contentRef": "lessons/foundations/python-state.md" }],
   "sourceRefs": [
     { "sourceId": "py-tutorial-official-3.14", "role": "reference", "locator": "Kapitel 3: An Informal Introduction to Python" }

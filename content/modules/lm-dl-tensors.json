@@ -3,8 +3,8 @@
   "moduleId": "lm-dl-tensors",
   "version": 1,
   "locale": "de",
-  "title": "Tensoren, Layer und Dimensionsverträge",
-  "description": "Lerne Tensorformen, Broadcasting und Forward-Verträge in linearen und tiefen Layerketten anzuwenden.",
+  "title": "Tensoren, Schichten und Dimensionsverträge",
+  "description": "Lerne Tensorformen, Broadcasting und Forward-Verträge in linearen und tiefen Schichtketten anzuwenden.",
   "competencyIds": [
     "c-dl-tensors"
   ],

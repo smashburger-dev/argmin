@@ -11,7 +11,7 @@
   ],
   "competencyIds": ["c-dl-papers"],
   "requires": ["c-dl-finetuning", "c-meta-learning"],
-  "estimatedMinutes": 70,
+  "estimatedMinutes": 75,
   "blocks": [
     { "blockId": "tf-papers-core", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-papers.md" },
     { "blockId": "tf-papers-check", "type": "checkpoint", "contentRef": "lessons/transformer-llm/tf-papers-checkpoint.md" }

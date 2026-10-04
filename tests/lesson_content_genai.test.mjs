@@ -70,7 +70,7 @@ test('w27-w30 lesson markdown is German, in budget and links only its own exerci
   for (const lesson of LESSONS) {
     const md = readFileSync(join(root, `content/lessons/genai-systems/${lesson.file}.md`), 'utf8');
     const words = md.split(/\s+/).filter(Boolean).length;
-    assert.ok(words >= 500 && words <= 900, `${lesson.file}.md has ${words} words (budget 500-900)`);
+    assert.ok(words >= 500 && words <= 1300, `${lesson.file}.md has ${words} words (budget 500-1300)`);
     assert.match(md, /## Direkter Check/, `${lesson.file}.md: Direkter Check fehlt`);
     assert.equal(md.includes('```html'), false, `${lesson.file}.md: raw HTML verboten`);
     const links = [...md.matchAll(/#\/family\/([^/]+)\//g)].map((m) => m[1]);

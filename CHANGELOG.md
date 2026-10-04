@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0 — 2026-10-04
+
+Alle 50 Lektionen aller Tracks wurden neu geschrieben, und ein Lexikon mit 320 Kurzdefinitionen direkt in der Lektion ist dazugekommen.
+
+Für Lernende: **Die Lektionen erklären Begriffe jetzt vor dem ersten Gebrauch, lesen Formelsymbole aus und verankern jedes Thema in der KI-Praxis.** Jede revidierte Lektion beginnt mit einem Bezug zu KI-Systemen, arbeitet mit einer tragenden Analogie samt „Wo der Vergleich hinkt“, zeigt ein durchgerechnetes Beispiel, endet mit Abruf- oder Prüfaufgaben und schließt mit „Begriffe auf einen Blick“. Fachliche Korrekturen: Residuum-Richtung im Gradientenabstieg, Log-Loss-Beispiel in der logistischen Regression, SVM-Zielfunktion mit Nebenbedingung, Softmax-Overflow-Grenze (≈ e^709,8 statt e^300), Index-Erklärung zu dW = Xᵀδ, Dropout-Konvention gegenüber `nn.Dropout` klargestellt, Schiefe-Begriff berichtigt (Mittelwert größer als Median heißt rechtsschief, nicht rechtssteil), bedingte Wahrscheinlichkeit konsistent als Spaltenanteil dargestellt, Temperatur beim Sampling auf die Logits vor dem Softmax bezogen statt auf die Softmax-Ausgabe, Median statt Mittelwert beim Galton-Beispiel, Bootstrap-Stichproben präzisiert (gleiche Größe, mit Zurücklegen), OWASP-Einordnung von Prompt Injection als Rangfolge statt Häufigkeitsstatistik formuliert. Neu: das Lexikon — Fachbegriffe sind in den Lektionen verlinkt und öffnen per Klick eine Kurzdefinition, ohne die Seite zu verlassen; auch über `#/glossary` und die Suche erreichbar.
+
+Für Beitragende: Der Lektionen-Stil steht verbindlich in `docs/authoring-guide.md` §9 und wird von `tests/lesson_style.test.mjs` geprüft (Lead, Glossar-Struktur, Display-Formeln, Gedankenstriche, Querverweise, Glossar-Konsistenz über Lektionen hinweg). Die Glossar-Pipeline besteht aus `tools/glossary_content.mjs` (`parseGlossarySection`, `glossaryTermId`, `buildGlossary`), `renderInlineMarkdown` in `tools/markdown_content.mjs` und einer neuen Content-Sektion `glossary`, die lazy per `loadGlossary()` geladen wird; `#/glossary/<id>`-Links werden im Compile fail-closed validiert. Frontend: `GlossaryView`, `GlossaryPopover`, Nav-Eintrag „Lexikon“, Suchgruppe „Begriffe". Modultitel der beiden Tracks auf die kanonischen deutschen Begriffe gebracht (moduleIds unverändert).
+
 ## 0.8.18 — 2026-09-28
 
 Übungsräume bleiben im Modul, und Trace-Aufgaben zeigen den Code nur noch einmal.

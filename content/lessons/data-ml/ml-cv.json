@@ -11,7 +11,7 @@
   ],
   "competencyIds": ["c-ml-cv"],
   "requires": ["c-ml-logistic"],
-  "estimatedMinutes": 55,
+  "estimatedMinutes": 65,
   "blocks": [
     { "blockId": "ml-cv-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-cv.md" },
     { "blockId": "ml-cv-viz", "type": "visualization", "contentRef": "lessons/data-ml/bias-variance.viz.json" }

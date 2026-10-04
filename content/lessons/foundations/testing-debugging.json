@@ -7,7 +7,7 @@
   "objectives": ["einen Fehler zuverlässig reproduzieren", "Arrange, Act und Assert trennen", "einen Fix gegen Ursache und Regression prüfen"],
   "competencyIds": ["c-testing-debugging"],
   "requires": ["c-python-functions", "c-python-files-errors"],
-  "estimatedMinutes": 45,
+  "estimatedMinutes": 70,
   "blocks": [{ "blockId": "testing-debugging-core", "type": "project-step", "contentRef": "lessons/foundations/testing-debugging.md" }],
   "sourceRefs": [
     { "sourceId": "py-tutorial-official-3.14", "role": "reference", "locator": "Kapitel 8: Exceptions als reproduzierbare Fehlergrenze" }

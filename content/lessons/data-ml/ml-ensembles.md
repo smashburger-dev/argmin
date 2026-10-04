@@ -1,71 +1,67 @@
-# Entscheidungsbäume und Ensembles
+# Entscheidungsbäume, Gini und Ensembles
 
-Ein **Entscheidungsbaum** zerlegt die Eingaben durch Wenn-Dann-Fragen in Regionen. Ein **Ensemble** kombiniert viele Modelle — Bäume sind der Standardbaustein, weil sie flexibel, aber instabil sind.
+Nicht jedes KI-Modell ist ein neuronales Netz: Auf Tabellendaten sind Entscheidungsbäume und ihre Ensembles oft die stärkste Methode. Diese Lektion zeigt dir, wie ein Baum einen Split wählt, was mehrere Bäume zusammen besser können und wo du die Stärken gegen schlichte Baselines abwägst.
+
+## Das Bild dahinter: Bestimmungsschlüssel und Schätzwettbewerb
+
+Ein **Entscheidungsbaum** fragt hintereinander Ja/Nein-Merkmale ab, wie ein Bestimmungsschlüssel für Pflanzen („Blätter gezähnt? ja/nein, dann weiter“). Für das **Ensemble** ein zweites Bild: 1906 beobachtete Francis Galton auf einem Jahrmarkt, dass der Median vieler Schätzungen des Gewichts eines Ochsen sehr nah am wahren Wert lag. Die einzelnen Schätzungen streuten, der Median traf, weil sich unabhängige Fehler ausglichen.
+
+Wo der Vergleich hinkt: Bäume, die auf denselben Daten wachsen, machen ähnliche Fehler. Deshalb stellen Bagging und Random Forests Stichproben und Merkmalsauswahl her, damit die Fehler unabhängiger werden.
+
+## Split: die Trennfrage
+
+Ein **Split** ist eine Ja/Nein-Frage an ein Merkmal, etwa „Durchmesser $> 12\,\text{mm}$“. Links von der Schwelle landen die „ja“-Zeilen, rechts die „nein“-Zeilen. Bei numerischen Merkmalen werden nur Schwellen zwischen benachbarten, sortierten Werten geprüft. Der beste Split maximiert die Reinheit der Kinder, gemessen mit der Gini-Unreinheit.
 
 ## Gini-Unreinheit
 
-Ein Knoten mit Klassenanteilen $p_k$ hat die **Gini-Unreinheit**
+Für einen Knoten mit Labelverteilung $(c_0, c_1)$ ist die **Gini-Unreinheit** die Wahrscheinlichkeit, dass zwei zufällig gezogene Beispiele (mit Zurücklegen) unterschiedliche Klassen zeigen:
 
-$$G = 1 - \sum_k p_k^2$$
+$$
+G = 1 - p_0^2 - p_1^2.
+$$
 
-Rechnungen für kleine Knoten:
+Dabei ist $p_0$ der Anteil der Klasse 0, sprich: p null. Bild dazu: ein Bonbonglas mit zwei Sorten; $G$ ist die Wahrscheinlichkeit, bei zwei Griffen mit Zurücklegen zwei verschiedene Sorten zu ziehen. Durchgerechnet:
 
-- $[0,0,1,1]$: $G = 1 - (0{,}5^2 + 0{,}5^2) = 0{,}5$
-- $[0,0,0,1]$: $G = 1 - ((3/4)^2 + (1/4)^2) = 1 - 10/16 = 0{,}375$
-- reiner Knoten $[1,1,1]$: $G = 0$
+- Verteilung $[0, 0, 1, 1]$: $p_0 = p_1 = 0{,}5$, also $G = 1 - 0{,}25 - 0{,}25 = 0{,}5$ (maximal unrein).
+- Verteilung $[0, 0, 0, 1]$: $p_0 = 0{,}75$, also $G = 1 - 0{,}5625 - 0{,}0625 = 0{,}375$ (reiner).
 
-Je kleiner $G$, desto sortierter der Knoten.
+Für einen Split wird $G$ pro Kind berechnet und nach Zeilenzahl gewichtet; der Split mit der kleinsten gewichteten Summe gewinnt. Beispiel: $x = (1, 2, 3, 4)$, $y = (0, 0, 1, 1)$, Schwelle $2{,}5$ ergibt die Kinder $[0, 0]$ und $[1, 1]$ mit gewichtetem Gini $0$; die Schwelle trennt perfekt.
 
-## Split-Suche bis Tiefe 2
+## Tiefe steuern
 
-Gesucht ist der Schwellenwert mit dem kleinsten **gewichteten Gini**: Anteil der Punkte links mal $G_{\text{links}}$ plus Anteil rechts mal $G_{\text{rechts}}$. Kandidaten sind die Mitten zwischen aufeinanderfolgenden, verschiedenen x-Werten.
+Die **Tiefe** ist die Zahl der Fragen auf dem Weg von der Wurzel zum Blatt. Tiefe 1 ist ein Baumstumpf mit einem Split; Tiefe 2 erlaubt eine zweite Frage pro Seite. Mit jeder weiteren Ebene steigt die Komplexität: Bäume, die zu tief wachsen, merken sich Ausreißer und verlieren die Verallgemeinerung auf neue Daten. Das ist genau der Bias-Varianz-Tradeoff: Ein flacher Baum hat hohe Verzerrung und kleine Varianz, ein tiefer Baum umgekehrt.
 
-Beispiel: $x = (1,2,3,4)$, $y = (0,0,1,1)$.
+## Ensemble: mehrere Bäume abstimmen
 
-| Schwelle | links | rechts | gewichteter Gini |
-|---|---|---|---|
-| 1,5 | $[0]$ | $[0,1,1]$ | $\tfrac14\cdot0 + \tfrac34\cdot\tfrac49 = \tfrac13 \approx 0{,}333$ |
-| 2,5 | $[0,0]$ | $[1,1]$ | $0$ |
-| 3,5 | $[0,0,1]$ | $[1]$ | $\tfrac13 \approx 0{,}333$ |
+Ein **Ensemble** kombiniert viele schwache Vorhersagen zu einer stärkeren. **Bagging** (englisch *bootstrap aggregating*) trainiert Bäume auf Bootstrap-Stichproben, die mit Zurücklegen in voller Größe gezogen werden, und bildet über ihre Stimmen eine Mehrheit; dadurch sinkt die Varianz. Der **Random Forest** geht einen Schritt weiter: An jedem Split sieht jeder Baum nur eine zufällige Teilmenge der Merkmale, die Bäume werden noch unabhängiger und die Fehler heben sich stärker auf. Mehrheitsentscheidung bei vier Bäumen, die $1, 0, 1, 1$ sagen: 3 Stimmen Klasse 1, also Vorhersage 1. Die Einzelbäume können falsch liegen; die Mehrheit korrigiert unabhängige Fehler.
 
-Schwelle 2,5 gewinnt. Für **Tiefe 2** wird jedes Kind erneut gesplittet, aber nur, wenn der gewichtete Gini noch fällt — ansonsten stoppt der Ast. Unbegrenzte Tiefe führt auf Trainingsdaten zu Gini 0 und memoriert das Rauschen.
+## Ensemble oder Baseline?
 
-## Bias und Varianz
-
-Ein tiefer Baum hat **niedrigen Bias** (er kann alles darstellen) aber **hohe Varianz** (kleine Datenänderung → ganz andere Struktur). **Bagging** trainiert viele Bäume auf Bootstrap-Stichproben und kombiniert sie:
-
-- **Majority-Voting** (Klassifikation): die Klassenstimmen werden gezählt, die Mehrheit gewinnt.
-- Mittelung (Regression): die Vorhersagen werden gemittelt.
-
-Die Fehler der einzelnen Bäume sind nur teilweise korreliert — beim Kombinieren heben sie sich gegenseitig auf. Die Varianz sinkt, der Bias bleibt etwa gleich.
-
-Mini-Rechnung Voting: drei Modelle bewerten drei Beispiele; jedes Beispiel erhält einen Stimmenvektor mit einer Stimme je Modell. Beispiel 1 erhält $(1,0,0)$ — eine Eins-Stimme, Mehrheit ist 0. Beispiel 2 erhält $(1,0,1)$ — zwei Eins-Stimmen, Mehrheit ist 1. Beispiel 3 erhält $(0,1,1)$ — zwei Eins-Stimmen, Mehrheit ist 1. Ensemble-Ausgabe: $(0,1,1)$. Kein einzelnes Modell muss diese Ausgabe vollständig treffen — genau das ist der Ensemble-Effekt.
-
-## Warum Ensembles Baselines schlagen — und wann nicht
-
-Ensembles schlagen eine einfache Baseline (Mittelwert, Mehrheitsklasse, lineares Modell) zuverlässig, wenn:
-
-- die Einzelmodelle besser als Zufall sind,
-- ihre Fehler möglichst **unkorreliert** sind (verschiedene Bootstrap-Stichproben, Merkmals-Untermengen).
-
-Sie schlagen sie **nicht** automatisch, wenn:
-
-- alle Modelle denselben systematischen Fehler machen (starke Korrelation),
-- der Datensatz klein ist und die Bäume alle dasselbe lernen,
-- die einfache Baseline das Problem schon knapp löst.
-
-## Vergleichen unter identischen Splits
-
-Wie in der Lektion „Cross-Validation und Leakage-Kontrolle“: Der Vergleich Baum vs. Ensemble vs. lineare Baseline läuft auf **denselben Splits** mit demselben Seed. Verschiedene Splits pro Modell machen den Vergleich zufällig. Und: Ein einzelner Lauf ist ein Stichprobenwert — die Streuung über Wiederholungen gehört in den Bericht (Vorgriff auf die Lektion „Reproduzierbarkeit: Seeds, Splits und Manifeste“).
+Vergleiche immer unter demselben Split und derselben Metrik: Majority-Baseline, ein einzelner Baum und das Ensemble. Ein Ensemble, das die Baseline nicht schlägt, lernt kein Signal. Baum-Ensembles sind oft stärker als einzelne Bäume, können aber bei sehr kleinen Datensätzen oder stark verschobenen Verhältnissen hinter einfacheren Modellen liegen; entscheidend ist das gemessene Ergebnis, nicht der Name des Modells.
 
 ## Typische Fehler
 
-- Gini mit Anzahlen statt Anteilen gewichten (vergessen, durch $n$ zu teilen).
-- Bei Gleichstand von Schwellenwerten den ersten gefundenen nehmen statt deterministisch (kleinster Schwellenwert) zu entscheiden.
-- Tiefe unbegrenzt lassen und die Überanpassung wundern.
-- Ensembles auf dem Testset tunen statt per Cross-Validation.
-- Modelle mit unterschiedlichen zufälligen Splits vergleichen.
+- Gini ungewichtet summieren, statt nach Zeilenzahl zu gewichten. Ein kleines reines Kind darf ein großes nicht überstimmen.
+- Schwelle nur auf ganzen Zahlen testen; numerische Merkmale verlangen Mittelpunkte zwischen benachbarten Werten.
+- Bäume bis zum Maximum wachsen lassen, ohne die Tiefe zu begrenzen.
+- Bagging als „mehr Trainingsdaten“ lesen: Die Stichproben entstehen durch Ziehen mit Zurücklegen aus denselben Daten.
+- Ensemble vergleichen, ohne Split und Metrik zu fixieren. Dann misst du den Zufall.
+
+## Wo dir das in der KI begegnet
+
+Auf Tabellendaten schlagen baumbasierte Ensembles wie Gradient Boosting neuronale Netze oft; genau das untersuchen Grinsztajn et al. (2022). Sobald Daten als Zeilen und Spalten vorliegen, ist ein Baumensemble die erste ernsthafte Baseline, die jedes neuronale Modell schlagen muss.
 
 ## Direkter Check
 
 Trace einen handgeschriebenen Baum in der [Kernaufgabe: Entscheidungsbaum-Trace](#/family/trace-assignment-state/tree-majority-vote-trace/0/core), rechne das Stimm-Ensemble in einer Einstiegsaufgabe und implementiere Gini plus Split-Suche in der [Kernaufgabe: Gini und Split-Suche](#/family/optimize-tree-best-split/gini-best-binary-split/0/core). Transfer: Die [Vertiefungsaufgabe: Ensemble-Vergleich](#/family/construct-ensemble-predictor-comparison/voting-tree-linear-rmse/0/stretch) vergleicht Baum, Voting und lineare Baseline auf identischen Daten.
+
+## Begriffe auf einen Blick
+
+- **Entscheidungsbaum** (englisch *decision tree*): Modell, das durch Ja/Nein-Fragen an Merkmale die Klasse findet.
+- **Split**: Ja/Nein-Frage an ein Merkmal, die die Zeilen in zwei Teilmengen teilt; bei Zahlen als Schwelle.
+- **Gini-Unreinheit** (englisch *gini impurity*): Wahrscheinlichkeit, dass zwei Zufallsziehungen verschiedene Klassen zeigen; $G = 1 - p_0^2 - p_1^2$.
+- **Tiefe** (englisch *depth*): Zahl der Fragen von der Wurzel zum Blatt; begrenzt die Komplexität des Baums.
+- **Ensemble**: Kombination mehrerer Modelle, deren gemeinsame Vorhersage robuster ist.
+- **Bagging** (englisch *bootstrap aggregating*): Bäume auf Zufallsstichproben trainieren und per Mehrheit zusammenfassen.
+- **Random Forest**: Bagging mit zufälliger Merkmalsteilmenge pro Split; macht die Bäume unabhängiger.
+- **Boosting**: Ensemblemethode, die Bäume nacheinander auf die Fehler des Vorgängers trainiert.

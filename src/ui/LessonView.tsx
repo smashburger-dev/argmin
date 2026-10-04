@@ -3,6 +3,7 @@ import type { CatalogData, Lesson } from '../app/types';
 import { getLesson, loadSources } from '../adapters/content-repository';
 import { recordLessonOpened, recordModuleOpened } from '../adapters/local-progress';
 import { MathMarkup } from './MathMarkup';
+import { useGlossaryPopover } from './GlossaryPopover';
 import { VisualizationBlock } from './VisualizationBlock';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Button } from './Button';
@@ -94,6 +95,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
   const moduleOrder = (homeModule?.lessonIds || []).filter((id) => catalog.lessons.some((lesson) => lesson.lessonId === id));
   const modulePosition = moduleOrder.indexOf(lessonId);
   const neighbor = (id: string | undefined) => catalog.lessons.find((lesson) => lesson.lessonId === id);
+  const { popover, onClickCapture } = useGlossaryPopover();
   const [activeAnchor, setActiveAnchor] = useState<string | null>(null);
   const previous = modulePosition > 0 ? neighbor(moduleOrder[modulePosition - 1]) : catalog.lessons[lessonIndex - 1];
   const next = modulePosition >= 0 && modulePosition < moduleOrder.length - 1 ? neighbor(moduleOrder[modulePosition + 1]) : catalog.lessons[lessonIndex + 1];
@@ -176,7 +178,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
           </div>
         </nav>
       )}
-      <article class="lesson-prose" aria-busy={!lesson && !loadError}>
+      <article class="lesson-prose" aria-busy={!lesson && !loadError} onClick={onClickCapture}>
         {loadError && <p role="alert" class="content-error">Lektion konnte nicht geladen werden: {loadError}</p>}
         {!loadError && !lesson && <p role="status">Lektionsinhalt wird geladen.</p>}
         {prose.blocks.map(({ block, segments }, blockIndex) => {
@@ -225,6 +227,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
             : <span />}
       </nav>
       </div>
+      {popover}
     </section>
   );
 }
