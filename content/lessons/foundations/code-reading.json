@@ -7,7 +7,7 @@
   "objectives": ["Ausführung von Quelltext und bloßes Lesen unterscheiden", "Schleifenläufe in einer Tabelle festhalten", "eine Ausgabe vor dem Ausführen begründen"],
   "competencyIds": ["c-python-reading"],
   "requires": ["c-python-basics"],
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 60,
   "blocks": [{ "blockId": "code-reading-core", "type": "worked-example", "contentRef": "lessons/foundations/code-reading.md" }],
   "sourceRefs": [
     { "sourceId": "py-tutorial-official-3.14", "role": "reference", "locator": "Kapitel 4: More Control Flow Tools" }

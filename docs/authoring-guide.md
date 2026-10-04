@@ -200,3 +200,58 @@ Fehlkonzept-Codes aus `feedbackRules`, die kein Grader-errorType abbildet.
 | `missing-before-hash` | Hash-/Commit-Artefakt ohne vorherigen Testbeleg | feedbackRule in `validate-rule-catalog-scan`; `x-git-workflow` |
 - Der Foundations-Vertragstest verlangt für jede Kompetenz ausreichend mastery-fähige Familienfälle gemäß `minimumDistinctDefinitions`.
 - Lokale Projekte deklarieren Starterdateien und das exakte erlaubte Kommando. Der Compiler prüft Projektidentität, Pfade und Testdatei-Hashes. Projekt-Reports bleiben Selbstberichte ohne Mastery-Evidence.
+
+## 9. Lektionstexte: verständlich, anschaulich, ehrlich
+
+Gilt für jedes Lektions-Markdown unter `content/lessons/`. Referenzlektion: `content/lessons/linear-algebra/matrices.md`. Zielgruppe: motivierte Erwachsene mit Schulmathematik bis etwa Klasse 10, ohne Studium. Alles darüber hinaus wird in der Lektion selbst erklärt.
+
+### Aufbau einer Konzeptlektion
+
+1. **Einstieg** (Text vor der ersten `##`-Überschrift, die UI zeigt ihn als hervorgehobenen Lead): zwei bis vier Sätze. Wo begegnet dir das Thema, besonders in KI, und welche Frage beantwortet die Lektion? Keine Definition, keine Display-Formel, keine Liste.
+2. **Das Bild dahinter** (`## Das Bild dahinter: …`): genau eine tragende Analogie, früh eingeführt und im Beispiel wieder aufgegriffen. Die Zuordnung steht explizit da (Element der Analogie ↔ mathematisches Objekt). Ein Satz „Wo der Vergleich hinkt: …“ benennt die Grenze. Darf mit dem ersten Konzeptabschnitt verschmelzen, wenn die Analogie die Definition selbst trägt (Referenzlektion).
+3. **Konzeptabschnitte**: ein neues Konzept pro Abschnitt, höchstens etwa 15 Zeilen. Konkretes Zahlenbeispiel vor der allgemeinen Formel.
+4. **Durchgerechnetes Beispiel** mit fett gesetzten Teilziel-Labels pro Schritt.
+5. **`## Wo dir das in der KI begegnet`**: konkreter Bezug zu ML oder LLMs, nachdem das Konzept steht. Nur belegbare Aussagen (siehe unten).
+6. **`## Typische Fehler`**: jeder Fehler mit halbem Satz, warum er falsch ist oder woran du ihn erkennst.
+7. Bestehende Abschluss-Abschnitte (`## Direkter Check`, `## Kurzer Abruf`, `## Projektstufe`) bleiben erhalten.
+8. **`## Begriffe auf einen Blick`** ist der letzte Abschnitt des Lektions-Markdowns. Format je Zeile: `- **Begriff** (englisch *term*): Definition.` Die Klammer entfällt, wenn der Begriff keinen gebräuchlichen englischen Namen hat oder gleich lautet. Derselbe Begriff trägt in allen Lektionen dieselbe Definition (Test erzwingt das). Diese Einträge sind die Vorstufe eines späteren Lexikons.
+
+Projekt- und Reflexionslektionen (`project-step`, `reflection`) folgen denselben Sprachregeln und tragen Einstieg, Analogie und Begriffsliste; Abschnitte 4 und 5 sind dort optional.
+
+### Begriffe und Symbole
+
+- Jeder Fachbegriff wird definiert, **bevor** er benutzt wird, und beim ersten Auftreten fett gesetzt. Keine Vorwärtsverweise wie „notiere die Shape“ vor der Erklärung von Shape.
+- Deutsch zuerst, wenn ein gängiger deutscher Fachbegriff existiert; den englischen Namen einmal in Klammern nennen, danach nur noch eine Variante verwenden. Wo das Feld auch auf Deutsch den englischen Begriff nutzt, bleibt er englisch und wird auf Deutsch erklärt.
+- Kanonische Wahl: Form (shape), Achse (axis), Eintrag (entry), Zeile/Spalte, Skalarprodukt (dot product), Matrixprodukt, elementweise Multiplikation, Dimensionsvertrag, Verlust (loss), Lernrate (learning rate), Merkmal (feature), Gewicht (weight), Ableitung (derivative), Gradient, Residuum, Überanpassung (overfitting), Zustand (state), Rückgabewert (return value). Englisch bleiben: Batch, Epoche, Broadcasting, Bias, Softmax, Attention, Query/Key/Value, Token, Embedding, Dropout, Commit, Branch, Diff, Merge.
+- „Dimension“ ist doppeldeutig (Anzahl der Achsen oder Länge einer Achse). Die Lektion sagt jedes Mal, welche Bedeutung gemeint ist.
+- Jedes Symbol über Klasse-10-Niveau wird beim ersten Auftreten in der Lektion in Worten vorgelesen und mit einem Mini-Beispiel ausgeschrieben, auch wenn eine frühere Lektion es schon erklärt hat. Betroffen sind unter anderem $\sum$, $\prod$, $\in$, $\mathbb{R}^{m\times n}$, $^\top$, $\partial$, $\nabla$, $\|w\|$, $\lceil\cdot\rceil$, $\lfloor\cdot\rfloor$, $\leftarrow$, $\hat{y}$, $\bar{y}$, $\log$, $e^x$, griechische Buchstaben und Doppelindizes wie $a_{ij}$.
+
+### Analogien
+
+- Die Analogie muss die Struktur erhalten: Was in ihr passiert, passiert auch mathematisch (Bestellmenge mal Preis summiert über Produkte = Skalarprodukt). Rein atmosphärische Vergleiche sind verboten.
+- Alltagsnah und kurz: höchstens etwa acht Sätze, keine Geschichte mit Namen und Nebenhandlung, die vom Konzept ablenkt.
+- Keine Analogie, die eine falsche Vorstellung erzeugt (Python-Variable als Kiste statt als Namensschild).
+- Zahlen in der Analogie sind nachrechenbar und stimmen.
+
+### Mathe-Satz und Typografie
+
+- Display-Formeln (`$$…$$`) stehen als eigener Absatz nach einem vollständigen Satz, meist mit Doppelpunkt oder als Satzende. Ein Satz läuft nie über eine Display-Formel hinweg weiter; der Text danach beginnt einen neuen Satz (Test erzwingt das).
+- Kurze Ausdrücke inline mit `$…$`. Funktionsnamen als Operator: `\log`, `\max`, `\operatorname{sign}`. Wörter in Formeln mit `\text{…}`.
+- Dezimalkomma als `{,}`.
+- Keine Gedankenstriche (— oder –) im Fließtext: Satz teilen oder Doppelpunkt/Komma verwenden. Bereiche als „0 bis 130“.
+- Keine Kommaspleiße: Zwei vollständige Hauptsätze trennt ein Punkt, ein Doppelpunkt oder ein Semikolon, kein Komma („Die Gradienten schrumpfen. Dort sind beide null.“ statt „…, dort sind beide null.“).
+- Fett nur für Begriffe an ihrer Definitionsstelle und für Teilziel-Labels.
+- du-Form, aktiv, kurze Sätze, freundlich ohne Floskeln, kein Hype.
+
+### Lexikon
+
+- Das Lexikon (`#/glossary`) wird beim Content-Compile aus den Abschnitten „Begriffe auf einen Blick“ aller Lektionen erzeugt. Es gibt keine zweite Quelle: Wer einen Begriff ändert, ändert ihn in der Lektion, und gleichnamige Einträge müssen wortgleich sein.
+- Die Begriffs-ID ist der Begriff in Kleinbuchstaben, Umlaute als ae/oe/ue/ss, alles andere als `-` (z. B. `Bias (Schicht)` → `bias-schicht`). IDs sind Linkziele; einen Begriff umzubenennen bricht Links.
+- Verlinke in einer Lektion das erste Vorkommen eines Begriffs, den eine **andere** Lektion definiert und den diese Lektion nicht selbst in ihrer Begriffsliste führt: `[Skalarprodukte](#/glossary/skalarprodukt)`. Der Linktext darf gebeugt sein. Höchstens etwa acht solcher Links pro Lektion; nicht im Einstieg, nicht in Überschriften, Code, Formeln oder der Begriffsliste. In der Lektion öffnet der Link eine Kurzdefinition, ohne die Seite zu verlassen.
+
+### Ehrlichkeit und Konsistenz
+
+- „Wo dir das in der KI begegnet“ nennt nur nachprüfbare Fakten. Konkrete Modellzahlen nur, wenn sie öffentlich dokumentiert sind (z. B. GPT-2 small: 768 Zahlen pro Token, 12 Schichten, rund 124 Millionen Parameter). Im Zweifel qualitativ formulieren.
+- Jede Fertigkeit, die eine kuratierte Aufgabe der Lektion verlangt, wird in der Lektion erklärt.
+- Das durchgerechnete Beispiel löst nie eine verlinkte oder kuratierte Aufgabeninstanz vorweg.
+- Links unter „Direkter Check“ behalten ihr Ziel; nur der Linktext darf sich ändern.

@@ -7,6 +7,7 @@ import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import { sanitizePublicValue } from './public_content.mjs';
 import { renderMarkdown } from './markdown_content.mjs';
+import { buildGlossary } from './glossary_content.mjs';
 import { compileExpression, compileTemplate } from '../assets/js/domain/expression_eval.mjs';
 import { validateCompetencyGraph } from '../assets/js/domain/competency_graph.mjs';
 import { assertFamilyPlacement, configureExerciseFamilies, EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
@@ -281,7 +282,8 @@ function assertUniqueCheckpoints(lessons) {
   }
 }
 
-function compileLessonContent(contentRoot, lessons, projectRoot, families) {
+function compileLessonContent(contentRoot, lessons, projectRoot, families, markdownSources = new Map()) {
+  for (const lesson of lessons) markdownSources.set(lesson.lessonId, []);
   const visualizationIds = new Map();
   return lessons.map((lesson) => ({
     ...lesson,
@@ -301,12 +303,27 @@ function compileLessonContent(contentRoot, lessons, projectRoot, families) {
       }
       if (!block.contentRef.endsWith('.md')) throw new Error(`${lesson.lessonId}: Content-Referenz muss auf Markdown oder .viz.json zeigen`);
       const source = readFileSync(resolveContentPath(contentRoot, block.contentRef, ['.md']), 'utf8');
+      markdownSources.get(lesson.lessonId)?.push(source);
       const html = renderMarkdown(source)
         .replace(/^<h1>[^<]*<\/h1>\n/, '');
       validateLessonExerciseLinks(lesson.lessonId, html, families);
       return { ...block, html };
     }),
   }));
+}
+
+// Fail-closed: every `#/glossary/<id>` link in lesson markup must resolve
+// to a term id built from the glossary sections (§9 „Lexikon").
+export function validateGlossaryLinks(lessons, glossary) {
+  const ids = new Set(glossary.map((entry) => entry.termId));
+  for (const lesson of lessons) {
+    for (const block of lesson.blocks) {
+      if (typeof block.html !== 'string') continue;
+      for (const match of block.html.matchAll(/href="#\/glossary\/([^"]*)"/g)) {
+        if (!ids.has(match[1])) throw new Error(`${lesson.lessonId}: Unbekannter Glossarbegriff #/glossary/${match[1]}`);
+      }
+    }
+  }
 }
 
 export function validateLessonExerciseLinks(lessonId, html, families) {
@@ -922,7 +939,13 @@ function attachSourceModuleUsage(entities) {
 
 function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion, entities) {
   entities.learningModules = entities.learningModules.map((module) => compileLearningModule(module, { lessons: entities.lessons, definitions: [], projects: entities.projects }));
-  entities.lessons = compileLessonContent(contentRoot, entities.lessons, projectRoot, entities.families);
+  const markdownSources = new Map();
+  entities.lessons = compileLessonContent(contentRoot, entities.lessons, projectRoot, entities.families, markdownSources);
+  const glossary = buildGlossary(entities.lessons.map((lesson) => ({
+    lessonId: lesson.lessonId,
+    markdownSources: markdownSources.get(lesson.lessonId) || [],
+  })));
+  validateGlossaryLinks(entities.lessons, glossary);
   attachSourceModuleUsage(entities);
   const familyActivities = buildFamilyActivities(entities.learningModules, entities.families);
   const visualizations = entities.lessons.flatMap((lesson) => lesson.blocks
@@ -933,6 +956,7 @@ function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion
     profile: 'public', locale: catalog.locale, overlays: [], sourceRights: entities.sourceRights, sources: entities.sources,
     competencies: entities.competencies, tracks: entities.tracks, milestones: entities.milestones, tools: entities.tools,
     lessons: entities.lessons, visualizations, familyActivities, explanations: entities.explanations, projects: entities.projects,
+    glossary,
     learningModules: entities.learningModules, families: entities.families,
   };
 }
@@ -1017,11 +1041,12 @@ const SECTION_FIELDS = {
   sources: 'sources',
   tools: 'tools',
   visualizations: 'visualizations',
+  glossary: 'glossary',
 };
 
 export function buildSplitArtifacts(bundle) {
-  const { sources, tools, visualizations, ...lightBundle } = bundle;
-  const sections = { sources: { sources }, tools: { tools }, visualizations: { visualizations } };
+  const { sources, tools, visualizations, glossary, ...lightBundle } = bundle;
+  const sections = { sources: { sources }, tools: { tools }, visualizations: { visualizations }, glossary: { glossary } };
   const index = {
     ...lightBundle,
     lessons: bundle.lessons.map((lesson) => ({ ...lesson, blocks: [] })),

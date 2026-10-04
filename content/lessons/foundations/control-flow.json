@@ -7,7 +7,7 @@
   "objectives": ["Bedingungen als Wahrheitsfragen formulieren", "for und while passend auswählen", "Abbruch und Fortschritt einer Schleife prüfen"],
   "competencyIds": ["c-python-control-flow"],
   "requires": ["c-python-basics"],
-  "estimatedMinutes": 45,
+  "estimatedMinutes": 75,
   "blocks": [
     { "blockId": "control-flow-core", "type": "worked-example", "contentRef": "lessons/foundations/control-flow.md" },
     { "blockId": "control-flow-viz", "type": "visualization", "contentRef": "lessons/foundations/threshold-branch.viz.json" }

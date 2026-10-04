@@ -143,6 +143,19 @@ const escapeHtml = (text) => text
   .replace(/</g, '&lt;')
   .replace(/>/g, '&gt;');
 
+// Same math protection as renderMarkdown, but inline: markdown-it's
+// renderInline emits no wrapping <p> — used for one-line strings like
+// glossary definitions.
+export function renderInlineMarkdown(source) {
+  if (typeof source !== 'string') throw new TypeError('Markdown muss ein String sein');
+  const { masked, segments } = extractMath(source);
+  const html = markdown.renderInline(masked);
+  return html.replace(/zzMATHSEGMENT(\d+)zz/g, (match, id) => {
+    const segment = segments[Number(id)];
+    return segment === undefined ? match : escapeHtml(segment);
+  });
+}
+
 export function renderMarkdown(source) {
   if (typeof source !== 'string') throw new TypeError('Markdown muss ein String sein');
   const { masked, segments } = extractMath(source);

@@ -38,11 +38,12 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
 - **Üben, bis es sitzt.** Konzeptfragen, Mehrfachauswahl, Fehlerdiagnose, Coding, Ablauf, Parsons, Vektor, Lücken in Musterlösungen: neuer Seed, neu erzeugte Aufgabe. Gleicher Seed, gleiche Aufgabe.
 - **Visualisierungen, die zurückfragen.** Jede interaktive Grafik endet mit einer Vorhersage-Aufgabe — erst schätzen, dann prüfen.
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
+- **Lexikon mit Kurzdefinitionen.** Fachbegriffe sind in den Lektionen verlinkt; ein Klick öffnet die Definition direkt im Text, ohne die Seite zu verlassen.
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
 - **Tägliche Challenge.** Jeden Tag ein festes Set schwerer, mehrstufiger Aufgaben aus deinen aktiven Modulen — deterministisch gezogen, ohne Wiederholung im Fenster, mit Serie für aufeinanderfolgende Tage.
 - **Läuft offline.** Nach dem ersten Laden funktioniert die komplette App ohne Internet — Lektionen, Aufgaben, Prüfung, Fortschritt. Wer Python-Aufgaben unterwegs lösen will, holt sich in den Einstellungen über „Offline-Paket laden" die Laufzeit vorab aufs Gerät.
 
-Was seit 0.8.x neu ist, steht im [Changelog](CHANGELOG.md).
+Was seit 0.9.x neu ist, steht im [Changelog](CHANGELOG.md).
 
 ## In Arbeit / Geplant
 

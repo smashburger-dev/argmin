@@ -18,9 +18,9 @@ Bevor Dokumente vergleichbar sind, wird Text normalisiert. Für diese Plattform 
 
 Daraus entsteht der Index: ein Vokabular (sortierte Termmenge) plus eine Matrix $M \in \mathbb{R}^{n \times |V|}$, eine Zeile pro Chunk. TF-IDF gewichtet jeden Term:
 
-$$\mathrm{tfidf}(t, d) = \frac{\mathrm{tf}(t,d)}{|d|} \cdot \left(\log\frac{n+1}{\mathrm{df}(t)+1} + 1\right)$$
+$$\mathrm{tfidf}(t, d) = \frac{\mathrm{tf}(t,d)}{|d|} \cdot \left(\log\frac{n+1}{\mathrm{df}(t)+1} + 1\right).$$
 
-mit $\mathrm{df}(t)$ = Anzahl Dokumente, die $t$ enthalten. Das +1 verhindert Division durch null; überall vorkommende Terme (df = n) fallen dabei nicht auf Gewicht null, sondern werden auf das idf-Floor 1 gesenkt — das Gewicht wird also deutlich reduziert, bleibt aber positiv. Ob TF-IDF-Kosinus oder Bag-of-Words-Kosinus: beides ist eine **deterministische Baseline** — genau das willst du zuerst, bevor du an Embeddings denkst.
+Dabei ist $\mathrm{df}(t)$ die Anzahl der Dokumente, die $t$ enthalten. Das +1 verhindert Division durch null; überall vorkommende Terme (df = n) fallen dabei nicht auf Gewicht null, sondern werden auf das idf-Floor 1 gesenkt — das Gewicht wird also deutlich reduziert, bleibt aber positiv. Ob TF-IDF-Kosinus oder Bag-of-Words-Kosinus: beides ist eine **deterministische Baseline** — genau das willst du zuerst, bevor du an Embeddings denkst.
 
 ## Ranking, top-k und Tie-Break
 
@@ -36,11 +36,11 @@ Ein **Golden Set** ist eine feste Liste von Testanfragen mit von Menschen markie
 
 $$\mathrm{Recall}@k = \frac{|\,\text{top-}k \cap \text{relevant}\,|}{|\text{relevant}|}$$
 
-— wie viel der relevanten Dokumente überhaupt im Rückgabefenster landet. Und der Mean Reciprocal Rank: für jede Anfrage der Kehrwert der Position des *ersten* relevanten Dokuments,
+— wie viel der relevanten Dokumente überhaupt im Rückgabefenster landet. Und der Mean Reciprocal Rank: für jede Anfrage der Kehrwert der Position des *ersten* relevanten Dokuments:
 
-$$\mathrm{MRR} = \frac{1}{|Q|}\sum_{q \in Q} \frac{1}{\mathrm{rank}_q},$$
+$$\mathrm{MRR} = \frac{1}{|Q|}\sum_{q \in Q} \frac{1}{\mathrm{rank}_q}.$$
 
-— wie schnell ein relevantes Dokument oben steht. Beide Metriken bewerten ausschließlich das Ranking. Ob die daraufhin geformte Antwort gut ist, ist eine zweite, getrennte Evaluation (Lektion „Evaluation generativer Antworten“).
+Er misst, wie schnell ein relevantes Dokument oben steht. Beide Metriken bewerten ausschließlich das Ranking. Ob die daraufhin geformte Antwort gut ist, ist eine zweite, getrennte Evaluation (Lektion „Evaluation generativer Antworten“).
 
 ## Warum die Trennung zählt
 

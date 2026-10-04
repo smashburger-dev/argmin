@@ -18,13 +18,13 @@ Eine **Baseline** ist die billigste sinnvolle Vorhersage. Sie legt den Boden fes
 - **Majority-Baseline** (Klassifikation): Sage immer die häufigste Klasse vorher.
 - **Mean-Baseline** (Regression): Sage immer den Mittelwert des Trainingsziels vorher.
 
-Durchgerechnetes Beispiel: Ein Datensatz hat 60 Beispiele „Defekt“, 90 „Verschleiß“ und 30 „in Ordnung“, insgesamt 180. Die häufigste Klasse ist „Verschleiß“ mit 90 Treffern. Die Majority-Baseline liegt damit bei
+Durchgerechnetes Beispiel: Ein Datensatz hat 60 Beispiele „Defekt“, 90 „Verschleiß“ und 30 „in Ordnung“, insgesamt 180. Die häufigste Klasse ist „Verschleiß“ mit 90 Treffern. Die Majority-Baseline liegt damit bei 50 %:
 
 $$
 \frac{90}{180} = 0{,}5
 $$
 
-und macht 90 Fehler. Jedes Modell, das nicht klar über 50 % liegt, lernt nichts Nützliches.
+Sie macht 90 Fehler. Jedes Modell, das nicht klar über 50 % liegt, lernt nichts Nützliches.
 
 ## Deterministischer Train/Test-Split
 

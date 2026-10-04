@@ -6,19 +6,39 @@
   "title": "Sigmoid auswerten und Labels setzen",
   "objectives": [
     "die Sigmoid-Funktion auswerten und Wahrscheinlichkeiten mit einem Schwellenwert in Labels überführen",
-    "Precision, Recall und F1 aus einer Konfusionsmatrix berechnen",
-    "den Schwellenwert an den Fehlerkosten von False Positive und False Negative ausrichten"
+    "Präzision, Recall und F1 aus einer Konfusionsmatrix berechnen",
+    "den Schwellenwert an den Fehlerkosten von falsch positiv und falsch negativ ausrichten"
   ],
-  "competencyIds": ["c-ml-logistic"],
-  "requires": ["c-ml-linear"],
-  "estimatedMinutes": 55,
+  "competencyIds": [
+    "c-ml-logistic"
+  ],
+  "requires": [
+    "c-ml-linear"
+  ],
+  "estimatedMinutes": 65,
   "blocks": [
-    { "blockId": "ml-logistic-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-logistic.md" },
-    { "blockId": "ml-logistic-viz", "type": "visualization", "contentRef": "lessons/data-ml/sigmoid-threshold.viz.json" }
+    {
+      "blockId": "ml-logistic-core",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/ml-logistic.md"
+    },
+    {
+      "blockId": "ml-logistic-viz",
+      "type": "visualization",
+      "contentRef": "lessons/data-ml/sigmoid-threshold.viz.json"
+    }
   ],
   "sourceRefs": [
-    { "sourceId": "openintro-statistics", "role": "primary", "locator": "Ch 9 Multiple and Logistic Regression" },
-    { "sourceId": "sklearn-user-guide", "role": "practice", "locator": "Logistic Regression + Classification metrics — nur Lektüre" }
+    {
+      "sourceId": "openintro-statistics",
+      "role": "primary",
+      "locator": "Ch 9 Multiple and Logistic Regression"
+    },
+    {
+      "sourceId": "sklearn-user-guide",
+      "role": "practice",
+      "locator": "Logistic Regression + Classification metrics — nur Lektüre"
+    }
   ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"

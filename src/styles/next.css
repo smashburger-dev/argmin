@@ -667,3 +667,28 @@ main:focus { outline: none; }
 @media (max-width: 460px) {
   .update-banner { left: var(--s3); justify-content: space-between; flex-wrap: wrap; }
 }
+
+/* Glossary (§9 „Lexikon"): list view, letter groups, and the lesson popover. */
+.glossary-view .search-field { display: block; margin-bottom: var(--s5); }
+.glossary-filter span { display: block; margin-bottom: var(--s1); font-size: 13px; font-weight: 600; color: var(--text-3); }
+.glossary-filter input { width: min(28rem, 100%); padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font: inherit; }
+.glossary-letter { margin: var(--s6) 0 var(--s2); padding-bottom: var(--s1); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--text-3); text-transform: uppercase; }
+.glossary-entry { margin-bottom: var(--s4); padding: var(--s4); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.glossary-entry.is-target { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent); }
+.glossary-entry > h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2); margin: 0 0 var(--s2); font-size: 17px; }
+.glossary-entry > h3:focus { outline: none; }
+.glossary-english { font-size: 13px; font-weight: 400; color: var(--text-3); }
+.glossary-entry p, .glossary-definition { margin: 0 0 var(--s2); }
+.glossary-source { font-size: 13px; color: var(--text-3); }
+
+.glossary-popover { position: fixed; z-index: 60; width: min(22rem, calc(100vw - 24px)); padding: var(--s4); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-md); animation: glossary-popover-in 140ms ease-out; }
+.glossary-popover h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2); margin: 0 var(--s6) var(--s2) 0; font-size: 16px; }
+.glossary-popover p, .glossary-popover .glossary-definition { margin: 0 0 var(--s3); }
+.glossary-popover-close { position: absolute; top: var(--s2); right: var(--s2); width: auto; left: auto; }
+@keyframes glossary-popover-in { from { opacity: 0; transform: translateY(4px); } }
+@media (max-width: 640px) {
+  .glossary-popover { position: fixed; top: auto !important; right: 0; bottom: 0; left: 0 !important; width: auto; max-height: 55vh; overflow-y: auto; border-radius: var(--radius) var(--radius) 0 0; padding-bottom: calc(var(--s4) + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glossary-popover { animation: none; }
+}

@@ -8,9 +8,9 @@ Ein vortrainiertes Modell an eine Aufgabe anpassen — dafür gibt es drei Stand
 2. **Full Fine-Tuning**: Alle Parameter werden aktualisiert. Maximale Flexibilität, maximale Kosten — und für jede Aufgabenvariante ein eigener Modellkörper (bei der 175-Milliarden-Parameter-Klasse: unpraktisch, wie das LoRA-Paper argumentiert).
 3. **LoRA (Low-Rank Adaptation)**: Der Rumpf bleibt eingefroren; in jede Schicht wird eine trainierbare Rang-$r$-Zerlegung injiziert:
 
-$$W' = W + \Delta W, \qquad \Delta W = \frac{\alpha}{r}\,BA$$
+$$W' = W + \Delta W, \qquad \Delta W = \frac{\alpha}{r}\,BA.$$
 
-mit $B \in \mathbb{R}^{d_{\text{out}}\times r}$, $A \in \mathbb{R}^{r\times d_{\text{in}}}$, Rang $r \ll \min(d_{\text{in}}, d_{\text{out}})$. $\alpha/r$ ist eine feste Skalierung. Beim Einsatz wird $\Delta W$ einmal in $W$ eingerechnet — **keine zusätzliche Inferenzzeit** (der wesentliche Unterschied zu Adapter-Schichten).
+Dabei hat $B$ die Form $d_{\text{out}}\times r$ und $A$ die Form $r\times d_{\text{in}}$, mit Rang $r \ll \min(d_{\text{in}}, d_{\text{out}})$. $\alpha/r$ ist eine feste Skalierung. Beim Einsatz wird $\Delta W$ einmal in $W$ eingerechnet — **keine zusätzliche Inferenzzeit** (der wesentliche Unterschied zu Adapter-Schichten).
 
 ## Parameter zählen statt behaupten
 

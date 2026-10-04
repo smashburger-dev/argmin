@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'preact/hooks';
-import type { CatalogData } from '../app/types';
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import type { CatalogData, GlossaryEntry } from '../app/types';
+import { loadGlossary } from '../adapters/content-repository';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { learnerExerciseLabel, minutesLabel } from './learner-labels';
 import { MathMarkup } from './MathMarkup';
@@ -30,6 +31,12 @@ function collect<T>(items: T[], map: (item: T) => SearchHit | null): { hits: Sea
 
 export function SearchView({ catalog }: { catalog: CatalogData }) {
   const [query, setQuery] = useState('');
+  const [glossary, setGlossary] = useState<GlossaryEntry[]>([]);
+  useEffect(() => {
+    let live = true;
+    loadGlossary().then((all) => { if (live) setGlossary(all); }).catch(() => {});
+    return () => { live = false; };
+  }, []);
   const needle = query.trim().toLocaleLowerCase('de');
   const groups = useMemo(() => {
     if (needle.length < MIN_QUERY_LENGTH) return [];
@@ -41,6 +48,20 @@ export function SearchView({ catalog }: { catalog: CatalogData }) {
         ...collect(catalog.competencies, (competency) => matches(competency.title, competency.description)
           ? { id: competency.competencyId, href: `#/competency/${competency.competencyId}`, title: competency.title, detail: competency.description }
           : null),
+      },
+      {
+        label: 'Begriffe',
+        ...collect(glossary, (entry) => {
+          const plain = entry.definitionHtml.replace(/<[^>]+>/g, ' ');
+          if (!matches(entry.term.replace(/<[^>]+>/g, ' '), entry.english ?? undefined, plain)) return null;
+          return {
+            id: entry.termId,
+            href: `#/glossary/${entry.termId}`,
+            title: entry.term.replace(/<[^>]+>/g, ' '),
+            detail: entry.definitionHtml,
+            detailMarkup: true,
+          };
+        }),
       },
       {
         label: 'Module',
@@ -79,7 +100,7 @@ export function SearchView({ catalog }: { catalog: CatalogData }) {
           : null),
       },
     ].filter((group) => group.total > 0);
-  }, [catalog, needle]);
+  }, [catalog, glossary, needle]);
   const total = groups.reduce((sum, group) => sum + group.total, 0);
   const shown = groups.reduce((sum, group) => sum + group.hits.length, 0);
   return (

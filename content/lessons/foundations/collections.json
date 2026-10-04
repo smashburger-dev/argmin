@@ -7,7 +7,7 @@
   "objectives": ["Liste, Dictionary und Set über ihren Zugriff unterscheiden", "Häufigkeiten mit einem Dictionary zählen", "Duplikate mit einem Set erkennen"],
   "competencyIds": ["c-python-collections"],
   "requires": ["c-python-control-flow"],
-  "estimatedMinutes": 45,
+  "estimatedMinutes": 70,
   "blocks": [
     { "blockId": "collections-core", "type": "worked-example", "contentRef": "lessons/foundations/collections.md" },
     { "blockId": "collections-viz", "type": "visualization", "contentRef": "lessons/foundations/running-sum.viz.json" }

@@ -11,6 +11,7 @@ import { VisualizationView } from './VisualizationView';
 import { ProgressView } from './ProgressView';
 import { TodayView } from './TodayView';
 import { SearchView } from './SearchView';
+import { GlossaryView } from './GlossaryView';
 import { Button } from './Button';
 import { BrandWordmark } from './Brand';
 import { SponsorSlots } from './Sponsor';
@@ -83,6 +84,11 @@ const navigation: NavigationItem[] = [
     ),
   },
   {
+    route: 'glossary', label: 'Lexikon', secondary: true, icon: (
+      <svg {...iconProps}><path d="M4 12.5V3.8A1.3 1.3 0 0 1 5.3 2.5H13v11H5.3a1.3 1.3 0 0 0-1.3 1.3zM4 12.5A1.3 1.3 0 0 0 5.3 13.8H13" /><path d="M7 5.5h4M7 8h4" /></svg>
+    ),
+  },
+  {
     route: 'tools', label: 'Werkzeuge', secondary: true, icon: (
       <svg {...iconProps}><path d="M10.2 2.6a3.2 3.2 0 0 0-4.3 4L2.5 9.9l3.6 3.6 3.3-3.4a3.2 3.2 0 0 0 4-4.3L11 8.4 7.6 5z" /></svg>
     ),
@@ -116,6 +122,7 @@ const routeTitles: Record<string, string> = {
   settings: 'Einstellungen',
   diagnostic: 'Diagnose',
   sources: 'Lektüren',
+  glossary: 'Lexikon',
   tools: 'Werkzeuge',
   search: 'Suche',
   visualization: 'Visualisierung',
@@ -346,6 +353,7 @@ export function App() {
               : section === 'sources' ? <SourcesView catalog={catalog} />
                 : section === 'tools' ? <ToolsView catalog={catalog} />
                   : section === 'search' ? <SearchView catalog={catalog} />
+                  : section === 'glossary' ? <GlossaryView catalog={catalog} termId={routeId || undefined} />
                   : section === 'visualization' ? <VisualizationView visualizationId={routeId} />
                 : section === 'module' ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Modul wird geladen</h1></section>}><ModuleView key={routeId} catalog={catalog} moduleId={routeId} progress={progress} /></Suspense>
                 : section === 'family' ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Variante wird geladen</h1></section>}><FamilyExerciseView key={familyRef} catalog={catalog} familyRef={familyRef} /></Suspense>

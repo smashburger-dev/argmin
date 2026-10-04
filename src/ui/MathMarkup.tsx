@@ -59,6 +59,11 @@ export function MathMarkup({ html, inline = false }: { html: string; inline?: bo
         ],
         throwOnError: false,
       });
+      // Horizontally scrollable display formulas must be keyboard reachable
+      // (WCAG scrollable-region-focusable); only mark actual overflowers.
+      root.current?.querySelectorAll<HTMLElement>('.katex-display').forEach((el) => {
+        if (el.scrollWidth > el.clientWidth) el.tabIndex = 0;
+      });
     });
     return () => { active = false; };
   }, [html]);

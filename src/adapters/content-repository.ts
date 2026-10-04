@@ -1,6 +1,6 @@
 import contentIndex from '@content-index';
 import { familyChunks, lessonChunks, sectionChunks } from '@content-chunks';
-import type { CatalogData, ExerciseSummary, LearningModule, Lesson, SourceSummary, ToolCard, VisualizationSummary } from '../app/types';
+import type { CatalogData, ExerciseSummary, GlossaryEntry, LearningModule, Lesson, SourceSummary, ToolCard, VisualizationSummary } from '../app/types';
 
 // ContentRepository (ADR-0013): the initial bundle carries only the catalog
 // index (competencies, tracks, milestones, summaries). Lesson and exercise
@@ -45,6 +45,7 @@ interface SectionIndex {
   sources: { sources: SourceSummary[] };
   tools: { tools: ToolCard[] };
   visualizations: { visualizations: VisualizationSummary[] };
+  glossary: { glossary: GlossaryEntry[] };
 }
 
 type LessonBody = { lessonId: string; blocks: Lesson['blocks'] };
@@ -159,6 +160,9 @@ export async function loadTools(): Promise<ToolCard[]> {
 }
 export async function loadVisualizations(): Promise<VisualizationSummary[]> {
   return (await sectionFile('visualizations')).visualizations;
+}
+export async function loadGlossary(): Promise<GlossaryEntry[]> {
+  return (await sectionFile('glossary')).glossary;
 }
 
 export async function getVisualization(visualizationId: string): Promise<VisualizationSummary> {

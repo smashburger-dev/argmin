@@ -6,11 +6,9 @@ Explorative Datenanalyse (EDA) beginnt mit der Frage, nicht mit dem Diagramm. Er
 
 Ein **Histogramm** zählt, wie viele Werte in jede Kante fallen. Die Kanten definieren halboffene Intervalle $[e_0, e_1), [e_1, e_2), \dots$ — nur das letzte Intervall schließt die rechte Kante ein: $[e_{k-1}, e_k]$.
 
-Durchgerechnet mit `np.histogram` für die Messwerte
+Durchgerechnet mit `np.histogram` für die Kanten $[0, 4, 9]$ und die Messwerte:
 
 $$x = (2,\ 4,\ 4,\ 4,\ 5,\ 5,\ 7,\ 9)$$
-
-und Kanten $[0, 4, 9]$:
 
 - Bin 1 ist $[0, 4)$: nur der Wert 2 fällt hinein (4 zählt noch nicht) $\Rightarrow$ 1 Wert.
 - Bin 2 ist $[4, 9]$: die Werte $4, 4, 4, 5, 5, 7, 9 \Rightarrow$ 7 Werte.
