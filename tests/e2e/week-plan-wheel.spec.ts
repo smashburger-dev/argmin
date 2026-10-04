@@ -27,6 +27,10 @@ test('week plan hands vertical scroll back to the page at its right edge', async
   const track = page.getByRole('list', { name: 'Wochenplan-Tage' });
   await expect(track).toBeVisible();
   await track.evaluate((element) => { element.scrollLeft = element.scrollWidth; });
+  // The week plan is the last section on /today: whether scrolling it into
+  // view leaves room below depends on font metrics and card heights. Reserve
+  // space under the body so the wheel always has page left to scroll.
+  await page.addStyleTag({ content: 'body { padding-block-end: 90vh; }' });
   await track.hover();
   const pageStart = await page.evaluate(() => window.scrollY);
   await page.mouse.wheel(0, 400);
