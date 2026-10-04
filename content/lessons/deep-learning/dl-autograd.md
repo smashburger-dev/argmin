@@ -6,7 +6,7 @@ Backpropagation ist kein Zauber, sondern die Kettenregel, organisiert als Durchl
 
 Gilt $1\ \text{€} = 1{,}10\ \text{\$}$ und $1\ \text{\$} = 150\ \text{¥}$, dann ist $1\ \text{€} = 165\ \text{¥}$: Die Kurse multiplizieren sich entlang des Wegs. Genau so arbeitet die **Kettenregel**: Der Anteil eines frühen Gewichts am Verlust ist das Produkt der lokalen Kurse entlang des Pfades.
 
-Gabelt sich der Weg (stell dir zwei Einkommensquellen vor, die beide von deinen Arbeitsstunden abhängen), addieren sich die Beiträge. Der **Upstream-Gradient** ist dabei „was ein Dollar am Ende in Yen wert ist": der [Gradient](#/glossary/gradient), der von der Ausgabe her ankommt.
+Gabelt sich der Weg (stell dir zwei Einkommensquellen vor, die beide von deinen Arbeitsstunden abhängen), addieren sich die Beiträge. Der **Upstream-Gradient** ist dabei „was ein Dollar am Ende in Yen wert ist“: der [Gradient](#/glossary/gradient), der von der Ausgabe her ankommt.
 
 Wo der Vergleich hinkt: Wechselkurse sind fest; Ableitungen gelten nur am aktuellen Punkt und ändern sich mit den Werten.
 

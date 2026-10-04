@@ -69,7 +69,7 @@ Viele große Sprachmodelle wurden mit Warmup und anschließendem Cosine-Abfall d
 - Skalierungsstatistiken aus Trainings- und Validierungsdaten gemeinsam berechnen, [Leakage](#/glossary/leakage), wie in der Lektion [Folds erzeugen und Leakage finden](#/lesson/l-ml-cv) gezeigt.
 - Schritte statt Epochen zählen und Werte nicht vergleichbar machen.
 - BCE ohne Clipping auf Wahrscheinlichkeiten $0$ oder $1$ fahren.
-- Ohne festen Seed zwei Läufe „vergleichen".
+- Ohne festen Seed zwei Läufe „vergleichen“.
 
 ## Direkter Check
 

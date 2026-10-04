@@ -7,7 +7,7 @@
   "objectives": [
     "Reproduktion als Doppellauf mit Digest-Vergleich über der kanonischen Serialisierung prüfen und Versionen exakt statt als Bereichs-Spec pinnen",
     "Dokumentation mit Pflichtüberschriften, ohne Overclaims und ohne absolute Pfade des eigenen Rechners verlangen",
-    "Demo und Berichte als Work Evidence von Mastery unterscheiden und die Grenze des selbstberichteten Nachweises offenlegen"
+    "Demo und Berichte als Arbeitsnachweise von Mastery unterscheiden und die Grenze des selbstberichteten Nachweises offenlegen"
   ],
   "competencyIds": [
     "c-capstone-pipeline"

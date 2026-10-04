@@ -20,7 +20,7 @@ Diese Form, Weight Decay, zieht die Gewichte in jedem Schritt proportional zu ih
 
 ## Dropout mit fester Maske
 
-Dropout nullt zufällig Aktivierungen und trainiert so Redundanz. Kontrolliert und reproduzierbar wird es durch eine **feste Maske**, gezogen vor dem Schritt: $M \in \{0, 1\}^{n}$ mit $P(M_i = 1) = p$. Achtung zur Konvention: Hier ist $p$ die **Behaltewahrscheinlichkeit**, so wie in der Code-Aufgabe `dropout_forward`. In PyTorch (`nn.Dropout(p)`) und in manchen Konzeptfragen ist $p$ dagegen die Ausfallwahrscheinlichkeit; eine Vertauschung macht aus „behalte 80 %" ein „behalte 20 %".
+Dropout nullt zufällig Aktivierungen und trainiert so Redundanz. Kontrolliert und reproduzierbar wird es durch eine **feste Maske**, gezogen vor dem Schritt: $M \in \{0, 1\}^{n}$ mit $P(M_i = 1) = p$. Achtung zur Konvention: Hier ist $p$ die **Behaltewahrscheinlichkeit**, so wie in der Code-Aufgabe `dropout_forward`. In PyTorch (`nn.Dropout(p)`) und in manchen Konzeptfragen ist $p$ dagegen die Ausfallwahrscheinlichkeit; eine Vertauschung macht aus „behalte 80 %“ ein „behalte 20 %“.
 
 Invertierte Skalierung heißt: Erhaltene Aktivierungen werden mit $1/p$ multipliziert:
 
@@ -57,7 +57,7 @@ Der ursprüngliche Transformer nutzte Dropout mit Rate 0,1. Trainingsläufe spei
 - Dropout ohne Skalierung oder mit Skalierung zur falschen Zeit (Inferenz).
 - Weight Decay auf den Bias anwenden.
 - Early Stopping auf dem Trainingsverlust statt auf Validierung.
-- Zustände speichern, aber Seeds vergessen, dann ist „geladen" nicht „reproduziert".
+- Zustände speichern, aber Seeds vergessen, dann ist „geladen“ nicht „reproduziert“.
 
 ## Direkter Check
 

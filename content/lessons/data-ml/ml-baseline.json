@@ -11,7 +11,7 @@
   ],
   "competencyIds": ["c-ml-baseline"],
   "requires": ["c-pandas-cleaning", "c-eda-viz"],
-  "estimatedMinutes": 50,
+  "estimatedMinutes": 60,
   "blocks": [
     { "blockId": "ml-baseline-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-baseline.md" }
   ],

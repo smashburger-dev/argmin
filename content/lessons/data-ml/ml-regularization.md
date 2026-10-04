@@ -10,7 +10,7 @@ Bei **Lasso** kostet jede Einheit Abstand von null eine feste Gebühr. Lohnt sic
 
 Wo der Vergleich hinkt: Das Gummiband zieht proportional zur Auslenkung, die Lasso-Gebühr ist pro Einheit konstant. Beide wirken nur auf die Koeffizienten, nicht auf die Daten, und beide brauchen einen Stellregler $\lambda$ (sprich: lambda), der die Strafhöhe setzt.
 
-**Regularisierung** heißt genau dieses Einengen der Freiheitsgrade: Ein **Hyperparameter** wie $\lambda$ wird nicht aus den Daten gelernt, sondern von dir vorgegeben. Im Austausch für etwas **Bias** (eine leichte Verzerrung der Vorhersage im Mittel) sinkt die [**Varianz**](#/glossary/varianz), die Wackeligkeit der Vorhersage. „Bias" meint hier die statistische Verzerrung, nicht den Bias-Term einer Schicht.
+**Regularisierung** heißt genau dieses Einengen der Freiheitsgrade: Ein **Hyperparameter** wie $\lambda$ wird nicht aus den Daten gelernt, sondern von dir vorgegeben. Im Austausch für etwas **Bias** (eine leichte Verzerrung der Vorhersage im Mittel) sinkt die [**Varianz**](#/glossary/varianz), die Wackeligkeit der Vorhersage. „Bias“ meint hier die statistische Verzerrung, nicht den Bias-Term einer Schicht.
 
 ## Ridge: die geschlossene Form
 
@@ -71,7 +71,7 @@ $\lambda$ ist ein Hyperparameter und wird wie in der Lektion [Folds erzeugen und
 
 ## Wo dir das in der KI begegnet
 
-Beim Training großer Sprachmodelle ist **Weight Decay** Standard: In AdamW zieht es die Gewichte wie das Ridge-Gummiband Richtung null. Mit Adam ist das nicht exakt dasselbe wie eine L2-Strafe; daher der Name „decoupled" (entkoppelt).
+Beim Training großer Sprachmodelle ist **Weight Decay** Standard: In AdamW zieht es die Gewichte wie das Ridge-Gummiband Richtung null. Mit Adam ist das nicht exakt dasselbe wie eine L2-Strafe; daher der Name „decoupled“ (entkoppelt).
 
 ## Typische Fehler
 

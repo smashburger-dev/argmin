@@ -11,7 +11,7 @@
   ],
   "competencyIds": ["c-dl-tokenizer"],
   "requires": ["c-python-collections"],
-  "estimatedMinutes": 70,
+  "estimatedMinutes": 75,
   "blocks": [
     { "blockId": "tf-tokenizer-core", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-tokenizer.md" },
     { "blockId": "tf-tokenizer-check", "type": "checkpoint", "contentRef": "lessons/transformer-llm/tf-tokenizer-checkpoint.md" }

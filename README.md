@@ -27,7 +27,7 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
 
 ## Was dich erwartet
 
-- **50 Lektionen und über 280 Aufgaben** in kleinen, verständlichen Schritten. Mathe, Lineare Algebra, ML, Deep Learning, Transformer, GenAI.
+- **50 Lektionen und über 280 Aufgaben** in kleinen, verständlichen Schritten. Mathe, Lineare Algebra, ML, Deep Learning, Transformer, GenAI. Alle Lektionen sind seit 0.9.0 im selben einsteigerfreundlichen Stil geschrieben: Begriffe werden vor dem ersten Gebrauch erklärt, Formelsymbole vorgelesen, jede Lektion endet mit einem Begriffsverzeichnis.
 
 [![Der Lernpfad in argmin: Module in sinnvoller Reihenfolge, dunkles Theme](docs/media/lernpfad-dark.png)](https://smashburger-dev.github.io/argmin/)
 
@@ -38,7 +38,7 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
 - **Üben, bis es sitzt.** Konzeptfragen, Mehrfachauswahl, Fehlerdiagnose, Coding, Ablauf, Parsons, Vektor, Lücken in Musterlösungen: neuer Seed, neu erzeugte Aufgabe. Gleicher Seed, gleiche Aufgabe.
 - **Visualisierungen, die zurückfragen.** Jede interaktive Grafik endet mit einer Vorhersage-Aufgabe — erst schätzen, dann prüfen.
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
-- **Lexikon mit Kurzdefinitionen.** Fachbegriffe sind in den Lektionen verlinkt; ein Klick öffnet die Definition direkt im Text, ohne die Seite zu verlassen.
+- **Lexikon mit 320 Kurzdefinitionen.** Fachbegriffe sind in den Lektionen verlinkt; ein Klick öffnet die Definition direkt im Text, ohne die Seite zu verlassen.
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
 - **Tägliche Challenge.** Jeden Tag ein festes Set schwerer, mehrstufiger Aufgaben aus deinen aktiven Modulen — deterministisch gezogen, ohne Wiederholung im Fenster, mit Serie für aufeinanderfolgende Tage.
 - **Läuft offline.** Nach dem ersten Laden funktioniert die komplette App ohne Internet — Lektionen, Aufgaben, Prüfung, Fortschritt. Wer Python-Aufgaben unterwegs lösen will, holt sich in den Einstellungen über „Offline-Paket laden" die Laufzeit vorab aufs Gerät.

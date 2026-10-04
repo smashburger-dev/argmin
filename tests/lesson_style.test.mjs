@@ -35,6 +35,30 @@ const REVISED = [
   'deep-learning/dl-training.md',
   'deep-learning/dl-regularization.md',
   'transformer-llm/tf-attention.md',
+  'data-ml/data-cleaning.md',
+  'data-ml/eda-distributions.md',
+  'data-ml/ml-baseline.md',
+  'data-ml/ml-cv.md',
+  'data-ml/ml-ensembles.md',
+  'data-ml/ml-error-analysis.md',
+  'data-ml/ml-repro.md',
+  'transformer-llm/tf-tokenizer.md',
+  'transformer-llm/tf-inference.md',
+  'transformer-llm/tf-finetuning.md',
+  'transformer-llm/tf-papers.md',
+  'genai-systems/rag-retrieval.md',
+  'genai-systems/genai-evaluation.md',
+  'genai-systems/genai-security.md',
+  'genai-systems/genai-prototype.md',
+  'research/research-question.md',
+  'research/research-cards.md',
+  'research/responsible-ai.md',
+  'research/capstone-baseline.md',
+  'research/capstone-freeze.md',
+  'research/capstone-runner.md',
+  'research/capstone-repro.md',
+  'research/capstone-regression.md',
+  'research/capstone-acceptance.md',
 ];
 
 // Checkpoints brauchen keinen Lead und kein Glossar; für sie gelten nur
@@ -45,6 +69,27 @@ const CHECKPOINTS = [
   'deep-learning/dl-training-checkpoint.md',
   'deep-learning/dl-regularization-checkpoint.md',
   'transformer-llm/tf-attention-checkpoint.md',
+  'transformer-llm/tf-tokenizer-checkpoint.md',
+  'transformer-llm/tf-inference-checkpoint.md',
+  'transformer-llm/tf-finetuning-checkpoint.md',
+  'transformer-llm/tf-papers-checkpoint.md',
+  'genai-systems/rag-retrieval-checkpoint.md',
+  'genai-systems/genai-evaluation-checkpoint.md',
+  'genai-systems/genai-security-checkpoint.md',
+  'genai-systems/genai-prototype-checkpoint.md',
+  'research/research-question-checkpoint.md',
+  'research/research-question-exercise.md',
+  'research/research-cards-checkpoint.md',
+  'research/research-cards-exercise.md',
+  'research/responsible-ai-checkpoint.md',
+  'research/responsible-ai-exercise.md',
+  'research/capstone-baseline-checkpoint.md',
+  'research/capstone-baseline-exercise.md',
+  'research/capstone-freeze-checkpoint.md',
+  'research/capstone-runner-checkpoint.md',
+  'research/capstone-repro-checkpoint.md',
+  'research/capstone-regression-checkpoint.md',
+  'research/capstone-acceptance-checkpoint.md',
 ];
 
 function listLessonMarkdown(dir) {
@@ -227,6 +272,30 @@ for (const rel of REVISED) {
   test(`${rel}: keine Gedankenstriche im Fließtext`, () => {
     const plain = stripCodeAndMath(text);
     assert.doesNotMatch(plain, /[—–]/);
+  });
+
+  test(`${rel}: KI-Bezug ist eigener Abschnitt`, () => {
+    assert.ok(text.includes('## Wo dir das in der KI begegnet'), 'Abschnitt fehlt');
+  });
+}
+
+for (const rel of [...REVISED, ...CHECKPOINTS]) {
+  const file = join(LESSONS_ROOT, rel);
+  const text = readFileSync(file, 'utf8');
+
+  test(`${rel}: öffnende „ wird mit “ geschlossen`, () => {
+    const plain = stripCodeAndMath(text);
+    for (const [lineNo, line] of plain.split('\n').entries()) {
+      const start = line.indexOf('„');
+      if (start === -1) continue;
+      const rest = line.slice(start + 1);
+      const close = rest.indexOf('“');
+      const straight = rest.indexOf('"');
+      assert.ok(
+        close !== -1 && (straight === -1 || close < straight),
+        `Zeile ${lineNo + 1}: ${line.trim().slice(0, 60)}`,
+      );
+    }
   });
 }
 

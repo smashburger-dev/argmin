@@ -11,7 +11,7 @@
   ],
   "competencyIds": ["c-pandas-cleaning"],
   "requires": ["c-numpy-basics", "c-python-collections", "c-python-files-errors"],
-  "estimatedMinutes": 55,
+  "estimatedMinutes": 60,
   "blocks": [
     { "blockId": "data-cleaning-core", "type": "worked-example", "contentRef": "lessons/data-ml/data-cleaning.md" }
   ],

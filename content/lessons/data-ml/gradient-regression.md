@@ -89,7 +89,7 @@ Weil der MSE eine konvexe quadratische Funktion ist, konvergiert sorgfältiger G
 
 ## Wo dir das in der KI begegnet
 
-Große Sprachmodelle werden mit Varianten des Gradientenabstiegs trainiert, etwa Adam: Die Idee „gegen den Gradienten, Schritt mal Lernrate" ist dieselbe, nur über Milliarden Parameter statt zwei. Die Gradienten selbst liefert die Backpropagation, die du in der Lektion [Rechengraphen lesen und Gradienten trennen](#/lesson/l-dl-autograd) kennenlernst.
+Große Sprachmodelle werden mit Varianten des Gradientenabstiegs trainiert, etwa Adam: Die Idee „gegen den Gradienten, Schritt mal Lernrate“ ist dieselbe, nur über Milliarden Parameter statt zwei. Die Gradienten selbst liefert die Backpropagation, die du in der Lektion [Rechengraphen lesen und Gradienten trennen](#/lesson/l-dl-autograd) kennenlernst.
 
 ## Typische Fehler
 

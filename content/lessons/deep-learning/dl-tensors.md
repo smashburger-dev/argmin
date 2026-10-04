@@ -10,7 +10,7 @@ Wo der Vergleich hinkt: Ab 4 Achsen gibt es kein Alltagsbild mehr. Die Regel ble
 
 ## Der Dimensionsvertrag der Matrizenmultiplikation
 
-Eine **lineare Schicht** mit **Gewichtsmatrix** $W \in \mathbb{R}^{d \times h}$ (sprich: W Element der reellen d-mal-h-Matrizen; $\in$ heißt „Element von") und **Bias** $b \in \mathbb{R}^{h}$, hier ist Bias der Verschiebungsvektor der Schicht, nicht die statistische Verzerrung, rechnet
+Eine **lineare Schicht** mit **Gewichtsmatrix** $W \in \mathbb{R}^{d \times h}$ (sprich: W Element der reellen d-mal-h-Matrizen; $\in$ heißt „Element von“) und **Bias** $b \in \mathbb{R}^{h}$, hier ist Bias der Verschiebungsvektor der Schicht, nicht die statistische Verzerrung, rechnet
 
 $$H = XW + b.$$
 

@@ -11,7 +11,7 @@
   ],
   "competencyIds": ["c-ml-ensembles"],
   "requires": ["c-ml-cv"],
-  "estimatedMinutes": 55,
+  "estimatedMinutes": 65,
   "blocks": [{ "blockId": "ml-ensembles-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-ensembles.md" }],
   "sourceRefs": [
     { "sourceId": "sklearn-user-guide", "role": "primary", "locator": "Decision Trees + Ensembles (RandomForest, GradientBoosting) — nur Lektüre" },

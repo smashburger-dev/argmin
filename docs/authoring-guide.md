@@ -216,6 +216,8 @@ Gilt für jedes Lektions-Markdown unter `content/lessons/`. Referenzlektion: `co
 7. Bestehende Abschluss-Abschnitte (`## Direkter Check`, `## Kurzer Abruf`, `## Projektstufe`) bleiben erhalten.
 8. **`## Begriffe auf einen Blick`** ist der letzte Abschnitt des Lektions-Markdowns. Format je Zeile: `- **Begriff** (englisch *term*): Definition.` Die Klammer entfällt, wenn der Begriff keinen gebräuchlichen englischen Namen hat oder gleich lautet. Derselbe Begriff trägt in allen Lektionen dieselbe Definition (Test erzwingt das). Diese Einträge sind die Vorstufe eines späteren Lexikons.
 
+Länge: Das Haupt-Markdown einer Lektion hat 500 bis 1300 Wörter. Wird es länger, gehört ein Konzept in eine eigene Lektion. Checkpoint- und Übungs-Markdowns (`checkpoint`, `exercise`) folgen den Sprach- und Formelregeln, tragen aber keinen Einstieg und keine Begriffsliste.
+
 Projekt- und Reflexionslektionen (`project-step`, `reflection`) folgen denselben Sprachregeln und tragen Einstieg, Analogie und Begriffsliste; Abschnitte 4 und 5 sind dort optional.
 
 ### Begriffe und Symbole
