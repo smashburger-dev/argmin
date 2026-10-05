@@ -4,6 +4,5 @@
   "source_sha": "9687533a27cac512eb9d779b5a97b84df564b56e",
   "graphify_version": "0.9.76",
   "policy_sha256": "9e42bfb794b0bc6929a6cf47eaa1c65e92b6bd89d4296ef06a725f7057d11cad",
-  "graph_sha256": "2eee1ff7d41bd6d902380560e95153625ba4993b5ca28709d021efc1951b97fa",
-  "build_origin": "local-bootstrap"
+  "graph_sha256": "69166e493c1e0874ea829e81a2009ee5fb1d4811af80f5e669822d9d8a1d9120"
 }
