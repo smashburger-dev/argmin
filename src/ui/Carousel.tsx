@@ -1,5 +1,6 @@
 import type { ComponentChildren } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { createWheelIntent, wheelDeltaY } from './wheel-input';
 
 type CarouselProps = {
   label: string;
@@ -24,6 +25,7 @@ export function Carousel({ label, children, arrows = false, fades = false, prevL
   useEffect(() => {
     const element = track.current;
     if (!element) return;
+    const shouldEase = createWheelIntent();
     let snapTimer = 0;
     let raf = 0;
     let target = 0;
@@ -33,8 +35,8 @@ export function Carousel({ label, children, arrows = false, fades = false, prevL
       && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Plain mouse wheels only scroll vertically — translate that into
     // horizontal movement while the track has room, and let the page
-    // scroll once an edge is reached. Trackpads (real deltaX) and
-    // pinch-zoom (ctrlKey) keep native behavior. Ticks accumulate into
+    // scroll once an edge is reached. Precision trackpad gestures and
+    // pinch-zoom keep native behavior. Ticks accumulate into
     // a target that a rAF loop eases toward, dependency-free. Mandatory
     // snap pauses during the gesture and glides onto the nearest card
     // once the wheel rests.
@@ -74,8 +76,12 @@ export function Carousel({ label, children, arrows = false, fades = false, prevL
       raf = window.requestAnimationFrame(frame);
     };
     const onWheel = (event: WheelEvent) => {
-      if (event.ctrlKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY)) return;
-      const delta = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY;
+      if (!shouldEase(event)) {
+        stop();
+        element.style.scrollSnapType = '';
+        return;
+      }
+      const delta = wheelDeltaY(event, element.clientWidth);
       const max = element.scrollWidth - element.clientWidth;
       const base = raf ? target : element.scrollLeft;
       const next = base + delta;
