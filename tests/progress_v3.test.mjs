@@ -134,6 +134,24 @@ test('schema 3 accepts canonical non-week activity ids', () => {
   assert.equal(result.ok, true, JSON.stringify(result.errors));
 });
 
+test('schema 3 accepts family case exercise ids written by familyEventInput', () => {
+  const exerciseId = 'transform-linear-equation-isolate:two-step-seeded-retrieval';
+  const event = normalizeAttemptV3(legacyAttempt({ exerciseId }), {
+    ...context,
+    competencyIdsByExercise: new Map([[exerciseId, ['c-algebra']]]),
+  });
+  const payload = {
+    schemaVersion: 3,
+    exportedAt: context.nowIso,
+    data: {
+      weeks: [], attempts: [event], journal: [], settings: [], meta: [], plans: [], drafts: [],
+      reviewQueue: [{ exerciseId, nextDueAt: '2026-09-01T00:00:00.000Z' }],
+    },
+  };
+  const result = validateImportPayload(payload);
+  assert.equal(result.ok, true, JSON.stringify(result.errors));
+});
+
 test('schema 3 import validation rejects duplicate or incomplete event ids', () => {
   const event = normalizeAttemptV3(legacyAttempt(), context);
   const payload = {

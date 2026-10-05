@@ -178,7 +178,9 @@ function tx(dbPromise, store, mode, fn) {
 // array, every record a plain object, key paths well-formed. A payload that
 // fails any rule is rejected as a whole (fail-closed, no partial writes).
 
-const ACTIVITY_ID_RE = /^[a-z0-9][a-z0-9-]*$/;
+// exerciseId is either a bare activity slug or the family composite
+// `familyId:caseId` written by familyEventInput (S4D0).
+const EXERCISE_ID_RE = /^[a-z0-9][a-z0-9-]*(:[a-z0-9][a-z0-9-]*)?$/;
 
 const STORE_VALIDATORS = {
   weeks: {
@@ -188,8 +190,8 @@ const STORE_VALIDATORS = {
   },
   attempts: {
     key: 'exerciseId',
-    valid: (r) => ACTIVITY_ID_RE.test(r.exerciseId) && typeof r.correct === 'boolean',
-    keyError: 'exerciseId muss eine stabile Aktivitäts-ID sein und correct boolean sein',
+    valid: (r) => EXERCISE_ID_RE.test(r.exerciseId) && typeof r.correct === 'boolean',
+    keyError: 'exerciseId muss eine stabile Aktivitäts- oder Familien-Fall-ID sein und correct boolean sein',
   },
   journal: { key: null, valid: () => true, keyError: '' },
   settings: {
@@ -204,8 +206,8 @@ const STORE_VALIDATORS = {
   },
   reviewQueue: {
     key: 'exerciseId',
-    valid: (r) => ACTIVITY_ID_RE.test(r.exerciseId),
-    keyError: 'exerciseId muss eine stabile Aktivitäts-ID sein',
+    valid: (r) => EXERCISE_ID_RE.test(r.exerciseId),
+    keyError: 'exerciseId muss eine stabile Aktivitäts- oder Familien-Fall-ID sein',
   },
   plans: {
     key: 'planId',
