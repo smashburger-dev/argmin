@@ -3,11 +3,14 @@
 // a soft tail instead of stopping dead. Trackpads (small, high-frequency
 // deltas with OS momentum), pinch-zoom, nested scrollers, keyboard input,
 // and reduced-motion preferences keep native behavior.
+import { createWheelIntent, wheelDeltaY } from './wheel-input';
+
 export function initPageEase(): () => void {
   if (typeof window === 'undefined') return () => undefined;
   const motion = typeof window.matchMedia === 'function'
     ? window.matchMedia('(prefers-reduced-motion: reduce)')
     : null;
+  const shouldEase = createWheelIntent();
   let raf = 0;
   let target = window.scrollY;
   let current = window.scrollY;
@@ -50,12 +53,16 @@ export function initPageEase(): () => void {
     return false;
   };
   const onWheel = (event: WheelEvent) => {
-    // Carousels and other consumers that already handled the gesture win.
-    if (event.defaultPrevented || event.ctrlKey || motion?.matches) return;
-    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-    const delta = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY;
-    if (event.deltaMode === 0 && Math.abs(delta) < 16) return;
-    if (limit() <= 0 || nestedTakes(event.target, delta)) return;
+    const ease = shouldEase(event);
+    const delta = wheelDeltaY(event, window.innerHeight);
+    // Never let an old glide compete with native precision input or another
+    // scroll consumer. Rebase before handing the gesture to the browser.
+    if (!ease || motion?.matches || nestedTakes(event.target, delta)) {
+      stop();
+      sync();
+      return;
+    }
+    if (limit() <= 0) return;
     const base = raf ? target : window.scrollY;
     const next = Math.min(limit(), Math.max(0, base + delta));
     // At a page edge there is nothing to ease — let overscroll stay native.
