@@ -60,8 +60,8 @@ def publication_tree(root, target):
             raise ValueError('graphify branch is not owned by this workflow')
     else:
         run('git', 'worktree', 'add', '--detach', str(target), 'HEAD', cwd=root)
-        run('git', 'checkout', '--orphan', 'graphify-output', cwd=target)
-        run('git', 'rm', '-r', '--ignore-unmatch', '.', cwd=target)
+        # switch --orphan clears tracked source files and the index together.
+        run('git', 'switch', '--orphan', 'graphify-output', cwd=target)
     return target
 
 
@@ -76,6 +76,9 @@ def publish(root, bundle, output):
     run('git', 'config', 'user.name', 'github-actions[bot]', cwd=target)
     run('git', 'config', 'user.email', '41898282+github-actions[bot]@users.noreply.github.com', cwd=target)
     run('git', 'add', 'graph.json', 'GRAPH_REPORT.md', 'metadata.json', cwd=target)
+    if subprocess.run(['git', 'diff', '--cached', '--quiet'], cwd=target).returncode == 0:
+        print('Graph is already published')
+        return
     run('git', 'commit', '-m', f'Graph for {os.environ["GITHUB_SHA"]}', cwd=target)
     run('git', 'push', 'origin', 'HEAD:refs/heads/graphify', cwd=target)
 
