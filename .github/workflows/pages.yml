@@ -27,6 +27,7 @@ jobs:
       - run: npm ci
       - run: npm run build:release
       - run: touch build-next/.nojekyll
+      - run: echo argmin.app > build-next/CNAME
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build-next
