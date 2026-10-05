@@ -59,6 +59,24 @@ test('algebra transformations lesson shows its own curated task', async ({ page 
   await expect(page.locator('.lesson-tasks .lesson-cta')).toHaveAttribute('href', /^#\/family\/transform-expression-simplify-canonical\//);
 });
 
+test('lesson sections show their title and the outline tracks short sections', async ({ page }) => {
+  await page.goto('/index.html#/lesson/l-linalg-matrices');
+  const toc = page.locator('.lesson-toc');
+  const mistakes = toc.getByRole('link', { name: 'Typische Fehler' });
+  const check = toc.getByRole('link', { name: 'Direkter Check' });
+  const terms = toc.getByRole('link', { name: 'Begriffe auf einen Blick' });
+  await expect(mistakes).toBeVisible();
+  // The subsection title renders inside the section, not only in the rail.
+  await expect(page.locator('#typische-fehler').getByRole('heading', { name: 'Typische Fehler' })).toBeVisible();
+  // "Typische Fehler" is a short section: clicking it must not flip the
+  // outline to the following section, and scrolling to the end marks the last.
+  await mistakes.click();
+  await expect(mistakes).toHaveClass(/is-active/);
+  await expect(check).not.toHaveClass(/is-active/);
+  await terms.click();
+  await expect(terms).toHaveClass(/is-active/);
+});
+
 test('module practice space draws only the module curated cases', async ({ page }) => {
   await page.goto('/index.html#/module/lm-foundations-python-state');
   await expect(page.getByRole('heading', { level: 1, name: 'Python-Zustand lesen' })).toBeVisible();

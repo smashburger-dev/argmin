@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { CatalogData, Lesson } from '../app/types';
 import { getLesson, loadSources } from '../adapters/content-repository';
 import { recordLessonOpened, recordModuleOpened } from '../adapters/local-progress';
@@ -97,6 +97,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
   const neighbor = (id: string | undefined) => catalog.lessons.find((lesson) => lesson.lessonId === id);
   const { popover, onClickCapture } = useGlossaryPopover();
   const [activeAnchor, setActiveAnchor] = useState<string | null>(null);
+  const pinnedAnchor = useRef<string | null>(null);
   const previous = modulePosition > 0 ? neighbor(moduleOrder[modulePosition - 1]) : catalog.lessons[lessonIndex - 1];
   const next = modulePosition >= 0 && modulePosition < moduleOrder.length - 1 ? neighbor(moduleOrder[modulePosition + 1]) : catalog.lessons[lessonIndex + 1];
   const prose = useMemo(() => {
@@ -121,17 +122,59 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
     };
   }, [lesson]);
   useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined' || prose.toc.length === 0) return;
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) setActiveAnchor(entry.target.id);
-      }
-    }, { rootMargin: '-25% 0px -65% 0px' });
-    prose.toc
+    if (prose.toc.length === 0) return;
+    const sections = prose.toc
       .map((segment) => document.getElementById(segment.anchor!))
-      .filter((element): element is HTMLElement => Boolean(element))
-      .forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+      .filter((element): element is HTMLElement => Boolean(element));
+    if (sections.length === 0) return;
+    let raf = 0;
+    let reported: string | null = null;
+    const releasePin = () => { pinnedAnchor.current = null; };
+    const update = () => {
+      raf = 0;
+      const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+      // A TOC click pins its target: the smooth scroll can land short when
+      // late layout shifts move the section, so the clicked entry stays
+      // marked until real scroll input (or the page end) takes over.
+      if (pinnedAnchor.current) {
+        if (!atEnd) return;
+        pinnedAnchor.current = null;
+      }
+      // Active = the section holding the reading line just below the scroll
+      // margin. A line in the gap between two sections belongs to the next
+      // one, so short sections cannot be skipped.
+      const margin = parseFloat(getComputedStyle(sections[0]!).scrollMarginTop);
+      const line = (Number.isFinite(margin) ? margin : 88) + 16;
+      let active: string | null = null;
+      for (const section of sections) {
+        if (section.getBoundingClientRect().bottom > line) { active = section.id; break; }
+      }
+      if (sections[0]!.getBoundingClientRect().top > line) active = null;
+      if (atEnd) active = sections[sections.length - 1]!.id;
+      if (active !== reported) { reported = active; setActiveAnchor(active); }
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    // Layout shifts after the last scroll event (fonts, lazy content) would
+    // otherwise leave a stale highlight.
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(onScroll);
+    observer?.observe(document.body);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    window.addEventListener('wheel', releasePin, { passive: true });
+    window.addEventListener('keydown', releasePin);
+    window.addEventListener('touchmove', releasePin, { passive: true });
+    window.addEventListener('pointerdown', releasePin, { passive: true });
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      window.removeEventListener('wheel', releasePin);
+      window.removeEventListener('keydown', releasePin);
+      window.removeEventListener('touchmove', releasePin);
+      window.removeEventListener('pointerdown', releasePin);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, [prose]);
   return (
     <section class="view lesson-view" aria-labelledby="lesson-title">
@@ -169,6 +212,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
               aria-current={segment.anchor === activeAnchor ? 'true' : undefined}
               onClick={(event) => {
                 event.preventDefault();
+                pinnedAnchor.current = segment.anchor!;
                 setActiveAnchor(segment.anchor!);
                 const smooth = typeof window.matchMedia !== 'function' || !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                 document.getElementById(segment.anchor!)?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
@@ -195,7 +239,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
               const kicker = segmentKicker[block.type];
               return <section class="lesson-section" key={key}>{kicker ? <p class="lesson-kicker">{kicker}</p> : null}<MathMarkup html={segment.html} /></section>;
             }
-            return <section class="lesson-section" id={segment.anchor!} key={key}><p class="lesson-kicker lesson-kicker-num" aria-hidden="true" /><MathMarkup html={segment.html} /></section>;
+            return <section class="lesson-section" id={segment.anchor!} key={key}><p class="lesson-kicker lesson-kicker-num" aria-hidden="true" /><h2 class="lesson-section-title"><MathMarkup inline html={segment.heading!} /></h2><MathMarkup html={segment.html} /></section>;
           });
         })}
       </article>

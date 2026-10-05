@@ -379,6 +379,7 @@ main { min-width: 0; }
 .lesson-kicker { margin: 0 0 var(--s1); color: var(--accent-hover); font-size: 13px; font-weight: 600; }
 .lesson-kicker-num { font-family: var(--mono); }
 .lesson-kicker-num::before { content: counter(lesson-section, decimal-leading-zero); }
+.lesson-prose h2.lesson-section-title { margin: var(--s1) 0 var(--s4); font-size: clamp(20px, 2vw, 24px); }
 .lesson-prose h2 { margin: var(--s7) 0 var(--s3); }
 .lesson-prose h2:first-child { margin-top: 0; }
 .lesson-prose p { margin: 0 0 var(--s4); }
