@@ -1028,7 +1028,7 @@
       "file_type": "code",
       "norm_label": "progressstore",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L286"
+      "source_location": "L288"
     },
     {
       "id": "src_adapters_local_progress_attemptrecord",
@@ -12541,7 +12541,7 @@
       "file_type": "code",
       "norm_label": ".activereviewparams()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L305"
+      "source_location": "L307"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_addattempt",
@@ -12553,7 +12553,7 @@
       "file_type": "code",
       "norm_label": ".addattempt()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L387"
+      "source_location": "L389"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_addjournalentry",
@@ -12565,7 +12565,7 @@
       "file_type": "code",
       "norm_label": ".addjournalentry()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L419"
+      "source_location": "L421"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_allof",
@@ -12577,7 +12577,7 @@
       "file_type": "code",
       "norm_label": ".allof()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L454"
+      "source_location": "L456"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_allweeks",
@@ -12589,7 +12589,7 @@
       "file_type": "code",
       "norm_label": ".allweeks()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L375"
+      "source_location": "L377"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_attemptsfor",
@@ -12601,7 +12601,7 @@
       "file_type": "code",
       "norm_label": ".attemptsfor()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L407"
+      "source_location": "L409"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_duereviews",
@@ -12613,7 +12613,7 @@
       "file_type": "code",
       "norm_label": ".duereviews()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L436"
+      "source_location": "L438"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_exportall",
@@ -12625,7 +12625,7 @@
       "file_type": "code",
       "norm_label": ".exportall()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L444"
+      "source_location": "L446"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_getcontext",
@@ -12637,7 +12637,7 @@
       "file_type": "code",
       "norm_label": ".getcontext()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L294"
+      "source_location": "L296"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_getdraft",
@@ -12649,7 +12649,7 @@
       "file_type": "code",
       "norm_label": ".getdraft()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L348"
+      "source_location": "L350"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_getmeta",
@@ -12661,7 +12661,7 @@
       "file_type": "code",
       "norm_label": ".getmeta()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L343"
+      "source_location": "L345"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_getorcreatecycle",
@@ -12673,7 +12673,7 @@
       "file_type": "code",
       "norm_label": ".getorcreatecycle()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L352"
+      "source_location": "L354"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_getsetting",
@@ -12685,7 +12685,7 @@
       "file_type": "code",
       "norm_label": ".getsetting()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L345"
+      "source_location": "L347"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_getweek",
@@ -12697,7 +12697,7 @@
       "file_type": "code",
       "norm_label": ".getweek()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L374"
+      "source_location": "L376"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_journal",
@@ -12709,7 +12709,7 @@
       "file_type": "code",
       "norm_label": ".journal()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L422"
+      "source_location": "L424"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_markweekself",
@@ -12721,7 +12721,7 @@
       "file_type": "code",
       "norm_label": ".markweekself()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L368"
+      "source_location": "L370"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_plans",
@@ -12733,7 +12733,7 @@
       "file_type": "code",
       "norm_label": ".plans()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L351"
+      "source_location": "L353"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_rebuildreviewqueue",
@@ -12745,7 +12745,7 @@
       "file_type": "code",
       "norm_label": ".rebuildreviewqueue()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L327"
+      "source_location": "L329"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_refreshreviewentry",
@@ -12757,7 +12757,7 @@
       "file_type": "code",
       "norm_label": ".refreshreviewentry()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L312"
+      "source_location": "L314"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_resetexercise",
@@ -12769,7 +12769,7 @@
       "file_type": "code",
       "norm_label": ".resetexercise()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L503"
+      "source_location": "L505"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_resetweek",
@@ -12781,7 +12781,7 @@
       "file_type": "code",
       "norm_label": ".resetweek()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L517"
+      "source_location": "L519"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_reviewqueueall",
@@ -12793,7 +12793,7 @@
       "file_type": "code",
       "norm_label": ".reviewqueueall()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L434"
+      "source_location": "L436"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_savedraft",
@@ -12805,7 +12805,7 @@
       "file_type": "code",
       "norm_label": ".savedraft()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L349"
+      "source_location": "L351"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_saveplan",
@@ -12817,7 +12817,7 @@
       "file_type": "code",
       "norm_label": ".saveplan()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L350"
+      "source_location": "L352"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_setmeta",
@@ -12829,7 +12829,7 @@
       "file_type": "code",
       "norm_label": ".setmeta()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L344"
+      "source_location": "L346"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_setsetting",
@@ -12841,7 +12841,7 @@
       "file_type": "code",
       "norm_label": ".setsetting()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L346"
+      "source_location": "L348"
     },
     {
       "id": "assets_js_core_progress_store_progressstore_startexercisecycle",
@@ -12853,7 +12853,7 @@
       "file_type": "code",
       "norm_label": ".startexercisecycle()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L360"
+      "source_location": "L362"
     },
     {
       "id": "assets_js_core_progress_store_tx",
@@ -17257,7 +17257,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L287"
+      "source_location": "L289"
     },
     {
       "id": "assets_js_core_progress_store_reqaspromise",
@@ -17281,7 +17281,7 @@
       "file_type": "code",
       "norm_label": "validateimportpayload()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L225"
+      "source_location": "L227"
     },
     {
       "id": "tests_mastery_policy_test_attempt",
@@ -17917,7 +17917,7 @@
       "file_type": "code",
       "norm_label": ".importall()",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L466"
+      "source_location": "L468"
     },
     {
       "id": "assets_js_core_review_scheduler_buildreviewqueueentries",
@@ -34466,7 +34466,7 @@
       "file_type": "code",
       "norm_label": "progress",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L524"
+      "source_location": "L526"
     },
     {
       "id": "assets_js_domain_history_timeline",
@@ -36534,7 +36534,7 @@
       "file_type": "code",
       "norm_label": "store_validators",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L183"
+      "source_location": "L185"
     },
     {
       "id": "assets_js_core_progress_store_supported_schema_versions",
@@ -36545,7 +36545,7 @@
       "file_type": "code",
       "norm_label": "supported_schema_versions",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L222"
+      "source_location": "L224"
     },
     {
       "id": "tests_mastery_policy_test",
@@ -36567,7 +36567,7 @@
       "file_type": "concept",
       "norm_label": "adr-0008",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L302"
+      "source_location": "L304"
     },
     {
       "id": "assets_js_core_procedural_fit_seeded_split_sgd_linear",
@@ -60885,7 +60885,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L307",
+      "source_location": "L309",
       "weight": 1.0
     },
     {
@@ -60897,24 +60897,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L307",
+      "source_location": "L309",
       "weight": 1.0
     },
     {
       "source": "assets_js_core_progress_store_progressstore_addattempt",
       "target": "assets_js_core_progress_store_progressstore_getcontext",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L388",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_core_progress_store_progressstore_addattempt",
-      "target": "assets_js_core_progress_migration_normalizeattemptv3",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60926,7 +60914,7 @@
     },
     {
       "source": "assets_js_core_progress_store_progressstore_addattempt",
-      "target": "assets_js_core_progress_store_createid",
+      "target": "assets_js_core_progress_migration_normalizeattemptv3",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60938,6 +60926,18 @@
     },
     {
       "source": "assets_js_core_progress_store_progressstore_addattempt",
+      "target": "assets_js_core_progress_store_createid",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/core/progress_store.js",
+      "source_location": "L394",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_core_progress_store_progressstore_addattempt",
       "target": "assets_js_core_progress_store_progressstore_refreshreviewentry",
       "relation": "calls",
       "_origin": "ast",
@@ -60945,7 +60945,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L404",
+      "source_location": "L406",
       "weight": 1.0
     },
     {
@@ -60957,7 +60957,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L420",
+      "source_location": "L422",
       "weight": 1.0
     },
     {
@@ -60969,7 +60969,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L288",
+      "source_location": "L290",
       "weight": 1.0
     },
     {
@@ -60981,7 +60981,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L437",
+      "source_location": "L439",
       "weight": 1.0
     },
     {
@@ -60993,7 +60993,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L446",
+      "source_location": "L448",
       "weight": 1.0
     },
     {
@@ -61005,7 +61005,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L446",
+      "source_location": "L448",
       "weight": 1.0
     },
     {
@@ -61017,7 +61017,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L446",
+      "source_location": "L448",
       "weight": 1.0
     },
     {
@@ -61029,7 +61029,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L296",
+      "source_location": "L298",
       "weight": 1.0
     },
     {
@@ -61041,7 +61041,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L348",
+      "source_location": "L350",
       "weight": 1.0
     },
     {
@@ -61053,24 +61053,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L343",
+      "source_location": "L345",
       "weight": 1.0
     },
     {
       "source": "assets_js_core_progress_store_progressstore_getorcreatecycle",
       "target": "assets_js_core_progress_store_progressstore_getdraft",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L353",
-      "weight": 1.0
-    },
-    {
-      "source": "assets_js_core_progress_store_progressstore_getorcreatecycle",
-      "target": "assets_js_core_progress_store_progressstore_attemptsfor",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -61082,6 +61070,18 @@
     },
     {
       "source": "assets_js_core_progress_store_progressstore_getorcreatecycle",
+      "target": "assets_js_core_progress_store_progressstore_attemptsfor",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "assets/js/core/progress_store.js",
+      "source_location": "L357",
+      "weight": 1.0
+    },
+    {
+      "source": "assets_js_core_progress_store_progressstore_getorcreatecycle",
       "target": "assets_js_core_progress_store_createid",
       "relation": "calls",
       "_origin": "ast",
@@ -61089,7 +61089,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L356",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -61101,7 +61101,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L357",
+      "source_location": "L359",
       "weight": 1.0
     },
     {
@@ -61113,7 +61113,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L345",
+      "source_location": "L347",
       "weight": 1.0
     },
     {
@@ -61125,7 +61125,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L374",
+      "source_location": "L376",
       "weight": 1.0
     },
     {
@@ -61137,7 +61137,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L467",
+      "source_location": "L469",
       "weight": 1.0
     },
     {
@@ -61149,7 +61149,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L472",
+      "source_location": "L474",
       "weight": 1.0
     },
     {
@@ -61161,7 +61161,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L474",
+      "source_location": "L476",
       "weight": 1.0
     },
     {
@@ -61173,7 +61173,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L485",
+      "source_location": "L487",
       "weight": 1.0
     },
     {
@@ -61185,7 +61185,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L486",
+      "source_location": "L488",
       "weight": 1.0
     },
     {
@@ -61197,7 +61197,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L369",
+      "source_location": "L371",
       "weight": 1.0
     },
     {
@@ -61209,7 +61209,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L351",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
@@ -61221,7 +61221,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L328",
+      "source_location": "L330",
       "weight": 1.0
     },
     {
@@ -61233,7 +61233,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L328",
+      "source_location": "L330",
       "weight": 1.0
     },
     {
@@ -61245,7 +61245,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L329",
+      "source_location": "L331",
       "weight": 1.0
     },
     {
@@ -61257,7 +61257,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L314",
+      "source_location": "L316",
       "weight": 1.0
     },
     {
@@ -61269,7 +61269,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L314",
+      "source_location": "L316",
       "weight": 1.0
     },
     {
@@ -61281,7 +61281,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L316",
+      "source_location": "L318",
       "weight": 1.0
     },
     {
@@ -61293,7 +61293,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L518",
+      "source_location": "L520",
       "weight": 1.0
     },
     {
@@ -61305,7 +61305,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L434",
+      "source_location": "L436",
       "weight": 1.0
     },
     {
@@ -61317,7 +61317,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L349",
+      "source_location": "L351",
       "weight": 1.0
     },
     {
@@ -61329,7 +61329,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L350",
+      "source_location": "L352",
       "weight": 1.0
     },
     {
@@ -61341,7 +61341,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L344",
+      "source_location": "L346",
       "weight": 1.0
     },
     {
@@ -61353,7 +61353,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L346",
+      "source_location": "L348",
       "weight": 1.0
     },
     {
@@ -61365,7 +61365,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L361",
+      "source_location": "L363",
       "weight": 1.0
     },
     {
@@ -61377,7 +61377,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L362",
+      "source_location": "L364",
       "weight": 1.0
     },
     {
@@ -61389,7 +61389,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L363",
+      "source_location": "L365",
       "weight": 1.0
     },
     {
@@ -65121,7 +65121,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/ui/LessonView.tsx",
-      "source_location": "L106",
+      "source_location": "L107",
       "weight": 1.0
     },
     {
@@ -65133,7 +65133,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/ui/LessonView.tsx",
-      "source_location": "L109",
+      "source_location": "L110",
       "weight": 1.0
     },
     {
@@ -65145,7 +65145,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/ui/LessonView.tsx",
-      "source_location": "L139",
+      "source_location": "L182",
       "weight": 1.0
     },
     {
@@ -65157,7 +65157,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/ui/LessonView.tsx",
-      "source_location": "L147",
+      "source_location": "L190",
       "weight": 1.0
     },
     {
@@ -65169,7 +65169,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/ui/LessonView.tsx",
-      "source_location": "L186",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -65181,7 +65181,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/ui/LessonView.tsx",
-      "source_location": "L208",
+      "source_location": "L252",
       "weight": 1.0
     },
     {
@@ -113640,7 +113640,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L302",
+      "source_location": "L304",
       "weight": 1.0
     },
     {
@@ -130646,7 +130646,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L183",
+      "source_location": "L185",
       "weight": 1.0
     },
     {
@@ -130657,7 +130657,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L222",
+      "source_location": "L224",
       "weight": 1.0
     },
     {
@@ -130668,7 +130668,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L225",
+      "source_location": "L227",
       "weight": 1.0
     },
     {
@@ -130679,7 +130679,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L286",
+      "source_location": "L288",
       "weight": 1.0
     },
     {
@@ -130712,7 +130712,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L524",
+      "source_location": "L526",
       "weight": 1.0
     },
     {
@@ -147533,7 +147533,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L287",
+      "source_location": "L289",
       "weight": 1.0
     },
     {
@@ -147544,7 +147544,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L294",
+      "source_location": "L296",
       "weight": 1.0
     },
     {
@@ -147555,7 +147555,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L305",
+      "source_location": "L307",
       "weight": 1.0
     },
     {
@@ -147566,7 +147566,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L312",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -147577,7 +147577,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L327",
+      "source_location": "L329",
       "weight": 1.0
     },
     {
@@ -147588,7 +147588,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L343",
+      "source_location": "L345",
       "weight": 1.0
     },
     {
@@ -147599,7 +147599,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L344",
+      "source_location": "L346",
       "weight": 1.0
     },
     {
@@ -147610,7 +147610,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L345",
+      "source_location": "L347",
       "weight": 1.0
     },
     {
@@ -147621,7 +147621,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L346",
+      "source_location": "L348",
       "weight": 1.0
     },
     {
@@ -147632,7 +147632,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L348",
+      "source_location": "L350",
       "weight": 1.0
     },
     {
@@ -147643,7 +147643,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L349",
+      "source_location": "L351",
       "weight": 1.0
     },
     {
@@ -147654,7 +147654,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L350",
+      "source_location": "L352",
       "weight": 1.0
     },
     {
@@ -147665,7 +147665,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L351",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
@@ -147676,7 +147676,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L352",
+      "source_location": "L354",
       "weight": 1.0
     },
     {
@@ -147687,7 +147687,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L360",
+      "source_location": "L362",
       "weight": 1.0
     },
     {
@@ -147698,7 +147698,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L368",
+      "source_location": "L370",
       "weight": 1.0
     },
     {
@@ -147709,7 +147709,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L374",
+      "source_location": "L376",
       "weight": 1.0
     },
     {
@@ -147720,7 +147720,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L375",
+      "source_location": "L377",
       "weight": 1.0
     },
     {
@@ -147731,7 +147731,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L387",
+      "source_location": "L389",
       "weight": 1.0
     },
     {
@@ -147742,7 +147742,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L407",
+      "source_location": "L409",
       "weight": 1.0
     },
     {
@@ -147753,7 +147753,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L419",
+      "source_location": "L421",
       "weight": 1.0
     },
     {
@@ -147764,7 +147764,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L422",
+      "source_location": "L424",
       "weight": 1.0
     },
     {
@@ -147775,7 +147775,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L434",
+      "source_location": "L436",
       "weight": 1.0
     },
     {
@@ -147786,7 +147786,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L436",
+      "source_location": "L438",
       "weight": 1.0
     },
     {
@@ -147797,7 +147797,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L444",
+      "source_location": "L446",
       "weight": 1.0
     },
     {
@@ -147808,7 +147808,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L454",
+      "source_location": "L456",
       "weight": 1.0
     },
     {
@@ -147819,7 +147819,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L466",
+      "source_location": "L468",
       "weight": 1.0
     },
     {
@@ -147830,7 +147830,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L503",
+      "source_location": "L505",
       "weight": 1.0
     },
     {
@@ -147841,7 +147841,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "assets/js/core/progress_store.js",
-      "source_location": "L517",
+      "source_location": "L519",
       "weight": 1.0
     },
     {
@@ -153488,5 +153488,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f6bd477682f05d3e50d63ab843b93eaffc8baa78"
+  "built_at_commit": "e4f1d9318033ad95240fece30b036e59ec639d90"
 }
