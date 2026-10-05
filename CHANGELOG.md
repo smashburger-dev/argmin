@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.1 — 2026-10-05
+
+Unterkapitel in Lektionen tragen ihren Titel jetzt im Text, die Seitenleiste überspringt kurze Abschnitte nicht mehr, und Trackpad-Gesten laufen wieder nativ.
+
+Für Lernende: **Jedes Unterkapitel zeigt seine Überschrift direkt über dem Inhalt**, zum Beispiel „Typische Fehler" statt nur der Nummer 09. Bisher stand dort nur die Mono-Nummer; Abschnitte mit Gegenbeispielen oder Verwechslungen wirkten dadurch wie ein Widerspruch zum Gelernten. Das Inhaltsverzeichnis rechts springt außerdem nicht mehr über kurze Abschnitte hinweg: Ein Klick auf einen Abschnitt markiert ihn jetzt auch dann, wenn er kürzer ist als die bisherige Beobachtungszone, und beim Durchscrollen wird er ebenfalls erreicht. Zusätzlich bleiben Trackpad-Gesten nativ: Das weiche Seitenscrollen greift nur bei echten Mausrad-Ticks, und horizontales Wischen sowie Pinch in Kartenleisten funktionieren wieder wie gewohnt.
+
+Für Beitragende: `LessonView` ersetzt den `IntersectionObserver` mit `-25%/-65%`-Band durch eine positionsbasierte Aktivierungslinie knapp unter `scroll-margin-top` — kurze Abschnitte konnten das Band nie allein füllen, und bei gleichzeitig sichtbaren Einträgen gewann der zuletzt gelieferte statt der oberste. Am Seitenende wird der letzte Abschnitt markiert. Die Abschnitts-`h2` wurde in `splitLessonHtml` bisher verworfen und steht jetzt als `lesson-section-title` im Abschnitt. Der Trackpad-Fix liegt in `src/ui/wheel-input.ts` (`createWheelIntent`, `wheelDeltaY`) und wird von `page-ease.ts` und `Carousel` geteilt; eine als Präzisionsgeste erkannte Eingabe (kleine oder gebrochene `deltaY`, `deltaX`) bleibt für 250 ms nativ, auch wenn spätere Events derselben Geste größere Deltas liefern.
+
 ## 0.9.0 — 2026-10-04
 
 Alle 50 Lektionen aller Tracks wurden neu geschrieben, und ein Lexikon mit 320 Kurzdefinitionen direkt in der Lektion ist dazugekommen.

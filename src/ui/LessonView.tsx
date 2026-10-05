@@ -121,17 +121,37 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
     };
   }, [lesson]);
   useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined' || prose.toc.length === 0) return;
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) setActiveAnchor(entry.target.id);
-      }
-    }, { rootMargin: '-25% 0px -65% 0px' });
-    prose.toc
+    if (prose.toc.length === 0) return;
+    const sections = prose.toc
       .map((segment) => document.getElementById(segment.anchor!))
-      .filter((element): element is HTMLElement => Boolean(element))
-      .forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+      .filter((element): element is HTMLElement => Boolean(element));
+    if (sections.length === 0) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      // Active = the last section whose top crossed a line just below the
+      // scroll-margin target. A band observer can skip short sections
+      // entirely and flips to the next section right after a TOC click.
+      const margin = parseFloat(getComputedStyle(sections[0]!).scrollMarginTop);
+      const line = (Number.isFinite(margin) ? margin : 88) + 16;
+      let active: string | null = null;
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= line) active = section.id;
+        else break;
+      }
+      const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+      if (atEnd) active = sections[sections.length - 1]!.id;
+      setActiveAnchor(active);
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, [prose]);
   return (
     <section class="view lesson-view" aria-labelledby="lesson-title">
@@ -195,7 +215,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
               const kicker = segmentKicker[block.type];
               return <section class="lesson-section" key={key}>{kicker ? <p class="lesson-kicker">{kicker}</p> : null}<MathMarkup html={segment.html} /></section>;
             }
-            return <section class="lesson-section" id={segment.anchor!} key={key}><p class="lesson-kicker lesson-kicker-num" aria-hidden="true" /><MathMarkup html={segment.html} /></section>;
+            return <section class="lesson-section" id={segment.anchor!} key={key}><p class="lesson-kicker lesson-kicker-num" aria-hidden="true" /><h2 class="lesson-section-title"><MathMarkup inline html={segment.heading!} /></h2><MathMarkup html={segment.html} /></section>;
           });
         })}
       </article>
