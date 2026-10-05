@@ -3,6 +3,9 @@
 !*/
 !*.js
 !*.mjs
+!*.ts
+!*.tsx
+!*.jsx
 !*.py
 !*.html
 !*.json
@@ -14,5 +17,16 @@ graphify-out/
 **/.DS_Store
 vendor/
 build-public/
+build-next/
+.content-build/
+.next-ui/
+.empryo/
+.agents/
+.claude/
+node_modules/
+private/
+test-results/
+playwright-report/
+package-lock.json
 content/
 docs/
