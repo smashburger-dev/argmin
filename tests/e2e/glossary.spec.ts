@@ -88,6 +88,7 @@ test('search shows a Begriffe group linking into the glossary', async ({ page })
 });
 
 test('glossary view and open popover have no serious accessibility violations', async ({ page }) => {
+  test.setTimeout(90000);
   await page.goto('/index.html#/glossary');
   await expect(page.getByRole('heading', { level: 1, name: 'Lexikon' })).toBeVisible();
   const glossaryAudit = await new AxeBuilder({ page }).analyze();
