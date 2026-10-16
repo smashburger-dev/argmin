@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-ml-regularization"
   ],
-  "requires": [
-    "c-ml-linear",
-    "c-ml-cv"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-ml-regularization"
   ],

@@ -8,13 +8,6 @@
   "competencyIds": [
     "c-genai-rag"
   ],
-  "requires": [
-    "c-python-files-errors",
-    "c-dl-inference"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-genai-rag"
   ],

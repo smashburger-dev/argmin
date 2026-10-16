@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-genai-prototype"
   ],
-  "requires": [
-    "c-genai-rag",
-    "c-genai-eval",
-    "c-genai-security"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-genai-prototype"
   ],

@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-capstone-pipeline"
   ],
-  "requires": [
-    "c-ml-repro",
-    "c-research-capstone"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-capstone-runner"
   ],

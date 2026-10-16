@@ -77,36 +77,66 @@ const transitivePrerequisites = (byId, competencyIds) => {
   return seen;
 };
 
-// A module's `requires` list is exactly the union of its competencies' direct
-// prerequisites, minus the competencies the module teaches itself, ordered by
-// the competency file order.
-export function assertModuleRequires(modules, competencies) {
+// Track membership and module prerequisites are derived, never authored:
+// `track.competencyIds` and the competency `requires` graph are the single
+// source of truth. The compiler injects the derived fields before any
+// consumer reads a module, so the compiled shape stays unchanged.
+
+// Union of the direct requires of a module's competencies, minus the ones
+// the module teaches itself, ordered by competency-file order.
+export function moduleRequires(module, competencies) {
   const byId = competencyOrderIndex(competencies);
-  for (const module of modules) {
-    const own = new Set(module.competencyIds || []);
-    const needed = new Set();
-    for (const id of own) {
-      for (const required of byId.get(id)?.competency.requires || []) if (!own.has(required)) needed.add(required);
+  const own = new Set(module.competencyIds || []);
+  const needed = new Set();
+  for (const id of own) {
+    for (const required of byId.get(id)?.competency.requires || []) {
+      if (!own.has(required)) needed.add(required);
     }
-    const expected = [...needed].sort((a, b) => byId.get(a).index - byId.get(b).index);
-    const actual = module.requires || [];
-    if (JSON.stringify(actual) !== JSON.stringify(expected)) {
-      throw new Error(`${module.moduleId}: requires ${JSON.stringify(actual)} weicht vom Kompetenzgraph ab — erwartet ${JSON.stringify(expected)}`);
+  }
+  return [...needed].sort((a, b) => byId.get(a).index - byId.get(b).index);
+}
+
+export function deriveLearningGraph(tracks, modules, competencies) {
+  const tracksOf = (competencyId) => tracks
+    .filter((track) => track.competencyIds.includes(competencyId))
+    .map((track) => track.trackId);
+  for (const competency of competencies) {
+    competency.trackIds = tracksOf(competency.competencyId);
+  }
+  for (const module of modules) {
+    module.requires = moduleRequires(module, competencies);
+    module.trackIds = [...new Set((module.competencyIds || []).flatMap(tracksOf))];
+  }
+}
+
+// A module sitting half inside a track is a closure violation.
+function assertWholeModules(track, listed, modules) {
+  for (const module of modules) {
+    const inside = (module.competencyIds || []).filter((id) => listed.has(id));
+    if (!inside.length) continue;
+    const outside = (module.competencyIds || []).filter((id) => !listed.has(id));
+    if (outside.length) {
+      throw new Error(`${track.trackId}: Modul ${module.moduleId} lehrt ${inside.join(', ')}, aber ${outside.join(', ')} fehlt im Track`);
     }
   }
 }
 
-// Every module tagged with a track must teach only competencies the track lists.
-export function assertTrackCoverage(modules, tracks) {
-  const coveredByTrack = new Map(tracks.map((track) => [track.trackId, new Set(track.competencyIds)]));
-  for (const module of modules) {
-    for (const trackId of module.trackIds || []) {
-      const covered = coveredByTrack.get(trackId);
-      if (!covered) continue;
-      for (const id of module.competencyIds || []) {
-        if (!covered.has(id)) throw new Error(`${trackId}: Modul ${module.moduleId} lehrt ${id}, das der Track nicht führt`);
-      }
+// Every track must be closed: the transitive prerequisites of its listed
+// competencies are listed too, each listed competency has a teacher, and no
+// module teaches partly inside the track.
+export function assertTrackClosure(tracks, modules, competencies) {
+  const byId = competencyOrderIndex(competencies);
+  const taught = new Set(modules.flatMap((module) => module.competencyIds || []));
+  for (const track of tracks) {
+    const missing = [...transitivePrerequisites(byId, track.competencyIds)];
+    if (missing.length) {
+      throw new Error(`${track.trackId}: fehlende Voraussetzungen im Track: ${missing.join(', ')}`);
     }
+    const listed = new Set(track.competencyIds);
+    for (const id of listed) {
+      if (!taught.has(id)) throw new Error(`${track.trackId}: ${id} wird von keinem Modul gelehrt`);
+    }
+    assertWholeModules(track, listed, modules);
   }
 }
 
@@ -121,7 +151,8 @@ const teacherPositions = (order) => {
 
 // For every track, in the real orderModulesForTrack output: each transitive
 // prerequisite competency a module needs must be taught strictly earlier.
-// Prerequisites with no teacher inside the track are accepted gaps.
+// assertTrackClosure guarantees the teacher exists; a missing one is still
+// reported rather than silently accepted.
 export function assertTrackPrerequisiteOrder(modules, tracks, competencies) {
   const byId = competencyOrderIndex(competencies);
   for (const track of tracks) {
@@ -130,7 +161,10 @@ export function assertTrackPrerequisiteOrder(modules, tracks, competencies) {
     order.forEach((module, index) => {
       for (const required of transitivePrerequisites(byId, module.competencyIds || [])) {
         const taughtAt = teacherPos.get(required);
-        if (taughtAt !== undefined && taughtAt >= index) {
+        if (taughtAt === undefined) {
+          throw new Error(`${track.trackId}: ${module.moduleId} braucht ${required}, das kein Modul des Tracks lehrt`);
+        }
+        if (taughtAt >= index) {
           throw new Error(`${track.trackId}: ${module.moduleId} (Position ${index + 1}) braucht ${required}, das erst an Position ${taughtAt + 1} gelehrt wird`);
         }
       }
@@ -139,36 +173,21 @@ export function assertTrackPrerequisiteOrder(modules, tracks, competencies) {
 }
 
 // Modules with code-bearing tasks or Python lesson blocks need the language
-// competency in their transitive closure; modules whose instances use NumPy
-// need c-numpy-basics. Both must also be taught at or before the module's
-// position in every track that contains the module.
-export function assertCodePrerequisites(modules, tracks, competencies, codeSignals) {
+// competency in the transitive closure of their competencies; modules using
+// NumPy need c-numpy-basics. Track positions are implied by closure + order.
+const CODE_COMPETENCY_SIGNALS = [
+  ['needsPython', 'c-python-basics', 'Python-Code'],
+  ['needsNumpy', 'c-numpy-basics', 'NumPy'],
+];
+
+export function assertCodePrerequisites(modules, competencies, codeSignals) {
   const byId = competencyOrderIndex(competencies);
-  const teacherPosByTrack = new Map(tracks.map((track) => {
-    const order = orderModulesForTrack(modules, track);
-    return [track.trackId, { order, teacherPos: teacherPositions(order) }];
-  }));
   for (const module of modules) {
     const signal = codeSignals(module);
-    const needs = [
-      ['c-python-basics', signal.needsPython, 'Python-Code'],
-      ['c-numpy-basics', signal.needsNumpy, 'NumPy'],
-    ].filter(([, needed]) => needed);
-    if (!needs.length) continue;
     const closure = new Set([...(module.competencyIds || []), ...transitivePrerequisites(byId, module.competencyIds || [])]);
-    for (const [competencyId, , label] of needs) {
-      if (!closure.has(competencyId)) {
+    for (const [key, competencyId, label] of CODE_COMPETENCY_SIGNALS) {
+      if (signal[key] && !closure.has(competencyId)) {
         throw new Error(`${module.moduleId}: ${label} verlangt ${competencyId}, das nicht im Kompetenzgraph des Moduls liegt`);
-      }
-      for (const trackId of module.trackIds || []) {
-        const entry = teacherPosByTrack.get(trackId);
-        if (!entry) continue;
-        const position = entry.order.findIndex((item) => item.moduleId === module.moduleId);
-        const taughtAt = entry.teacherPos.get(competencyId);
-        if (taughtAt === undefined || taughtAt > position) {
-          const where = taughtAt === undefined ? 'wird nicht gelehrt' : `wird erst an Position ${taughtAt + 1} gelehrt`;
-          throw new Error(`${trackId}: ${module.moduleId} nutzt ${label}, aber ${competencyId} ${where}`);
-        }
       }
     }
   }

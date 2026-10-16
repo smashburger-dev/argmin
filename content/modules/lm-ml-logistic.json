@@ -8,13 +8,6 @@
   "competencyIds": [
     "c-ml-logistic"
   ],
-  "requires": [
-    "c-ml-linear"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-ml-logistic"
   ],

@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-pandas-cleaning"
   ],
-  "requires": [
-    "c-numpy-basics",
-    "c-python-collections",
-    "c-python-files-errors"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-data-cleaning"
   ],

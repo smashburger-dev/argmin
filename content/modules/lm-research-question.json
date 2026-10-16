@@ -8,13 +8,6 @@
   "competencyIds": [
     "c-research-question"
   ],
-  "requires": [
-    "c-meta-learning",
-    "c-genai-eval"
-  ],
-  "trackIds": [
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-research-question"
   ],

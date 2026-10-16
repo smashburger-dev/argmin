@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-ml-linear"
   ],
-  "requires": [
-    "c-grad-regression",
-    "c-ml-baseline"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-ml-linear"
   ],

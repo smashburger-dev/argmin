@@ -13,8 +13,10 @@
     }
    ],
    "trackIds": [
+    "applied-ai",
     "common-core",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 240,
    "releaseStatus": "browser-verified",
@@ -34,7 +36,7 @@
         "Potenz- und Logarithmusaufgaben über Definitionen prüfen",
         "Vorzeichen- und Operationsfehler lokalisieren"
        ],
-       "estimatedMinutes": 20,
+       "estimatedMinutes": 50,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -46,8 +48,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/algebra.md",
-         "lines": 33,
-         "words": 354,
+         "lines": 85,
+         "words": 920,
          "block": "worked-example"
         }
        ]
@@ -61,7 +63,7 @@
         "gleichartige Terme erkennen und zusammenfassen",
         "eine Umformung mit Einsetzen kontrollieren"
        ],
-       "estimatedMinutes": 25,
+       "estimatedMinutes": 45,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -73,8 +75,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/algebra-transformations.md",
-         "lines": 34,
-         "words": 248,
+         "lines": 61,
+         "words": 646,
          "block": "worked-example"
         }
        ]
@@ -91,9 +93,12 @@
        "estimatedMinutes": 5,
        "lessonId": "l-foundations-algebra",
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseMissing": true
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-collect-x-terms-both-sides",
@@ -105,9 +110,12 @@
        "estimatedMinutes": 8,
        "lessonId": "l-foundations-algebra",
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseMissing": true
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-transform-linear-equation-isolate-prac",
@@ -119,7 +127,7 @@
        "estimatedMinutes": 0,
        "lessonId": null,
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false
       },
       {
@@ -224,7 +232,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-algebra",
+       "lessonId": "l-foundations-algebra-transformations",
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
@@ -311,23 +319,6 @@
        "caseHasWorkedExample": false
       },
       {
-       "placementId": "p-foundations-algebra-seeded-error-pattern-cases",
-       "familyId": "classify-error-hypothesis",
-       "caseId": "seeded-error-pattern-cases",
-       "role": "curated",
-       "difficulty": "core",
-       "masteryEligible": true,
-       "estimatedMinutes": 8,
-       "lessonId": "l-foundations-algebra",
-       "familyProcedural": false,
-       "familyCaseCount": 3,
-       "familyHasBank": false,
-       "caseType": "choice",
-       "caseHasFeedbackRules": false,
-       "caseHintCount": 0,
-       "caseHasWorkedExample": false
-      },
-      {
        "placementId": "p-foundations-algebra-classify-error-hypothesis-practice",
        "familyId": "classify-error-hypothesis",
        "caseId": null,
@@ -350,7 +341,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 11,
+    "masteryEligibleDefinitions": 10,
     "policySatisfiable": true
    }
   },
@@ -369,8 +360,10 @@
     }
    ],
    "trackIds": [
+    "applied-ai",
     "common-core",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 180,
    "releaseStatus": "draft",
@@ -390,7 +383,7 @@
         "Potenz- und Logarithmusaufgaben über Definitionen prüfen",
         "Vorzeichen- und Operationsfehler lokalisieren"
        ],
-       "estimatedMinutes": 20,
+       "estimatedMinutes": 50,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -402,8 +395,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/algebra.md",
-         "lines": 33,
-         "words": 354,
+         "lines": 85,
+         "words": 920,
          "block": "worked-example"
         }
        ]
@@ -417,7 +410,7 @@
         "gleichartige Terme erkennen und zusammenfassen",
         "eine Umformung mit Einsetzen kontrollieren"
        ],
-       "estimatedMinutes": 25,
+       "estimatedMinutes": 45,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -429,8 +422,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/algebra-transformations.md",
-         "lines": 34,
-         "words": 248,
+         "lines": 61,
+         "words": 646,
          "block": "worked-example"
         }
        ]
@@ -447,9 +440,12 @@
        "estimatedMinutes": 5,
        "lessonId": "l-foundations-algebra",
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseMissing": true
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-collect-x-terms-both-sides",
@@ -461,9 +457,12 @@
        "estimatedMinutes": 8,
        "lessonId": "l-foundations-algebra",
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseMissing": true
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-transform-linear-equation-isolate-prac",
@@ -475,7 +474,7 @@
        "estimatedMinutes": 0,
        "lessonId": null,
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false
       },
       {
@@ -580,7 +579,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-algebra",
+       "lessonId": "l-foundations-algebra-transformations",
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
@@ -667,23 +666,6 @@
        "caseHasWorkedExample": false
       },
       {
-       "placementId": "p-foundations-algebra-seeded-error-pattern-cases",
-       "familyId": "classify-error-hypothesis",
-       "caseId": "seeded-error-pattern-cases",
-       "role": "curated",
-       "difficulty": "core",
-       "masteryEligible": true,
-       "estimatedMinutes": 8,
-       "lessonId": "l-foundations-algebra",
-       "familyProcedural": false,
-       "familyCaseCount": 3,
-       "familyHasBank": false,
-       "caseType": "choice",
-       "caseHasFeedbackRules": false,
-       "caseHintCount": 0,
-       "caseHasWorkedExample": false
-      },
-      {
        "placementId": "p-foundations-algebra-classify-error-hypothesis-practice",
        "familyId": "classify-error-hypothesis",
        "caseId": null,
@@ -706,7 +688,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 11,
+    "masteryEligibleDefinitions": 10,
     "policySatisfiable": true
    }
   },
@@ -724,7 +706,9 @@
    ],
    "trackIds": [
     "applied-ai",
-    "common-core"
+    "common-core",
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 240,
    "releaseStatus": "browser-verified",
@@ -744,7 +728,7 @@
         "Werte und Typen von Variablennamen unterscheiden",
         "kurze Programme mit einer Tracetabelle prüfen"
        ],
-       "estimatedMinutes": 35,
+       "estimatedMinutes": 55,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example"
@@ -753,8 +737,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/python-state.md",
-         "lines": 58,
-         "words": 284,
+         "lines": 95,
+         "words": 790,
          "block": "worked-example"
         }
        ]
@@ -836,7 +820,8 @@
    "domain": "programming",
    "level": "apply",
    "requires": [
-    "c-python-basics"
+    "c-python-basics",
+    "c-python-control-flow"
    ],
    "relations": [
     {
@@ -847,6 +832,7 @@
    "trackIds": [
     "applied-ai",
     "common-core",
+    "mathematical-foundations",
     "research-evaluation"
    ],
    "estimatedMinutes": 180,
@@ -856,7 +842,10 @@
     {
      "moduleId": "lm-foundations-code-reading",
      "title": "Code Zeile für Zeile tracen",
-     "requires": [],
+     "requires": [
+      "c-python-basics",
+      "c-python-control-flow"
+     ],
      "lessons": [
       {
        "lessonId": "l-foundations-code-reading",
@@ -867,7 +856,7 @@
         "Schleifenläufe in einer Tabelle festhalten",
         "eine Ausgabe vor dem Ausführen begründen"
        ],
-       "estimatedMinutes": 35,
+       "estimatedMinutes": 60,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example"
@@ -876,8 +865,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/code-reading.md",
-         "lines": 50,
-         "words": 268,
+         "lines": 88,
+         "words": 623,
          "block": "worked-example"
         }
        ]
@@ -988,7 +977,8 @@
    "domain": "programming",
    "level": "apply",
    "requires": [
-    "c-python-basics"
+    "c-python-basics",
+    "c-python-control-flow"
    ],
    "relations": [
     {
@@ -998,7 +988,9 @@
    ],
    "trackIds": [
     "applied-ai",
-    "common-core"
+    "common-core",
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 180,
    "releaseStatus": "browser-verified",
@@ -1007,7 +999,10 @@
     {
      "moduleId": "lm-foundations-functions",
      "title": "Funktionen als kleine Verträge",
-     "requires": [],
+     "requires": [
+      "c-python-basics",
+      "c-python-control-flow"
+     ],
      "lessons": [
       {
        "lessonId": "l-foundations-functions",
@@ -1018,7 +1013,7 @@
         "eine Funktion aus Beispielen ableiten",
         "Grenzfälle vor der Implementierung notieren"
        ],
-       "estimatedMinutes": 40,
+       "estimatedMinutes": 60,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -1030,8 +1025,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/functions.md",
-         "lines": 53,
-         "words": 254,
+         "lines": 98,
+         "words": 691,
          "block": "worked-example"
         }
        ]
@@ -1118,6 +1113,7 @@
    "requires": [],
    "relations": [],
    "trackIds": [
+    "applied-ai",
     "common-core",
     "research-evaluation"
    ],
@@ -1139,7 +1135,7 @@
         "einen Fehler mit einem prüfbaren nächsten Schritt dokumentieren",
         "Review nach Fälligkeit statt Streak planen"
        ],
-       "estimatedMinutes": 15,
+       "estimatedMinutes": 30,
        "releaseStatus": "draft",
        "blockTypes": [
         "reflection"
@@ -1148,8 +1144,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/learning.md",
-         "lines": 34,
-         "words": 256,
+         "lines": 63,
+         "words": 580,
          "block": "reflection"
         }
        ]
@@ -1169,7 +1165,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "choice",
-       "caseHasFeedbackRules": false,
+       "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -1234,7 +1230,8 @@
    "trackIds": [
     "applied-ai",
     "common-core",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 240,
    "releaseStatus": "browser-verified",
@@ -1243,14 +1240,16 @@
     {
      "moduleId": "lm-linalg-matrices",
      "title": "Matrizen und Spaltenbilder sicher rechnen",
-     "requires": [],
+     "requires": [
+      "c-algebra-basics"
+     ],
      "lessons": [
       {
        "lessonId": "l-linalg-matrices",
        "path": "content/lessons/linear-algebra/matrices.json",
        "title": "Matrizen und Matrixprodukte mit Dimensionsvertrag",
        "objectives": [
-        "Matrix-Shapes vor einer Operation prüfen",
+        "die Form von Matrizen vor einer Operation prüfen",
         "einen Produkteintrag als Zeile-mal-Spalte berechnen",
         "Matrixprodukt und elementweise Multiplikation unterscheiden"
        ],
@@ -1266,8 +1265,8 @@
        "mdFiles": [
         {
          "ref": "lessons/linear-algebra/matrices.md",
-         "lines": 76,
-         "words": 295,
+         "lines": 149,
+         "words": 1399,
          "block": "worked-example"
         }
        ]
@@ -1360,23 +1359,6 @@
        "caseHasWorkedExample": false
       },
       {
-       "placementId": "p-linalg-matrices-06-scalar-loop-output",
-       "familyId": "formula-scalar-product",
-       "caseId": "scalar-loop-output",
-       "role": "curated",
-       "difficulty": "core",
-       "masteryEligible": true,
-       "estimatedMinutes": 6,
-       "lessonId": "l-linalg-matrices",
-       "familyProcedural": false,
-       "familyCaseCount": 7,
-       "familyHasBank": false,
-       "caseType": "?",
-       "caseHasFeedbackRules": true,
-       "caseHintCount": 2,
-       "caseHasWorkedExample": false
-      },
-      {
        "placementId": "p-linalg-matrices-07-product-definition-rationale",
        "familyId": "formula-scalar-product",
        "caseId": "product-definition-rationale",
@@ -1408,40 +1390,6 @@
        "caseType": "choice",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
-       "caseHasWorkedExample": false
-      },
-      {
-       "placementId": "p-linalg-matrices-10-shape-debug-authored",
-       "familyId": "classify-column-combination",
-       "caseId": "shape-debug-authored",
-       "role": "curated",
-       "difficulty": "stretch",
-       "masteryEligible": true,
-       "estimatedMinutes": 8,
-       "lessonId": "l-linalg-matrices",
-       "familyProcedural": false,
-       "familyCaseCount": 3,
-       "familyHasBank": true,
-       "caseType": "choice",
-       "caseHasFeedbackRules": false,
-       "caseHintCount": 2,
-       "caseHasWorkedExample": false
-      },
-      {
-       "placementId": "p-linalg-matrices-10-column-picture-trace",
-       "familyId": "trace-assignment-state",
-       "caseId": "column-picture-trace",
-       "role": "curated",
-       "difficulty": "intro",
-       "masteryEligible": false,
-       "estimatedMinutes": 8,
-       "lessonId": "l-linalg-matrices",
-       "familyProcedural": false,
-       "familyCaseCount": 15,
-       "familyHasBank": false,
-       "caseType": "?",
-       "caseHasFeedbackRules": true,
-       "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
       {
@@ -1498,7 +1446,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 7,
+    "masteryEligibleDefinitions": 5,
     "policySatisfiable": true
    }
   },
@@ -1518,6 +1466,7 @@
     }
    ],
    "trackIds": [
+    "applied-ai",
     "common-core",
     "mathematical-foundations"
    ],
@@ -1528,7 +1477,10 @@
     {
      "moduleId": "lm-linalg-systems",
      "title": "Lineare Gleichungssysteme als Spaltenbild",
-     "requires": [],
+     "requires": [
+      "c-algebra-basics",
+      "c-linalg-matrices"
+     ],
      "lessons": [
       {
        "lessonId": "l-linalg-systems",
@@ -1543,16 +1495,32 @@
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
-        "visualization"
+        "visualization",
+        "worked-example",
+        "visualization",
+        "worked-example"
        ],
        "vizRefs": [
-        "lessons/linear-algebra/two-lines.viz.json"
+        "lessons/linear-algebra/two-lines.viz.json",
+        "lessons/linear-algebra/solution-cases.viz.json"
        ],
        "mdFiles": [
         {
          "ref": "lessons/linear-algebra/systems.md",
-         "lines": 73,
-         "words": 282,
+         "lines": 60,
+         "words": 467,
+         "block": "worked-example"
+        },
+        {
+         "ref": "lessons/linear-algebra/systems-solution-cases.md",
+         "lines": 93,
+         "words": 657,
+         "block": "worked-example"
+        },
+        {
+         "ref": "lessons/linear-algebra/systems-close.md",
+         "lines": 36,
+         "words": 439,
          "block": "worked-example"
         }
        ]
@@ -1721,6 +1689,7 @@
     }
    ],
    "trackIds": [
+    "applied-ai",
     "common-core",
     "mathematical-foundations"
    ],
@@ -1731,7 +1700,10 @@
     {
      "moduleId": "lm-linalg-gauss",
      "title": "Gauß-Elimination als prüfbarer Vertrag",
-     "requires": [],
+     "requires": [
+      "c-algebra",
+      "c-linalg-systems"
+     ],
      "lessons": [
       {
        "lessonId": "l-linalg-gauss",
@@ -1739,7 +1711,7 @@
        "title": "Gauß-Elimination als erlaubte Umformung",
        "objectives": [
         "erlaubte Zeilenoperationen begründen",
-        "eine 2×2-erweiterte Matrix in Stufenform bringen",
+        "eine 2×2-erweiterte Matrix in Zeilenstufenform bringen",
         "eindeutige, freie und widersprüchliche Systeme unterscheiden"
        ],
        "estimatedMinutes": 55,
@@ -1754,8 +1726,8 @@
        "mdFiles": [
         {
          "ref": "lessons/linear-algebra/gauss.md",
-         "lines": 81,
-         "words": 282,
+         "lines": 102,
+         "words": 868,
          "block": "worked-example"
         }
        ]
@@ -1923,8 +1895,10 @@
     }
    ],
    "trackIds": [
+    "applied-ai",
     "common-core",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 240,
    "releaseStatus": "browser-verified",
@@ -1933,7 +1907,9 @@
     {
      "moduleId": "lm-linalg-independence",
      "title": "Unabhängigkeit und Rang begründen",
-     "requires": [],
+     "requires": [
+      "c-linalg-matrices"
+     ],
      "lessons": [
       {
        "lessonId": "l-linalg-independence",
@@ -1942,9 +1918,9 @@
        "objectives": [
         "Abhängigkeit über eine konkrete Linearkombination erkennen",
         "Rang als Zahl der Pivotpositionen bestimmen",
-        "Determinante und Gauß passend als Prüfwerkzeug auswählen"
+        "Determinante und Gauß-Elimination passend als Prüfwerkzeug auswählen"
        ],
-       "estimatedMinutes": 50,
+       "estimatedMinutes": 80,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -1956,8 +1932,8 @@
        "mdFiles": [
         {
          "ref": "lessons/linear-algebra/independence.md",
-         "lines": 58,
-         "words": 276,
+         "lines": 95,
+         "words": 990,
          "block": "worked-example"
         }
        ]
@@ -2167,8 +2143,10 @@
    "domain": "data",
    "level": "apply",
    "requires": [
+    "c-python-reading",
     "c-python-functions",
-    "c-linalg-matrices"
+    "c-linalg-matrices",
+    "c-python-collections"
    ],
    "relations": [
     {
@@ -2178,7 +2156,9 @@
    ],
    "trackIds": [
     "applied-ai",
-    "common-core"
+    "common-core",
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 240,
    "releaseStatus": "browser-verified",
@@ -2186,15 +2166,20 @@
    "modules": [
     {
      "moduleId": "lm-linalg-numpy-shape-contracts",
-     "title": "NumPy-Arrays mit Shape-Verträgen",
-     "requires": [],
+     "title": "Dimensionsverträge in NumPy prüfen",
+     "requires": [
+      "c-python-reading",
+      "c-python-functions",
+      "c-linalg-matrices",
+      "c-python-collections"
+     ],
      "lessons": [
       {
        "lessonId": "l-numpy-shape-contracts",
        "path": "content/lessons/linear-algebra/numpy.json",
-       "title": "Shape-Verträge formulieren und prüfen",
+       "title": "NumPy-Arrays mit Dimensionsverträgen",
        "objectives": [
-        "ndim und shape als Funktionsvertrag prüfen",
+        "Anzahl der Achsen und Form als Funktionsvertrag prüfen",
         "Matrixprodukte mit @ von elementweiser Multiplikation unterscheiden",
         "Broadcasting an einem kleinen Handbeispiel kontrollieren"
        ],
@@ -2210,8 +2195,8 @@
        "mdFiles": [
         {
          "ref": "lessons/linear-algebra/numpy.md",
-         "lines": 82,
-         "words": 335,
+         "lines": 117,
+         "words": 1066,
          "block": "worked-example"
         }
        ]
@@ -2236,6 +2221,23 @@
        "caseHasWorkedExample": false
       },
       {
+       "placementId": "p-linalg-numpy-shape-contracts-07-column-picture-trace",
+       "familyId": "trace-assignment-state",
+       "caseId": "column-picture-trace",
+       "role": "curated",
+       "difficulty": "intro",
+       "masteryEligible": false,
+       "estimatedMinutes": 8,
+       "lessonId": "l-numpy-shape-contracts",
+       "familyProcedural": false,
+       "familyCaseCount": 15,
+       "familyHasBank": false,
+       "caseType": "?",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
        "placementId": "p-linalg-numpy-shape-contracts-02-matvec-code-reference",
        "familyId": "construct-matvec-shape-contract",
        "caseId": "matvec-code-reference",
@@ -2253,6 +2255,23 @@
        "caseHasWorkedExample": false
       },
       {
+       "placementId": "p-linalg-numpy-shape-contracts-08-scalar-loop-output",
+       "familyId": "formula-scalar-product",
+       "caseId": "scalar-loop-output",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": true,
+       "estimatedMinutes": 6,
+       "lessonId": "l-numpy-shape-contracts",
+       "familyProcedural": false,
+       "familyCaseCount": 7,
+       "familyHasBank": false,
+       "caseType": "?",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
        "placementId": "p-linalg-numpy-shape-contracts-03-synthesis-singular-guard",
        "familyId": "construct-linalg-contract-synthesis",
        "caseId": "synthesis-singular-guard",
@@ -2266,6 +2285,23 @@
        "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-numpy-shape-contracts-09-shape-debug-authored",
+       "familyId": "classify-column-combination",
+       "caseId": "shape-debug-authored",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-numpy-shape-contracts",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": true,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -2352,7 +2388,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 4,
+    "masteryEligibleDefinitions": 6,
     "policySatisfiable": true
    }
   },
@@ -2372,7 +2408,9 @@
    ],
    "trackIds": [
     "applied-ai",
-    "common-core"
+    "common-core",
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 300,
    "releaseStatus": "draft",
@@ -2381,7 +2419,9 @@
     {
      "moduleId": "lm-foundations-control-flow",
      "title": "Bedingungen und Schleifen kontrollieren",
-     "requires": [],
+     "requires": [
+      "c-python-basics"
+     ],
      "lessons": [
       {
        "lessonId": "l-foundations-control-flow",
@@ -2392,7 +2432,7 @@
         "for und while passend auswählen",
         "Abbruch und Fortschritt einer Schleife prüfen"
        ],
-       "estimatedMinutes": 45,
+       "estimatedMinutes": 75,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -2404,8 +2444,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/control-flow.md",
-         "lines": 47,
-         "words": 245,
+         "lines": 83,
+         "words": 718,
          "block": "worked-example"
         }
        ]
@@ -2425,7 +2465,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "choice",
-       "caseHasFeedbackRules": false,
+       "caseHasFeedbackRules": true,
        "caseHintCount": 0,
        "caseHasWorkedExample": false
       },
@@ -2455,7 +2495,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "choice",
-       "caseHasFeedbackRules": false,
+       "caseHasFeedbackRules": true,
        "caseHintCount": 0,
        "caseHasWorkedExample": false
       },
@@ -2581,7 +2621,9 @@
    ],
    "trackIds": [
     "applied-ai",
-    "common-core"
+    "common-core",
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 300,
    "releaseStatus": "draft",
@@ -2590,7 +2632,9 @@
     {
      "moduleId": "lm-foundations-collections",
      "title": "Datenstrukturen nach Aufgabe wählen",
-     "requires": [],
+     "requires": [
+      "c-python-control-flow"
+     ],
      "lessons": [
       {
        "lessonId": "l-foundations-collections",
@@ -2601,7 +2645,7 @@
         "Häufigkeiten mit einem Dictionary zählen",
         "Duplikate mit einem Set erkennen"
        ],
-       "estimatedMinutes": 45,
+       "estimatedMinutes": 70,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -2613,8 +2657,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/collections.md",
-         "lines": 55,
-         "words": 242,
+         "lines": 83,
+         "words": 658,
          "block": "worked-example"
         }
        ]
@@ -2634,7 +2678,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "choice",
-       "caseHasFeedbackRules": false,
+       "caseHasFeedbackRules": true,
        "caseHintCount": 0,
        "caseHasWorkedExample": false
       },
@@ -2664,7 +2708,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "choice",
-       "caseHasFeedbackRules": false,
+       "caseHasFeedbackRules": true,
        "caseHintCount": 0,
        "caseHasWorkedExample": false
       },
@@ -2792,6 +2836,7 @@
    "trackIds": [
     "applied-ai",
     "common-core",
+    "mathematical-foundations",
     "research-evaluation"
    ],
    "estimatedMinutes": 300,
@@ -2801,7 +2846,10 @@
     {
      "moduleId": "lm-foundations-files-errors",
      "title": "Dateien lesen und Fehler begrenzen",
-     "requires": [],
+     "requires": [
+      "c-python-functions",
+      "c-python-collections"
+     ],
      "lessons": [
       {
        "lessonId": "l-foundations-files-errors",
@@ -2812,7 +2860,7 @@
         "Parsingfehler von Dateifehlern unterscheiden",
         "Fehler dort behandeln, wo eine sinnvolle Entscheidung möglich ist"
        ],
-       "estimatedMinutes": 45,
+       "estimatedMinutes": 70,
        "releaseStatus": "draft",
        "blockTypes": [
         "project-step"
@@ -2821,8 +2869,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/files-errors.md",
-         "lines": 49,
-         "words": 232,
+         "lines": 76,
+         "words": 625,
          "block": "project-step"
         }
        ]
@@ -2842,7 +2890,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "choice",
-       "caseHasFeedbackRules": false,
+       "caseHasFeedbackRules": true,
        "caseHintCount": 0,
        "caseHasWorkedExample": false
       },
@@ -3004,7 +3052,10 @@
     {
      "moduleId": "lm-foundations-testing-debugging",
      "title": "Ein Fehler, ein reproduzierbarer Test",
-     "requires": [],
+     "requires": [
+      "c-python-functions",
+      "c-python-files-errors"
+     ],
      "lessons": [
       {
        "lessonId": "l-foundations-testing-debugging",
@@ -3015,7 +3066,7 @@
         "Arrange, Act und Assert trennen",
         "einen Fix gegen Ursache und Regression prüfen"
        ],
-       "estimatedMinutes": 45,
+       "estimatedMinutes": 70,
        "releaseStatus": "draft",
        "blockTypes": [
         "project-step"
@@ -3024,8 +3075,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/testing-debugging.md",
-         "lines": 45,
-         "words": 259,
+         "lines": 70,
+         "words": 632,
          "block": "project-step"
         }
        ]
@@ -3045,7 +3096,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "choice",
-       "caseHasFeedbackRules": false,
+       "caseHasFeedbackRules": true,
        "caseHintCount": 0,
        "caseHasWorkedExample": false
       },
@@ -3229,6 +3280,23 @@
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-testing-debugging-seeded-error-pattern-cases",
+       "familyId": "classify-error-hypothesis",
+       "caseId": "seeded-error-pattern-cases",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-foundations-testing-debugging",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": [
@@ -3245,7 +3313,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 6,
+    "masteryEligibleDefinitions": 7,
     "policySatisfiable": true
    }
   },
@@ -3297,8 +3365,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/git.md",
-         "lines": 52,
-         "words": 297,
+         "lines": 79,
+         "words": 621,
          "block": "project-step"
         }
        ]
@@ -3335,7 +3403,7 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "choice",
-       "caseHasFeedbackRules": false,
+       "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3352,7 +3420,7 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "choice",
-       "caseHasFeedbackRules": false,
+       "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3436,7 +3504,9 @@
     }
    ],
    "trackIds": [
-    "applied-ai"
+    "applied-ai",
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 420,
    "releaseStatus": "draft",
@@ -3460,7 +3530,7 @@
         "fehlende Werte, Sentinel-Werte und Duplikate erkennen und korrekt behandeln",
         "einen Datenqualitätsvertrag für eine Tabelle formulieren und durchsetzen"
        ],
-       "estimatedMinutes": 55,
+       "estimatedMinutes": 60,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example"
@@ -3469,8 +3539,8 @@
        "mdFiles": [
         {
          "ref": "lessons/data-ml/data-cleaning.md",
-         "lines": 70,
-         "words": 726,
+         "lines": 88,
+         "words": 1029,
          "block": "worked-example"
         }
        ]
@@ -3616,7 +3686,9 @@
    ],
    "relations": [],
    "trackIds": [
-    "applied-ai"
+    "applied-ai",
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 420,
    "releaseStatus": "draft",
@@ -3638,7 +3710,7 @@
         "die Diagrammart aus der Fragestellung ableiten und Korrelation mit np.corrcoef berechnen",
         "Korrelation von Kausalität trennen und bedingte Wahrscheinlichkeit als Spaltenanteil lesen"
        ],
-       "estimatedMinutes": 55,
+       "estimatedMinutes": 60,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -3650,8 +3722,8 @@
        "mdFiles": [
         {
          "ref": "lessons/data-ml/eda-distributions.md",
-         "lines": 80,
-         "words": 702,
+         "lines": 104,
+         "words": 1059,
          "block": "worked-example"
         }
        ]
@@ -3785,7 +3857,8 @@
    ],
    "trackIds": [
     "applied-ai",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 480,
    "releaseStatus": "draft",
@@ -3805,24 +3878,33 @@
        "path": "content/lessons/data-ml/gradient-regression.json",
        "title": "Gradienten von Hand herleiten",
        "objectives": [
-        "die Ableitung als Steigungsrate lesen und den Gradienten von MSE bzgl. w und b herleiten",
-        "Gradientenabstieg-Updates w ← w − lr·grad ausführen und gegen lstsq prüfen",
+        "die Ableitung als Steigungsrate lesen und den Gradienten des mittleren quadratischen Fehlers nach w und b herleiten",
+        "Updates w ← w − η·∇ ausführen und gegen lstsq prüfen",
         "numerische Gradientenchecks mit (f(x+h) − f(x−h))/2h durchführen"
        ],
-       "estimatedMinutes": 60,
+       "estimatedMinutes": 70,
        "releaseStatus": "draft",
        "blockTypes": [
+        "worked-example",
+        "visualization",
         "worked-example",
         "visualization"
        ],
        "vizRefs": [
+        "lessons/data-ml/secant-tangent.viz.json",
         "lessons/data-ml/mse-bowl.viz.json"
        ],
        "mdFiles": [
         {
          "ref": "lessons/data-ml/gradient-regression.md",
-         "lines": 89,
-         "words": 717,
+         "lines": 29,
+         "words": 411,
+         "block": "worked-example"
+        },
+        {
+         "ref": "lessons/data-ml/gradient-regression-rest.md",
+         "lines": 100,
+         "words": 948,
          "block": "worked-example"
         }
        ]
@@ -3950,6 +4032,7 @@
    "relations": [],
    "trackIds": [
     "applied-ai",
+    "mathematical-foundations",
     "research-evaluation"
    ],
    "estimatedMinutes": 360,
@@ -3973,7 +4056,7 @@
         "Majority- und Mean-Baselines berechnen und als Vergleichsmaßstab begründen",
         "einen deterministischen Train/Test-Split mit np.random.default_rng(seed).permutation umsetzen"
        ],
-       "estimatedMinutes": 50,
+       "estimatedMinutes": 60,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example"
@@ -3982,8 +4065,8 @@
        "mdFiles": [
         {
          "ref": "lessons/data-ml/ml-baseline.md",
-         "lines": 59,
-         "words": 438,
+         "lines": 73,
+         "words": 773,
          "block": "worked-example"
         }
        ]
@@ -4123,7 +4206,8 @@
    ],
    "trackIds": [
     "applied-ai",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 480,
    "releaseStatus": "draft",
@@ -4131,10 +4215,10 @@
    "modules": [
     {
      "moduleId": "lm-ml-linear",
-     "title": "Lineare Regression: Fit, Fehlermaße und Residuenanalyse",
+     "title": "Lineare Regression: Anpassung, Fehlermaße und Residuenanalyse",
      "requires": [
-      "c-ml-baseline",
-      "c-grad-regression"
+      "c-grad-regression",
+      "c-ml-baseline"
      ],
      "lessons": [
       {
@@ -4143,10 +4227,10 @@
        "title": "Fit und Fehlermaße berechnen",
        "objectives": [
         "MSE, RMSE und R² von Hand berechnen und die Einheiten der Fehlermaße angeben",
-        "eine Kleinste-Quadrate-Anpassung mit Intercept über eine Design-Matrix und np.linalg.lstsq berechnen",
+        "eine Kleinste-Quadrate-Anpassung mit Achsenabschnitt über die Design-Matrix und np.linalg.lstsq berechnen",
         "Residuenplots auf Trend, Trichterform und Ausreißer untersuchen"
        ],
-       "estimatedMinutes": 55,
+       "estimatedMinutes": 65,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -4158,8 +4242,8 @@
        "mdFiles": [
         {
          "ref": "lessons/data-ml/ml-linear.md",
-         "lines": 71,
-         "words": 494,
+         "lines": 104,
+         "words": 928,
          "block": "worked-example"
         }
        ]
@@ -4263,23 +4347,6 @@
        "caseHasWorkedExample": false
       },
       {
-       "placementId": "p-ml-linear-mcq-ridge-statements",
-       "familyId": "multiple-choice-ml-linear",
-       "caseId": "ridge-statements",
-       "role": "curated",
-       "difficulty": "core",
-       "masteryEligible": true,
-       "estimatedMinutes": 6,
-       "lessonId": "l-ml-linear",
-       "familyProcedural": true,
-       "familyCaseCount": 4,
-       "familyHasBank": false,
-       "caseType": "choice",
-       "caseHasFeedbackRules": true,
-       "caseHintCount": 2,
-       "caseHasWorkedExample": false
-      },
-      {
        "placementId": "p-ml-linear-mcq-residual-diagnostics",
        "familyId": "multiple-choice-ml-linear",
        "caseId": "residual-diagnostics",
@@ -4287,23 +4354,6 @@
        "difficulty": "stretch",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-ml-linear",
-       "familyProcedural": true,
-       "familyCaseCount": 4,
-       "familyHasBank": false,
-       "caseType": "choice",
-       "caseHasFeedbackRules": true,
-       "caseHintCount": 2,
-       "caseHasWorkedExample": false
-      },
-      {
-       "placementId": "p-ml-linear-mcq-bias-variance-regularization",
-       "familyId": "multiple-choice-ml-linear",
-       "caseId": "bias-variance-regularization",
-       "role": "curated",
-       "difficulty": "challenge",
-       "masteryEligible": true,
-       "estimatedMinutes": 10,
        "lessonId": "l-ml-linear",
        "familyProcedural": true,
        "familyCaseCount": 4,
@@ -4336,7 +4386,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 8,
+    "masteryEligibleDefinitions": 6,
     "policySatisfiable": true
    }
   },
@@ -4356,7 +4406,8 @@
    ],
    "trackIds": [
     "applied-ai",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 480,
    "releaseStatus": "draft",
@@ -4375,10 +4426,10 @@
        "title": "Sigmoid auswerten und Labels setzen",
        "objectives": [
         "die Sigmoid-Funktion auswerten und Wahrscheinlichkeiten mit einem Schwellenwert in Labels überführen",
-        "Precision, Recall und F1 aus einer Konfusionsmatrix berechnen",
-        "den Schwellenwert an den Fehlerkosten von False Positive und False Negative ausrichten"
+        "Präzision, Recall und F1 aus einer Konfusionsmatrix berechnen",
+        "den Schwellenwert an den Fehlerkosten von falsch positiv und falsch negativ ausrichten"
        ],
-       "estimatedMinutes": 55,
+       "estimatedMinutes": 65,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -4390,8 +4441,8 @@
        "mdFiles": [
         {
          "ref": "lessons/data-ml/ml-logistic.md",
-         "lines": 64,
-         "words": 502,
+         "lines": 95,
+         "words": 1005,
          "block": "worked-example"
         }
        ]
@@ -4535,6 +4586,7 @@
    ],
    "trackIds": [
     "applied-ai",
+    "mathematical-foundations",
     "research-evaluation"
    ],
    "estimatedMinutes": 480,
@@ -4557,7 +4609,7 @@
         "Hyperparameter von gelernten Parametern unterscheiden und Hyperparameter über Cross-Validation wählen",
         "Leakage-Quellen erkennen und die Pipelinegrenze „fit nur auf Train-Folds“ durchsetzen"
        ],
-       "estimatedMinutes": 55,
+       "estimatedMinutes": 65,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -4569,8 +4621,8 @@
        "mdFiles": [
         {
          "ref": "lessons/data-ml/ml-cv.md",
-         "lines": 46,
-         "words": 493,
+         "lines": 68,
+         "words": 781,
          "block": "worked-example"
         }
        ]
@@ -4758,10 +4810,10 @@
        "title": "Fehlerlücken in Teilgruppen messen",
        "objectives": [
         "Fehlerraten je Teilgruppe berechnen und die größte Lücke in Prozentpunkten angeben",
-        "Fehlertypen unterscheiden: Label-Noise, systematischer Subgruppenfehler und Drift",
-        "eine Modellkarte mit intended use, Metriken pro Gruppe und Grenzen ohne Overclaims formulieren"
+        "Fehlertypen unterscheiden: Label-Rauschen, systematischer Teilgruppenfehler und Drift",
+        "eine Modellkarte mit Einsatzzweck, Metriken pro Gruppe und Grenzen ohne Overclaims formulieren"
        ],
-       "estimatedMinutes": 50,
+       "estimatedMinutes": 60,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example"
@@ -4770,8 +4822,8 @@
        "mdFiles": [
         {
          "ref": "lessons/data-ml/ml-error-analysis.md",
-         "lines": 61,
-         "words": 458,
+         "lines": 65,
+         "words": 742,
          "block": "worked-example"
         }
        ]
@@ -4922,7 +4974,8 @@
    ],
    "trackIds": [
     "applied-ai",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 480,
    "releaseStatus": "draft",
@@ -4932,8 +4985,8 @@
      "moduleId": "lm-ml-regularization",
      "title": "Ridge und Lasso: Schrumpfen statt Überanpassen",
      "requires": [
-      "c-ml-cv",
-      "c-ml-linear"
+      "c-ml-linear",
+      "c-ml-cv"
      ],
      "lessons": [
       {
@@ -4941,11 +4994,11 @@
        "path": "content/lessons/data-ml/ml-regularization.json",
        "title": "Ridge-Formel herleiten und anwenden",
        "objectives": [
-        "die Ridge-Geschlossene-Formel herleiten und auf kleine Matrizen anwenden",
+        "die geschlossene Ridge-Lösung herleiten und auf kleine Matrizen anwenden",
         "Lasso-Soft-Thresholding in einer Dimension berechnen und Sparsity begründen",
-        "lambda per Cross-Validation wählen und Feature Engineering leakage-frei vorbereiten"
+        "λ per Kreuzvalidierung wählen und die Merkmalsaufbereitung leakage-frei vorbereiten"
        ],
-       "estimatedMinutes": 55,
+       "estimatedMinutes": 65,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -4957,8 +5010,8 @@
        "mdFiles": [
         {
          "ref": "lessons/data-ml/ml-regularization.md",
-         "lines": 73,
-         "words": 562,
+         "lines": 101,
+         "words": 1062,
          "block": "worked-example"
         }
        ]
@@ -5031,6 +5084,23 @@
        "caseHasWorkedExample": false
       },
       {
+       "placementId": "p-ml-regularization-mcq-ridge-statements",
+       "familyId": "multiple-choice-ml-linear",
+       "caseId": "ridge-statements",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": true,
+       "estimatedMinutes": 6,
+       "lessonId": "l-ml-regularization",
+       "familyProcedural": true,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
        "placementId": "p-ml-regularization-lasso",
        "familyId": "formula-ridge-lasso-closed-form",
        "caseId": "lasso-soft-threshold",
@@ -5044,6 +5114,23 @@
        "familyHasBank": false,
        "caseType": "reference-solver",
        "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-ml-regularization-mcq-bias-variance-regularization",
+       "familyId": "multiple-choice-ml-linear",
+       "caseId": "bias-variance-regularization",
+       "role": "curated",
+       "difficulty": "challenge",
+       "masteryEligible": true,
+       "estimatedMinutes": 10,
+       "lessonId": "l-ml-regularization",
+       "familyProcedural": true,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5071,7 +5158,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 4,
+    "masteryEligibleDefinitions": 6,
     "policySatisfiable": true
    }
   },
@@ -5090,7 +5177,8 @@
     }
    ],
    "trackIds": [
-    "applied-ai"
+    "applied-ai",
+    "research-evaluation"
    ],
    "estimatedMinutes": 480,
    "releaseStatus": "draft",
@@ -5112,7 +5200,7 @@
         "Bias-Varianz-Idee von Bagging und Majority Voting begründen",
         "Ensemble- gegen Baseline-Vergleiche unter identischen Splits planen"
        ],
-       "estimatedMinutes": 55,
+       "estimatedMinutes": 65,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example"
@@ -5121,8 +5209,8 @@
        "mdFiles": [
         {
          "ref": "lessons/data-ml/ml-ensembles.md",
-         "lines": 72,
-         "words": 569,
+         "lines": 68,
+         "words": 865,
          "block": "worked-example"
         }
        ]
@@ -5262,7 +5350,8 @@
    ],
    "trackIds": [
     "applied-ai",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 600,
    "releaseStatus": "draft",
@@ -5272,8 +5361,8 @@
      "moduleId": "lm-ml-svm-pca",
      "title": "Margins, PCA und k-Means: Abstände ohne Ambiguität",
      "requires": [
-      "c-ml-cv",
-      "c-linalg-independence"
+      "c-linalg-independence",
+      "c-ml-cv"
      ],
      "lessons": [
       {
@@ -5281,24 +5370,33 @@
        "path": "content/lessons/data-ml/ml-svm-pca.json",
        "title": "Margins als kleinste Norm erklären",
        "objectives": [
-        "die Margin-Idee der Hard-Margin-SVM als kleinste-Norm-Lösung erklären",
+        "die Margin-Idee der Hard-Margin-SVM als Lösung mit kleinster Norm erklären",
         "PCA mit Zentrieren, Kovarianz, eigh und Varianzanteil von Hand und in numpy rechnen",
         "k-Means mit fester Initialisierung deterministisch ausführen und Skalierungsanforderungen begründen"
        ],
-       "estimatedMinutes": 60,
+       "estimatedMinutes": 70,
        "releaseStatus": "draft",
        "blockTypes": [
+        "worked-example",
+        "visualization",
         "worked-example",
         "visualization"
        ],
        "vizRefs": [
+        "lessons/data-ml/eigen-direction.viz.json",
         "lessons/data-ml/pca-axis.viz.json"
        ],
        "mdFiles": [
         {
          "ref": "lessons/data-ml/ml-svm-pca.md",
-         "lines": 64,
-         "words": 602,
+         "lines": 32,
+         "words": 488,
+         "block": "worked-example"
+        },
+        {
+         "ref": "lessons/data-ml/ml-svm-pca-pca-kmeans.md",
+         "lines": 70,
+         "words": 712,
          "block": "worked-example"
         }
        ]
@@ -5441,12 +5539,12 @@
      "moduleId": "lm-ml-repro",
      "title": "Reproduzierbarkeit: Seeds, Splits und Manifeste",
      "requires": [
+      "c-testing-debugging",
+      "c-git-basics",
       "c-ml-erroranalysis",
       "c-ml-regularization",
       "c-ml-ensembles",
-      "c-ml-svm-pca",
-      "c-git-basics",
-      "c-testing-debugging"
+      "c-ml-svm-pca"
      ],
      "lessons": [
       {
@@ -5458,7 +5556,7 @@
         "numpy-Zufallsströme mit default_rng korrekt vorhersagen und wiederholen",
         "Modellkarten und berichtete Streuung als Teil ehrlicher Ergebnisberichte einsetzen"
        ],
-       "estimatedMinutes": 60,
+       "estimatedMinutes": 65,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example"
@@ -5467,8 +5565,8 @@
        "mdFiles": [
         {
          "ref": "lessons/data-ml/ml-repro.md",
-         "lines": 68,
-         "words": 531,
+         "lines": 75,
+         "words": 743,
          "block": "worked-example"
         }
        ]
@@ -5622,7 +5720,8 @@
    "relations": [],
    "trackIds": [
     "applied-ai",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 420,
    "releaseStatus": "draft",
@@ -5630,10 +5729,10 @@
    "modules": [
     {
      "moduleId": "lm-dl-tensors",
-     "title": "Tensoren, Layer und Dimensionsverträge",
+     "title": "Tensoren, Schichten und Dimensionsverträge",
      "requires": [
-      "c-numpy-basics",
-      "c-linalg-matrices"
+      "c-linalg-matrices",
+      "c-numpy-basics"
      ],
      "lessons": [
       {
@@ -5659,14 +5758,14 @@
        "mdFiles": [
         {
          "ref": "lessons/deep-learning/dl-tensors.md",
-         "lines": 65,
-         "words": 596,
+         "lines": 87,
+         "words": 920,
          "block": "worked-example"
         },
         {
          "ref": "lessons/deep-learning/dl-tensors-checkpoint.md",
          "lines": 10,
-         "words": 143,
+         "words": 157,
          "block": "checkpoint"
         }
        ]
@@ -5818,7 +5917,8 @@
    "relations": [],
    "trackIds": [
     "applied-ai",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 540,
    "releaseStatus": "draft",
@@ -5828,8 +5928,8 @@
      "moduleId": "lm-dl-autograd",
      "title": "Backpropagation als Kettenregel im Rechengraph",
      "requires": [
-      "c-dl-tensors",
-      "c-grad-regression"
+      "c-grad-regression",
+      "c-dl-tensors"
      ],
      "lessons": [
       {
@@ -5853,14 +5953,14 @@
        "mdFiles": [
         {
          "ref": "lessons/deep-learning/dl-autograd.md",
-         "lines": 51,
-         "words": 595,
+         "lines": 74,
+         "words": 866,
          "block": "worked-example"
         },
         {
          "ref": "lessons/deep-learning/dl-autograd-checkpoint.md",
          "lines": 8,
-         "words": 146,
+         "words": 143,
          "block": "checkpoint"
         }
        ]
@@ -6012,7 +6112,8 @@
    "relations": [],
    "trackIds": [
     "applied-ai",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 600,
    "releaseStatus": "draft",
@@ -6020,10 +6121,10 @@
    "modules": [
     {
      "moduleId": "lm-dl-training",
-     "title": "Training Loops: Loss, Lernrate, Lernkurven",
+     "title": "Trainingsschleifen: Verlust, Lernrate, Lernkurven",
      "requires": [
-      "c-dl-autograd",
-      "c-ml-baseline"
+      "c-ml-baseline",
+      "c-dl-autograd"
      ],
      "lessons": [
       {
@@ -6049,14 +6150,14 @@
        "mdFiles": [
         {
          "ref": "lessons/deep-learning/dl-training.md",
-         "lines": 67,
-         "words": 767,
+         "lines": 88,
+         "words": 1037,
          "block": "worked-example"
         },
         {
          "ref": "lessons/deep-learning/dl-training-checkpoint.md",
          "lines": 8,
-         "words": 158,
+         "words": 154,
          "block": "checkpoint"
         }
        ]
@@ -6208,7 +6309,8 @@
    "relations": [],
    "trackIds": [
     "applied-ai",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 480,
    "releaseStatus": "draft",
@@ -6218,8 +6320,8 @@
      "moduleId": "lm-dl-regularization",
      "title": "Regularisierung, faire Ablation, Save/Load",
      "requires": [
-      "c-dl-training",
-      "c-ml-cv"
+      "c-ml-cv",
+      "c-dl-training"
      ],
      "lessons": [
       {
@@ -6246,14 +6348,14 @@
        "mdFiles": [
         {
          "ref": "lessons/deep-learning/dl-regularization.md",
-         "lines": 51,
-         "words": 504,
+         "lines": 75,
+         "words": 763,
          "block": "worked-example"
         },
         {
          "ref": "lessons/deep-learning/dl-regularization-checkpoint.md",
          "lines": 8,
-         "words": 168,
+         "words": 165,
          "block": "checkpoint"
         }
        ]
@@ -6405,7 +6507,8 @@
    "relations": [],
    "trackIds": [
     "applied-ai",
-    "mathematical-foundations"
+    "mathematical-foundations",
+    "research-evaluation"
    ],
    "estimatedMinutes": 600,
    "releaseStatus": "draft",
@@ -6415,8 +6518,8 @@
      "moduleId": "lm-tf-attention",
      "title": "Attention und Transformer-Grundlagen",
      "requires": [
-      "c-dl-tensors",
-      "c-linalg-matrices"
+      "c-linalg-matrices",
+      "c-dl-tensors"
      ],
      "lessons": [
       {
@@ -6441,14 +6544,14 @@
        "mdFiles": [
         {
          "ref": "lessons/transformer-llm/tf-attention.md",
-         "lines": 76,
-         "words": 700,
+         "lines": 100,
+         "words": 898,
          "block": "worked-example"
         },
         {
          "ref": "lessons/transformer-llm/tf-attention-checkpoint.md",
          "lines": 10,
-         "words": 103,
+         "words": 144,
          "block": "checkpoint"
         }
        ]
@@ -6594,11 +6697,14 @@
    "domain": "deep-learning",
    "level": "apply",
    "requires": [
+    "c-python-reading",
+    "c-python-functions",
     "c-python-collections"
    ],
    "relations": [],
    "trackIds": [
-    "applied-ai"
+    "applied-ai",
+    "research-evaluation"
    ],
    "estimatedMinutes": 420,
    "releaseStatus": "draft",
@@ -6608,6 +6714,8 @@
      "moduleId": "lm-tf-tokenizer",
      "title": "Tokenisierung und Sprachmodellfamilien",
      "requires": [
+      "c-python-reading",
+      "c-python-functions",
       "c-python-collections"
      ],
      "lessons": [
@@ -6620,7 +6728,7 @@
         "Encode/Decode mit End-of-Word-Marker implementieren und den Round-Trip decode(encode(s)) == s durchsetzen",
         "einen gepinnten Mini-BPE-Ablauf (Tie-Break: lexikographisch kleinstes Paar) ausführen und Encoder-, Decoder- und Encoder-Decoder-Familien zuordnen"
        ],
-       "estimatedMinutes": 70,
+       "estimatedMinutes": 75,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -6630,14 +6738,14 @@
        "mdFiles": [
         {
          "ref": "lessons/transformer-llm/tf-tokenizer.md",
-         "lines": 55,
-         "words": 677,
+         "lines": 84,
+         "words": 946,
          "block": "worked-example"
         },
         {
          "ref": "lessons/transformer-llm/tf-tokenizer-checkpoint.md",
          "lines": 10,
-         "words": 98,
+         "words": 99,
          "block": "checkpoint"
         }
        ]
@@ -6788,7 +6896,8 @@
    ],
    "relations": [],
    "trackIds": [
-    "applied-ai"
+    "applied-ai",
+    "research-evaluation"
    ],
    "estimatedMinutes": 480,
    "releaseStatus": "draft",
@@ -6821,14 +6930,14 @@
        "mdFiles": [
         {
          "ref": "lessons/transformer-llm/tf-inference.md",
-         "lines": 63,
-         "words": 600,
+         "lines": 81,
+         "words": 842,
          "block": "worked-example"
         },
         {
          "ref": "lessons/transformer-llm/tf-inference-checkpoint.md",
          "lines": 10,
-         "words": 79,
+         "words": 78,
          "block": "checkpoint"
         }
        ]
@@ -6973,7 +7082,8 @@
    ],
    "relations": [],
    "trackIds": [
-    "applied-ai"
+    "applied-ai",
+    "research-evaluation"
    ],
    "estimatedMinutes": 600,
    "releaseStatus": "draft",
@@ -6983,8 +7093,8 @@
      "moduleId": "lm-tf-finetuning",
      "title": "Fine-Tuning-Strategien und LoRA-Mathematik",
      "requires": [
-      "c-dl-inference",
-      "c-dl-regularization"
+      "c-dl-regularization",
+      "c-dl-inference"
      ],
      "lessons": [
       {
@@ -7009,14 +7119,14 @@
        "mdFiles": [
         {
          "ref": "lessons/transformer-llm/tf-finetuning.md",
-         "lines": 58,
-         "words": 611,
+         "lines": 81,
+         "words": 917,
          "block": "worked-example"
         },
         {
          "ref": "lessons/transformer-llm/tf-finetuning-checkpoint.md",
          "lines": 11,
-         "words": 97,
+         "words": 98,
          "block": "checkpoint"
         }
        ]
@@ -7178,8 +7288,8 @@
      "moduleId": "lm-tf-papers",
      "title": "Deep-Learning-Paper kritisch synthetisieren",
      "requires": [
-      "c-dl-finetuning",
-      "c-meta-learning"
+      "c-meta-learning",
+      "c-dl-finetuning"
      ],
      "lessons": [
       {
@@ -7191,7 +7301,7 @@
         "absolute (Prozentpunkte) und relative Verbesserungen (Prozent) unterscheiden und aus Paper-Zahlen nachrechnen",
         "Reproduzierbarkeits-Fallen (Seed, Baseline, Testset-Diät) erkennen und Paper anhand von Abstract-Fakten vergleichen"
        ],
-       "estimatedMinutes": 70,
+       "estimatedMinutes": 75,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -7201,14 +7311,14 @@
        "mdFiles": [
         {
          "ref": "lessons/transformer-llm/tf-papers.md",
-         "lines": 55,
-         "words": 618,
+         "lines": 80,
+         "words": 892,
          "block": "worked-example"
         },
         {
          "ref": "lessons/transformer-llm/tf-papers-checkpoint.md",
          "lines": 11,
-         "words": 97,
+         "words": 95,
          "block": "checkpoint"
         }
        ]
@@ -7353,7 +7463,8 @@
    ],
    "relations": [],
    "trackIds": [
-    "applied-ai"
+    "applied-ai",
+    "research-evaluation"
    ],
    "estimatedMinutes": 600,
    "releaseStatus": "draft",
@@ -7363,8 +7474,8 @@
      "moduleId": "lm-genai-rag",
      "title": "RAG: Retrieval messbar machen",
      "requires": [
-      "c-dl-inference",
-      "c-python-files-errors"
+      "c-python-files-errors",
+      "c-dl-inference"
      ],
      "lessons": [
       {
@@ -7380,6 +7491,8 @@
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
+        "visualization",
+        "worked-example",
         "checkpoint"
        ],
        "vizRefs": [
@@ -7388,14 +7501,20 @@
        "mdFiles": [
         {
          "ref": "lessons/genai-systems/rag-retrieval.md",
-         "lines": 60,
-         "words": 708,
+         "lines": 22,
+         "words": 308,
+         "block": "worked-example"
+        },
+        {
+         "ref": "lessons/genai-systems/rag-retrieval-index.md",
+         "lines": 74,
+         "words": 756,
          "block": "worked-example"
         },
         {
          "ref": "lessons/genai-systems/rag-retrieval-checkpoint.md",
          "lines": 10,
-         "words": 156,
+         "words": 154,
          "block": "checkpoint"
         }
        ]
@@ -7557,8 +7676,8 @@
      "moduleId": "lm-genai-eval",
      "title": "Evaluation generativer Antworten",
      "requires": [
-      "c-genai-rag",
-      "c-ml-erroranalysis"
+      "c-ml-erroranalysis",
+      "c-genai-rag"
      ],
      "lessons": [
       {
@@ -7583,14 +7702,14 @@
        "mdFiles": [
         {
          "ref": "lessons/genai-systems/genai-evaluation.md",
-         "lines": 57,
-         "words": 595,
+         "lines": 89,
+         "words": 815,
          "block": "worked-example"
         },
         {
          "ref": "lessons/genai-systems/genai-evaluation-checkpoint.md",
          "lines": 10,
-         "words": 144,
+         "words": 139,
          "block": "checkpoint"
         }
        ]
@@ -7746,8 +7865,8 @@
      "moduleId": "lm-genai-security",
      "title": "Defensive GenAI-Sicherheit",
      "requires": [
-      "c-genai-rag",
-      "c-testing-debugging"
+      "c-testing-debugging",
+      "c-genai-rag"
      ],
      "lessons": [
       {
@@ -7756,10 +7875,10 @@
        "title": "Injection regelbasiert erkennen",
        "objectives": [
         "Prompt-Injection in synthetischen, deutschsprachigen Beispielen regelbasiert erkennen und die Detektorqualität mit Precision/Recall messen",
-        "Datenabfluss-Kanäle und Toolberechtigungen über Vertrauensgrenzen (untrusted Retrieval → Modell → Tool) analysieren und Least-Privilege-Policies prüfen",
+        "Datenabfluss-Kanäle und Toolberechtigungen über Vertrauensgrenzen (nicht vertrauenswürdige Eingaben → Modell → Tool) analysieren und Least-Privilege-Policies prüfen",
         "Threat-Model-Entscheidungen treffen, Befunde auf die OWASP GenAI LLM Top 10 (nur verlinkt/paraphrasiert) beziehen und als Security-Regressionstests festschreiben"
        ],
-       "estimatedMinutes": 75,
+       "estimatedMinutes": 80,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -7769,8 +7888,8 @@
        "mdFiles": [
         {
          "ref": "lessons/genai-systems/genai-security.md",
-         "lines": 50,
-         "words": 624,
+         "lines": 72,
+         "words": 877,
          "block": "worked-example"
         },
         {
@@ -7922,7 +8041,8 @@
    ],
    "relations": [],
    "trackIds": [
-    "applied-ai"
+    "applied-ai",
+    "research-evaluation"
    ],
    "estimatedMinutes": 600,
    "releaseStatus": "draft",
@@ -7956,14 +8076,14 @@
        "mdFiles": [
         {
          "ref": "lessons/genai-systems/genai-prototype.md",
-         "lines": 47,
-         "words": 621,
+         "lines": 66,
+         "words": 806,
          "block": "worked-example"
         },
         {
          "ref": "lessons/genai-systems/genai-prototype-checkpoint.md",
          "lines": 10,
-         "words": 157,
+         "words": 154,
          "block": "checkpoint"
         }
        ]
@@ -8110,6 +8230,7 @@
    ],
    "relations": [],
    "trackIds": [
+    "applied-ai",
     "research-evaluation"
    ],
    "estimatedMinutes": 420,
@@ -8120,8 +8241,8 @@
      "moduleId": "lm-research-question",
      "title": "Forschungsfrage und Experimentprotokoll",
      "requires": [
-      "c-genai-eval",
-      "c-meta-learning"
+      "c-meta-learning",
+      "c-genai-eval"
      ],
      "lessons": [
       {
@@ -8144,20 +8265,20 @@
        "mdFiles": [
         {
          "ref": "lessons/research/research-question.md",
-         "lines": 66,
-         "words": 867,
+         "lines": 85,
+         "words": 1098,
          "block": "worked-example"
         },
         {
          "ref": "lessons/research/research-question-checkpoint.md",
          "lines": 10,
-         "words": 178,
+         "words": 173,
          "block": "checkpoint"
         },
         {
          "ref": "lessons/research/research-question-exercise.md",
          "lines": 29,
-         "words": 356,
+         "words": 352,
          "block": "exercise"
         }
        ]
@@ -8301,6 +8422,7 @@
    ],
    "relations": [],
    "trackIds": [
+    "applied-ai",
     "research-evaluation"
    ],
    "estimatedMinutes": 360,
@@ -8334,20 +8456,20 @@
        "mdFiles": [
         {
          "ref": "lessons/research/research-cards.md",
-         "lines": 50,
-         "words": 721,
+         "lines": 95,
+         "words": 1239,
          "block": "worked-example"
         },
         {
          "ref": "lessons/research/research-cards-checkpoint.md",
          "lines": 10,
-         "words": 135,
+         "words": 131,
          "block": "checkpoint"
         },
         {
          "ref": "lessons/research/research-cards-exercise.md",
          "lines": 59,
-         "words": 353,
+         "words": 343,
          "block": "exercise"
         }
        ]
@@ -8498,6 +8620,7 @@
    ],
    "relations": [],
    "trackIds": [
+    "applied-ai",
     "research-evaluation"
    ],
    "estimatedMinutes": 480,
@@ -8532,20 +8655,20 @@
        "mdFiles": [
         {
          "ref": "lessons/research/responsible-ai.md",
-         "lines": 54,
-         "words": 915,
+         "lines": 73,
+         "words": 1198,
          "block": "worked-example"
         },
         {
          "ref": "lessons/research/responsible-ai-checkpoint.md",
          "lines": 10,
-         "words": 174,
+         "words": 197,
          "block": "checkpoint"
         },
         {
          "ref": "lessons/research/responsible-ai-exercise.md",
          "lines": 41,
-         "words": 433,
+         "words": 430,
          "block": "exercise"
         }
        ]
@@ -8725,20 +8848,20 @@
        "mdFiles": [
         {
          "ref": "lessons/research/capstone-baseline.md",
-         "lines": 54,
-         "words": 888,
+         "lines": 72,
+         "words": 1051,
          "block": "worked-example"
         },
         {
          "ref": "lessons/research/capstone-baseline-checkpoint.md",
          "lines": 10,
-         "words": 147,
+         "words": 142,
          "block": "checkpoint"
         },
         {
          "ref": "lessons/research/capstone-baseline-exercise.md",
          "lines": 28,
-         "words": 374,
+         "words": 364,
          "block": "exercise"
         }
        ]
@@ -8894,8 +9017,8 @@
      "moduleId": "lm-capstone-freeze",
      "title": "Capstone-Pipeline: Freeze und Abhängigkeitsordnung",
      "requires": [
-      "c-research-capstone",
-      "c-ml-repro"
+      "c-ml-repro",
+      "c-research-capstone"
      ],
      "lessons": [
       {
@@ -8911,21 +9034,20 @@
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
-        "visualization",
         "checkpoint"
        ],
        "vizRefs": [],
        "mdFiles": [
         {
          "ref": "lessons/research/capstone-freeze.md",
-         "lines": 71,
-         "words": 502,
+         "lines": 86,
+         "words": 685,
          "block": "worked-example"
         },
         {
          "ref": "lessons/research/capstone-freeze-checkpoint.md",
          "lines": 10,
-         "words": 146,
+         "words": 141,
          "block": "checkpoint"
         }
        ]
@@ -9052,8 +9174,8 @@
      "moduleId": "lm-capstone-acceptance",
      "title": "Capstone-Pipeline: Abschlussdiagnose und Abnahme",
      "requires": [
-      "c-research-capstone",
-      "c-ml-repro"
+      "c-ml-repro",
+      "c-research-capstone"
      ],
      "lessons": [
       {
@@ -9075,14 +9197,14 @@
        "mdFiles": [
         {
          "ref": "lessons/research/capstone-acceptance.md",
-         "lines": 77,
-         "words": 511,
+         "lines": 89,
+         "words": 657,
          "block": "worked-example"
         },
         {
          "ref": "lessons/research/capstone-acceptance-checkpoint.md",
          "lines": 10,
-         "words": 119,
+         "words": 113,
          "block": "checkpoint"
         }
        ]
@@ -9200,8 +9322,8 @@
      "moduleId": "lm-capstone-repro",
      "title": "Capstone-Pipeline: Evidenz und Reproduzierbarkeit",
      "requires": [
-      "c-research-capstone",
-      "c-ml-repro"
+      "c-ml-repro",
+      "c-research-capstone"
      ],
      "lessons": [
       {
@@ -9211,7 +9333,7 @@
        "objectives": [
         "Reproduktion als Doppellauf mit Digest-Vergleich über der kanonischen Serialisierung prüfen und Versionen exakt statt als Bereichs-Spec pinnen",
         "Dokumentation mit Pflichtüberschriften, ohne Overclaims und ohne absolute Pfade des eigenen Rechners verlangen",
-        "Demo und Berichte als Work Evidence von Mastery unterscheiden und die Grenze des selbstberichteten Nachweises offenlegen"
+        "Demo und Berichte als Arbeitsnachweise von Mastery unterscheiden und die Grenze des selbstberichteten Nachweises offenlegen"
        ],
        "estimatedMinutes": 15,
        "releaseStatus": "draft",
@@ -9223,14 +9345,14 @@
        "mdFiles": [
         {
          "ref": "lessons/research/capstone-repro.md",
-         "lines": 76,
-         "words": 514,
+         "lines": 88,
+         "words": 662,
          "block": "worked-example"
         },
         {
          "ref": "lessons/research/capstone-repro-checkpoint.md",
          "lines": 10,
-         "words": 120,
+         "words": 115,
          "block": "checkpoint"
         }
        ]
@@ -9346,8 +9468,8 @@
      "moduleId": "lm-capstone-regression",
      "title": "Capstone-Pipeline: Regression und Evaluationsregeln",
      "requires": [
-      "c-research-capstone",
-      "c-ml-repro"
+      "c-ml-repro",
+      "c-research-capstone"
      ],
      "lessons": [
       {
@@ -9369,14 +9491,14 @@
        "mdFiles": [
         {
          "ref": "lessons/research/capstone-regression.md",
-         "lines": 73,
-         "words": 520,
+         "lines": 90,
+         "words": 684,
          "block": "worked-example"
         },
         {
          "ref": "lessons/research/capstone-regression-checkpoint.md",
          "lines": 10,
-         "words": 147,
+         "words": 142,
          "block": "checkpoint"
         }
        ]
@@ -9503,8 +9625,8 @@
      "moduleId": "lm-capstone-runner",
      "title": "Capstone-Pipeline: Stage-Runner und Budgets",
      "requires": [
-      "c-research-capstone",
-      "c-ml-repro"
+      "c-ml-repro",
+      "c-research-capstone"
      ],
      "lessons": [
       {
@@ -9526,14 +9648,14 @@
        "mdFiles": [
         {
          "ref": "lessons/research/capstone-runner.md",
-         "lines": 80,
-         "words": 560,
+         "lines": 93,
+         "words": 738,
          "block": "worked-example"
         },
         {
          "ref": "lessons/research/capstone-runner-checkpoint.md",
          "lines": 10,
-         "words": 136,
+         "words": 132,
          "block": "checkpoint"
         }
        ]

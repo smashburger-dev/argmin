@@ -8,17 +8,6 @@
   "competencyIds": [
     "c-numpy-basics"
   ],
-  "requires": [
-    "c-python-reading",
-    "c-python-functions",
-    "c-linalg-matrices",
-    "c-python-collections"
-  ],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-numpy-shape-contracts"
   ],

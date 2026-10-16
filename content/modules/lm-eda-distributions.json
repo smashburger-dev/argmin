@@ -8,12 +8,6 @@
   "competencyIds": [
     "c-eda-viz"
   ],
-  "requires": [
-    "c-pandas-cleaning"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-eda-distributions"
   ],

@@ -8,13 +8,6 @@
   "competencyIds": [
     "c-python-basics"
   ],
-  "requires": [],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "research-evaluation",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-foundations-python-state"
   ],

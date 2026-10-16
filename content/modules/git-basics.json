@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-git-basics"
   ],
-  "requires": [
-    "c-meta-learning"
-  ],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-foundations-git"
   ],

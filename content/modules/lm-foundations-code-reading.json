@@ -8,16 +8,6 @@
   "competencyIds": [
     "c-python-reading"
   ],
-  "requires": [
-    "c-python-basics",
-    "c-python-control-flow"
-  ],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "mathematical-foundations",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-foundations-code-reading"
   ],

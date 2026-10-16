@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-research-capstone"
   ],
-  "requires": [
-    "c-genai-prototype",
-    "c-research-responsible"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-capstone-baseline"
   ],

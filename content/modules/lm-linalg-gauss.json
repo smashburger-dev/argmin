@@ -8,15 +8,6 @@
   "competencyIds": [
     "c-linalg-gauss"
   ],
-  "requires": [
-    "c-algebra",
-    "c-linalg-systems"
-  ],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-linalg-gauss"
   ],

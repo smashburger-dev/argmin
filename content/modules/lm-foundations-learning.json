@@ -8,12 +8,6 @@
   "competencyIds": [
     "c-meta-learning"
   ],
-  "requires": [],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-foundations-learning"
   ],

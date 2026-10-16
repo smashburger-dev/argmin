@@ -8,12 +8,6 @@
   "competencyIds": [
     "c-ml-ensembles"
   ],
-  "requires": [
-    "c-ml-cv"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-ml-ensembles"
   ],

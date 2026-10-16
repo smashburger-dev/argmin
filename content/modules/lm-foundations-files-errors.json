@@ -8,15 +8,6 @@
   "competencyIds": [
     "c-python-files-errors"
   ],
-  "requires": [
-    "c-python-functions",
-    "c-python-collections"
-  ],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-foundations-files-errors"
   ],

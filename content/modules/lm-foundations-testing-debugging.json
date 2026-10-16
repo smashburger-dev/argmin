@@ -8,15 +8,6 @@
   "competencyIds": [
     "c-testing-debugging"
   ],
-  "requires": [
-    "c-python-functions",
-    "c-python-files-errors"
-  ],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-foundations-testing-debugging"
   ],

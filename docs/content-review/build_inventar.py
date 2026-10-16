@@ -72,6 +72,16 @@ def main():
         for cid in t.get("competencyIds", []):
             comp_to_tracks[cid].append(t["trackId"])
 
+    # requires/trackIds are derived at compile time (deriveLearningGraph);
+    # the compiled bundle is the only complete source for them.
+    derived_modules = {}
+    derived_comps = {}
+    bundle_path = os.path.join(ROOT, ".content-build", "public", "content-bundle.json")
+    if os.path.exists(bundle_path):
+        bundle = load(bundle_path)
+        derived_modules = {m["moduleId"]: m for m in bundle.get("learningModules", [])}
+        derived_comps = {c["competencyId"]: c for c in bundle.get("competencies", [])}
+
     comp_to_explanations = defaultdict(list)
     for ex, p in explanations:
         for cid in ex.get("competencyIds", []):
@@ -89,7 +99,7 @@ def main():
             "level": c.get("level"),
             "requires": c.get("requires", []),
             "relations": c.get("relations", []),
-            "trackIds": sorted(set(c.get("trackIds", []) + comp_to_tracks.get(cid, []))),
+            "trackIds": sorted(set(derived_comps.get(cid, {}).get("trackIds", []) + comp_to_tracks.get(cid, []))),
             "estimatedMinutes": c.get("estimatedMinutes"),
             "releaseStatus": c.get("releaseStatus"),
             "description": c.get("description"),
@@ -102,7 +112,7 @@ def main():
             mentry = {
                 "moduleId": m["moduleId"],
                 "title": m["title"],
-                "requires": m.get("requires", []),
+                "requires": derived_modules.get(m["moduleId"], m).get("requires", []),
                 "lessons": [],
                 "placements": [],
                 "projectIds": m.get("projectIds", []),

@@ -34,9 +34,8 @@ export function difficultyLabelFor(difficulty: string | number | undefined) {
 export interface ExerciseContext {
   module?: LearningModule;
   lesson?: Lesson;
+  /** Authored case title when present, else the activity-type label. */
   title: string;
-  /** Authored case title — used for the h1 and breadcrumbs when present. */
-  detail?: string;
   activityLabel: string;
   caseId?: string;
   summary: string;
@@ -150,27 +149,36 @@ export function randomVariantSeed(): number {
   return Math.floor(Math.random() * 2 ** 31);
 }
 
-export function getExerciseContext(catalog: CatalogData, instance: ExerciseInstance, summary: string, nextSeed?: number): ExerciseContext {
-  const match = findPlacement(catalog, instance);
-  const module = match?.module;
-  const placement = match?.placement;
+function placementLesson(catalog: CatalogData, module: LearningModule | undefined, placement: ExercisePlacement | undefined) {
   const lessonId = placement?.lessonId ?? module?.lessonIds[0];
-  const lesson = lessonId ? catalog.lessons.find((item) => item.lessonId === lessonId) : undefined;
+  return lessonId ? catalog.lessons.find((item) => item.lessonId === lessonId) : undefined;
+}
+
+function familySummary(family: { summary?: string } | undefined, fallback: string) {
+  return family?.summary ?? fallback ?? '';
+}
+
+function variantRoute(instance: ExerciseInstance, seed?: number) {
+  return `#/family/${instance.familyId}/${instance.caseId || '-'}/${seed ?? '-'}/${instance.difficulty}`;
+}
+
+export function getExerciseContext(catalog: CatalogData, instance: ExerciseInstance, summary: string, nextSeed?: number): ExerciseContext {
+  const { module, placement } = findPlacement(catalog, instance) ?? {};
+  const lesson = placementLesson(catalog, module, placement);
   const next = placementRoute(catalog, nextPlacement(catalog, module, placement));
   const family = familyFor(catalog, instance.familyId);
   const exercise = exerciseFor(catalog, instance.familyId, instance.caseId);
   return {
     module,
     lesson,
-    title: activityLabel(instance.activityType),
-    detail: exercise?.title,
+    title: exercise?.title ?? activityLabel(instance.activityType),
     activityLabel: activityLabel(instance.activityType),
     caseId: instance.caseId,
-    summary: family?.summary ?? summary ?? '',
+    summary: familySummary(family, summary),
     difficultyLabel: difficultyLabelFor(instance.difficulty),
     lessonHref: lesson ? `#/lesson/${lesson.lessonId}` : undefined,
     moduleHref: module ? `#/module/${module.moduleId}` : undefined,
-    nextVariantHref: `#/family/${instance.familyId}/${instance.caseId || '-'}/${nextSeed ?? '-'}/${instance.difficulty}`,
+    nextVariantHref: variantRoute(instance, nextSeed),
     nextTaskHref: next?.href,
     nextTaskTitle: next?.title,
   };

@@ -8,13 +8,6 @@
   "competencyIds": [
     "c-dl-finetuning"
   ],
-  "requires": [
-    "c-dl-regularization",
-    "c-dl-inference"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-tf-finetuning"
   ],

@@ -8,12 +8,6 @@
   "competencyIds": [
     "c-ml-cv"
   ],
-  "requires": [
-    "c-ml-logistic"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-ml-cv"
   ],

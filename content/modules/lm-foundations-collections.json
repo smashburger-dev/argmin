@@ -8,15 +8,6 @@
   "competencyIds": [
     "c-python-collections"
   ],
-  "requires": [
-    "c-python-control-flow"
-  ],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "mathematical-foundations",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-foundations-collections"
   ],

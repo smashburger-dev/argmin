@@ -6,13 +6,13 @@ Generiert via build_inventar.py. Pro Kompetenz: Module, Lessons, Placements, Viz
 
 | Kompetenz | Status | Module | Lessons | Placements | mastery-Defs (Bedarf) | Viz | Minuten |
 |---|---|---|---|---|---|---|---|
-| `c-capstone-pipeline` Reproduzierbare Capstone-Pipeline | draft | 5 | 5 | 32 | 25 (2) | 1 | 600 |
+| `c-capstone-pipeline` Reproduzierbare Capstone-Pipeline | draft | 5 | 5 | 32 | 25 (2) | 0 | 600 |
 
 ## data (2)
 
 | Kompetenz | Status | Module | Lessons | Placements | mastery-Defs (Bedarf) | Viz | Minuten |
 |---|---|---|---|---|---|---|---|
-| `c-numpy-basics` NumPy-Grundlagen und Shapes | browser-verified | 1 | 1 | 8 | 4 (2) | 1 | 240 |
+| `c-numpy-basics` NumPy-Grundlagen und Shapes | browser-verified | 1 | 1 | 11 | 6 (2) | 1 | 240 |
 | `c-pandas-cleaning` Datenbereinigung tabellarischer Daten | draft | 1 | 1 | 7 | 5 (2) | 0 | 420 |
 
 ## data-analysis (1)
@@ -39,7 +39,7 @@ Generiert via build_inventar.py. Pro Kompetenz: Module, Lessons, Placements, Viz
 
 | Kompetenz | Status | Module | Lessons | Placements | mastery-Defs (Bedarf) | Viz | Minuten |
 |---|---|---|---|---|---|---|---|
-| `c-genai-rag` RAG-Pipeline mit messbarem Retrieval | draft | 1 | 1 | 7 | 5 (2) | 0 | 600 |
+| `c-genai-rag` RAG-Pipeline mit messbarem Retrieval | draft | 1 | 1 | 7 | 5 (2) | 1 | 600 |
 | `c-genai-eval` Evaluation generativer KI-Systeme | draft | 1 | 1 | 7 | 5 (2) | 1 | 600 |
 | `c-genai-security` Sicherheit generativer KI-Systeme | draft | 1 | 1 | 7 | 5 (2) | 0 | 600 |
 | `c-genai-prototype` Abgesicherter GenAI-Prototyp | draft | 1 | 1 | 7 | 5 (2) | 0 | 600 |
@@ -48,8 +48,8 @@ Generiert via build_inventar.py. Pro Kompetenz: Module, Lessons, Placements, Viz
 
 | Kompetenz | Status | Module | Lessons | Placements | mastery-Defs (Bedarf) | Viz | Minuten |
 |---|---|---|---|---|---|---|---|
-| `c-linalg-matrices` Matrizen und Matrixprodukte | browser-verified | 1 | 1 | 13 | 7 (2) | 1 | 240 |
-| `c-linalg-systems` Lineare Gleichungssysteme | draft | 1 | 1 | 8 | 6 (2) | 1 | 180 |
+| `c-linalg-matrices` Matrizen und Matrixprodukte | browser-verified | 1 | 1 | 10 | 5 (2) | 1 | 240 |
+| `c-linalg-systems` Lineare Gleichungssysteme | draft | 1 | 1 | 8 | 6 (2) | 2 | 180 |
 | `c-linalg-gauss` Gauß-Elimination | browser-verified | 1 | 1 | 8 | 6 (2) | 1 | 240 |
 | `c-linalg-independence` Lineare Unabhängigkeit und Rang | browser-verified | 1 | 1 | 11 | 8 (2) | 1 | 240 |
 
@@ -58,22 +58,22 @@ Generiert via build_inventar.py. Pro Kompetenz: Module, Lessons, Placements, Viz
 | Kompetenz | Status | Module | Lessons | Placements | mastery-Defs (Bedarf) | Viz | Minuten |
 |---|---|---|---|---|---|---|---|
 | `c-ml-baseline` ML-Problemformulierung und Baseline | draft | 1 | 1 | 6 | 4 (2) | 0 | 360 |
-| `c-ml-linear` Lineare Regression mit Residuenanalyse | draft | 1 | 1 | 10 | 8 (2) | 1 | 480 |
+| `c-ml-linear` Lineare Regression mit Residuenanalyse | draft | 1 | 1 | 8 | 6 (2) | 1 | 480 |
 | `c-ml-logistic` Logistische Regression und Klassifikationsmetriken | draft | 1 | 1 | 6 | 4 (2) | 1 | 480 |
 | `c-ml-cv` Cross-Validation und Leakage-Kontrolle | draft | 1 | 1 | 8 | 4 (2) | 1 | 480 |
 | `c-ml-erroranalysis` Systematische ML-Fehleranalyse | draft | 1 | 1 | 7 | 4 (2) | 0 | 420 |
-| `c-ml-regularization` Regularisierung und Feature Engineering | draft | 1 | 1 | 6 | 4 (2) | 1 | 480 |
+| `c-ml-regularization` Regularisierung und Feature Engineering | draft | 1 | 1 | 8 | 6 (2) | 1 | 480 |
 | `c-ml-ensembles` Entscheidungsbäume und Ensembles | draft | 1 | 1 | 6 | 4 (2) | 0 | 480 |
-| `c-ml-svm-pca` SVM und Hauptkomponentenanalyse | draft | 1 | 1 | 6 | 4 (2) | 1 | 600 |
+| `c-ml-svm-pca` SVM und Hauptkomponentenanalyse | draft | 1 | 1 | 6 | 4 (2) | 2 | 600 |
 | `c-ml-repro` Reproduzierbare ML-Modellvergleiche | draft | 1 | 1 | 7 | 5 (2) | 0 | 600 |
 
 ## mathematics (3)
 
 | Kompetenz | Status | Module | Lessons | Placements | mastery-Defs (Bedarf) | Viz | Minuten |
 |---|---|---|---|---|---|---|---|
-| `c-algebra-basics` Algebra-Grundlagen | browser-verified | 1 | 2 | 17 | 11 (2) | 2 | 240 |
-| `c-algebra` Algebraische Termumformung | draft | 1 | 2 | 17 | 11 (2) | 2 | 180 |
-| `c-grad-regression` Gradienten und Regression aus Grundoperationen | draft | 1 | 1 | 6 | 4 (2) | 1 | 480 |
+| `c-algebra-basics` Algebra-Grundlagen | browser-verified | 1 | 2 | 16 | 10 (2) | 2 | 240 |
+| `c-algebra` Algebraische Termumformung | draft | 1 | 2 | 16 | 10 (2) | 2 | 180 |
+| `c-grad-regression` Gradienten und Regression aus Grundoperationen | draft | 1 | 1 | 6 | 4 (2) | 2 | 480 |
 
 ## metacognition (1)
 
@@ -91,7 +91,7 @@ Generiert via build_inventar.py. Pro Kompetenz: Module, Lessons, Placements, Viz
 | `c-python-control-flow` Bedingungen und Schleifen | draft | 1 | 1 | 9 | 5 (2) | 1 | 300 |
 | `c-python-collections` Listen, Dictionaries und Sets | draft | 1 | 1 | 9 | 5 (2) | 1 | 300 |
 | `c-python-files-errors` Dateien, Eingaben und Fehler | draft | 1 | 1 | 9 | 3 (2) | 0 | 300 |
-| `c-testing-debugging` Testen und systematisch debuggen | draft | 1 | 1 | 13 | 6 (2) | 0 | 300 |
+| `c-testing-debugging` Testen und systematisch debuggen | draft | 1 | 1 | 14 | 7 (2) | 0 | 300 |
 
 ## research (4)
 

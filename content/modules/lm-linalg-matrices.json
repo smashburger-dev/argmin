@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-linalg-matrices"
   ],
-  "requires": [
-    "c-algebra-basics"
-  ],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-linalg-matrices"
   ],

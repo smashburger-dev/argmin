@@ -8,15 +8,6 @@
   "competencyIds": [
     "c-python-control-flow"
   ],
-  "requires": [
-    "c-python-basics"
-  ],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "research-evaluation",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-foundations-control-flow"
   ],
