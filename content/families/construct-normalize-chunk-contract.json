@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "normalize-chunk-contract",
+      "title": "normalize und chunk nach Vertrag",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

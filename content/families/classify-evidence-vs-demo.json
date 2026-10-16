@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "evidence-vs-demo",
+      "title": "Demo ohne Evidenz beurteilen",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [
@@ -78,6 +79,7 @@
     },
     {
       "caseId": "demo-vs-evidence",
+      "title": "Zulässige Aussage zum Status-Report",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

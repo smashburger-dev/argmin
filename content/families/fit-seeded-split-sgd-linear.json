@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "seeded-split-sgd-linear",
+      "title": "Deterministischer Split und SGD-Fit",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

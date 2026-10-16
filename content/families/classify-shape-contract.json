@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "shape-bias-broadcast-mc",
+      "title": "Form von XW + b mit Broadcast",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

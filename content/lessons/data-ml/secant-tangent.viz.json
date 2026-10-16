@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Von der Sekante zur Tangente",
+  "caption": "Stelle x₀ und schiebe h gegen 0: Die Sekante (braun, durch P und Q) nähert sich der gestrichelten Tangente (blau) an die grüne Parabel f(x) = x² an.",
+  "boundingbox": [-5.5, 12, 4.4, -2.5],
+  "sliders": [
+    { "name": "x0", "label": "x₀", "range": [-2, 2], "value": 1, "step": 0.5 },
+    { "name": "h", "label": "h", "range": [0.05, 2], "value": 1, "step": 0.05 }
+  ],
+  "objects": [
+    { "kind": "functiongraph", "expr": "x*x", "color": "#16713a" },
+    { "kind": "functiongraph", "expr": "x0*x0+(2*x0+h)*(x-x0)", "color": "#9c4b00" },
+    { "kind": "functiongraph", "expr": "x0*x0+2*x0*(x-x0)", "color": "#294bd6", "dash": true },
+    { "kind": "point", "at": ["x0", "x0*x0"], "label": "P", "color": "#294bd6" },
+    { "kind": "point", "at": ["x0+h", "(x0+h)*(x0+h)"], "label": "Q", "color": "#9c4b00" },
+    { "kind": "text", "at": [-5.3, 7.6], "text": "Sekantensteigung = {2*x0+h}", "color": "#9c4b00" },
+    { "kind": "text", "at": [-5.3, 6.6], "text": "f(x) = x²", "color": "#16713a" },
+    { "kind": "text", "at": [-5.3, 5.8], "text": "Sekante durch P und Q", "color": "#9c4b00" },
+    { "kind": "text", "at": [-5.3, 5.0], "text": "Tangente (gestrichelt)", "color": "#294bd6" }
+  ],
+  "checkpoint": {
+    "prompt": "Stelle x₀ = 1,5 ein und schiebe h gegen 0. Gegen welche Steigung strebt die Sekante?",
+    "input": "numeric",
+    "expected": 3,
+    "tolerance": 0.05,
+    "hints": ["Die Sekantensteigung ist 2·x₀ + h. Für h → 0 bleibt 2·x₀ = 2·1,5."],
+    "typicalErrors": [
+      { "match": 3.05, "feedback": "Das ist der Wert bei h = 0,05. Der Grenzwert lässt h ganz gegen 0 laufen und ergibt 2·x₀ = 3." },
+      { "match": 2.5, "feedback": "Das wäre die Tangente bei x₀ = 1. Bei x₀ = 1,5 ist die Steigung 2·x₀ = 3." }
+    ]
+  }
+}

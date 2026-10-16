@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "substring-flag-sum",
+      "title": "Injektionsmuster im Text zählen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

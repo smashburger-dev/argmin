@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "bpe-merge-learn",
+      "title": "BPE-Merges aus dem Korpus lernen",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
       "sourceLineage": [

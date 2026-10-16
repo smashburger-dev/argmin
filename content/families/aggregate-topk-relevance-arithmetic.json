@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "recall-at-k-window",
+      "title": "Relevante Treffer im Top-k-Fenster",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

@@ -48,7 +48,7 @@
       ],
       "activityType": "python-code",
       "graderId": "pyodide",
-      "title": "Autograd-Trainingsschritt"
+      "title": "Autograd-Schritt von Hand"
     },
     {
       "caseId": "sgd-momentum-step",
@@ -94,7 +94,7 @@
       ],
       "activityType": "python-code",
       "graderId": "pyodide",
-      "title": "Momentum-SGD-Schritt"
+      "title": "Momentum-SGD-Schritt implementieren"
     }
   ]
 }

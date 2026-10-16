@@ -4,7 +4,7 @@ Eine Datenstruktur ist eine Entscheidung darüber, welche Fragen sie schnell bea
 
 ## Das Bild dahinter: Aufbewahrungsorte
 
-- Eine **Liste** ist eine Playlist: Reihenfolge zählt, und dasselbe Lied darf mehrfach vorkommen.
+- Eine **Liste** ist eine Playlist: Reihenfolge zählt, und dasselbe Lied darf mehrfach vorkommen. Die Position eines Eintrags heißt **Index** und zählt ab 0; `words[0]` ist das erste Lied.
 - Ein **Dictionary** ist eine Garderobe mit Marken: Jede Marke kommt einmal vor, und an der Marke hängt genau ein Mantel. Die Marke ist der **Schlüssel**, der Mantel der zugeordnete **Wert**.
 - Ein **Set** ist die Gästeliste am Eingang: Es beantwortet nur „steht drauf: ja oder nein“, und niemand steht zweimal drauf.
 
@@ -74,6 +74,7 @@ Begründe jede Wahl mit dem benötigten Zugriff.
 ## Begriffe auf einen Blick
 
 - **Liste** (englisch *list*): geordnete Sammlung, die Werte mehrfach enthalten darf; die Playlist.
+- **Listenindex**: Position eines Eintrags in einer Liste, gezählt ab 0; `liste[i]` liest den Eintrag an Stelle i.
 - **Dictionary**: ordnet eindeutigen Schlüsseln Werte zu, wie eine Garderobe jeder Marke einen Mantel.
 - **Schlüssel** (englisch *key*): die Marke, unter der ein Wert im Dictionary liegt; kommt einmal vor.
 - **Set**: Sammlung eindeutiger Werte ohne Duplikate; beantwortet Mitgliedschaft schnell.

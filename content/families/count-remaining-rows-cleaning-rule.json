@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "missing-target-rows",
+      "title": "Zeilen ohne Zielwert löschen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -53,6 +54,7 @@
     },
     {
       "caseId": "duplicate-rows",
+      "title": "Zeilen nach Duplikat-Löschung",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

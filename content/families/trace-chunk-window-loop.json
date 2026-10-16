@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "chunk-window-loop",
+      "title": "Chunk-Fenster über den Text",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

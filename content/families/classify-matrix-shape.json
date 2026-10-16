@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "shape-product-drawn",
+      "title": "Produktform aus den Dimensionen",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [
@@ -123,6 +124,7 @@
     },
     {
       "caseId": "shape-vector-matmul-chain",
+      "title": "AB und BA bei Vektordimensionen",
       "difficultyProfile": "stretch",
       "masteryEligible": false,
       "sourceLineage": [

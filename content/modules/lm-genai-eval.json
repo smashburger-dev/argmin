@@ -9,8 +9,8 @@
     "c-genai-eval"
   ],
   "requires": [
-    "c-genai-rag",
-    "c-ml-erroranalysis"
+    "c-ml-erroranalysis",
+    "c-genai-rag"
   ],
   "trackIds": [
     "applied-ai",

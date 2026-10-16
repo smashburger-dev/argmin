@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "attention-role-values",
+      "title": "Rollen von Q, K und V",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

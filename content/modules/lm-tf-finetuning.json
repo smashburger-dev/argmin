@@ -9,8 +9,8 @@
     "c-dl-finetuning"
   ],
   "requires": [
-    "c-dl-inference",
-    "c-dl-regularization"
+    "c-dl-regularization",
+    "c-dl-inference"
   ],
   "trackIds": [
     "applied-ai"

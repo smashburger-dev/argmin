@@ -7382,7 +7382,9 @@
         "worked-example",
         "checkpoint"
        ],
-       "vizRefs": [],
+       "vizRefs": [
+        "lessons/genai-systems/chunk-overlap.viz.json"
+       ],
        "mdFiles": [
         {
          "ref": "lessons/genai-systems/rag-retrieval.md",
@@ -8912,9 +8914,7 @@
         "visualization",
         "checkpoint"
        ],
-       "vizRefs": [
-        "lessons/research/chunk-overlap.viz.json"
-       ],
+       "vizRefs": [],
        "mdFiles": [
         {
          "ref": "lessons/research/capstone-freeze.md",

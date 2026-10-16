@@ -9,12 +9,12 @@
     "c-ml-repro"
   ],
   "requires": [
+    "c-testing-debugging",
+    "c-git-basics",
     "c-ml-erroranalysis",
     "c-ml-regularization",
     "c-ml-ensembles",
-    "c-ml-svm-pca",
-    "c-git-basics",
-    "c-testing-debugging"
+    "c-ml-svm-pca"
   ],
   "trackIds": [
     "applied-ai"

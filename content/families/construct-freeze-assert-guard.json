@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "freeze-assert-parsons",
+      "title": "Freeze-Check als Parsons ordnen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -118,6 +119,7 @@
     },
     {
       "caseId": "demo-from-frozen-report",
+      "title": "Demo gegen eingefrorenen Bericht",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

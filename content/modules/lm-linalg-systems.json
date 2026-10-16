@@ -8,7 +8,10 @@
   "competencyIds": [
     "c-linalg-systems"
   ],
-  "requires": [],
+  "requires": [
+    "c-algebra-basics",
+    "c-linalg-matrices"
+  ],
   "trackIds": [
     "common-core",
     "applied-ai",

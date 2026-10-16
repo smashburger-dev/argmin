@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "freeze-purpose",
+      "title": "Zweck des Hash-Freeze",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

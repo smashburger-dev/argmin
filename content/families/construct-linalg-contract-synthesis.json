@@ -44,6 +44,7 @@
     },
     {
       "caseId": "synthesis-singular-guard",
+      "title": "Singularität vor solve abfangen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

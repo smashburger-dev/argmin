@@ -36,6 +36,7 @@
   "cases": [
     {
       "caseId": "shift-minus-one-leakage",
+      "title": "Getäuschter Score durch Leakage",
       "difficultyProfile": "core",
       "masteryEligible": false,
       "sourceLineage": [
@@ -94,6 +95,7 @@
     },
     {
       "caseId": "score-on-train",
+      "title": "Falsches Vertrauen in den Score",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [
@@ -149,6 +151,7 @@
     },
     {
       "caseId": "fold-nan-crash",
+      "title": "NaN-Abbruch im Fold erklären",
       "difficultyProfile": "core",
       "masteryEligible": false,
       "sourceLineage": [

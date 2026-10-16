@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "stub-doc-sentence-select",
+      "title": "Stub-Antwort aus Dokumentsätzen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

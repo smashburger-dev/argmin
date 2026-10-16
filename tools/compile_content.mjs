@@ -18,6 +18,12 @@ import {
   indexLearningModules,
 } from '../assets/js/domain/learning_module.mjs';
 import {
+  assertCodePrerequisites,
+  assertModuleRequires,
+  assertTrackCoverage,
+  assertTrackPrerequisiteOrder,
+} from '../assets/js/domain/module_order.mjs';
+import {
   assertNoOrphans,
   catalogRoot,
   discoverJson,
@@ -948,6 +954,11 @@ function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion
   validateGlossaryLinks(entities.lessons, glossary);
   attachSourceModuleUsage(entities);
   const familyActivities = buildFamilyActivities(entities.learningModules, entities.families);
+  assertModuleRequires(entities.learningModules, entities.competencies);
+  assertTrackCoverage(entities.learningModules, entities.tracks);
+  assertTrackPrerequisiteOrder(entities.learningModules, entities.tracks, entities.competencies);
+  assertCodePrerequisites(entities.learningModules, entities.tracks, entities.competencies,
+    (module) => moduleCodeSignals(module, markdownSources));
   const visualizations = entities.lessons.flatMap((lesson) => lesson.blocks
     .filter((block) => block.type === 'visualization' && block.viz && block.visualizationId)
     .map((block) => ({ visualizationId: block.visualizationId, lessonId: lesson.lessonId, spec: block.viz })));
@@ -965,22 +976,52 @@ function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion
 // Lesson and family bodies stay out of the initial index and are loaded by id.
 
 const SAFE_CHUNK_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,96}$/;
-function stripPromptMarkup(prompt, maxLength = 80) {
-  const text = String(prompt || '')
-    .replace(/<[^>]*>/g, '')
-    // Any math span ($$..$$, \[..\], \(..\) or inline $..$) ends the readable
-    // title: stripping just the $ chars would leave naked TeX commands behind.
-    .split(/\$\$|\\\[|\\\(|[$]/)[0]
-    .replace(/\\log_\{?(\w+)\}?/g, 'log_$1')
-    .replace(/\^\{([^}]*)\}/g, '^$1')
-    .replace(/\\cdot/g, '·')
-    .replace(/\$/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-  if (text.length <= maxLength) return text;
-  const cut = text.slice(0, maxLength);
-  const boundary = cut.lastIndexOf(' ');
-  return `${cut.slice(0, boundary > 30 ? boundary : maxLength)} …`;
+
+// Titles for curated placements and challenge cases are authored, never
+// derived from prompt markup (a leading math span truncated titles to
+// fragments like "Für").
+const GENERIC_ACTIVITY_TITLES = new Set([
+  'Aufgabe', 'Konzeptfrage', 'Auswahlaufgabe', 'Rechenaufgabe', 'Programmieraufgabe',
+  'Ablauf nachvollziehen', 'Code ordnen', 'Begründung', 'Mehrfachauswahl',
+  'Fehlerdiagnose', 'Lückentext',
+]);
+
+export function assertCaseTitle(title, ref) {
+  const fail = (rule) => { throw new Error(`${ref}: Aufgabentitel ungültig — ${rule}`); };
+  if (typeof title !== 'string' || !title.trim()) fail('Titel fehlt');
+  const trimmed = title.trim();
+  if (trimmed.length > 56) fail(`Titel länger als 56 Zeichen (${trimmed.length})`);
+  const words = trimmed.split(/\s+/).length;
+  if (words < 2 || words > 7) fail(`Wortanzahl ${words} liegt nicht zwischen 2 und 7`);
+  if (/[$`]|\\[a-zA-Z]|<[a-zA-Z/]/.test(trimmed)) fail('TeX, HTML und Backticks sind nicht erlaubt');
+  if (/[…:.]$/.test(trimmed)) fail('Titel darf nicht mit „…“, „:“ oder „.“ enden');
+  if (GENERIC_ACTIVITY_TITLES.has(trimmed)) fail('Titel ist nur ein Aktivitätstyp');
+  return trimmed;
+}
+
+// Code usage a module demonstrably requires: a curated task with a code-kind
+// activity type or a lesson with a ```python block needs Python basics; any
+// curated task instance mentioning NumPy needs c-numpy-basics. Parsons are
+// workflow orderings, not code execution, so they do not count.
+const PYTHON_TASK_KINDS = new Set(['python-code', 'predict-output', 'code-trace']);
+const NUMPY_USAGE = /\bnp\.|import numpy/;
+export function moduleCodeSignals(module, markdownSources) {
+  let needsPython = false;
+  let needsNumpy = false;
+  for (const placement of module.placements || []) {
+    if (placement.role !== 'curated' || !placement.caseId) continue;
+    const instance = EXERCISE_FAMILIES.instantiate(placement.familyId, placement.seed ?? 0, placement.difficulty, placement.caseId);
+    const kind = instance.kind ?? instance.activityType;
+    if (PYTHON_TASK_KINDS.has(kind)) needsPython = true;
+    const text = JSON.stringify([instance.prompt, instance.snippet, instance.code, instance.starterCode, instance.choices, instance.lines, instance.options]);
+    if (NUMPY_USAGE.test(text)) needsNumpy = true;
+  }
+  for (const lessonId of module.lessonIds || []) {
+    for (const source of markdownSources.get(lessonId) || []) {
+      if (/```python/.test(source)) needsPython = true;
+    }
+  }
+  return { needsPython, needsNumpy };
 }
 
 function buildFamilyActivities(learningModules, families) {
@@ -988,9 +1029,16 @@ function buildFamilyActivities(learningModules, families) {
   const activities = [];
   const seen = new Set();
   for (const module of learningModules || []) {
+    const moduleTitles = new Map();
     for (const placement of module.placements || []) {
       const activity = buildFamilyActivity(placement, module, familyDocuments, seen);
-      if (activity) activities.push(activity);
+      if (!activity) continue;
+      const clash = moduleTitles.get(activity.title);
+      if (clash) {
+        throw new Error(`${module.moduleId}: Titel "${activity.title}" ist doppelt vergeben (${clash}, ${activity.definitionId})`);
+      }
+      moduleTitles.set(activity.title, activity.definitionId);
+      activities.push(activity);
     }
   }
   return activities;
@@ -1004,9 +1052,9 @@ function buildFamilyActivity(placement, module, familyDocuments, seen) {
   if (!family) throw new Error(`Unbekannte Familie ${placement.familyId}`);
   const instance = EXERCISE_FAMILIES.instantiate(placement.familyId, placement.seed ?? 0, placement.difficulty, placement.caseId);
   const familyDocument = familyDocuments.get(placement.familyId);
-  const familyTitle = familyDocument?.contract?.summary || family.summary;
-  const caseTitle = familyDocument?.cases?.find((item) => item.caseId === placement.caseId)?.title;
-  const title = caseTitle || instance.title || stripPromptMarkup(instance.prompt, 80) || familyTitle;
+  const caseTitle = familyDocument?.cases?.find((item) => item.caseId === placement.caseId)?.title
+    ?? familyDocument?.caseTitles?.[placement.caseId];
+  const title = assertCaseTitle(caseTitle, definitionId);
   seen.add(definitionId);
   // Fresh-instance review routing (same case, random seed) only makes sense
   // for cases that actually draw new content per seed (propertyTest !==
@@ -1021,18 +1069,13 @@ function buildFamilyActivity(placement, module, familyDocuments, seen) {
   };
 }
 
-// Display title for a challenge-flagged case that has no module placement:
-// instantiate at the challenge profile and reuse the familyActivities
-// derivation. Registration is lazy so projection also works when this runs
-// without the validation pass having populated EXERCISE_FAMILIES first.
+// Display title for a challenge-flagged case without a module placement:
+// the authored case title (case body or the `caseTitles` map for generated
+// cases), gated by the same rules as curated placements.
 function challengeCaseTitle(family, caseId) {
-  try {
-    if (!EXERCISE_FAMILIES.get(family.familyId)) configureExerciseFamilies([family]);
-    const instance = EXERCISE_FAMILIES.instantiate(family.familyId, 0, 'challenge', caseId);
-    return instance.title || stripPromptMarkup(instance.prompt, 80) || '';
-  } catch {
-    return '';
-  }
+  const title = family.cases?.find((item) => item.caseId === caseId)?.title
+    ?? family.caseTitles?.[caseId];
+  return assertCaseTitle(title, `${family.familyId}:${caseId}`);
 }
 
 // Route-scoped index sections: three heavy sections ship as sidecar chunks
@@ -1059,12 +1102,11 @@ export function buildSplitArtifacts(bundle) {
         const { caseId, difficultyProfile, masteryEligible, challengeEligible, title } = item;
         const projected = { caseId, difficultyProfile, masteryEligible, ...(challengeEligible === true ? { challengeEligible: true } : {}) };
         // Challenge cards render titles and the activity-type tag before the
-        // family route loads, so derive them here the same way
-        // buildFamilyActivities does. An authored case-level `title`
-        // overrides the generated instance title.
+        // family route loads. Titles are authored on the case (or in
+        // `caseTitles` for generated cases); the gate fails the compile when
+        // a required title is missing or invalid.
         if (challengeEligible === true || typeof title === 'string') {
-          const derived = typeof title === 'string' && title ? title : challengeCaseTitle(family, caseId);
-          if (derived) projected.title = derived;
+          projected.title = challengeCaseTitle(family, caseId);
         }
         if (challengeEligible === true) {
           if (!family.contract?.activityType && !EXERCISE_FAMILIES.get(family.familyId)) {

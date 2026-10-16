@@ -9,8 +9,8 @@
     "c-dl-attention"
   ],
   "requires": [
-    "c-dl-tensors",
-    "c-linalg-matrices"
+    "c-linalg-matrices",
+    "c-dl-tensors"
   ],
   "trackIds": [
     "applied-ai",

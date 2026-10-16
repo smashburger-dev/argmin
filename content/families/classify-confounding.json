@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "temperature-confounder",
+      "title": "Konfundierende Variable erkennen",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

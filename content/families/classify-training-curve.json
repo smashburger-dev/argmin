@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "training-curve-diagnosis",
+      "title": "Lernkurve richtig diagnostizieren",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

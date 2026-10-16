@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "matmul-entry-w05-e1",
+      "title": "Matrixprodukt: einzelner Eintrag",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -82,6 +83,7 @@
     },
     {
       "caseId": "matmul-entry-w05-e12",
+      "title": "Eintrag des Matrixprodukts berechnen",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -159,6 +161,7 @@
     },
     {
       "caseId": "dot-product-w05-e13",
+      "title": "Skalarprodukt dreidimensionaler Vektoren",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -222,6 +225,7 @@
     },
     {
       "caseId": "dot-product-w05-e3",
+      "title": "Skalarprodukt von u und v",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -289,6 +293,7 @@
     },
     {
       "caseId": "scalar-loop-output",
+      "title": "Skalarprodukt-Schleife vorhersagen",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -330,6 +335,7 @@
     },
     {
       "caseId": "product-definition-rationale",
+      "title": "Wann das Matrixprodukt existiert",
       "difficultyProfile": "core",
       "masteryEligible": false,
       "sourceLineage": [
@@ -370,6 +376,7 @@
     },
     {
       "caseId": "column-vector-authored",
+      "title": "Koeffizientenpaar der Spaltenkombination",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -424,5 +431,8 @@
         }
       ]
     }
-  ]
+   ],
+  "caseTitles": {
+    "matmul-entry-seeded": "Matrixeintrag des Produkts"
+  }
 }

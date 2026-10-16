@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "tool-policy-least-privilege",
+      "title": "Allowlist-Policy beschreiben",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

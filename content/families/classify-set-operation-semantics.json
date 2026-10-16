@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "dedup-and-intersection",
+      "title": "Mengen-Dedup und Schnittmenge",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

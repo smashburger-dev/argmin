@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "separate-error-kinds",
+      "title": "Retrieval- und Antwortfehler trennen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -46,5 +47,8 @@
       "activityType": "python-code",
       "graderId": "pyodide"
     }
-  ]
+   ],
+  "caseTitles": {
+    "parse-validate-summarize": "Zeilen parsen und validieren"
+  }
 }

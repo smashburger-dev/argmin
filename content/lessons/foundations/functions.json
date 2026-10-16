@@ -6,7 +6,7 @@
   "title": "Eingaben, Wirkung und Vertrag klären",
   "objectives": ["Parameter, Rückgabe und Seiteneffekt unterscheiden", "eine Funktion aus Beispielen ableiten", "Grenzfälle vor der Implementierung notieren"],
   "competencyIds": ["c-python-functions"],
-  "requires": ["c-python-basics"],
+  "requires": ["c-python-basics", "c-python-control-flow"],
   "estimatedMinutes": 60,
   "blocks": [
     { "blockId": "functions-core", "type": "worked-example", "contentRef": "lessons/foundations/functions.md" },

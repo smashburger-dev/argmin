@@ -9,8 +9,8 @@
     "c-ml-svm-pca"
   ],
   "requires": [
-    "c-ml-cv",
-    "c-linalg-independence"
+    "c-linalg-independence",
+    "c-ml-cv"
   ],
   "trackIds": [
     "applied-ai",

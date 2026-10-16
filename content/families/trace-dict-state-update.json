@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "dict-start-key-steps",
+      "title": "Dict-Schlüssel setzen und löschen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

@@ -8,7 +8,10 @@
   "competencyIds": [
     "c-python-files-errors"
   ],
-  "requires": [],
+  "requires": [
+    "c-python-functions",
+    "c-python-collections"
+  ],
   "trackIds": [
     "common-core",
     "applied-ai",

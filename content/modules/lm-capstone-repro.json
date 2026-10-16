@@ -9,8 +9,8 @@
     "c-capstone-pipeline"
   ],
   "requires": [
-    "c-research-capstone",
-    "c-ml-repro"
+    "c-ml-repro",
+    "c-research-capstone"
   ],
   "trackIds": [
     "applied-ai",

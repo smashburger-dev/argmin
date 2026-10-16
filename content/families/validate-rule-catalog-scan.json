@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "card-secret-scan",
+      "title": "Geheimnis-Scan und Konsistenz",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -89,10 +90,11 @@
       ],
       "activityType": "python-code",
       "graderId": "pyodide",
-      "title": "Cross-Card-Konsistenz-Audit"
+      "title": "Cross-Card-Audit über die Karten"
     },
     {
       "caseId": "freeze-checker",
+      "title": "Freeze-Prüfer für gepinnte Dateien",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -136,6 +138,7 @@
     },
     {
       "caseId": "pin-version-check",
+      "title": "Versions-Pins gegen die Regel",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

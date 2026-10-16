@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "sigmoid-large-z",
+      "title": "Sigmoid bei großem Logit",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

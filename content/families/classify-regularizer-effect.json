@@ -36,6 +36,7 @@
   "cases": [
     {
       "caseId": "l1-vs-l2-effect",
+      "title": "Ridge gegen Lasso",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

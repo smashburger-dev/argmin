@@ -24,6 +24,16 @@
       "contentRef": "lessons/genai-systems/rag-retrieval.md"
     },
     {
+      "blockId": "genai-rag-chunk-viz",
+      "type": "visualization",
+      "contentRef": "lessons/genai-systems/chunk-overlap.viz.json"
+    },
+    {
+      "blockId": "genai-rag-index",
+      "type": "worked-example",
+      "contentRef": "lessons/genai-systems/rag-retrieval-index.md"
+    },
+    {
       "blockId": "genai-rag-check",
       "type": "checkpoint",
       "contentRef": "lessons/genai-systems/rag-retrieval-checkpoint.md"

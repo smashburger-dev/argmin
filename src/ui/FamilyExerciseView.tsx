@@ -351,7 +351,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   return (
     <ExerciseFrame
       ctx={ctx}
-      eyebrow={`${ctx.difficultyLabel} · Variante ${instance.seed}`}
+      eyebrow={`${ctx.difficultyLabel} · ${ctx.activityLabel} · Variante ${instance.seed}`}
       prompt={isFading
         ? <FadingPrompt key={instance.instanceId} exercise={instance} onAnswer={setAnswer} />
         : <MathMarkup html={instance.prompt} />}

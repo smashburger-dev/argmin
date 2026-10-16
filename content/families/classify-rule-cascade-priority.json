@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "error-taxonomy-classify",
+      "title": "Fehlertaxonomie als Regelkaskade",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -48,6 +49,7 @@
     },
     {
       "caseId": "permission-policy-check",
+      "title": "Tool-Aufrufe gegen die Policy prüfen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

@@ -9,8 +9,8 @@
     "c-dl-regularization"
   ],
   "requires": [
-    "c-dl-training",
-    "c-ml-cv"
+    "c-ml-cv",
+    "c-dl-training"
   ],
   "trackIds": [
     "applied-ai",

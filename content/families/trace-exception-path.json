@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "valueerror",
+      "title": "ValueError beim Parsen",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -87,6 +88,7 @@
     },
     {
       "caseId": "keyerror",
+      "title": "KeyError am Dict-Zugriff",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

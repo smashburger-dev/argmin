@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "loss-and-batch-primitives",
+      "title": "Verluste und Batch-Zählung",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -50,6 +51,7 @@
     },
     {
       "caseId": "dropout-weight-decay-primitives",
+      "title": "Dropout und Weight Decay exakt",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "echelon-read-rank-case",
+      "title": "Lösungsfall aus der Stufenform ablesen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [],
@@ -37,6 +38,7 @@
     },
     {
       "caseId": "rank-system-authored",
+      "title": "Rang-Diagnose nach der Elimination",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "arrange-act-assert",
+      "title": "Test nach Arrange-Act-Assert ordnen",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [

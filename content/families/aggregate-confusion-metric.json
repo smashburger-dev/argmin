@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "threshold-under-asymmetric-cost",
+      "title": "Schwelle bei asymmetrischen Kosten",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -71,6 +72,7 @@
     },
     {
       "caseId": "sigmoid-predict-numpy",
+      "title": "Sigmoid und Konfusionsmatrix implementieren",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -115,6 +117,7 @@
     },
     {
       "caseId": "confusion-cost-report",
+      "title": "Schwellenwert nach Kosten wählen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -159,6 +162,7 @@
     },
     {
       "caseId": "metric-code-output-trace",
+      "title": "Token-F1-Ausgaben vorhersagen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -200,6 +204,7 @@
     },
     {
       "caseId": "confusion-from-rows",
+      "title": "Konfusionsmetriken aus Zeilenlisten",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -245,6 +250,7 @@
     },
     {
       "caseId": "contains-injection-rules",
+      "title": "Injektionsfilter und Korpus-Evaluierung",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -288,6 +294,7 @@
     },
     {
       "caseId": "fairness-metric-compare",
+      "title": "Subgruppen-Metriken vergleichen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -329,5 +336,11 @@
       "activityType": "python-code",
       "graderId": "pyodide"
     }
-  ]
+   ],
+  "caseTitles": {
+    "answer-filter-precision-recall-f1": "Precision aus der Konfusionsmatrix",
+    "confusion-marginal-count": "Positive Vorhersagen abzählen",
+    "injection-filter-counts": "Trefferquote des Injektionsfilters",
+    "subgroup-rate-gap-permille": "Auswahlraten-Differenz in Promille"
+  }
 }

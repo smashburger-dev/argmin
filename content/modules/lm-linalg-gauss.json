@@ -8,7 +8,10 @@
   "competencyIds": [
     "c-linalg-gauss"
   ],
-  "requires": [],
+  "requires": [
+    "c-algebra",
+    "c-linalg-systems"
+  ],
   "trackIds": [
     "common-core",
     "applied-ai",

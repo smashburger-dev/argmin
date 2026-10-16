@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "grad-mse-numpy-reference",
+      "title": "MSE-Gradienten geschlossen und numerisch",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -48,5 +49,8 @@
       "activityType": "python-code",
       "graderId": "pyodide"
     }
-  ]
+   ],
+  "caseTitles": {
+    "mse-gradient-wrt-w": "MSE-Ableitung nach w"
+  }
 }

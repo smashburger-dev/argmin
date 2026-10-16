@@ -36,6 +36,7 @@
   "cases": [
     {
       "caseId": "repro-contract-violation",
+      "title": "Verstoß gegen den Repro-Vertrag",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

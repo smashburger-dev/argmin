@@ -8,7 +8,10 @@
   "competencyIds": [
     "c-testing-debugging"
   ],
-  "requires": [],
+  "requires": [
+    "c-python-functions",
+    "c-python-files-errors"
+  ],
   "trackIds": [
     "common-core",
     "applied-ai",

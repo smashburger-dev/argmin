@@ -25,6 +25,16 @@
       "contentRef": "lessons/data-ml/gradient-regression.md"
     },
     {
+      "blockId": "gradient-regression-secant-viz",
+      "type": "visualization",
+      "contentRef": "lessons/data-ml/secant-tangent.viz.json"
+    },
+    {
+      "blockId": "gradient-regression-rest",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/gradient-regression-rest.md"
+    },
+    {
       "blockId": "gradient-regression-viz",
       "type": "visualization",
       "contentRef": "lessons/data-ml/mse-bowl.viz.json"

@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "gradient-loop-two-updates",
+      "title": "Zwei Gradienten-Updates verfolgen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -37,6 +38,7 @@
     },
     {
       "caseId": "tree-majority-vote-trace",
+      "title": "Baum-Votes zur Mehrheit zählen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -79,6 +81,7 @@
     },
     {
       "caseId": "rng-stream-reseed-trace",
+      "title": "Zufallsstrom mit erneutem Seed",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -221,6 +224,7 @@
     },
     {
       "caseId": "manual-backward-step-trace",
+      "title": "Manuellen Backward-Schritt verfolgen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -263,6 +267,7 @@
     },
     {
       "caseId": "fixed-dropout-mask-trace",
+      "title": "Feste Dropout-Maske anwenden",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -301,6 +306,7 @@
     },
     {
       "caseId": "stable-softmax-rows-trace",
+      "title": "Stabile Softmax-Zeilen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -339,6 +345,7 @@
     },
     {
       "caseId": "char-encode-roundtrip-trace",
+      "title": "Char-Encoding mit Marker-IDs",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -377,6 +384,7 @@
     },
     {
       "caseId": "freeze-param-filter-trace",
+      "title": "Trainierbare Parameter filtern",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -415,6 +423,7 @@
     },
     {
       "caseId": "absolute-vs-relative-gain-trace",
+      "title": "Absoluter gegen relativer Gewinn",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -457,6 +466,7 @@
     },
     {
       "caseId": "card-check-variable-trace",
+      "title": "Karten-Prüfvariablen verfolgen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -489,6 +499,7 @@
     },
     {
       "caseId": "rpn-priority-trace",
+      "title": "Risikoprioritäten vergleichen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -517,6 +528,7 @@
     },
     {
       "caseId": "metric-name-normalize-trace",
+      "title": "Variablen aus Hypothesen extrahieren",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -549,6 +561,7 @@
     },
     {
       "caseId": "stage-runner-error-states",
+      "title": "Stage-Runner: Status und Summe",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -581,6 +594,7 @@
     },
     {
       "caseId": "overclaim-scanner-trace",
+      "title": "Overclaim-Scanner ausführen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -613,6 +627,7 @@
     },
     {
       "caseId": "column-picture-trace",
+      "title": "Spaltenbild-Koeffizienten verfolgen",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -635,5 +650,13 @@
       "activityType": "code-trace",
       "graderId": "deterministic"
     }
-  ]
+   ],
+  "caseTitles": {
+    "reassign-two-variables-print": "Zwei Variablen neu zuweisen",
+    "chain3-overwrite-print": "Drei Variablen mit Überschreibung",
+    "accumulate-reassign-print": "Neuzuweisungen Zeile für Zeile",
+    "slice-predict-output": "String-Slice vorhersagen",
+    "join-split-predict": "split und join kombiniert",
+    "comprehension-predict": "List-Comprehension mit Filter"
+  }
 }

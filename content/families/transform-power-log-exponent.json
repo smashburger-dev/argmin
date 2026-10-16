@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "product-and-power-of-power",
+      "title": "Potenz einer Potenz",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -106,6 +107,7 @@
     },
     {
       "caseId": "integer-base-power",
+      "title": "Logarithmen zur Basis addieren",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

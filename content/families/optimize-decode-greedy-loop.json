@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "greedy-loop-trace",
+      "title": "Greedy-Schleife Schritt für Schritt",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -51,6 +52,7 @@
     },
     {
       "caseId": "greedy-decode-function",
+      "title": "greedy_decode implementieren",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

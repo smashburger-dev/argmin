@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "secure-prototype-contract",
+      "title": "Abgesicherten Prototypen bauen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

@@ -9,8 +9,8 @@
     "c-dl-tensors"
   ],
   "requires": [
-    "c-numpy-basics",
-    "c-linalg-matrices"
+    "c-linalg-matrices",
+    "c-numpy-basics"
   ],
   "trackIds": [
     "applied-ai",

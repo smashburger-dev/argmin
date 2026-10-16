@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "hypothesis-report-groups",
+      "title": "Hypothesenbericht mit Gruppenvergleich",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -44,6 +45,7 @@
     },
     {
       "caseId": "subgroup-error-rates-numpy",
+      "title": "Fehlerraten je Teilgruppe berechnen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "competencyIds": [
@@ -86,6 +88,7 @@
     },
     {
       "caseId": "categorize-errors-report",
+      "title": "Fehler nach Art und Gruppe kategorisieren",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "competencyIds": [
@@ -128,6 +131,7 @@
     },
     {
       "caseId": "subgroup-recall-report",
+      "title": "Subgruppen-Recall aggregieren",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

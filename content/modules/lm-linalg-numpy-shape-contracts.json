@@ -8,10 +8,16 @@
   "competencyIds": [
     "c-numpy-basics"
   ],
-  "requires": [],
+  "requires": [
+    "c-python-reading",
+    "c-python-functions",
+    "c-linalg-matrices",
+    "c-python-collections"
+  ],
   "trackIds": [
     "common-core",
-    "applied-ai"
+    "applied-ai",
+    "mathematical-foundations"
   ],
   "lessonIds": [
     "l-numpy-shape-contracts"
@@ -29,6 +35,17 @@
       "masteryEligible": false
     },
     {
+      "placementId": "p-linalg-numpy-shape-contracts-07-column-picture-trace",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "column-picture-trace",
+      "seed": 915,
+      "difficulty": "intro",
+      "estimatedMinutes": 8,
+      "lessonId": "l-numpy-shape-contracts",
+      "masteryEligible": false
+    },
+    {
       "placementId": "p-linalg-numpy-shape-contracts-02-matvec-code-reference",
       "role": "curated",
       "familyId": "construct-matvec-shape-contract",
@@ -40,6 +57,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-linalg-numpy-shape-contracts-08-scalar-loop-output",
+      "role": "curated",
+      "familyId": "formula-scalar-product",
+      "caseId": "scalar-loop-output",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-numpy-shape-contracts",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-linalg-numpy-shape-contracts-03-synthesis-singular-guard",
       "role": "curated",
       "familyId": "construct-linalg-contract-synthesis",
@@ -47,6 +75,17 @@
       "seed": 9,
       "difficulty": "core",
       "estimatedMinutes": 12,
+      "lessonId": "l-numpy-shape-contracts",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-numpy-shape-contracts-09-shape-debug-authored",
+      "role": "curated",
+      "familyId": "classify-column-combination",
+      "caseId": "shape-debug-authored",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 8,
       "lessonId": "l-numpy-shape-contracts",
       "masteryEligible": true
     },

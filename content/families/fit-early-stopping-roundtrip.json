@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "early-stopping-roundtrip",
+      "title": "Early Stopping mit Save/Load",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

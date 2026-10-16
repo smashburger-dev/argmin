@@ -9,8 +9,8 @@
     "c-dl-training"
   ],
   "requires": [
-    "c-dl-autograd",
-    "c-ml-baseline"
+    "c-ml-baseline",
+    "c-dl-autograd"
   ],
   "trackIds": [
     "applied-ai",

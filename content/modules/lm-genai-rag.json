@@ -9,8 +9,8 @@
     "c-genai-rag"
   ],
   "requires": [
-    "c-dl-inference",
-    "c-python-files-errors"
+    "c-python-files-errors",
+    "c-dl-inference"
   ],
   "trackIds": [
     "applied-ai"

@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   compileContent,
+  assertCaseTitle,
   validateLearnerTextMarkup,
   validateLessonExerciseLinks,
   validateCompetencyGraph,
@@ -405,4 +406,42 @@ test('all lesson readings resolve to public source cards', () => {
     assert.ok(lesson.sourceRefs.length > 0, `${lesson.lessonId} has no reading`);
     for (const reference of lesson.sourceRefs) assert.ok(sourceIds.has(reference.sourceId), `${lesson.lessonId} references ${reference.sourceId}`);
   }
+});
+
+test('family activity titles are authored, valid and unique per module', () => {
+  const bundle = compileContent({ projectRoot: root, profile: 'public' });
+  assert.ok(bundle.familyActivities.length > 0);
+  const byModule = new Map();
+  for (const activity of bundle.familyActivities) {
+    assert.equal(
+      assertCaseTitle(activity.title, activity.definitionId),
+      activity.title,
+      `${activity.definitionId}: Titel verletzt die Gate-Regeln`,
+    );
+    if (!activity.moduleId) continue;
+    const titles = byModule.get(activity.moduleId) ?? new Map();
+    assert.ok(
+      !titles.has(activity.title),
+      `${activity.moduleId}: Titel "${activity.title}" doppelt (${titles.get(activity.title)}, ${activity.definitionId})`,
+    );
+    titles.set(activity.title, activity.definitionId);
+    byModule.set(activity.moduleId, titles);
+  }
+});
+
+test('assertCaseTitle enforces the title rules', () => {
+  for (const bad of [
+    'Für',
+    '$x$ sind linear unabhängig',
+    'Konzeptfrage',
+    'Ein viel zu langer Titel der sechzig Zeichen sicher übersteigt x',
+  ]) {
+    assert.throws(() => assertCaseTitle(bad, 'fam:case'), /fam:case.*ungültig/);
+  }
+  assert.throws(() => assertCaseTitle(undefined, 'fam:case'), /Titel fehlt/);
+  assert.throws(() => assertCaseTitle('Gültiger Titel …', 'fam:case'), /enden/);
+  assert.equal(
+    assertCaseTitle('Koeffizienten im Spaltenbild bestimmen', 'fam:case'),
+    'Koeffizienten im Spaltenbild bestimmen',
+  );
 });

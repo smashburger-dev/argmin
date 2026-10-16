@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "describe-and-bins",
+      "title": "Statistik: describe und Binning",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

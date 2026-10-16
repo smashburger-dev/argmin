@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "familyId": "transform-linear-equation-isolate",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "two-step-seeded-retrieval",
+      "title": "Zweischritt-Gleichung lösen",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w01-e8"
+      ]
+    },
+    {
+      "caseId": "collect-x-terms-both-sides",
+      "title": "x-Terme auf eine Seite sammeln",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-algebra-both-sides-01"
+      ]
+    }
+  ]
+}

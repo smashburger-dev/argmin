@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "char-encode-roundtrip",
+      "title": "Zeichen-Tokenizer encode und decode",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

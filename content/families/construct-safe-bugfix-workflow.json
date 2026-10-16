@@ -57,6 +57,7 @@
     },
     {
       "caseId": "datafix-flow-with-test-contract",
+      "title": "Sicheren Datenfix-Workflow ordnen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

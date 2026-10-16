@@ -9,8 +9,8 @@
     "c-dl-papers"
   ],
   "requires": [
-    "c-dl-finetuning",
-    "c-meta-learning"
+    "c-meta-learning",
+    "c-dl-finetuning"
   ],
   "trackIds": [
     "applied-ai",

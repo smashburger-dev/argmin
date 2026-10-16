@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "accuracy-drop-without-code-change",
+      "title": "Fehlertyp bei Daten-Drift",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

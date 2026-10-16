@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "system-w05-e11",
+      "title": "2×2-System per Gauß-Elimination",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -38,6 +39,7 @@
     },
     {
       "caseId": "system-w05-e6",
+      "title": "2×2-Gleichungssystem lösen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

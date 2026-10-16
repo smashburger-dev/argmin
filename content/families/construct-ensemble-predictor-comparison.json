@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "voting-tree-linear-rmse",
+      "title": "Ensemble-Predictoren und RMSE",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

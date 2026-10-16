@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "run-digest-assert",
+      "title": "Baseline-Lauf mit Repro-Assert",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -93,6 +94,7 @@
     },
     {
       "caseId": "reproduction-verdict-rules",
+      "title": "Reproduktions-Check mit Digests",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
       "sourceLineage": [

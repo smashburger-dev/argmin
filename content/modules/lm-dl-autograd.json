@@ -9,8 +9,8 @@
     "c-dl-autograd"
   ],
   "requires": [
-    "c-dl-tensors",
-    "c-grad-regression"
+    "c-grad-regression",
+    "c-dl-tensors"
   ],
   "trackIds": [
     "applied-ai",

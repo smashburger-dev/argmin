@@ -9,6 +9,8 @@
     "c-dl-tokenizer"
   ],
   "requires": [
+    "c-python-reading",
+    "c-python-functions",
     "c-python-collections"
   ],
   "trackIds": [

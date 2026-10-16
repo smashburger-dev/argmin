@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "training-loop-count",
+      "title": "Schritte und Gewichte im Training",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

@@ -8,7 +8,9 @@
   "competencyIds": [
     "c-linalg-independence"
   ],
-  "requires": [],
+  "requires": [
+    "c-linalg-matrices"
+  ],
   "trackIds": [
     "common-core",
     "applied-ai",

@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "membership-set-for-dedup",
+      "title": "Dedup mit erhaltener Reihenfolge",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

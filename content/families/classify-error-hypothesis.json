@@ -13,12 +13,13 @@
       "competencyIds": [
         "c-algebra"
       ],
-      "title": "Potenzgesetz-Fehlerdiagnose",
+      "title": "Fehlerdiagnose zum Potenzgesetz",
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
     {
       "caseId": "seeded-error-pattern-cases",
+      "title": "Nächster Schritt im Debug-Prozess",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -54,6 +55,7 @@
     },
     {
       "caseId": "error-journal-next-test",
+      "title": "Journaleintrag für den nächsten Test",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

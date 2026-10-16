@@ -9,8 +9,8 @@
     "c-genai-security"
   ],
   "requires": [
-    "c-genai-rag",
-    "c-testing-debugging"
+    "c-testing-debugging",
+    "c-genai-rag"
   ],
   "trackIds": [
     "applied-ai",

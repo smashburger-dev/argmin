@@ -10,7 +10,7 @@ Bei **Lasso** kostet jede Einheit Abstand von null eine feste Gebühr. Lohnt sic
 
 Wo der Vergleich hinkt: Das Gummiband zieht proportional zur Auslenkung, die Lasso-Gebühr ist pro Einheit konstant. Beide wirken nur auf die Koeffizienten, nicht auf die Daten, und beide brauchen einen Stellregler $\lambda$ (sprich: lambda), der die Strafhöhe setzt.
 
-**Regularisierung** heißt genau dieses Einengen der Freiheitsgrade: Ein **Hyperparameter** wie $\lambda$ wird nicht aus den Daten gelernt, sondern von dir vorgegeben. Im Austausch für etwas **Bias** (eine leichte Verzerrung der Vorhersage im Mittel) sinkt die [**Varianz**](#/glossary/varianz), die Wackeligkeit der Vorhersage. „Bias“ meint hier die statistische Verzerrung, nicht den Bias-Term einer Schicht.
+**Regularisierung** heißt genau dieses Einengen der Freiheitsgrade: Ein **Hyperparameter** wie $\lambda$ wird nicht aus den Daten gelernt, sondern von dir vorgegeben. Im Austausch für etwas **Bias** (eine leichte Verzerrung der Vorhersage im Mittel) sinkt die [**Varianz**](#/glossary/varianz), die Wackeligkeit der Vorhersage. Der Trainingsfehler steigt mit $\lambda$ dabei typischerweise an; gesenkt wird der erwartete Testfehler. „Bias“ meint hier die statistische Verzerrung, nicht den Bias-Term einer Schicht.
 
 ## Ridge: die geschlossene Form
 
@@ -18,7 +18,7 @@ Die **Ridge-Regression (L2)** minimiert die quadrierten Fehler plus $\lambda\sum
 
 $$w_{\text{ridge}} = (X^{T}X + \lambda I)^{-1}X^{T}y.$$
 
-Dabei ist $X^{T}$ (sprich: X transponiert) die gespiegelte Design-Matrix, $I$ die **Einheitsmatrix** (Einsen auf der Diagonale, sonst Nullen) und $(\cdot)^{-1}$ die Matrixinversion. $\lambda = 0$ liefert die OLS-Lösung (englisch *ordinary least squares*, Methode der kleinsten Quadrate). Wächst $\lambda$, schrumpfen alle Koeffizienten Richtung null.
+Dabei ist $X^{T}$ (sprich: X transponiert) die gespiegelte Design-Matrix, $I$ die **Einheitsmatrix** (Einsen auf der Diagonale, sonst Nullen) und $(\cdot)^{-1}$ die Matrixinversion. Der Summand $\lambda I$ hebt die Klammer für jedes $\lambda > 0$ über die Schwelle der Invertierbarkeit, auch wenn $X^{T}X$ allein nicht invertierbar wäre. $\lambda = 0$ liefert die OLS-Lösung (englisch *ordinary least squares*, Methode der kleinsten Quadrate). Wächst $\lambda$, schrumpfen alle Koeffizienten Richtung null.
 
 ### Durchgerechnet: ein Merkmal
 
@@ -83,7 +83,7 @@ Beim Training großer Sprachmodelle ist **Weight Decay** Standard: In AdamW zieh
 
 ## Direkter Check
 
-Starte mit der [Einstiegsaufgabe: L1-vs-L2-Effekt](#/family/classify-regularizer-effect/l1-vs-l2-effect/0/intro) (Konzept L1/L2), rechne in einer Einstiegsaufgabe den Schrumpfungsprozentsatz aus und kläre die Vorverarbeitung in der [Kernaufgabe: Target-Encoding-Leakage](#/family/classify-cv-leakage/target-encoding-leakage/0/core). Danach implementiere die [Kernaufgabe: Ridge-Normalengleichung](#/family/formula-ridge-lasso-closed-form/ridge-normal-equation/0/core): Ridge aus der Formel und Lasso per Soft-Thresholding, exakt gegen die Handrechnung. Der Final Boss, die [Vertiefungsaufgabe: Lasso-Koeffizientenpfad](#/family/formula-ridge-lasso-closed-form/lasso-soft-threshold/0/stretch) (Koeffizientenpfad), verbindet beide Wege.
+Starte mit der [Einstiegsaufgabe: L1-vs-L2-Effekt](#/family/classify-regularizer-effect/l1-vs-l2-effect/0/intro) (Konzept L1/L2), rechne in einer Einstiegsaufgabe den Schrumpfungsprozentsatz aus und kläre die Vorverarbeitung in der [Kernaufgabe: Target-Encoding-Leakage](#/family/classify-cv-leakage/target-encoding-leakage/0/core). Danach implementiere die [Kernaufgabe: Ridge-Normalengleichung](#/family/formula-ridge-lasso-closed-form/ridge-normal-equation/0/core): Ridge aus der Formel und Lasso per Soft-Thresholding, exakt gegen die Handrechnung. Der Final Boss, die [Vertiefungsaufgabe: Lasso-Koeffizientenpfad](#/family/formula-ridge-lasso-closed-form/lasso-soft-threshold/0/stretch) (Koeffizientenpfad), verbindet beide Wege. Zwei Konzept-Checks ohne Rechnen runden die Lektion ab: [Aussagen zur Ridge-Regression](#/family/multiple-choice-ml-linear/ridge-statements/1/core) prüft die Zielfunktion, und [Bias-Varianz und Regularisierung](#/family/multiple-choice-ml-linear/bias-variance-regularization/1/challenge) prüft den Tradeoff und die Skalierung.
 
 ## Begriffe auf einen Blick
 

@@ -161,11 +161,29 @@ export function staticFamilySpec(doc) {
   };
 }
 
+// The golden corpus pins these instances with the authored case title as a
+// runtime field (the title predates title as catalog metadata). Every other
+// case keeps `title` out of the generated instance — the compiler reads it
+// from the family document instead.
+const PINNED_INSTANCE_TITLES = new Set([
+  'aggregate-accumulator-count:while-two-accumulators',
+  'multiple-choice-linalg-independence:rank-nullity-combined',
+  'multiple-choice-ml-linear:bias-variance-regularization',
+  'trace-collection-state:list-alias-negative',
+]);
+
+export const pinnedInstanceTitle = (familyId, caseId, title) =>
+  (PINNED_INSTANCE_TITLES.has(`${familyId}:${caseId}`) && title ? { title } : {});
+
 /** Static case straight from the registered body (no variant resolution). */
 export const staticBodyInstance = (familyId, caseId, difficulty) => {
   const body = staticCaseBody(familyId, caseId);
-  const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
-  return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
+  const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, title: _title, ...generated } = body;
+  return {
+    ...generated,
+    ...pinnedInstanceTitle(familyId, caseId, body.title),
+    parameters: { caseId, difficulty, ...(body.parameters || {}) },
+  };
 };
 
 /** Static case with seed-driven variant resolution: the variant index lands
@@ -194,6 +212,7 @@ export function staticVariantInstance(familyId, caseId, seed, difficulty, { chec
       hints: _hints,
       prompt: _prompt,
       parameters: _parameters,
+      title: _title,
       ...generated
     } = body;
     const drawn = drawStatementCase(body, { seed, caseId, difficulty });
@@ -201,6 +220,7 @@ export function staticVariantInstance(familyId, caseId, seed, difficulty, { chec
     // shuffle would desync parameters.statements from the option layout.
     return {
       ...generated,
+      ...pinnedInstanceTitle(familyId, caseId, body.title),
       ...drawn,
       masteryEligible: body.graderId !== 'manual-rubric' && body.masteryEligible === true,
       parameters: {
@@ -218,10 +238,12 @@ export function staticVariantInstance(familyId, caseId, seed, difficulty, { chec
     masteryEligible: _masteryEligible,
     sourceLineage: _sourceLineage,
     variants: _variants,
+    title: _title,
     ...generated
   } = chosen;
   return withSeededChoiceOrder({
     ...generated,
+    ...pinnedInstanceTitle(familyId, caseId, chosen.title),
     masteryEligible: chosen.graderId !== 'manual-rubric' && body.masteryEligible === true,
     // A variant that overrides `choices` but not `feedbackRules` must not
     // inherit the base rules verbatim — they were authored for the base

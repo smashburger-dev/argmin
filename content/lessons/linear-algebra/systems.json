@@ -10,7 +10,10 @@
   "estimatedMinutes": 50,
   "blocks": [
     { "blockId": "linalg-systems-core", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems.md" },
-    { "blockId": "systems-viz", "type": "visualization", "contentRef": "lessons/linear-algebra/two-lines.viz.json" }
+    { "blockId": "systems-viz", "type": "visualization", "contentRef": "lessons/linear-algebra/two-lines.viz.json" },
+    { "blockId": "systems-solution-cases", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems-solution-cases.md" },
+    { "blockId": "systems-solution-cases-viz", "type": "visualization", "contentRef": "lessons/linear-algebra/solution-cases.viz.json" },
+    { "blockId": "systems-close", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems-close.md" }
   ],
   "sourceRefs": [
     { "sourceId": "mit-ocw-18-06sc", "role": "reference", "locator": "Lecture 1: The Geometry of Linear Equations" },

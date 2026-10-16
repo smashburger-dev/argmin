@@ -18,6 +18,8 @@
       ],
       "trackIds": [
         "common-core",
+        "applied-ai",
+        "research-evaluation",
         "mathematical-foundations"
       ],
       "estimatedMinutes": 240,
@@ -49,6 +51,8 @@
       ],
       "trackIds": [
         "common-core",
+        "applied-ai",
+        "research-evaluation",
         "mathematical-foundations"
       ],
       "estimatedMinutes": 180,
@@ -78,7 +82,9 @@
       ],
       "trackIds": [
         "common-core",
-        "applied-ai"
+        "applied-ai",
+        "research-evaluation",
+        "mathematical-foundations"
       ],
       "estimatedMinutes": 240,
       "evidencePolicy": {
@@ -99,7 +105,8 @@
       "domain": "programming",
       "level": "apply",
       "requires": [
-        "c-python-basics"
+        "c-python-basics",
+        "c-python-control-flow"
       ],
       "relations": [
         {
@@ -110,6 +117,7 @@
       "trackIds": [
         "common-core",
         "applied-ai",
+        "mathematical-foundations",
         "research-evaluation"
       ],
       "estimatedMinutes": 180,
@@ -131,7 +139,8 @@
       "domain": "programming",
       "level": "apply",
       "requires": [
-        "c-python-basics"
+        "c-python-basics",
+        "c-python-control-flow"
       ],
       "relations": [
         {
@@ -141,7 +150,9 @@
       ],
       "trackIds": [
         "common-core",
-        "applied-ai"
+        "applied-ai",
+        "research-evaluation",
+        "mathematical-foundations"
       ],
       "estimatedMinutes": 180,
       "evidencePolicy": {
@@ -165,6 +176,7 @@
       "relations": [],
       "trackIds": [
         "common-core",
+        "applied-ai",
         "research-evaluation"
       ],
       "estimatedMinutes": 60,
@@ -229,6 +241,7 @@
       ],
       "trackIds": [
         "common-core",
+        "applied-ai",
         "mathematical-foundations"
       ],
       "estimatedMinutes": 180,
@@ -261,6 +274,7 @@
       ],
       "trackIds": [
         "common-core",
+        "applied-ai",
         "mathematical-foundations"
       ],
       "estimatedMinutes": 240,
@@ -292,6 +306,7 @@
       ],
       "trackIds": [
         "common-core",
+        "applied-ai",
         "mathematical-foundations"
       ],
       "estimatedMinutes": 240,
@@ -313,8 +328,10 @@
       "domain": "data",
       "level": "apply",
       "requires": [
+        "c-python-reading",
         "c-python-functions",
-        "c-linalg-matrices"
+        "c-linalg-matrices",
+        "c-python-collections"
       ],
       "relations": [
         {
@@ -324,7 +341,8 @@
       ],
       "trackIds": [
         "common-core",
-        "applied-ai"
+        "applied-ai",
+        "mathematical-foundations"
       ],
       "estimatedMinutes": 240,
       "evidencePolicy": {
@@ -355,7 +373,9 @@
       ],
       "trackIds": [
         "common-core",
-        "applied-ai"
+        "applied-ai",
+        "research-evaluation",
+        "mathematical-foundations"
       ],
       "estimatedMinutes": 300,
       "evidencePolicy": {
@@ -386,7 +406,9 @@
       ],
       "trackIds": [
         "common-core",
-        "applied-ai"
+        "applied-ai",
+        "mathematical-foundations",
+        "research-evaluation"
       ],
       "estimatedMinutes": 300,
       "evidencePolicy": {
@@ -1022,6 +1044,8 @@
       "domain": "deep-learning",
       "level": "apply",
       "requires": [
+        "c-python-reading",
+        "c-python-functions",
         "c-python-collections"
       ],
       "relations": [],

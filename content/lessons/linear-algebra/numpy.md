@@ -6,7 +6,7 @@ In NumPy steckt jede Zahlentabelle in einem Array, und die häufigsten Fehler si
 
 Ein Funktionsvertrag für Formen ist wie Stecker und Steckdose: Nur was zusammenpasst, darf verbunden werden. Erwartet die Funktion eine [Matrix](#/glossary/matrix) mit drei Spalten, ist ein Vektor der Länge zwei der falsche Stecker; die Verbindung muss abgelehnt werden, statt mit Gewalt zu passen.
 
-Broadcasting ist dabei ein Stempel: NumPy legt ein kleineres Array gedanklich auf jede Zeile oder Spalte des größeren, wenn die Formen verträglich sind. Wo der Vergleich hinkt: Der Stempel passt auch, wenn du es gar nicht wolltest. Broadcasting meldet sich nicht, wenn es dein Konzept verändert; es macht den Fehler still.
+Broadcasting ist dabei ein eingebauter Reiseadapter: NumPy legt ein kleineres Array gedanklich auf jede Zeile oder Spalte des größeren und passt den Stecker an, wenn die Formen verträglich sind. Wo der Vergleich hinkt: Der Adapter macht die Verbindung auch dann still möglich, wenn du sie gar nicht wolltest; er meldet nicht, dass er dein Konzept verändert hat.
 
 ## Arrays, Form und Achsen
 
@@ -51,6 +51,8 @@ def matvec(A, x):
 ```
 
 Der Vertrag prüft zuerst die Anzahl der Achsen und danach die innere Länge. Ein `ValueError` ist die rote Karte der Programmiersprache: Er bricht mit einer erklärbaren Meldung ab, statt ein falsches Ergebnis weiterzureichen. Derselbe Aufbau trägt Verträge für andere Funktionen: Bei `solve(A, b)` prüfst du quadratische Form und passende Seitenlänge, bei `matmul(A, B)` die inneren Dimensionen.
+
+Quadratisch allein garantiert noch keine eindeutige Lösung: Eine Matrix mit abhängigen Zeilen heißt **singulär**, ihre Determinante ist 0, und `np.linalg.solve` wirft einen `LinAlgError`. Ihr Rang, die Zahl unabhängiger Zeilen, ist dann kleiner als die Zeilenzahl; ein Vertrag, der Eindeutigkeit braucht, prüft das selbst, statt den Bibliotheksfehler durchzureichen. Die Pivot-Elimination dahinter sucht pro Spalte den ersten von null verschiedenen Eintrag, tauscht ihn nach oben und eliminiert darunter; Determinante, Rang und das Pivot-Verfahren rechnen die Lektionen zu Gauß-Elimination und Unabhängigkeit genau.
 
 ## `*` ist nicht `@`
 
@@ -111,3 +113,4 @@ Ordne zuerst die Implementierung in der [Einstiegsaufgabe: matvec-Reihenfolge](#
 - **Dimensionsvertrag**: Regel, welche Formen eine Operation annimmt und welche Form ihr Ergebnis hat.
 - **Broadcasting**: automatisches Ausdehnen kompatibler Achsen, sodass ein kleineres Array auf jede Zeile oder Spalte des größeren wirkt.
 - **ValueError**: Python-Fehler, der eine Funktion bei unpassender Eingabe auslöst; der vereinbarte Abbruch des Vertrags.
+- **Singulär** (englisch *singular*): quadratische Matrix mit abhängigen Zeilen oder Spalten; Determinante 0, Rang kleiner als die Zeilenzahl, `solve` wirft `LinAlgError`.

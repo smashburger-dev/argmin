@@ -2,7 +2,7 @@ import type { CatalogData, ExercisePlacement, ExerciseSummary, LearningModule, L
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 
 export const activityTypeLabels = {
-  'single-choice': 'Konzeptfrage',
+  'single-choice': 'Auswahlaufgabe',
   numeric: 'Rechenaufgabe',
   vector: 'Rechenaufgabe',
   'algebraic-expression': 'Rechenaufgabe',
@@ -35,8 +35,9 @@ export interface ExerciseContext {
   module?: LearningModule;
   lesson?: Lesson;
   title: string;
-  /** Specific case title for breadcrumbs/nav — the h1 stays generic. */
+  /** Authored case title — used for the h1 and breadcrumbs when present. */
   detail?: string;
+  activityLabel: string;
   caseId?: string;
   summary: string;
   difficultyLabel: string;
@@ -163,6 +164,7 @@ export function getExerciseContext(catalog: CatalogData, instance: ExerciseInsta
     lesson,
     title: activityLabel(instance.activityType),
     detail: exercise?.title,
+    activityLabel: activityLabel(instance.activityType),
     caseId: instance.caseId,
     summary: family?.summary ?? summary ?? '',
     difficultyLabel: difficultyLabelFor(instance.difficulty),

@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "distribute-final-gap",
+      "title": "Letzte Zeile beim Ausmultiplizieren",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [

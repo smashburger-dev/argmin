@@ -36,6 +36,7 @@
   "cases": [
     {
       "caseId": "hyperparameter-vs-parameter",
+      "title": "Hyperparameter gegen Parameter",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

@@ -19,6 +19,11 @@
       "minItems": 1,
       "items": { "$ref": "#/$defs/case" },
       "uniqueItems": true
+    },
+    "caseTitles": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+      "additionalProperties": { "type": "string", "minLength": 1 }
     }
   },
   "$defs": {

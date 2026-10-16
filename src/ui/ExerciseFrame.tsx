@@ -60,7 +60,7 @@ export function ExerciseFrame({
       ]} />
       <header class="view-header">
         <p class="eyebrow">{eyebrow}</p>
-        <h1 id="exercise-title" tabIndex={-1}>{ctx.title}</h1>
+        <h1 id="exercise-title" tabIndex={-1}>{ctx.detail || ctx.title}</h1>
         {ctx.summary ? <p class="lede">{ctx.summary}</p> : null}
       </header>
       <div class="exercise-layout">

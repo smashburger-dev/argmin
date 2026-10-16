@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "fade-final-step",
+      "title": "Letzte Umformung der Gleichung",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -62,6 +63,7 @@
     },
     {
       "caseId": "fade-middle-steps",
+      "title": "Zwischenzeilen der Umformung",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

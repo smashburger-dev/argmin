@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "backprop-path-rule",
+      "title": "Kettenregel im vektoriellen Fall",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [
