@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "linear-param-count",
+      "title": "Zusätzliche Parameter des breiteren Netzes",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -53,6 +54,7 @@
     },
     {
       "caseId": "sgd-update-count",
+      "title": "Optimizer-Updates pro Training",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -101,6 +103,7 @@
     },
     {
       "caseId": "dropout-mask-kept-count",
+      "title": "Überlebende Aktivierungen zweier Masken",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -149,6 +152,7 @@
     },
     {
       "caseId": "attention-tensor-cells",
+      "title": "Verdeckte Zellen der Score-Matrix",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -197,6 +201,7 @@
     },
     {
       "caseId": "bpe-vocab-size",
+      "title": "Vokabulargröße nach BPE-Merges",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -245,6 +250,7 @@
     },
     {
       "caseId": "lora-param-count",
+      "title": "Freie LoRA-Parameter zählen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

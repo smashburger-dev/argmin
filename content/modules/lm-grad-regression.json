@@ -8,15 +8,6 @@
   "competencyIds": [
     "c-grad-regression"
   ],
-  "requires": [
-    "c-algebra",
-    "c-linalg-matrices",
-    "c-numpy-basics"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-grad-regression"
   ],

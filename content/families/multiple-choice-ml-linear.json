@@ -40,6 +40,7 @@
   "cases": [
     {
       "caseId": "least-squares-normal-equation",
+      "title": "Aussagen zur Normalengleichung",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -223,6 +224,7 @@
     },
     {
       "caseId": "ridge-statements",
+      "title": "Aussagen zur Ridge-Regression",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -399,6 +401,7 @@
     },
     {
       "caseId": "residual-diagnostics",
+      "title": "Residuenanalyse und Fehlermaße",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

@@ -68,7 +68,11 @@ test('w27-w30 lessons follow the canonical lesson contract with allowed readings
 
 test('w27-w30 lesson markdown is German, in budget and links only its own exercises', () => {
   for (const lesson of LESSONS) {
-    const md = readFileSync(join(root, `content/lessons/genai-systems/${lesson.file}.md`), 'utf8');
+    const doc = readJson(`content/lessons/genai-systems/${lesson.file}.json`);
+    const md = doc.blocks
+      .filter((block) => block.type === 'worked-example' && block.contentRef.endsWith('.md'))
+      .map((block) => readFileSync(join(root, 'content', block.contentRef), 'utf8'))
+      .join('\n');
     const words = md.split(/\s+/).filter(Boolean).length;
     assert.ok(words >= 500 && words <= 1300, `${lesson.file}.md has ${words} words (budget 500-1300)`);
     assert.match(md, /## Direkter Check/, `${lesson.file}.md: Direkter Check fehlt`);

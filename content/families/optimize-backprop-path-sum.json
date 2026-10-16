@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "chain-rule-path-sum",
+      "title": "Gradient über zwei Zweige",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

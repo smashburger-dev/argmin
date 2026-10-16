@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "rank-3x3-staircase",
+      "title": "Rang einer 3×3-Stufenmatrix",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -38,6 +39,7 @@
     },
     {
       "caseId": "rank-3x3-full",
+      "title": "Rang einer 3×3-Matrix",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

@@ -8,12 +8,6 @@
   "competencyIds": [
     "c-research-cards"
   ],
-  "requires": [
-    "c-research-question"
-  ],
-  "trackIds": [
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-research-cards"
   ],

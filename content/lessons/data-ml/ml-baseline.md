@@ -17,6 +17,8 @@ Die Art der **Zielvariable** entscheidet über den Problemtyp:
 
 Vorsicht bei Zahlen: Eine Kundenummer ist eine Zahl, aber kein stetiges Ziel. Sie bleibt eine Kategorie; entscheidend ist die Bedeutung, nicht der Datentyp.
 
+Regression und Klassifikation sind **überwachte** Verfahren: Sie lernen aus Beispielen mit gelabeltem Ziel. Verfahren ohne Labels wie **Clustering** zählen zu den unüberwachten; sie gruppieren Daten, ohne dass ein Ziel vorgegeben wäre.
+
 ## Baselines als Maßstab
 
 Eine **Baseline** ist die billigste sinnvolle Vorhersage. Sie legt den Boden fest, den jedes echte Modell schlagen muss. Durchgerechnetes Beispiel: Ein Datensatz hat 60 Beispiele „Defekt“, 90 „Verschleiß“ und 30 „in Ordnung“, insgesamt 180. Die häufigste Klasse ist „Verschleiß“ mit 90 Treffern:
@@ -64,5 +66,7 @@ Löse die [Einstiegsaufgabe: Problemeinordnung](#/family/classify-task-type/fail
 - **Metrik** (englisch *metric*): die Zahl, an der Modelle verglichen werden; steht vor dem Experiment fest.
 - **Baseline**: die billigste sinnvolle Vorhersage; der Maßstab, den jedes Modell schlagen muss.
 - **Majority-Baseline**: Vorhersage „immer die häufigste Klasse“; bei Regression heißt das Gegenstück Mean-Baseline.
+- **Überwacht** (englisch *supervised*): Verfahren lernt aus Beispielen mit gelabeltem Ziel; Regression und Klassifikation ja, Clustering nein.
+- **Clustering**: unüberwachtes Gruppieren ohne Zielvariable.
 - **Train/Test-Split**: Aufteilung der Daten in Lernteil und Prüfteil; der Prüfteil bleibt beim Training ungesehen.
 - **Seed** (englisch *random seed*): Startwert eines Zufallsgenerators; gleicher Seed, gleiche Zufallsfolge.

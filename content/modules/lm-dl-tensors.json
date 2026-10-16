@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-dl-tensors"
   ],
-  "requires": [
-    "c-numpy-basics",
-    "c-linalg-matrices"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-dl-tensors"
   ],

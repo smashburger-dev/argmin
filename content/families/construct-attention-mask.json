@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "construct-causal-padding-mask",
+      "title": "Causal- und Padding-Masken bauen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

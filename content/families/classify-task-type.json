@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "failure-next-cycle-supervised",
+      "title": "Problemtyp der Betrugserkennung",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

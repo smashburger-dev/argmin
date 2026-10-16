@@ -9,13 +9,6 @@
     "c-algebra-basics",
     "c-algebra"
   ],
-  "requires": [],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "research-evaluation",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-foundations-algebra",
     "l-foundations-algebra-transformations"

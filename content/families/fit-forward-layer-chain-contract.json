@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "linear-forward-contract",
+      "title": "Lineares Layer mit Shape-Vertrag",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -50,6 +51,7 @@
     },
     {
       "caseId": "mlp-forward-relu",
+      "title": "Forward-Pass eines 2-Layer-MLP",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

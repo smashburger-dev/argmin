@@ -47,6 +47,7 @@
     },
     {
       "caseId": "while-counter-with-stop-state",
+      "title": "Summen-Schleife bis zum Abbruch",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -137,6 +138,7 @@
     },
     {
       "caseId": "for-filter-accumulator",
+      "title": "Gerade Werte filtern und sammeln",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

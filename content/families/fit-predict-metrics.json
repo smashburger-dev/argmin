@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "baseline-experiment-report",
+      "title": "Reproduzierbares Mini-Experiment",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -46,6 +47,7 @@
     },
     {
       "caseId": "linear-fit-lstsq",
+      "title": "Linearen Fit mit lstsq",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -91,6 +93,7 @@
     },
     {
       "caseId": "regression-report",
+      "title": "Regressionsbericht implementieren",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

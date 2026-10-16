@@ -18,6 +18,12 @@ import {
   indexLearningModules,
 } from '../assets/js/domain/learning_module.mjs';
 import {
+  assertCodePrerequisites,
+  assertTrackClosure,
+  assertTrackPrerequisiteOrder,
+  deriveLearningGraph,
+} from '../assets/js/domain/module_order.mjs';
+import {
   assertNoOrphans,
   catalogRoot,
   discoverJson,
@@ -420,7 +426,6 @@ function validateCompetencies(bundle, ids) {
   for (const competency of bundle.competencies) {
     if (!ids.rights.has(competency.rightsId)) throw new Error(`${competency.competencyId}: unbekannte Rechte ${competency.rightsId}`);
     if (!validEvidencePolicy(competency.evidencePolicy || {})) throw new Error(`${competency.competencyId}: ungueltige Evidence-Policy`);
-    for (const trackId of competency.trackIds || []) if (!ids.tracks.has(trackId)) throw new Error(`${competency.competencyId}: unbekannter Track ${trackId}`);
     for (const relation of competency.relations || []) {
       if (!ids.competencies.has(relation.competencyId)) throw new Error(`${competency.competencyId}: unbekannte Relation ${relation.competencyId}`);
     }
@@ -816,6 +821,9 @@ export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo
   validateSourceDocument('catalog', catalog, projectRoot);
   const files = discoverCatalogFiles(contentRoot, catalog);
   const entities = loadCatalogEntities(contentRoot, catalog, files, projectRoot);
+  // Membership and module requires are derived, never authored — inject
+  // before validation, gates or consumers read them.
+  deriveLearningGraph(entities.tracks, entities.learningModules, entities.competencies);
   validateLoadedCatalog(contentRoot, catalog, files, entities);
   filterPublicEntities(entities);
   const bundle = compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion, entities);
@@ -948,6 +956,10 @@ function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion
   validateGlossaryLinks(entities.lessons, glossary);
   attachSourceModuleUsage(entities);
   const familyActivities = buildFamilyActivities(entities.learningModules, entities.families);
+  assertTrackClosure(entities.tracks, entities.learningModules, entities.competencies);
+  assertTrackPrerequisiteOrder(entities.learningModules, entities.tracks, entities.competencies);
+  assertCodePrerequisites(entities.learningModules, entities.competencies,
+    (module) => moduleCodeSignals(module, markdownSources));
   const visualizations = entities.lessons.flatMap((lesson) => lesson.blocks
     .filter((block) => block.type === 'visualization' && block.viz && block.visualizationId)
     .map((block) => ({ visualizationId: block.visualizationId, lessonId: lesson.lessonId, spec: block.viz })));
@@ -965,22 +977,59 @@ function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion
 // Lesson and family bodies stay out of the initial index and are loaded by id.
 
 const SAFE_CHUNK_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,96}$/;
-function stripPromptMarkup(prompt, maxLength = 80) {
-  const text = String(prompt || '')
-    .replace(/<[^>]*>/g, '')
-    // Any math span ($$..$$, \[..\], \(..\) or inline $..$) ends the readable
-    // title: stripping just the $ chars would leave naked TeX commands behind.
-    .split(/\$\$|\\\[|\\\(|[$]/)[0]
-    .replace(/\\log_\{?(\w+)\}?/g, 'log_$1')
-    .replace(/\^\{([^}]*)\}/g, '^$1')
-    .replace(/\\cdot/g, '·')
-    .replace(/\$/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-  if (text.length <= maxLength) return text;
-  const cut = text.slice(0, maxLength);
-  const boundary = cut.lastIndexOf(' ');
-  return `${cut.slice(0, boundary > 30 ? boundary : maxLength)} …`;
+
+// Titles for curated placements and challenge cases are authored, never
+// derived from prompt markup (a leading math span truncated titles to
+// fragments like "Für").
+const GENERIC_ACTIVITY_TITLES = new Set([
+  'Aufgabe', 'Konzeptfrage', 'Auswahlaufgabe', 'Rechenaufgabe', 'Programmieraufgabe',
+  'Ablauf nachvollziehen', 'Code ordnen', 'Begründung', 'Mehrfachauswahl',
+  'Fehlerdiagnose', 'Lückentext',
+]);
+
+export function assertCaseTitle(title, ref) {
+  const fail = (rule) => { throw new Error(`${ref}: Aufgabentitel ungültig — ${rule}`); };
+  if (typeof title !== 'string' || !title.trim()) fail('Titel fehlt');
+  const trimmed = title.trim();
+  if (trimmed.length > 56) fail(`Titel länger als 56 Zeichen (${trimmed.length})`);
+  const words = trimmed.split(/\s+/).length;
+  if (words < 2 || words > 7) fail(`Wortanzahl ${words} liegt nicht zwischen 2 und 7`);
+  if (/[$`]|\\[a-zA-Z]|<[a-zA-Z/]/.test(trimmed)) fail('TeX, HTML und Backticks sind nicht erlaubt');
+  if (/[…:.]$/.test(trimmed)) fail('Titel darf nicht mit „…“, „:“ oder „.“ enden');
+  if (GENERIC_ACTIVITY_TITLES.has(trimmed)) fail('Titel ist nur ein Aktivitätstyp');
+  return trimmed;
+}
+
+// Code usage a module demonstrably requires: a curated task with a code-kind
+// activity type or a lesson with a ```python block needs Python basics; a
+// task instance or lesson python block mentioning NumPy needs c-numpy-basics.
+// Parsons are workflow orderings, not code execution, so they do not count.
+const PYTHON_TASK_KINDS = new Set(['python-code', 'predict-output', 'code-trace']);
+const NUMPY_USAGE = /\bnp\.|import numpy/;
+const PYTHON_BLOCKS = /```python[\s\S]*?```/g;
+
+function placementCodeSignal(placement) {
+  const instance = EXERCISE_FAMILIES.instantiate(placement.familyId, placement.seed ?? 0, placement.difficulty, placement.caseId);
+  const kind = instance.kind ?? instance.activityType;
+  const text = JSON.stringify([instance.prompt, instance.snippet, instance.code, instance.starterCode, instance.choices, instance.lines, instance.options]);
+  return { needsPython: PYTHON_TASK_KINDS.has(kind), needsNumpy: NUMPY_USAGE.test(text) };
+}
+
+const lessonCodeSignals = (sources) => sources.flatMap((source) =>
+  (source.match(PYTHON_BLOCKS) || [])
+    .map((block) => ({ needsPython: true, needsNumpy: NUMPY_USAGE.test(block) })));
+
+export function moduleCodeSignals(module, markdownSources) {
+  const signals = (module.placements || [])
+    .filter((placement) => placement.role === 'curated' && placement.caseId)
+    .map(placementCodeSignal);
+  for (const lessonId of module.lessonIds || []) {
+    signals.push(...lessonCodeSignals(markdownSources.get(lessonId) || []));
+  }
+  return {
+    needsPython: signals.some((signal) => signal.needsPython),
+    needsNumpy: signals.some((signal) => signal.needsNumpy),
+  };
 }
 
 function buildFamilyActivities(learningModules, families) {
@@ -988,51 +1037,58 @@ function buildFamilyActivities(learningModules, families) {
   const activities = [];
   const seen = new Set();
   for (const module of learningModules || []) {
+    const moduleTitles = new Map();
     for (const placement of module.placements || []) {
       const activity = buildFamilyActivity(placement, module, familyDocuments, seen);
-      if (activity) activities.push(activity);
+      if (!activity) continue;
+      const clash = moduleTitles.get(activity.title);
+      if (clash) {
+        throw new Error(`${module.moduleId}: Titel "${activity.title}" ist doppelt vergeben (${clash}, ${activity.definitionId})`);
+      }
+      moduleTitles.set(activity.title, activity.definitionId);
+      activities.push(activity);
     }
   }
   return activities;
 }
 
+const authoredCaseTitle = (familyDocument, caseId) =>
+  familyDocument?.cases?.find((item) => item.caseId === caseId)?.title
+  ?? familyDocument?.caseTitles?.[caseId];
+
+// Fresh-instance review routing (same case, random seed) only makes sense
+// for cases that actually draw new content per seed (propertyTest !==
+// false). Static members of a seeded family keep their pinned route.
+const seededCaseDraws = (family, caseId) =>
+  family.authorityMode === 'seeded'
+  && family.caseTypes?.find((item) => item.caseId === caseId)?.propertyTest !== false;
+
+const isCuratedRef = (placement) => placement.role === 'curated' && placement.familyId && placement.caseId;
+
 function buildFamilyActivity(placement, module, familyDocuments, seen) {
-  if (placement.role !== 'curated' || !placement.familyId || !placement.caseId) return null;
+  if (!isCuratedRef(placement)) return null;
   const definitionId = `${placement.familyId}:${placement.caseId}`;
   if (seen.has(definitionId)) return null;
   const family = EXERCISE_FAMILIES.get(placement.familyId);
   if (!family) throw new Error(`Unbekannte Familie ${placement.familyId}`);
   const instance = EXERCISE_FAMILIES.instantiate(placement.familyId, placement.seed ?? 0, placement.difficulty, placement.caseId);
-  const familyDocument = familyDocuments.get(placement.familyId);
-  const familyTitle = familyDocument?.contract?.summary || family.summary;
-  const caseTitle = familyDocument?.cases?.find((item) => item.caseId === placement.caseId)?.title;
-  const title = caseTitle || instance.title || stripPromptMarkup(instance.prompt, 80) || familyTitle;
+  const title = assertCaseTitle(authoredCaseTitle(familyDocuments.get(placement.familyId), placement.caseId), definitionId);
   seen.add(definitionId);
-  // Fresh-instance review routing (same case, random seed) only makes sense
-  // for cases that actually draw new content per seed (propertyTest !==
-  // false). Static members of a seeded family keep their pinned route.
-  const caseType = family.caseTypes?.find((item) => item.caseId === placement.caseId);
-  const seeded = family.authorityMode === 'seeded' && caseType?.propertyTest !== false;
   return {
     definitionId, familyId: placement.familyId, caseId: placement.caseId, seed: placement.seed ?? 0, difficulty: placement.difficulty, title,
     activityType: instance.kind ?? instance.activityType, competencyIds: [...(instance.competencyIds || [])],
     estimatedMinutes: placement.estimatedMinutes ?? 8, masteryEligible: instance.masteryEligible === true,
-    seeded, moduleId: module.moduleId, lessonId: placement.lessonId ?? null,
+    seeded: seededCaseDraws(family, placement.caseId), moduleId: module.moduleId, lessonId: placement.lessonId ?? null,
   };
 }
 
-// Display title for a challenge-flagged case that has no module placement:
-// instantiate at the challenge profile and reuse the familyActivities
-// derivation. Registration is lazy so projection also works when this runs
-// without the validation pass having populated EXERCISE_FAMILIES first.
+// Display title for a challenge-flagged case without a module placement:
+// the authored case title (case body or the `caseTitles` map for generated
+// cases), gated by the same rules as curated placements.
 function challengeCaseTitle(family, caseId) {
-  try {
-    if (!EXERCISE_FAMILIES.get(family.familyId)) configureExerciseFamilies([family]);
-    const instance = EXERCISE_FAMILIES.instantiate(family.familyId, 0, 'challenge', caseId);
-    return instance.title || stripPromptMarkup(instance.prompt, 80) || '';
-  } catch {
-    return '';
-  }
+  const title = family.cases?.find((item) => item.caseId === caseId)?.title
+    ?? family.caseTitles?.[caseId];
+  return assertCaseTitle(title, `${family.familyId}:${caseId}`);
 }
 
 // Route-scoped index sections: three heavy sections ship as sidecar chunks
@@ -1043,6 +1099,28 @@ const SECTION_FIELDS = {
   visualizations: 'visualizations',
   glossary: 'glossary',
 };
+
+function familyActivityType(family) {
+  if (!family.contract?.activityType && !EXERCISE_FAMILIES.get(family.familyId)) {
+    configureExerciseFamilies([family]);
+  }
+  return family.contract?.activityType ?? EXERCISE_FAMILIES.get(family.familyId)?.activityType;
+}
+
+// Index projection of a case: challenge cards render titles and the
+// activity-type tag before the family route loads. Titles are authored on
+// the case (or in `caseTitles` for generated cases); the gate fails the
+// compile when a required title is missing or invalid.
+function projectIndexCase(family, item) {
+  const { caseId, difficultyProfile, masteryEligible, challengeEligible, title } = item;
+  const projected = { caseId, difficultyProfile, masteryEligible, ...(challengeEligible === true ? { challengeEligible: true } : {}) };
+  if (challengeEligible === true || typeof title === 'string') {
+    projected.title = challengeCaseTitle(family, caseId);
+  }
+  const type = challengeEligible === true && (item.activityType ?? familyActivityType(family));
+  if (type) projected.activityType = type;
+  return projected;
+}
 
 export function buildSplitArtifacts(bundle) {
   const { sources, tools, visualizations, glossary, ...lightBundle } = bundle;
@@ -1055,28 +1133,7 @@ export function buildSplitArtifacts(bundle) {
       familyId: family.familyId,
       summary: family.contract?.summary || '',
       contract: family.contract,
-      cases: family.cases.map((item) => {
-        const { caseId, difficultyProfile, masteryEligible, challengeEligible, title } = item;
-        const projected = { caseId, difficultyProfile, masteryEligible, ...(challengeEligible === true ? { challengeEligible: true } : {}) };
-        // Challenge cards render titles and the activity-type tag before the
-        // family route loads, so derive them here the same way
-        // buildFamilyActivities does. An authored case-level `title`
-        // overrides the generated instance title.
-        if (challengeEligible === true || typeof title === 'string') {
-          const derived = typeof title === 'string' && title ? title : challengeCaseTitle(family, caseId);
-          if (derived) projected.title = derived;
-        }
-        if (challengeEligible === true) {
-          if (!family.contract?.activityType && !EXERCISE_FAMILIES.get(family.familyId)) {
-            configureExerciseFamilies([family]);
-          }
-          const type = item.activityType
-            ?? family.contract?.activityType
-            ?? EXERCISE_FAMILIES.get(family.familyId)?.activityType;
-          if (type) projected.activityType = type;
-        }
-        return projected;
-      }),
+      cases: family.cases.map((item) => projectIndexCase(family, item)),
     })),
   };
   const lessonBodies = bundle.lessons.map((lesson) => {

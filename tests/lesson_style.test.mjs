@@ -105,6 +105,18 @@ function listLessonMarkdown(dir) {
 const lessonFiles = listLessonMarkdown(LESSONS_ROOT);
 assert.ok(lessonFiles.length > 0, 'keine Lektions-Markdowns gefunden');
 
+// Eine Lektion kann aus mehreren Markdown-Blöcken bestehen (Visualisierung
+// dazwischen). Stilregeln gelten für die Lektion als Ganzes, also für die
+// verketteten worked-example-Blöcke in Blockreihenfolge.
+function lessonProse(rel) {
+  const docPath = join(LESSONS_ROOT, rel.replace(/\.md$/, '.json'));
+  const doc = JSON.parse(readFileSync(docPath, 'utf8'));
+  const parts = (doc.blocks || [])
+    .filter((block) => block.type === 'worked-example' && block.contentRef.endsWith('.md'))
+    .map((block) => readFileSync(join(LESSONS_ROOT, '..', block.contentRef), 'utf8'));
+  return parts.length > 0 ? parts.join('\n') : readFileSync(join(LESSONS_ROOT, rel), 'utf8');
+}
+
 const GLOSSARY_LINE = /^- \*\*([^*]+)\*\*(?: \(englisch \*[^*]+\*\))?: \S.*$/;
 
 // Entfernt fenced code und Mathe-Spans, damit Typografie-Checks nur Fließtext sehen.
@@ -239,8 +251,7 @@ function splitLeadAndSections(text) {
 }
 
 for (const rel of REVISED) {
-  const file = join(LESSONS_ROOT, rel);
-  const text = readFileSync(file, 'utf8');
+  const text = lessonProse(rel);
 
   test(`${rel}: Lead ist Prosa ohne Formel und Liste`, () => {
     const { lead } = splitLeadAndSections(text);

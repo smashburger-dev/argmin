@@ -8,17 +8,6 @@
   "competencyIds": [
     "c-ml-repro"
   ],
-  "requires": [
-    "c-ml-erroranalysis",
-    "c-ml-regularization",
-    "c-ml-ensembles",
-    "c-ml-svm-pca",
-    "c-git-basics",
-    "c-testing-debugging"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-ml-repro"
   ],

@@ -8,12 +8,6 @@
   "competencyIds": [
     "c-linalg-matrices"
   ],
-  "requires": [],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-linalg-matrices"
   ],
@@ -74,17 +68,6 @@
       "masteryEligible": true
     },
     {
-      "placementId": "p-linalg-matrices-06-scalar-loop-output",
-      "role": "curated",
-      "familyId": "formula-scalar-product",
-      "caseId": "scalar-loop-output",
-      "seed": 0,
-      "difficulty": "core",
-      "estimatedMinutes": 6,
-      "lessonId": "l-linalg-matrices",
-      "masteryEligible": true
-    },
-    {
       "placementId": "p-linalg-matrices-07-product-definition-rationale",
       "role": "curated",
       "familyId": "formula-scalar-product",
@@ -105,28 +88,6 @@
       "estimatedMinutes": 6,
       "lessonId": "l-linalg-matrices",
       "masteryEligible": true
-    },
-    {
-      "placementId": "p-linalg-matrices-10-shape-debug-authored",
-      "role": "curated",
-      "familyId": "classify-column-combination",
-      "caseId": "shape-debug-authored",
-      "seed": 0,
-      "difficulty": "stretch",
-      "estimatedMinutes": 8,
-      "lessonId": "l-linalg-matrices",
-      "masteryEligible": true
-    },
-    {
-      "placementId": "p-linalg-matrices-10-column-picture-trace",
-      "role": "curated",
-      "familyId": "trace-assignment-state",
-      "caseId": "column-picture-trace",
-      "seed": 915,
-      "difficulty": "intro",
-      "estimatedMinutes": 8,
-      "lessonId": "l-linalg-matrices",
-      "masteryEligible": false
     },
     {
       "placementId": "p-linalg-matrices-12-shape-vector-matmul-chain",

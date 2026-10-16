@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-dl-papers"
   ],
-  "requires": [
-    "c-dl-finetuning",
-    "c-meta-learning"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-tf-papers"
   ],

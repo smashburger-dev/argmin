@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "subword-oov-robustness",
+      "title": "Preis der OOV-Robustheit",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

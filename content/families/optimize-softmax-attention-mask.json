@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "scaled-dot-product-attention",
+      "title": "Scaled Dot-Product Attention",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -50,6 +51,7 @@
     },
     {
       "caseId": "toy-forward-pass",
+      "title": "Toy-Forward-Pass implementieren",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

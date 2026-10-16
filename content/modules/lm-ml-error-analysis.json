@@ -8,12 +8,6 @@
   "competencyIds": [
     "c-ml-erroranalysis"
   ],
-  "requires": [
-    "c-ml-cv"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-ml-error-analysis"
   ],

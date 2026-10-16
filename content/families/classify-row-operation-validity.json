@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "valid-operation-rhs",
+      "title": "Zulässige Operation am Gleichungssystem",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [],
@@ -37,6 +38,7 @@
     },
     {
       "caseId": "row-operation-choice-contract",
+      "title": "Zeilenoperation ohne Lösungsänderung",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

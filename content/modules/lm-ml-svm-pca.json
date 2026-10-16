@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-ml-svm-pca"
   ],
-  "requires": [
-    "c-ml-cv",
-    "c-linalg-independence"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-ml-svm-pca"
   ],

@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "target-dependent-missingness",
+      "title": "Risiko zielabhängiger Fehlstellen",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

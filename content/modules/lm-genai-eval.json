@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-genai-eval"
   ],
-  "requires": [
-    "c-genai-rag",
-    "c-ml-erroranalysis"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-genai-eval"
   ],

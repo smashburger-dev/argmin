@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "pipeline-status-report",
+      "title": "Ablation mit und ohne Kontrolle",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
       "sourceLineage": [
@@ -48,6 +49,7 @@
     },
     {
       "caseId": "call-with-timeout",
+      "title": "Timeout-Wächter implementieren",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -91,6 +93,7 @@
     },
     {
       "caseId": "run-stage-budget",
+      "title": "Stage-Runner mit Fehlerzuständen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -179,6 +182,7 @@
     },
     {
       "caseId": "verdict-rules",
+      "title": "Verdict-Regeln auswerten",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
       "sourceLineage": [

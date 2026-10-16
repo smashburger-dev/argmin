@@ -102,7 +102,7 @@ Das sind genau Adas und Bens Rechnungen bei Nord. Allgemein gilt für $A=\begin{
 
 $$Ax=3\begin{pmatrix}2\\1\end{pmatrix}+(-1)\begin{pmatrix}1\\3\end{pmatrix}=\begin{pmatrix}5\\0\end{pmatrix}.$$
 
-Die Einträge von $x$ sagen, wie viel von jeder Spalte in die Mischung kommt. Dieses **Spaltenbild** trägt durch die nächsten Lektionen zu Gleichungssystemen und Unabhängigkeit. In der Visualisierung unten kannst du die Mischung mit zwei Reglern selbst einstellen.
+Die Einträge von $x$ sagen, wie viel von jeder Spalte in die Mischung kommt. Eine solche gewichtete Summe der Spalten heißt **Linearkombination**. Dieses **Spaltenbild** trägt durch die nächsten Lektionen zu Gleichungssystemen und Unabhängigkeit. In der Visualisierung unten kannst du die Mischung mit zwei Reglern selbst einstellen.
 
 ## Zwei Verwechslungen
 
@@ -131,7 +131,7 @@ Jede Schicht multipliziert diese Matrix mit gelernten Gewichtsmatrizen. Im sogen
 
 ## Direkter Check
 
-Berechne zuerst einen Eintrag in der [Einstiegsaufgabe: Eintrag des Matrixprodukts](#/family/formula-scalar-product/matmul-entry-w05-e1/0/intro), prüfe danach die Dimensionsregel in der [Einstiegsaufgabe: Dimensionsregel](#/family/classify-matrix-shape/shape-product-drawn/0/intro) und trace zum Schluss das Spaltenbild in der [Einstiegsaufgabe: Spaltenbild-Trace](#/family/trace-assignment-state/column-picture-trace/0/intro).
+Berechne zuerst einen Eintrag in der [Einstiegsaufgabe: Eintrag des Matrixprodukts](#/family/formula-scalar-product/matmul-entry-w05-e1/0/intro), prüfe danach die Dimensionsregel in der [Einstiegsaufgabe: Dimensionsregel](#/family/classify-matrix-shape/shape-product-drawn/0/intro) und bestimme zum Schluss die Koeffizienten in der [Kernaufgabe: Spaltenkombination für w](#/family/classify-column-combination/column-coefficients-double/0/core).
 
 ## Begriffe auf einen Blick
 
@@ -145,3 +145,4 @@ Berechne zuerst einen Eintrag in der [Einstiegsaufgabe: Eintrag des Matrixproduk
 - **Matrixprodukt** (englisch *matrix product*): jeder Eintrag ist das Skalarprodukt einer Zeile von $A$ mit einer Spalte von $B$; in NumPy `A @ B`.
 - **Elementweise Multiplikation** (englisch *element-wise product*): zwei Matrizen gleicher Form Zelle für Zelle multiplizieren; in NumPy `A * B`.
 - **Spaltenbild** (englisch *column picture*): $Ax$ als Mischung der Spalten von $A$, gewichtet mit den Einträgen von $x$.
+- **Linearkombination** (englisch *linear combination*): Summe von Vielfachen von Vektoren, $c_1v_1 + \dots + c_kv_k$.

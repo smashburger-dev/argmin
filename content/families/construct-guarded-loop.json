@@ -62,6 +62,7 @@
     },
     {
       "caseId": "countdown-accumulator-structure",
+      "title": "Terminierende Countdown-Schleife ordnen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

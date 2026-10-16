@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "profile-table-schema-counts",
+      "title": "Tabellenprofil implementieren",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -46,6 +47,7 @@
     },
     {
       "caseId": "validate-rows-contract-errors",
+      "title": "Zeilen gegen Datenvertrag prüfen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

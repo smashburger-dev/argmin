@@ -17,5 +17,8 @@
       "activityType": "single-choice",
       "graderId": "deterministic"
     }
-  ]
+   ],
+  "caseTitles": {
+    "mse-from-residuals": "MSE aus den Residuen"
+  }
 }

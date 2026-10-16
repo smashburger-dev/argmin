@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-dl-attention"
   ],
-  "requires": [
-    "c-dl-tensors",
-    "c-linalg-matrices"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-tf-attention"
   ],

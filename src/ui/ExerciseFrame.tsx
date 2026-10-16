@@ -1,7 +1,7 @@
 import type { ComponentChildren } from 'preact';
 import { useEffect, useRef } from 'preact/hooks';
 import type { ExerciseContext } from './exercise-context';
-import { Breadcrumbs } from './Breadcrumbs';
+import { Breadcrumbs, type BreadcrumbItem } from './Breadcrumbs';
 import { Button } from './Button';
 import { MathMarkup } from './MathMarkup';
 
@@ -22,6 +22,44 @@ type Props = {
   backLabel?: string;
 };
 
+function backTarget(ctx: ExerciseContext, backHref?: string, backLabel?: string) {
+  const href = backHref ?? ctx.lessonHref ?? ctx.moduleHref ?? '#/learn';
+  const label = backLabel ?? (ctx.lessonHref ? 'Zurück zur Lektion' : ctx.moduleHref ? 'Zum Modul' : 'Zum Lernen');
+  return { href, label };
+}
+
+function crumbItems(ctx: ExerciseContext): BreadcrumbItem[] {
+  const items: BreadcrumbItem[] = [{ href: '#/learn', label: 'Lernen' }];
+  if (ctx.module) items.push({ href: ctx.moduleHref, label: ctx.module.title });
+  if (ctx.lesson && ctx.lesson.title !== ctx.module?.title) items.push({ href: ctx.lessonHref, label: ctx.lesson.title });
+  items.push({ label: ctx.title });
+  return items;
+}
+
+function HintStack({ hints }: { hints: string[] }) {
+  if (!hints.length) return null;
+  return (
+    <div class="hint-stack">
+      {hints.map((hint) => <p key={hint}><strong>Hinweis</strong> <MathMarkup html={hint} inline /></p>)}
+    </div>
+  );
+}
+
+function NextStepsPanel({ ctx, done, back }: { ctx: ExerciseContext; done: boolean; back: { href: string; label: string } }) {
+  return (
+    <aside class="exercise-side">
+      <p class="card-kicker">Weiter</p>
+      <h2>Dein nächster Schritt</h2>
+      <div class="actions vertical">
+        <Button variant={done ? 'primary' : 'secondary'} href={ctx.nextVariantHref}>Nächste Variante</Button>
+        {ctx.nextTaskHref && ctx.nextTaskTitle ? <Button variant="secondary" href={ctx.nextTaskHref}>Nächste Aufgabe: {ctx.nextTaskTitle}</Button> : null}
+        <Button variant="ghost" href={back.href}>{back.label}</Button>
+      </div>
+      <p class="exercise-side-note">Jede neue Variante ist ein eigener Versuch.</p>
+    </aside>
+  );
+}
+
 export function ExerciseFrame({
   ctx,
   eyebrow,
@@ -36,8 +74,7 @@ export function ExerciseFrame({
   backHref: backHrefProp,
   backLabel: backLabelProp,
 }: Props) {
-  const backLabel = backLabelProp ?? (ctx.lessonHref ? 'Zurück zur Lektion' : ctx.moduleHref ? 'Zum Modul' : 'Zum Lernen');
-  const backHref = backHrefProp ?? (ctx.lessonHref || ctx.moduleHref || '#/learn');
+  const back = backTarget(ctx, backHrefProp, backLabelProp);
   const feedbackBox = useRef<HTMLDivElement>(null);
   const hadFeedback = useRef(false);
   useEffect(() => {
@@ -50,14 +87,7 @@ export function ExerciseFrame({
   });
   return (
     <section class="view exercise-view" aria-labelledby="exercise-title" data-case-id={ctx.caseId}>
-      <Breadcrumbs items={[
-        { href: '#/learn', label: 'Lernen' },
-        ...(ctx.module ? [{ href: ctx.moduleHref, label: ctx.module.title }] : []),
-        ...(ctx.lesson && ctx.lesson.title !== ctx.module?.title
-          ? [{ href: ctx.lessonHref, label: ctx.lesson.title }]
-          : []),
-        { label: ctx.detail || ctx.title },
-      ]} />
+      <Breadcrumbs items={crumbItems(ctx)} />
       <header class="view-header">
         <p class="eyebrow">{eyebrow}</p>
         <h1 id="exercise-title" tabIndex={-1}>{ctx.title}</h1>
@@ -72,23 +102,10 @@ export function ExerciseFrame({
           {answer ? <div class="exercise-answer" data-tour="exercise-answer">{answer}</div> : null}
           <div class="actions" data-tour="exercise-check">{actions}</div>
           {feedback ? <div class="exercise-feedback" data-tour="exercise-feedback" role="status" tabIndex={-1} ref={feedbackBox}>{feedback}</div> : null}
-          {hints.length > 0 && (
-            <div class="hint-stack">
-              {hints.map((hint) => <p key={hint}><strong>Hinweis</strong> <MathMarkup html={hint} inline /></p>)}
-            </div>
-          )}
+          <HintStack hints={hints} />
           {solution}
         </div>
-        <aside class="exercise-side">
-          <p class="card-kicker">Weiter</p>
-          <h2>Dein nächster Schritt</h2>
-          <div class="actions vertical">
-            <Button variant={done ? 'primary' : 'secondary'} href={ctx.nextVariantHref}>Nächste Variante</Button>
-            {ctx.nextTaskHref && ctx.nextTaskTitle ? <Button variant="secondary" href={ctx.nextTaskHref}>Nächste Aufgabe: {ctx.nextTaskTitle}</Button> : null}
-            <Button variant="ghost" href={backHref}>{backLabel}</Button>
-          </div>
-          <p class="exercise-side-note">Jede neue Variante ist ein eigener Versuch.</p>
-        </aside>
+        <NextStepsPanel ctx={ctx} done={done} back={back} />
       </div>
     </section>
   );

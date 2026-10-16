@@ -22,6 +22,7 @@ const contract = {
 
 const baseCase = {
   caseId: 'sums-of-powers',
+  title: 'Summen von Potenzen bestimmen',
   difficultyProfile: 'challenge',
   masteryEligible: true,
   sourceLineage: ['eigenstaendig-entwickelt'],
@@ -181,5 +182,25 @@ test('split artifacts carry the flag only when set', () => {
   };
   const [flagged, plain] = buildSplitArtifacts(bundle).index.families[0].cases;
   assert.equal(flagged.challengeEligible, true);
+  assert.equal(flagged.title, 'Summen von Potenzen bestimmen');
   assert.equal(Object.hasOwn(plain, 'challengeEligible'), false);
+});
+
+test('challengeEligible case without an authored title fails closed', () => {
+  const bundle = {
+    sources: [],
+    tools: [],
+    visualizations: [],
+    lessons: [],
+    familyActivities: [],
+    families: [{
+      familyId: 'challenge-demo',
+      contract: { summary: 'Demo' },
+      cases: [{ ...baseCase, challengeEligible: true, title: undefined }],
+    }],
+  };
+  assert.throws(
+    () => buildSplitArtifacts(bundle),
+    /challenge-demo:sums-of-powers.*Titel fehlt/,
+  );
 });

@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-ml-linear"
   ],
-  "requires": [
-    "c-ml-baseline",
-    "c-grad-regression"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-ml-linear"
   ],
@@ -87,17 +79,6 @@
       "masteryEligible": true
     },
     {
-      "placementId": "p-ml-linear-mcq-ridge-statements",
-      "role": "curated",
-      "familyId": "multiple-choice-ml-linear",
-      "caseId": "ridge-statements",
-      "seed": 1,
-      "difficulty": "core",
-      "estimatedMinutes": 6,
-      "lessonId": "l-ml-linear",
-      "masteryEligible": true
-    },
-    {
       "placementId": "p-ml-linear-mcq-residual-diagnostics",
       "role": "curated",
       "familyId": "multiple-choice-ml-linear",
@@ -105,17 +86,6 @@
       "seed": 1,
       "difficulty": "stretch",
       "estimatedMinutes": 8,
-      "lessonId": "l-ml-linear",
-      "masteryEligible": true
-    },
-    {
-      "placementId": "p-ml-linear-mcq-bias-variance-regularization",
-      "role": "curated",
-      "familyId": "multiple-choice-ml-linear",
-      "caseId": "bias-variance-regularization",
-      "seed": 1,
-      "difficulty": "challenge",
-      "estimatedMinutes": 10,
       "lessonId": "l-ml-linear",
       "masteryEligible": true
     },

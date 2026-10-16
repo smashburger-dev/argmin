@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "freeze-scope",
+      "title": "Schwellen vor dem Lauf festlegen",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

@@ -8,12 +8,6 @@
   "competencyIds": [
     "c-python-collections"
   ],
-  "requires": [],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-foundations-collections"
   ],

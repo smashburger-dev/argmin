@@ -293,7 +293,7 @@ function validateAgainstSchema(value, schema, path, errors) {
 
 const LESSONS = [
   { file: 'tf-attention.json', competency: 'c-dl-attention', requires: ['c-dl-tensors', 'c-linalg-matrices'] },
-  { file: 'tf-tokenizer.json', competency: 'c-dl-tokenizer', requires: ['c-python-collections'] },
+  { file: 'tf-tokenizer.json', competency: 'c-dl-tokenizer', requires: ['c-python-reading', 'c-python-functions', 'c-python-collections'] },
   { file: 'tf-inference.json', competency: 'c-dl-inference', requires: ['c-dl-attention', 'c-dl-tokenizer'] },
   { file: 'tf-finetuning.json', competency: 'c-dl-finetuning', requires: ['c-dl-inference', 'c-dl-regularization'] },
   { file: 'tf-papers.json', competency: 'c-dl-papers', requires: ['c-dl-finetuning', 'c-meta-learning'] },

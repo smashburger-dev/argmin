@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "string-item-assignment-typeerror",
+      "title": "TypeError bei String-Zuweisung",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

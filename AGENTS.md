@@ -36,7 +36,10 @@ node tools/compile_content.mjs
 node tools/validate_content.mjs
 node tools/build_public.mjs
 node tools/validate_content.mjs --dir build-next
+bun lint -f agent --rule 'complexity: [error, 10]' <files>
 ```
+
+- Functions touched by a change stay at cyclomatic complexity ≤10 (`bun lint` line above).
 
 - Match checks to the changed area. Content changes require content validation. Public-build changes require the build and leak test.
 - Run the app with `npm run dev:next` or serve `build-next/` after `npm run build:release`. TypeScript sources will not run through `python3 -m http.server`.

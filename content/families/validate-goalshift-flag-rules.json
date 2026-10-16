@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "detect-goal-shift",
+      "title": "Goal-Shift-Flags erkennen",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
       "sourceLineage": [
@@ -46,5 +47,8 @@
       "activityType": "python-code",
       "graderId": "pyodide"
     }
-  ]
+   ],
+  "caseTitles": {
+    "protocol-shift-flag-count": "Protokoll-Flags von Hand zählen"
+  }
 }

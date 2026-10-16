@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "rag-stage-separation",
+      "title": "RAG-Stufe der Generierung",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

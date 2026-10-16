@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "gini-best-binary-split",
+      "title": "Gini und bester Binärsplit",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

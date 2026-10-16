@@ -24,6 +24,16 @@
       "contentRef": "lessons/data-ml/ml-svm-pca.md"
     },
     {
+      "blockId": "ml-svm-pca-eigen-viz",
+      "type": "visualization",
+      "contentRef": "lessons/data-ml/eigen-direction.viz.json"
+    },
+    {
+      "blockId": "ml-svm-pca-pca-kmeans",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/ml-svm-pca-pca-kmeans.md"
+    },
+    {
       "blockId": "ml-svm-pca-viz",
       "type": "visualization",
       "contentRef": "lessons/data-ml/pca-axis.viz.json"

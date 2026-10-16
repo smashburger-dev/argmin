@@ -18,7 +18,7 @@ Wo der Vergleich hinkt: Echte Preise wachsen nicht linear, eine Wohnung im Zentr
 
 ## Design-Matrix und geschlossene Lösung
 
-Um den Achsenabschnitt $w_0$ mitzurechnen, wird aus der Datentabelle die **Design-Matrix**: Eine [Matrix](#/glossary/matrix) $A$, deren erste Spalte nur Einsen enthält und deren übrige Spalten die Merkmale sind. Die beste Gerade im Sinne der kleinsten Quadrate liefert `np.linalg.lstsq` direkt, ohne Iteration.
+Um den Achsenabschnitt $w_0$ mitzurechnen, wird aus der Datentabelle die **Design-Matrix**: Eine [Matrix](#/glossary/matrix) $A$, deren erste Spalte nur Einsen enthält und deren übrige Spalten die Merkmale sind. Die beste Gerade im Sinne der kleinsten Quadrate liefert `np.linalg.lstsq` direkt, ohne Iteration. Hinter ihr steht die **Normalgleichung** $X^{T}X\hat{w} = X^{T}y$, formal gelöst als $\hat{w} = (X^{T}X)^{-1}X^{T}y$; die Inverse existiert nur, wenn $X^{T}X$ nicht singulär ist, zum Beispiel nicht bei mehr Merkmalen als Beobachtungen.
 
 ## Fehlermaße von Hand
 
@@ -100,3 +100,4 @@ Berechne in einer Einstiegsaufgabe einen MSE aus Residuen und in einer weiteren 
 - **MSE** (englisch *mean squared error*): mittlerer quadratischer Fehler, $\frac{1}{n}\sum_i (\hat y_i - y_i)^2$.
 - **RMSE** (englisch *root mean squared error*): Quadratwurzel des MSE; liegt wieder in der Einheit des Ziels.
 - **Bestimmtheitsmaß $R^2$**: Anteil der Streuung, den das Modell gegenüber dem Mittelwert erklärt; $1 - \mathit{SS}_{\text{res}}/\mathit{SS}_{\text{tot}}$.
+- **Normalgleichung** (englisch *normal equation*): Bedingung $X^{T}X\hat{w} = X^{T}y$ der Kleinste-Quadrate-Lösung; formal $\hat{w} = (X^{T}X)^{-1}X^{T}y$.

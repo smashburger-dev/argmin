@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "pandas-dedup-isna-lines",
+      "title": "pandas: Duplikate und Fehlstellen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -42,6 +43,7 @@
     },
     {
       "caseId": "numpy-median-histogram-corrcoef",
+      "title": "NumPy: Median, Histogramm, Korrelation",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "competencyIds": [
@@ -83,6 +85,7 @@
     },
     {
       "caseId": "sklearn-split-no-shuffle",
+      "title": "sklearn: Split ohne Mischen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "pipeline-leakage-audit",
+      "title": "Leakage-Auditor für Pipelines",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

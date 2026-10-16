@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Eigenrichtung der Matrix A",
+  "caption": "Drehe v mit dem Schieberegler t: Bei einer Eigenrichtung zeigt Av in dieselbe Richtung wie v, die Abweichung ist 0.",
+  "boundingbox": [-4.4, 5.4, 4.2, -3.0],
+  "sliders": [
+    { "name": "t", "label": "t", "range": [0, 1.57], "value": 0.5, "step": 0.01 }
+  ],
+  "objects": [
+    { "kind": "arrow", "from": [0, 0], "to": ["cos(t)", "sin(t)"], "label": "v", "color": "#294bd6" },
+    { "kind": "arrow", "from": [0, 0], "to": ["2*cos(t)+sin(t)", "cos(t)+2*sin(t)"], "label": "Av", "color": "#9c4b00" },
+    { "kind": "text", "at": [-4.25, -1.8], "text": "Av = ({2*cos(t)+sin(t)} ; {cos(t)+2*sin(t)})", "color": "#9c4b00" },
+    { "kind": "text", "at": [-4.25, -2.5], "text": "Abweichung von der Richtung v: {cos(t)*(cos(t)+2*sin(t))-sin(t)*(2*cos(t)+sin(t))}  (0 heißt Eigenrichtung)", "color": "#171713" }
+  ],
+  "checkpoint": {
+    "prompt": "Drehe v, bis Av in dieselbe Richtung zeigt wie v (t ≈ 0,79). Um welchen Faktor ist Av dann länger als v?",
+    "input": "numeric",
+    "expected": 3,
+    "tolerance": 0.1,
+    "hints": ["Die Abweichung ist 0 bei t ≈ 0,79, also bei π/4. Dort ist v parallel zu (1, 1) und Av = 3·v."],
+    "typicalErrors": [
+      { "match": 1, "feedback": "Faktor 1 wäre die andere Eigenrichtung (1, −1). Bei t ≈ 0,79 zeigt v entlang (1, 1) mit Eigenwert 3." }
+    ]
+  }
+}

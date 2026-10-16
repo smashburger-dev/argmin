@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-ml-regularization"
   ],
-  "requires": [
-    "c-ml-cv",
-    "c-ml-linear"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-ml-regularization"
   ],
@@ -65,6 +57,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-ml-regularization-mcq-ridge-statements",
+      "role": "curated",
+      "familyId": "multiple-choice-ml-linear",
+      "caseId": "ridge-statements",
+      "seed": 1,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-ml-regularization",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-ml-regularization-lasso",
       "role": "curated",
       "familyId": "formula-ridge-lasso-closed-form",
@@ -72,6 +75,17 @@
       "seed": 0,
       "difficulty": "stretch",
       "estimatedMinutes": 40,
+      "lessonId": "l-ml-regularization",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-regularization-mcq-bias-variance-regularization",
+      "role": "curated",
+      "familyId": "multiple-choice-ml-linear",
+      "caseId": "bias-variance-regularization",
+      "seed": 1,
+      "difficulty": "challenge",
+      "estimatedMinutes": 10,
       "lessonId": "l-ml-regularization",
       "masteryEligible": true
     },

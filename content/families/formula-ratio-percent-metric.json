@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "compare-systems-metric",
+      "title": "Systemvergleich als Metrik",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -50,6 +51,7 @@
     },
     {
       "caseId": "ledger-rates-output-trace",
+      "title": "Treffer- und Korrektheitsraten",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -91,6 +93,7 @@
     },
     {
       "caseId": "subgroup-recall-output-trace",
+      "title": "Subgruppen-Recall von Hand",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -130,5 +133,14 @@
       "activityType": "predict-output",
       "graderId": "deterministic"
     }
-  ]
+   ],
+  "caseTitles": {
+    "allowed-action-count": "Erlaubten Aktionsanteil berechnen",
+    "baseline-ledger-rates": "Naive gegen bereinigte Genauigkeit",
+    "conditional-count-percent": "Bedingter Anteil der A-Fälle",
+    "pca-explained-variance-percent": "Erklärte Varianz der Hauptkomponente",
+    "r2-explained-share": "Bestimmtheitsmaß R² berechnen",
+    "ridge-shrinkage-percent": "Schrumpfung des Ridge-Koeffizienten",
+    "subgroup-error-gap-pp": "Fehlerraten-Differenz in Prozentpunkten"
+  }
 }

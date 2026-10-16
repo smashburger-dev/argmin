@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "bpe-merge-apply",
+      "title": "BPE-Mergetabelle anwenden",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

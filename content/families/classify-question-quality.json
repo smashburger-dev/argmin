@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "question-quality-check",
+      "title": "Falsifizierbare Frage erkennen",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

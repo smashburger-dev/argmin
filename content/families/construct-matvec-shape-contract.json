@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "matvec-contract-order",
+      "title": "matvec-Zeilen in Reihenfolge",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -70,6 +71,7 @@
     },
     {
       "caseId": "matvec-code-reference",
+      "title": "matvec mit Shape-Vertrag implementieren",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -148,7 +150,7 @@
           "text": "nur einen bekannten Testfall hartcodieren"
         }
       ],
-      "title": "Dimensions-sichere Matrix-Funktionen mit Pivot-Elimination"
+      "title": "Matrix-Funktionen mit Pivot-Elimination"
     }
   ]
 }

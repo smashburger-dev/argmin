@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "impute-before-split",
+      "title": "Leakage-Schritt in der Pipeline",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -74,6 +75,7 @@
     },
     {
       "caseId": "target-encoding-leakage",
+      "title": "Korrekter Vorverarbeitungsweg",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

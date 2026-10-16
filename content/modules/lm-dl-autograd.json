@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-dl-autograd"
   ],
-  "requires": [
-    "c-dl-tensors",
-    "c-grad-regression"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-dl-autograd"
   ],

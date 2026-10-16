@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "stub-prototype-contract",
+      "title": "Prototyp-Kern mit Vertrag bauen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

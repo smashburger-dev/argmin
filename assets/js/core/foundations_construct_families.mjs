@@ -1668,7 +1668,7 @@ export function generateTestDesignCoverageFamily({ seed, caseId, difficulty }) {
       throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
     }
     if (seed === 0) {
-      const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
+      const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, title: _title, ...generated } = body;
       return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
     }
     const drawn = genElifChain(familySubseed(seed, caseId, difficulty));

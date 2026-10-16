@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "attack-surface-taxonomy",
+      "title": "Angriffsfläche einordnen",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

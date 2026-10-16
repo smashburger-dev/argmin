@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "sign-and-scale-of-update",
+      "title": "Vorzeichen und Schritt des Updates",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [
@@ -76,6 +77,7 @@
     },
     {
       "caseId": "fit-linear-gradient-loop",
+      "title": "Linearen Fit per Gradientenabstieg",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -121,6 +123,7 @@
     },
     {
       "caseId": "head-only-finetune",
+      "title": "Nur den Kopf feintunen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

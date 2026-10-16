@@ -24,11 +24,6 @@
       "contentRef": "lessons/research/capstone-freeze.md"
     },
     {
-      "blockId": "capstone-freeze-viz",
-      "type": "visualization",
-      "contentRef": "lessons/research/chunk-overlap.viz.json"
-    },
-    {
       "blockId": "capstone-freeze-check",
       "type": "checkpoint",
       "contentRef": "lessons/research/capstone-freeze-checkpoint.md"

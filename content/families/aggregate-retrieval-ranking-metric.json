@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "retrieval-ranking-recall",
+      "title": "TF-IDF-Retrieval-Baseline implementieren",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

@@ -8,12 +8,6 @@
   "competencyIds": [
     "c-dl-tokenizer"
   ],
-  "requires": [
-    "c-python-collections"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-tf-tokenizer"
   ],

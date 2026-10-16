@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "majority-baseline-errors",
+      "title": "Fehler der Mehrheits-Baseline",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -49,6 +50,7 @@
     },
     {
       "caseId": "ensemble-majority-output-count",
+      "title": "Mehrheitsvotum aus drei Modellreihen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

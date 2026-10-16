@@ -8,13 +8,6 @@
   "competencyIds": [
     "c-ml-baseline"
   ],
-  "requires": [
-    "c-pandas-cleaning",
-    "c-eda-viz"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-ml-baseline"
   ],

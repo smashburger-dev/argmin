@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "dropout-regime",
+      "title": "Dropout-Skalierung beim Inferenz-Pass",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

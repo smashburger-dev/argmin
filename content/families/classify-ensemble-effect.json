@@ -36,6 +36,7 @@
   "cases": [
     {
       "caseId": "bagging-variance-reduction",
+      "title": "Varianzreduktion durch Bagging",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

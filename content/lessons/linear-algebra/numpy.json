@@ -13,8 +13,10 @@
     "c-numpy-basics"
   ],
   "requires": [
+    "c-python-reading",
     "c-python-functions",
-    "c-linalg-matrices"
+    "c-linalg-matrices",
+    "c-python-collections"
   ],
   "estimatedMinutes": 55,
   "blocks": [

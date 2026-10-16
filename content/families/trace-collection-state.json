@@ -49,6 +49,7 @@
     },
     {
       "caseId": "list-alias-steps",
+      "title": "Aliasing auf geteilte Liste",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -137,6 +138,7 @@
     },
     {
       "caseId": "list-copy-steps",
+      "title": "Listenkopie gegen Original",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [

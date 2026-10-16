@@ -6,13 +6,14 @@ Ein Gleichungssystem per Einsetzen zu lösen funktioniert, ist aber schnell unü
 
 Zwei Kassenzettel aus demselben Café: „2 Kaffee + 1 Croissant = 7 €“ und „1 Kaffee + 1 Croissant = 4,50 €“. Ziehst du den zweiten Zettel vom ersten ab, fällt das Croissant weg: 1 Kaffee kostet 2,50 €. Dann kostet das Croissant $4{,}50 - 2{,}50 = 2$ €.
 
-Genau das ist eine Zeilenoperation. Die Zuordnung:
+Genau das ist eine Zeilenoperation. Kaufst du dieselbe Tüte zweimal, steht auf dem Zettel überall das Doppelte: „2 Kaffee + 2 Croissants = 9 €“. Auch diesen verdoppelten Zettel darfst du abziehen, dann fällt das Croissant aus dem ersten Zettel vollständig weg. Die Zuordnung:
 
 - ein Kassenzettel: eine Zeile, also eine Gleichung
 - ein Posten auf dem Zettel: ein [Koeffizient](#/glossary/koeffizient)
+- Zettel verdoppeln: eine Zeile mit einer Zahl multiplizieren
 - Zettel voneinander abziehen: ein Vielfaches einer Zeile von einer anderen subtrahieren
 
-Wo der Vergleich hinkt: Auf echten Kassenzetteln stehen positive Preise. In echten Systemen tauchen negative und gebrochene Koeffizienten auf, und manchmal musst du erst multiplizieren, damit sich etwas weghebt.
+Wo der Vergleich hinkt: Auf echten Kassenzetteln stehen positive Preise; in echten Systemen tauchen negative und gebrochene Koeffizienten auf.
 
 ## Erlaubte Zeilenoperationen
 
@@ -35,9 +36,7 @@ Jede dieser Operationen verändert die Schreibweise, aber nicht die Lösungsmeng
 
 ## Ziel: Zeilenstufenform und Pivot
 
-Ein **Pivot** ist der erste von null verschiedene [Eintrag](#/glossary/eintrag) einer Zeile in Zeilenstufenform; die Pivots stehen von oben nach unten immer weiter rechts. In **Zeilenstufenform** stehen unter jedem Pivot nur Nullen, wie eine Treppe, deren Stufenkante das Pivot bildet. Die Zahl der Pivots ist der **Rang** der Koeffizientenmatrix.
-
-Pivots zeigen dir, welche [Variablen](#/glossary/variable) festgelegt werden, ob ein Widerspruch entsteht und ob **freie Variablen** vorkommen, also Unbekannte ohne Pivot.
+Die Zielbegriffe kennst du aus der Lektion [Gleichungssysteme als Spaltenbild lesen](#/lesson/l-linalg-systems): Ein **Pivot** ist der erste von null verschiedene [Eintrag](#/glossary/eintrag) einer Zeile in Zeilenstufenform, die Pivots stehen von oben nach unten immer weiter rechts, ihre Zahl ist der **Rang**, und eine [Unbekannte](#/glossary/variable) ohne Pivot ist eine **freie Variable**. Dort hast du daraus die drei Lösungsfälle gelesen; hier lernst du die Umformungen, die ein System überhaupt in diese Form bringen.
 
 ## Durchgerechnetes Beispiel
 

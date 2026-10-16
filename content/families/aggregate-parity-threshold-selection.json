@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "parity-threshold-selection",
+      "title": "Schwellenwahl mit Paritätsband",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

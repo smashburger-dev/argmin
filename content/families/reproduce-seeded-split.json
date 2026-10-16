@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "deterministic-split-numpy",
+      "title": "Deterministischer Train-Test-Split",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -50,6 +51,7 @@
     },
     {
       "caseId": "kfold-indices-numpy",
+      "title": "K-Fold-Indizes deterministisch",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

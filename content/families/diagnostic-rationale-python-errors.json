@@ -44,6 +44,7 @@
   "cases": [
     {
       "caseId": "sum-skips-first",
+      "title": "Übersprungenes erstes Element",
       "difficultyProfile": "core",
       "masteryEligible": false,
       "sourceLineage": [
@@ -102,6 +103,7 @@
     },
     {
       "caseId": "except-pass-swallow",
+      "title": "Verschluckter Parse-Fehler",
       "difficultyProfile": "core",
       "masteryEligible": false,
       "sourceLineage": [
@@ -160,6 +162,7 @@
     },
     {
       "caseId": "csv-age-str-compare",
+      "title": "TypeError beim Alter-Vergleich",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [
@@ -215,6 +218,7 @@
     },
     {
       "caseId": "row-key-case",
+      "title": "KeyError durch Großschreibung",
       "difficultyProfile": "core",
       "masteryEligible": false,
       "sourceLineage": [
@@ -273,6 +277,7 @@
     },
     {
       "caseId": "nameerror-undefined-var",
+      "title": "Ursache des NameError",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

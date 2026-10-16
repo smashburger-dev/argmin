@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "linear-mse-gradients",
+      "title": "Gradienten eines linearen Layers",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -50,6 +51,7 @@
     },
     {
       "caseId": "mlp-backprop-relu-mse",
+      "title": "Backprop im 2-Layer-MLP",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

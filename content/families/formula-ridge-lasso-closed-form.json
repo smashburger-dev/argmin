@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "ridge-normal-equation",
+      "title": "Ridge geschlossen und Soft-Thresholding",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -46,6 +47,7 @@
     },
     {
       "caseId": "lasso-soft-threshold",
+      "title": "Ridge-Pfad über λ berechnen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

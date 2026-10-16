@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-dl-training"
   ],
-  "requires": [
-    "c-dl-autograd",
-    "c-ml-baseline"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-dl-training"
   ],

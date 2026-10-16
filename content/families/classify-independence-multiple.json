@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "dependent-pair-double",
+      "title": "Unabhängigkeit eines Vektorpaars",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [
@@ -127,6 +128,7 @@
     },
     {
       "caseId": "dependent-triple-span",
+      "title": "Unabhängigkeit von drei Vektoren",
       "difficultyProfile": "stretch",
       "masteryEligible": false,
       "sourceLineage": [

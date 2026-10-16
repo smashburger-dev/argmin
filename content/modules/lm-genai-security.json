@@ -8,14 +8,6 @@
   "competencyIds": [
     "c-genai-security"
   ],
-  "requires": [
-    "c-genai-rag",
-    "c-testing-debugging"
-  ],
-  "trackIds": [
-    "applied-ai",
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-genai-security"
   ],

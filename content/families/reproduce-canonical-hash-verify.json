@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "canonical-hash-verify",
+      "title": "Golden Set hashen und prüfen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

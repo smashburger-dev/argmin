@@ -19,7 +19,7 @@ import {
   genCollectionStepTrace,
   genExceptionBoundary,
 } from './foundations_fresh_generators.mjs';
-import { registerStaticCases, staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
+import { registerStaticCases, staticCaseBody, staticVariantInstance, variantOf, pinnedInstanceTitle } from '../domain/family_registry.mjs';
 import { TRACE_GENERATORS, drawTraceParams } from './trace_assignment_generators.mjs';
 import traceAssignmentDoc from '../../../content/families/trace-assignment-state.json' with { type: 'json' };
 import accumulatorCountDoc from '../../../content/families/aggregate-accumulator-count.json' with { type: 'json' };
@@ -74,14 +74,14 @@ const renderCaseTemplate = (template, scope, familyId) => {
 // tolerance/competency/grader-Meta), die unverändert durch generate() laufen —
 // wie bei staticVariantInstance. parameters/expected/prompt/fullSolution
 // werden familienspezifisch zusammengesetzt.
-const authoredCaseExtras = (body) => {
+const authoredCaseExtras = (familyId, body) => {
   const {
     caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible,
     sourceLineage: _sourceLineage, variants: _variants, parameters: _parameters,
-    expected: _expected, prompt: _prompt, fullSolution: _fullSolution,
+    expected: _expected, prompt: _prompt, fullSolution: _fullSolution, title: _title,
     ...extras
   } = body;
-  return extras;
+  return { ...extras, ...pinnedInstanceTitle(familyId, body.caseId, body.title) };
 };
 
 const drawTraceInstance = (generate, options) => drawFamilyInstance(generate, { ...options, profiles: TRACE_DIFFICULTY_PROFILES });
@@ -234,6 +234,7 @@ export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
       masteryEligible: _me,
       sourceLineage: _sl,
       variants: _v,
+      title: _t,
       ...base
     } = body;
     return {
@@ -586,7 +587,7 @@ function generateAccumulatorCountFamily({ seed, caseId, difficulty }) {
   const body = traceCaseBody('aggregate-accumulator-count', caseId);
   const scope = accumulatorScope(drawn.parameters, drawn.expected.output);
   return {
-    ...authoredCaseExtras(body),
+    ...authoredCaseExtras('aggregate-accumulator-count', body),
     masteryEligible: body.masteryEligible,
     parameters: { caseId, difficulty, ...drawn.parameters, shape: body.parameters.shape },
     expected: { output: drawn.expected.output },
@@ -829,7 +830,7 @@ function generateTraceCollectionFamily({ seed, caseId, difficulty }) {
   const scope = stepTraceScope(simulated, codes);
   const extraVars = extraTraceVars(caseId, simulated);
   return {
-    ...authoredCaseExtras(body),
+    ...authoredCaseExtras('trace-collection-state', body),
     masteryEligible: body.masteryEligible,
     parameters: {
       caseId, difficulty, ...drawn.parameters, family: body.parameters.family,
@@ -890,7 +891,7 @@ function generateTraceDictFamily({ seed, caseId, difficulty }) {
   const codes = traceCodeLines(drawn.parameters.snippet);
   const scope = stepTraceScope(simulateDictTrace(codes), codes);
   return {
-    ...authoredCaseExtras(body),
+    ...authoredCaseExtras('trace-dict-state-update', body),
     masteryEligible: body.masteryEligible,
     parameters: { caseId, difficulty, ...drawn.parameters, family: body.parameters.family },
     expected: { ...body.expected },
@@ -992,7 +993,7 @@ function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
   const code = exceptionCodeOf(drawn.prompt);
   const scope = { code, correctText: exceptionCorrectText(body, code) };
   const base = {
-    ...authoredCaseExtras(body),
+    ...authoredCaseExtras('trace-exception-path', body),
     masteryEligible: body.masteryEligible,
     parameters: {
       caseId,

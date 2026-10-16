@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "independent-sets-r2",
+      "title": "Unabhängige Mengen im R²",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -91,6 +92,7 @@
     },
     {
       "caseId": "independence-statements",
+      "title": "Aussagen zur Unabhängigkeit",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -274,6 +276,7 @@
     },
     {
       "caseId": "independent-sets-r3",
+      "title": "Unabhängige Mengen im R³",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

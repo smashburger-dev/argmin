@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "paper-card-required-fields",
+      "title": "Paper-Karte auf Pflichtfelder prüfen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -49,6 +50,7 @@
     },
     {
       "caseId": "protocol-validator",
+      "title": "Protokoll-Validator implementieren",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
@@ -92,6 +94,7 @@
     },
     {
       "caseId": "validate-card-fields",
+      "title": "Kartenfelder und Splits validieren",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -135,6 +138,7 @@
     },
     {
       "caseId": "readme-required-headings",
+      "title": "Pflichtüberschriften im README",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -176,5 +180,8 @@
       "activityType": "python-code",
       "graderId": "pyodide"
     }
-  ]
+   ],
+  "caseTitles": {
+    "required-key-with-issue": "Pflichtfeld-Check mit Issue ordnen"
+  }
 }

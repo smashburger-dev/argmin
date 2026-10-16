@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "text-normalize-match",
+      "title": "Prüfbarkeit von Forschungsfragen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

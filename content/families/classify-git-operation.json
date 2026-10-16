@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "diff-unstaged",
+      "title": "Änderungen gegen den letzten Commit",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -170,6 +171,7 @@
     },
     {
       "caseId": "diff-staged",
+      "title": "Gestagte Änderungen ansehen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -935,6 +937,7 @@
     },
     {
       "caseId": "merge-conflict-test-flow",
+      "title": "Merge-Konflikt sicher auflösen",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

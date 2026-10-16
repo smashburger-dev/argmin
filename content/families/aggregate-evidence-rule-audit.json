@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "evidence-rule-count",
+      "title": "Unabhängige Treffer aus dem Ledger",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -58,6 +59,7 @@
     },
     {
       "caseId": "final-diagnosis-trace",
+      "title": "Abschlussdiagnose von Hand ausführen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -99,6 +101,7 @@
     },
     {
       "caseId": "final-diagnosis-rules",
+      "title": "Abschlussdiagnose implementieren",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [

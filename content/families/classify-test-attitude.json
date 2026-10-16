@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "csv-off-by-one-reproduce-smallest",
+      "title": "Besten Diagnoseschritt wählen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

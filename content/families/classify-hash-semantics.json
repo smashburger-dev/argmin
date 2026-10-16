@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "hash-semantics-baseline",
+      "title": "Hash über kanonischer Serialisierung",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

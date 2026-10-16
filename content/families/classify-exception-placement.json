@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "translate-error-to-issue",
+      "title": "Erwarteten Fehler am Rand behandeln",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

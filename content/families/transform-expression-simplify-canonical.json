@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "combine-like-terms",
+      "title": "Summe mit x-Termen vereinfachen",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
       "sourceLineage": [
@@ -42,6 +43,7 @@
     },
     {
       "caseId": "distribute-sign-constant-chain",
+      "title": "Klammern ausmultiplizieren und vereinfachen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

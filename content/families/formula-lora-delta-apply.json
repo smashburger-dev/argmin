@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "lora-delta-apply",
+      "title": "LoRA-Delta berechnen und anwenden",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

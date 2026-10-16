@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "eval-hazard-taxonomy",
+      "title": "Leere Antwort im Hazard-Schema",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

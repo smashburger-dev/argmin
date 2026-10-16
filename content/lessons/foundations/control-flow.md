@@ -33,6 +33,8 @@ for value in [4, -1, 3]:
 
 Die Schleife verarbeitet jedes Element genau einmal; die Zeilen darunter bilden den Schleifenkörper. Negative Werte ändern `total` nicht. Eine [Tracetabelle](#/glossary/tracetabelle) enthält hier die Spalten `value`, `value > 0` und `total`; das Ergebnis ist `7`.
 
+Steht die Sammlung schon unter einem Namen, iteriert `for wort in woerter` direkt über sie. `len(woerter)` liefert ihre Anzahl; ein Umweg über Positionen wie `woerter[i]` ist nur nötig, wenn du die Stelle selbst brauchst.
+
 Durchläuft die Schleife eine Zeichenkette, liefert sie Buchstaben einzeln. Zeichenketten sind in Python unveränderlich: `"a"[0] = "b"` scheitert mit `TypeError`. Suche und baue stattdessen einen neuen String, etwa mit `neu += w[0]`.
 
 ## `while` braucht Fortschritt und Ende

@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "for-over-existing-collection",
+      "title": "Schleifenform für vorhandene Liste",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

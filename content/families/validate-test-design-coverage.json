@@ -36,5 +36,8 @@
       "prompt": "<p>Eine Funktion <code>note(punkte)</code> ist so definiert:</p><pre><code>if punkte &gt;= 90: return \"a\"\nelif punkte &gt;= 80: return \"b\"\nelif punkte &gt;= 70: return \"c\"\nelif punkte &gt;= 60: return \"d\"\nelse: return \"f\"</code></pre><p>Wie viele Testfälle braucht man mindestens, damit jede Verzweigung (jeder Rückgabewert) mindestens einmal erreicht wird?</p>",
       "fullSolution": "Fünf Rückgabewerte (a, b, c, d, f) brauchen fünf verschiedene Eingaben, z. B. 95, 85, 75, 65, 10 — Minimum fünf Testfälle."
     }
-  ]
+   ],
+  "caseTitles": {
+    "nested-if-decision-tree": "Zweigabdeckung des Entscheidungsbaums"
+  }
 }

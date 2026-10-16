@@ -5,11 +5,15 @@
   "locale": "de",
   "title": "Git als überprüfbares Arbeitsprotokoll",
   "description": "Status und Diff lesen, einen geschlossenen Commit setzen, Merge von Codekorrektheit trennen.",
-  "competencyIds": ["c-git-basics"],
-  "requires": ["c-meta-learning"],
-  "trackIds": ["common-core", "applied-ai", "research-evaluation"],
-  "lessonIds": ["l-foundations-git"],
-  "explanationIds": ["x-git-workflow"],
+  "competencyIds": [
+    "c-git-basics"
+  ],
+  "lessonIds": [
+    "l-foundations-git"
+  ],
+  "explanationIds": [
+    "x-git-workflow"
+  ],
   "placements": [
     {
       "placementId": "p-git-merge-curated",

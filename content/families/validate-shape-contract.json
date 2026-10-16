@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "shapes-w18-broadcast-axes",
+      "title": "Shapes und Broadcasting lesen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

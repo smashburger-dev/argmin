@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "hard-margin-width",
+      "title": "Margin der Hard-Margin-SVM",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

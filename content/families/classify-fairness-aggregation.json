@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "overall-accuracy-hides-subgroups",
+      "title": "Mindestmaßnahme bei Subgruppen-Gap",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [
@@ -75,6 +76,7 @@
     },
     {
       "caseId": "fairness-aggregation",
+      "title": "Teilgruppen-Auswertung verteidigen",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

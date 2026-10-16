@@ -8,13 +8,6 @@
   "competencyIds": [
     "c-dl-inference"
   ],
-  "requires": [
-    "c-dl-attention",
-    "c-dl-tokenizer"
-  ],
-  "trackIds": [
-    "applied-ai"
-  ],
   "lessonIds": [
     "l-tf-inference"
   ],

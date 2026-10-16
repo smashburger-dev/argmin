@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "greedy-decoding",
+      "title": "Argmax vor oder nach Softmax",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

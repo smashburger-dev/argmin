@@ -36,6 +36,7 @@
   "cases": [
     {
       "caseId": "supervised-vs-unsupervised-scaling",
+      "title": "Überwacht gegen unüberwacht",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [

@@ -39,6 +39,28 @@ ohne solche Fälle bleibt der Zug über die ganze Familie.
 
 Dazu in `content/sources.json` je Quelle eine öffentliche `canonicalUrl`. Die UI verlinkt diese Originalquelle in einem neuen Tab; lokale Lesepfade und private Volltextkopien gehören nicht zum Public-Profil.
 
+### Neuen Lernpfad anlegen
+
+Ein Lernpfad (Track) ist genau eine geordnete Kompetenzliste: `track.competencyIds` in `content/tracks/core.json` ist die einzige Wahrheit. Zugehörigkeiten werden abgeleitet, nicht gepflegt — ein Modul gehört zu einem Track, wenn der Track mindestens eine seiner `competencyIds` führt, und `module.requires` ist immer die Vereinigung der direkten `requires` seiner Kompetenzen minus der eigenen. `trackIds`- und `requires`-Felder gehören deshalb nicht mehr in Modul- oder Kompetenzdateien.
+
+Drei Gates prüfen jeden Track beim Compile und schlagen mit deutschen Fehlern fehl, die Track, Modul und Kompetenz nennen:
+
+- **`assertTrackClosure`**: Der Track muss abgeschlossen sein — alle transitiven Voraussetzungen seiner Kompetenzen stehen in der Liste (Fehler nennt die fehlenden Ids), jede geführte Kompetenz wird von mindestens einem Modul gelehrt, und kein Modul darf nur zur Hälfte im Track liegen (lehrt es eine geführte Kompetenz, müssen alle seine Kompetenzen geführt sein).
+- **`assertTrackPrerequisiteOrder`**: In der realen `orderModulesForTrack`-Reihenfolge muss jede transitiv benötigte Kompetenz strikt früher gelehrt werden. Der Tie-Break ist die Position der ersten Modulkompetenz in `track.competencyIds` — eine Lücke in der Reihenfolge repariert man also über die Listenposition, nicht über Moduldaten.
+- **`assertCodePrerequisites`**: Ein Modul mit kuratierten `python-code`-/`predict-output`-/`code-trace`-Aufgaben oder einem `python`-Codeblock in einer Lektion braucht `c-python-basics` in der transitiven Hülle seiner Kompetenzen; benutzt die Aufgabe oder der Lektionsblock NumPy (`np.`/`import numpy`), zusätzlich `c-numpy-basics`.
+
+Neuer Pfad in der Praxis: Kompetenzliste in der gewünschten Lernreihenfolge anlegen, Compile laufen lassen, die Gate-Fehler als To-do-Liste lesen — fehlende Voraussetzungen ergänzen, Module ohne Lehrer zuordnen, Positionen sortieren, bis die Liste abgeschlossen ist.
+
+### Falltitel (`cases[].title`)
+
+Jede kuratierte Platzierung und jeder `challengeEligible: true`-Fall braucht einen gepflegten deutschen Titel — im Fall (`title`) oder, für generierte Fälle ohne Fallkörper, in `caseTitles`. Der Compile schlägt fehl, wenn ein Pflichttitel fehlt oder gegen eine Regel verstößt (`assertCaseTitle`, Fehler nennt `familyId:caseId`):
+
+- 2–7 Wörter, höchstens 56 Zeichen; Nominal- oder Infinitivphrase, die benennt, was die Aufgabe verlangt.
+- Kein `$`, kein TeX, kein HTML, keine Backticks, kein abschließendes `…`, `:` oder `.`.
+- Kein bloßer Aktivitätstyp (`Konzeptfrage`, `Rechenaufgabe`, …).
+- Seed-unabhängig: keine Zahlen, die mit dem Seed wechseln (strukturelle Größen wie „2×2“ sind erlaubt).
+- Eindeutig innerhalb des Moduls.
+
 ### Seed-Generatoren für Familienfälle
 
 - Prozedurale Familien (Registry, `authorityMode: 'seeded'`) generieren die Instanz zur Laufzeit aus `familyId` + `caseId` + Route-Seed + Schwierigkeit; der Grader wertet die Instanz, nicht den Seed.

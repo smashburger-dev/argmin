@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "silent-fallback-hazard",
+      "title": "Defizit des globalen try/except",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

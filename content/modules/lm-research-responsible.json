@@ -8,13 +8,6 @@
   "competencyIds": [
     "c-research-responsible"
   ],
-  "requires": [
-    "c-genai-security",
-    "c-research-cards"
-  ],
-  "trackIds": [
-    "research-evaluation"
-  ],
   "lessonIds": [
     "l-responsible-ai"
   ],

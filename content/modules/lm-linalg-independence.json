@@ -8,12 +8,6 @@
   "competencyIds": [
     "c-linalg-independence"
   ],
-  "requires": [],
-  "trackIds": [
-    "common-core",
-    "applied-ai",
-    "mathematical-foundations"
-  ],
   "lessonIds": [
     "l-linalg-independence"
   ],

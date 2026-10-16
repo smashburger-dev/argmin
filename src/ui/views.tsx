@@ -131,7 +131,7 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
         return lesson ? [{ kind: 'lesson', title: lesson.title, href: `#/lesson/${lesson.lessonId}`, key: `lesson:${entry.id}` }] : [];
       }
       const exercise = exercisesById.get(entry.id);
-      return exercise ? [{ kind: 'attempt', title: learnerExerciseLabel(exercise), href: routeForDefinition(exercise), key: `attempt:${entry.id}` }] : [];
+      return exercise ? [{ kind: 'attempt', title: exercise.title || learnerExerciseLabel(exercise), href: routeForDefinition(exercise), key: `attempt:${entry.id}` }] : [];
     });
   }, [catalog, progress.history]);
   return (

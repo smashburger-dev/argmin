@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "provenance-duty",
+      "title": "Provenienzpflicht in der Modellkarte",
       "difficultyProfile": "intro",
       "masteryEligible": false,
       "sourceLineage": [

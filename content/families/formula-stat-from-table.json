@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "card-audit-missing-count",
+      "title": "Fehlende Pflichtfelder zählen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -53,6 +54,7 @@
     },
     {
       "caseId": "stage-timeout-count",
+      "title": "Aufrufe unter dem Zeitbudget",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -130,6 +132,7 @@
     },
     {
       "caseId": "dependency-pin-count",
+      "title": "Pin-Regel-Verletzungen zählen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -197,5 +200,11 @@
       "activityType": "numeric",
       "graderId": "deterministic"
     }
-  ]
+   ],
+  "caseTitles": {
+    "eval-batch-rates": "Fehlerraten über drei Batches",
+    "greedy-step-stat": "Sicherheitsabstand der Argmax-Wahl",
+    "paper-gain-from-counts": "Zusätzliche korrekte Beispiele",
+    "pipeline-stage-audit": "Gültige Stages im Manifest"
+  }
 }

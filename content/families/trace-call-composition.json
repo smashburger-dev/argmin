@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "two-functions-one-print",
+      "title": "Zwei Funktionsaufrufe vorhersagen",
       "difficultyProfile": "intro",
       "masteryEligible": true,
       "sourceLineage": [
@@ -137,5 +138,8 @@
         ]
       }
     }
-  ]
+   ],
+  "caseTitles": {
+    "both-orders-linear-functions": "Komposition zweier Funktionen"
+  }
 }

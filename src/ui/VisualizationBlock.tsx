@@ -175,7 +175,7 @@ export function VisualizationBlock({ id, spec }: { id: string; spec: Visualizati
   return (
     <figure class="visualization-block">
       <figcaption><strong>{spec.title}</strong> {spec.caption}</figcaption>
-      <div id={domId} class="jxgbox viz-board" aria-label={spec.title} />
+      <div id={domId} class="jxgbox viz-board" role="group" aria-label={spec.title} />
       {status === 'loading' ? <p role="status">Visualisierung wird geladen.</p> : null}
       {status === 'error' ? <p role="alert">Die lokale JSXGraph-Runtime konnte nicht geladen werden.</p> : null}
       {status === 'ready' && spec.checkpoint ? <VizCheckpointPanel checkpoint={spec.checkpoint} /> : null}

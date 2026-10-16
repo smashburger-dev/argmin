@@ -5,6 +5,7 @@
   "cases": [
     {
       "caseId": "pca-eigh-projection",
+      "title": "PCA und k-Means aus Grundoperationen",
       "difficultyProfile": "core",
       "masteryEligible": true,
       "sourceLineage": [
@@ -46,6 +47,7 @@
     },
     {
       "caseId": "standardize-pca-kmeans",
+      "title": "Pipeline: Skalierung, PCA, k-Means",
       "difficultyProfile": "stretch",
       "masteryEligible": true,
       "sourceLineage": [
