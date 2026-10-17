@@ -49,6 +49,8 @@ Der kleine S3-Katalog steht unter `docs/figuren-s3/assets.md`. Er ergänzt die v
 
 ## Prüfaufwand begrenzen
 
+Review-Nachtrag zur Integration: Normale Beschriftungen beginnen mit voller Deckkraft. Die im Painter durch Materialtöne wie `mid` reduzierte Deckkraft muss in den gemessenen Kontrast eingehen. In der Hinweisfigur führten 80 % Tinte trotz passender Token zu nur 3,78:1 hell und 4,20:1 dunkel. Screenshots erst nach abgeschlossener Kamera und Überblendung aufnehmen; Sticky-Kopfzeilen aus dem Ausschnitt halten. Bei höhenbegrenzten Karten den vollständigen letzten Knopf und mindestens 12 px inneren Rand prüfen, nicht nur die Außenhöhe. Die sichtbare Option „Ablauf als Text“ entfällt auf Noas Wunsch; SVG-Zustandsbeschreibung, Live-Beschreibung und Text in der Druckfassung bleiben erhalten. Maßgeblich ist der aktualisierte Workbench-Skill.
+
 Noa hat im weiteren S3-Review die automatische Anlage neuer Figurentests und Snapshot-Sammlungen verworfen. Solche Tests bestätigten oft die selbst gewählte Konstruktion, während die Komposition sichtbar misslang. Für neue Szenen, Sequenzen und Assets entstehen deshalb standardmäßig keine neuen Testdateien. Vorhandene Löser, Compiler und Messwerkzeuge nutzen, notwendige Prüfungen einmalig ausführen und die wichtigen Zustände selbst ansehen. Neue dauerhafte Tests nur auf ausdrücklichen Auftrag. Shrink Complexity bleibt. Bestehende Projekt-Gates am Integrationspunkt ausführen, nicht nach jedem Spacing-Eingriff.
 
 ## Abnahme

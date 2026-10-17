@@ -7,12 +7,50 @@ Stand 17.10.2026. Stil ist entschieden: A1 Tonale Werkbank als gemeinsame Bildsp
 
 ## Regeln für jede Session
 
+- Nach Integrator 1 gilt der lokale Integrationscommit auf `feature/figuren` als Basis aller neuen Sessions. Workbench und `docs/figuren-s3/bedienung.md` bestimmen die gemeinsame Hülle einschließlich Hinweisen. Sichtbares „Ablauf als Text“ entfällt; zugängliche Zustandsbeschreibung und Druckfassung bleiben. Die Reviewkorrekturen zu Deckkraft, stabilen Screenshots und vollständig innerhalb der Karte liegenden Knöpfen stehen im Workbench-Skill.
+
 - Seit Noas S3-Review: Darstellungsform pro Beispiel wählen, den Vorgang im Zusammenhang mit der Lektüre entwerfen. Sequenz, Kamerafahrt, Tafel-Zoom und vollständige Erklärung in der Bühne sind keine allgemeinen Anforderungen. Siehe `docs/figuren-lesson-and-stage.md` und den aktualisierten Skill. Konkrete Technikaufträge und Dateibesitz bleiben gültig.
 - Branch von `feature/figuren-s1` (oder dessen Nachfolger) als `feature/figuren-s<N>`. Worktree mit eigenem Port (`E2E_PORT`).
 - Reihenfolge: Modell und Tests, dann Geometrie, dann Inhalt, dann E2E, dann Kontaktbogen ansehen, dann Messung, dann Commit.
 - Neue Kit-Bausteine (K1 bis K12 im Familienplan) nur, wenn die Familie sie braucht, immer mit Negativtest für das Tiefen-Orakel.
 - Abweichungen vom Plan stehen im Session-Digest `docs/session-<datum>-figuren-s<N>.md` mit Grund. Der Digest nennt Messwerte (Frame-Zeit, Chunk) und die Pfade der Kontaktbögen.
 - Done heißt: alle Punkte unter „Abnahme“ der Session erfüllt und im Digest belegt. Ein offener Punkt wird als offen gemeldet, nicht umformuliert.
+
+## Anfragen aus Welle 1 und nächste Zuständigkeit
+
+Gesammelt aus `session-2026-10-17-figuren-s2.md`, `session-2026-10-17-figuren-s3.md`, dem S3-Bedienungsnachtrag und `session-2026-10-17-figuren-s4a.md`. Die folgenden Punkte sind Übergaben, keine stillschweigend erfüllten Abnahmen.
+
+### Nächste Integrator-/Engine-Session
+
+- S2: Performance weiter messen. Smoothie erreicht beim Beat 5,1/4,8 ms, beim Ziehen 10,4/9,4 ms und bei Kamerafahrt 9,8/9,7 ms (Desktop/Mobil). Ziel Beat unter 4 ms, mindestens unter 6 ms; Ziehen/Kamera unter 8 ms. Projektionscache-Versuch ohne verlässlichen Gewinn wurde verworfen. Keine angenäherte Malreihenfolge mit falscher Tiefe wiederholen. Pro Optimierung ein gemessener Eingriff, mindestens 5 % Gewinn und korrekte Bilder/Tiefe.
+- S2: Runtime-Budget von 10000 B gzip weiter beachten; S2 meldete 10431 B, Shared-Kit 4711 B separat. Bei weiteren Engine-Erweiterungen nicht hinter anderen Chunks verstecken. Neue Messung gehört in den jeweiligen Integrationsdigest.
+  Integrator 1 nach der Reviewkorrektur: Runtime 10003 B gzip, Shared-Kit 5971 B separat; das strikte Runtime-Ziel bleibt um 3 B verfehlt. Gesamt-Lint über die 43 betroffenen Code-Dateien meldet 27 Bestands-Komplexitätsfehler; die integrierte Runtime, Engine, HintFigure und Smoothie bestehen den Lint-Aufruf.
+- S2/S5/S6a: `explore`, `compare` und erzeugte Trace-Beats besitzen vorbereitete Schema-/Compile-Verträge, aber noch keine vollständige Bedienung beziehungsweise fachliche Expansion. Gemeinsame Runtime-, Schema- und Compileränderungen vor Umsetzung zuweisen und seriell integrieren. Familien können parallel Modelle, eigene Szenen und Inhalte bauen; keine privaten Runtime-Forks.
+- S3: Direkte Auswahl einzelner Ebenen/Zellen braucht einen eigenen Szenenvertrag mit Tastaturäquivalent und Rückmeldung am Gegenstand. S2s bestehende Erklärung statischer Teile ist kein allgemeiner Auswahlvertrag. Vor Bedarf für F1/F2 zentral klären.
+- S3: Szenenauswahl im Figurenlabor und vorhandenen Messwerkzeug ergänzen; künftige Sessions sollen keinen HTTP-Auswahladapter benötigen.
+- S2/S4a: Geerbte Gesamt-Lint-Befunde separat bearbeiten, falls uneingeschränkt grünes Bestands-Lint verlangt wird. S2 dokumentiert zwölf bestehende Komplexitätsbefunde, S4a 21 Komplexitäts- und fünf Promise-Executor-Meldungen in seinen betroffenen Bestandsdateien. Neue/geänderte Funktionen müssen weiterhin höchstens Komplexität 10 haben; keine Unterdrückung einbauen.
+- Erledigt in Integrator 1: `kind: beats` in fünf S3-Spezifikationen; Workbench als endgültiger Skill und gemeinsame Hülle; S3s Flat-/Spatial-Vertrag; bestehende 27er-Mengenannahme entfernt, Browserselektoren auf ihre Figur begrenzt und alte Menüannahmen an S3 angepasst. Tour-Kontrastbefund aus S3 bleibt als historischer Befund dokumentiert; im integrierten Dev-Gesamtlauf trat er nicht auf.
+
+### S4b, nächster F12-/Aufgabenlauf
+
+- S4a: Antwortformat v1 `{ kind, schemaVersion, form, steps }`, `scene_answer.mjs`, `scene_build_grader.mjs` und `balance_model.mjs` unverändert als fachliche Grundlage verwenden. Kamera-/Pointerzustände gehören nicht in Antworten. Formularzustand in der Szene darstellen, Feldfehler aus `fields`, Feedbackzustand aus `simulation` übernehmen.
+- S4a: Öffentliche Mixer-/Waagenfamilien erst mit funktionsfähiger UI registrieren. Deterministischen Registry-Pfad, `familyEventInput`, bestehende Mastery-, Offenlegungs- und Fresh-Seed-Regeln verwenden; Coverage regulär regenerieren. Datenbank-/Exportversion bleibt 3. Bestehende S4a-Roundtrip- und Golden-Nachweise nutzen; neue dauerhafte Tests/Baselines nur nach konkretem Auftrag.
+- Integration: Dieselbe Workbench-Hülle auch im Hinweismodus verwenden; keine Kameramenüs, Abbildungspräfixe oder sichtbare Textausklappung erneut einführen. Der Hinweis teilt die erste Textstufe und bleibt nach Ausblenden gezählt. Materialtext mit tatsächlicher Deckkraft prüfen, Knöpfe vollständig innerhalb der mobilen Karte halten.
+
+### S5, nächster F7-Lauf
+
+- S2: Runtime- und Frame-Budgets oben als offene gemeinsame Basis mitführen; Familienleistung getrennt messen. S5 misst vor Ausbau 400 SVG-Kacheln gegen Canvas 2D und fordert benötigte gemeinsame Renderer-/Explore-Anbindung früh beim Integrator an.
+- S3: Lektionsfluss, konkrete Änderung und grafisch geeignetes Beispiel vor Bühne und Detailgeometrie wählen. Ausgangswelten sind veränderbar; Tafel-Kamerafahrt ist optional. Neue Figuren wählen ausdrücklich flat/spatial. Reviewbilder erst im fertigen Zustand aufnehmen und Materialkontrast einschließlich Deckkraft messen.
+
+### S6a, nächster F1-Lauf
+
+- S2: Trace-Expansion mit deutschen Beschriftungen und vollständiger Compilerprüfung vor Nutzung des vorbereiteten `beats: { from: trace }` zentral zuweisen. Keine Expansion durch einen privaten Szenen-/Runtimevertrag umgehen.
+- S3: Falls direkte Namens-/Objektauswahl nötig ist, Auswahlvertrag samt Tastaturäquivalent vorab anfordern. Vorhandene Trace-Familien und CPython gegenprüfen; keinen zweiten Python-Interpreter bauen. F2 bleibt später bei S6b.
+
+### Nächster F3-/F4-Nachlauf, S5b
+
+- S3: Sichere Hinweisadapter und Zuordnungen für `transform-rank-dependence-rowops`, `classify-rank-solution-case` und `formula-det2-independence` fehlen noch. Nur mit S2s Hinweisvertrag, Compile-Lecksperre und sicheren Nachbarbeispielen ergänzen.
+- S3: `pca-shadow` und `kmeans-pizza` bleiben für S5b vorgemerkt. Die Matrixdarstellung wurde von Noa als passend bewertet; daraus folgt keine pauschale gestalterische Freigabe aller anderen Szenen. Alte `.viz.json` bleiben bis zur ausdrücklichen Freigabe erhalten.
 
 ## S2 Engine, Bedienung, Hinweismodus in Aufgaben
 

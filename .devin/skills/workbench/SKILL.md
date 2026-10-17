@@ -44,6 +44,7 @@ Regeln:
 - Akzent nie für Struktur, Glas oder Flüssigkeit. Ein beleuchtetes Etikett bekommt Akzent-Text und 1 px Akzent-Umriss auf glatter Platte, keine violette Fläche.
 - Farbe nie allein: der Akzent-Teil hat immer auch Form, Position oder Beschriftung.
 - Text und Trägerfläche als Kontrastpaar behandeln. Auf Objekten gesetzter Text muss in hell und dunkel mindestens 4,5:1 zur tatsächlichen gerenderten Fläche erreichen, einschließlich Schattierung, Deckkraft und Akzentzuständen. Seitenkontrast oder ein passender Tokenname genügt nicht. Für lesbare Werte bei Bedarf eine ungeschattete Lesefläche verwenden. Asset-Karten nennen dieses Paar und den Kontrastprüfung; Beschriftungen nicht als farblich unveränderbare Bitmap einbacken.
+- Normale Beschriftungen mit voller Deckkraft beginnen. Materialtöne wie `mid` können im Painter die Deckkraft reduzieren; bei transparentem Text die resultierende Mischfarbe gegen die tatsächliche Trägerfläche messen. In S2s Hinweisfigur ergab 80 % Tinte nur 3,78:1 hell und 4,20:1 dunkel. Material- und Linienabstufungen sind kein Standard für Text.
 - Halo unter dem Korpus: Ellipse durch die projizierte Grundfläche mal 1,05, weich, dezent.
 
 ## 3. Komposition und Kamera (für jede Welt)
@@ -103,6 +104,7 @@ Was nie variiert: Akzentregel, Lesbarkeit (14 px), Tastatur- und Touch-Bedienung
 - SVG-/Bühnentext während der Manipulation nicht selektierbar machen, Maus-Standardauswahl beim Drag-Start verhindern. Die Sperre nur auf die Bühne anwenden: Lektüre, Bildunterschrift, Frage und Eingaben bleiben normal auswählbar und bedienbar. Bei Touch die vertikale Scrollgeste erhalten.
 - Beim Übertragen der impliziten Touch-Pointer-Capture von einem SVG-Kind zur Bühne dessen hochblubberndes lostpointercapture nicht als Ende der Geste behandeln. Den ganzen Fingerzug und das anschließende vertikale Scrollen einmal tatsächlich bedienen.
 - Titel ohne automatische „Abb. n“-Vorsilbe. Keine sichtbaren generischen Bedienungshinweise zu Pfeiltasten, Reset oder Kameragesten; zugängliche Tastaturinformation bleibt am fokussierbaren Element. Keine Vorankündigung „Mit Frage in Schritt n“. Den Schrittstand einmal klein zwischen Zurück und Weiter zeigen.
+- Keine sichtbare Option „Ablauf als Text“. Den aktuellen Zustand über SVG-Namen und Live-Beschreibung zugänglich halten; die vollständige Beschreibung gehört in die Druckfassung.
 - Beschriftung, gegebenenfalls Frage und Navigation bilden einen gemeinsamen ruhigen Bereich direkt unter der Bühne. Zwischen Hauptbereichen etwa 20–24 px Luft vorsehen; frei werdenden Platz nicht sofort mit Statuszeilen oder Bedienungstext füllen. Kompakte Schrift von etwa 14–16 px mit lesbarem Zeilenabstand; keine verschachtelten Karten und keine zweite abgesetzte Untersektion für die Frage.
 - Prompt und Eingabe einer Vorhersage erst im zugehörigen Schritt zeigen, vor der Navigation. Rückmeldung beim Zurückgehen erhalten. Vorhersage sperrt Weiter bis zu einer lesbaren Antwort (result.ok) oder Überspringen; das Urteil bleibt sichtbar. Keine automatische Fokussierung, die auf dem Handy ungefragt die Tastatur öffnet.
 - Höchstens 4 s pro Beat, kein Autoplay. Reduzierte Bewegung springt ans Beat-Ende. Weitere UI-Bewegung nur mit erkennbarem Zweck.
@@ -122,7 +124,7 @@ Noas Regel aus dem S3-Review, 17.10.2026: **Keine neuen figurspezifischen Tests 
 1. Familienplan und angrenzenden Lektionstext lesen. Lernfrage, geeignete Darstellung und nötige Teile festlegen. Erst eine einfache mobile Ansicht der entscheidenden Zustände prüfen, dann Details bauen.
 2. Zahlen mit vorhandenem Referenzlöser oder einer unabhängigen direkten Rechnung vergleichen; Compiler für den Szenenvertrag und übernommene Checkpoints verwenden. Kein zweites Modell im Testcode nachbauen.
 3. Die Figur selbst im Browser bedienen: entscheidende Zustände, Zwischenzustände, kleinste Zielgröße, hell/dunkel, Tastatur und Touch ansehen. Proportionen, Freiraum, Kantenbedeutung und Text auf Materialflächen ausdrücklich beurteilen. Bei Bedarf einmalig Messwerkzeuge für Kontrast, Überlappung oder Tiefe verwenden; dafür keine neue permanente Testsuite anlegen.
-4. Kontaktbogen und notwendige Einzelbilder selbst ansehen. Sie sind Review-Artefakte, keine automatisch zu aktualisierenden Snapshot-Assertions. Vorhandene generische Messwerkzeuge für Frame-Zeit und Chunk-Größe nutzen, soweit der Auftrag dies verlangt.
+4. Kontaktbogen und notwendige Einzelbilder selbst ansehen. Erst aufnehmen, wenn Bühne, Kamera und Überblendung abgeschlossen sind (`data-settled=true`, SVG-Deckkraft 1). Sticky-Kopfzeilen dürfen den Ausschnitt nicht verdecken. Bei höhenbegrenzten Hinweiskarten auch den gesamten letzten Knopf samt mindestens 12 px innerem Rand prüfen; die Kartenhöhe allein beweist kein passendes Layout. Die Bilder sind Review-Artefakte, keine automatisch zu aktualisierenden Snapshot-Assertions. Vorhandene generische Messwerkzeuge für Frame-Zeit und Chunk-Größe nutzen, soweit der Auftrag dies verlangt.
 5. Shrink Complexity auf den geänderten Code anwenden. Ergebnisse und Grenzen im Digest festhalten. Rückmeldungen von Noa gezielt korrigieren; die eigene visuelle Qualitätskontrolle nicht an Noa abgeben.
 6. Ersetzte .viz.json: Checkpoint wörtlich übernehmen; die alte Datei erst nach Noas Freigabe löschen.
 
@@ -167,5 +169,5 @@ Diese Bedienungsregeln sind die Source of Truth für die Integration aller Figur
 - Jede `.fig.json` hat ein `kind` (`beats`, `explore`, `compare`, `static`, `inline`, `hint`, `task`); höchstens zwei `beats`/`explore` pro Lektion.
 - Kamera: Fahrt bei gleichem Gegenstand, sonst 150 ms Überblenden; eine Bewegung pro Beat.
 - Bei Beats: Beschriftung höchstens 140 Zeichen. Eine Vorhersage einsetzen, wenn sie eine prüfbare Einsicht unterstützt; reine Objektinteraktion braucht kein Quiz.
-- Pro Figur: „Ablauf als Text“, Druckansicht, `sessionStorage` für den letzten Beat, adaptive Ruhe nach 30 langsamen Frames, Forced-Colors, Screenshot-Referenzen.
+- Pro Figur: zugängliche Zustandsbeschreibung, Druckansicht, `sessionStorage` für den letzten Beat, adaptive Ruhe nach 30 langsamen Frames, Forced-Colors und selbst angesehene Reviewbilder.
 - Dateibesitz und Ports laut Parallelplan Teil B; fremde Bereiche nur über „Anfrage“ im Digest.

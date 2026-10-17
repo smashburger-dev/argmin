@@ -1,5 +1,7 @@
 # Figuren: Verfeinerungen und Parallelplan
 
+**Review-Nachtrag Integrator 1:** Die sichtbare Option „Ablauf als Text“ entfällt. Aktueller SVG-Name und Live-Beschreibung sichern die zugängliche Zustandsbeschreibung, vollständiger Text bleibt in der Druckfassung. Workbench ersetzt damit die ältere Ausklapp-Pflicht unter A3. Neue Reviewbilder müssen vollständig überblendet sein; Materialtext erreicht einschließlich Deckkraft mindestens 4,5:1, und alle Knöpfe bleiben mit innerem Rand innerhalb der Karte.
+
 **Aktueller gemeinsamer UI-Stand (weiteres S3-Review):** Workbench ist die Source of Truth für die Figurenhülle, einschließlich S2-Hinweise. Titel ohne Abb.-Präfix, keine sichtbaren generischen Bedienungshinweise, kein Drei-Punkte-/Kameramenü, Schrittstand einmal zwischen Zurück und Weiter, Frage erst am passenden Schritt im gemeinsamen Bereich. Flache Szenen ohne Orbit. Konkrete Zusammenführung mit S2s Hinweis-Modus: docs/figuren-s3/bedienung.md. Diese Regeln ersetzen ältere widersprechende Bedienungsvorgaben dieses Plans.
 
 

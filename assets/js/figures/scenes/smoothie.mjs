@@ -634,7 +634,7 @@ function scoopPos(scoop) {
 }
 
 function textPrim(key, x, y, runs, size, opts = {}) {
-  return { t: 'text', key, x, y, runs, size, anchor: 'middle', tone: 'mid', ...opts };
+  return { t: 'text', key, x, y, runs, size, anchor: 'middle', tone: 'board', ...opts };
 }
 
 /**

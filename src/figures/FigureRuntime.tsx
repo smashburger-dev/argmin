@@ -191,10 +191,8 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
     engine.setReducedMotion(media.matches);
     const onMedia = () => engine.setReducedMotion(media.matches);
     media.addEventListener?.('change', onMedia);
-    const transcript = stage.parentElement?.querySelector<HTMLDetailsElement>('.figure-transcript');
-    let transcriptWasOpen = false;
-    const beforePrint = () => { transcriptWasOpen = Boolean(transcript?.open); if (transcript) transcript.open = true; engine.printState(true); };
-    const afterPrint = () => { if (transcript) transcript.open = transcriptWasOpen; engine.printState(false); };
+    const beforePrint = () => engine.printState(true);
+    const afterPrint = () => engine.printState(false);
     window.addEventListener('beforeprint', beforePrint);
     window.addEventListener('afterprint', afterPrint);
     const applyBg = () => {
@@ -318,10 +316,9 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
         mode={mode} still={still} beatIds={beatIds} readoutRef={readoutRef}
         actions={{ previous: () => engine()?.prev(), next, restart: () => engine()?.restart(), skip: skipPredict, graded }} />
       <StaticExplanation text={partText} close={() => setPartText(null)} />
-      <details class="figure-transcript">
-        <summary>Ablauf als Text</summary>
+      <div class="figure-print-description">
         <ol>{beatIds.map((id, i) => <li key={id}>{runtimeScene.describe(model, i, mode)}</li>)}</ol>
-      </details>
+      </div>
     </div>
   );
 }

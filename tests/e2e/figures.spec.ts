@@ -16,7 +16,7 @@ async function openLesson(page: Page) {
   await page.goto(LESSON);
   const card = page.locator('.figure-card').first();
   await expect(card).toBeVisible({ timeout: 20_000 });
-  const stage = page.locator(STAGE).first();
+  const stage = card.locator(STAGE);
   await expect(stage).toHaveAttribute('data-settled', 'true', { timeout: 20_000 });
   return { card, stage };
 }
@@ -35,8 +35,7 @@ const azimuthOf = async (stage: ReturnType<Page['locator']>) =>
 test.describe('figure block', () => {
   test('lesson flow: predict gate, feedback, beats forward and back', async ({ page }) => {
     test.setTimeout(60_000); // multi-beat flow is slow under parallel WebKit
-    const { stage } = await openLesson(page);
-    const card = page.getByRole('figure').filter({ hasText: 'Abb. 1 · Smoothie mischen' });
+    const { card, stage } = await openLesson(page);
     await expect(card).toBeVisible();
     const weiter = card.getByRole('button', { name: 'Weiter', exact: true });
     const zurueck = card.getByRole('button', { name: 'Zurück', exact: true });
@@ -96,8 +95,8 @@ test.describe('figure block', () => {
   test('reduced motion jumps to the beat end and the loop stops', async ({ page }) => {
     await page.addInitScript(() => { (window as unknown as { __argminFigurePerf: unknown[] }).__argminFigurePerf = []; });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    const { stage } = await openLesson(page);
-    await page.getByRole('button', { name: 'Weiter', exact: true }).click();
+    const { card, stage } = await openLesson(page);
+    await card.getByRole('button', { name: 'Weiter', exact: true }).click();
     await expect(stage).toHaveAttribute('data-settled', 'true', { timeout: 500 });
     const len = async () => page.evaluate(() => (window as unknown as { __argminFigurePerf: unknown[] }).__argminFigurePerf.length);
     await page.waitForTimeout(100);
@@ -356,15 +355,13 @@ test.describe('figure block', () => {
     }
   });
 
-  test('controls: one row of four at 375px, view panel opens and closes', async ({ page }) => {
+  test('controls: two step buttons and one step count at 375px', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 1400 });
     const { card } = await openLesson(page);
     const row = card.locator('.figure-controls');
     const buttons = row.locator('button');
-    await expect(buttons).toHaveCount(4);
-    await expect(card.locator('.figure-step')).toContainText('Schritt 1 von 6');
-    // The step dots are decorative; the text carries the information.
-    await expect(card.locator('.figure-dots')).toHaveAttribute('aria-hidden', 'true');
+    await expect(buttons).toHaveCount(2);
+    await expect(card.locator('.figure-step')).toHaveAttribute('aria-label', 'Schritt 1 von 6');
     const boxes = await buttons.evaluateAll((els) => els.map((b) => {
       const r = b.getBoundingClientRect();
       return { top: r.top, left: r.left, right: r.right };
@@ -376,23 +373,6 @@ test.describe('figure block', () => {
       expect(b.left, 'control overflows the card on the left').toBeGreaterThanOrEqual(cardBox.x);
       expect(b.right, 'control overflows the card on the right').toBeLessThanOrEqual(cardBox.x + cardBox.width);
     }
-    // "⋯" opens the single-pointer view panel (WCAG 2.5.7): five buttons.
-    const viewToggle = card.getByRole('button', { name: 'Ansicht', exact: true });
-    await viewToggle.click();
-    await expect(viewToggle).toHaveAttribute('aria-expanded', 'true');
-    const panel = card.locator('.figure-view-panel');
-    await expect(panel.locator('button')).toHaveCount(5);
-    await expect(panel.getByRole('button', { name: 'Nach links drehen' })).toBeVisible();
-    await expect(panel.getByRole('button', { name: 'Ansicht zurücksetzen' })).toBeVisible();
-    // Escape closes and returns focus to the toggle.
-    await panel.getByRole('button', { name: 'Nach links drehen' }).focus();
-    await page.keyboard.press('Escape');
-    await expect(panel).toHaveCount(0);
-    await expect(viewToggle).toBeFocused();
-    await viewToggle.click();
-    await expect(card.locator('.figure-view-panel button')).toHaveCount(5);
-    await viewToggle.click();
-    await expect(card.locator('.figure-view-panel')).toHaveCount(0);
   });
 
   test.describe('Galaxy S5 touch', () => {
@@ -400,8 +380,8 @@ test.describe('figure block', () => {
     test.use(android);
 
     test('tap steps, horizontal drag rotates, vertical swipe scrolls', async ({ page }) => {
-      const { stage } = await openLesson(page);
-      await page.getByRole('button', { name: 'Weiter', exact: true }).tap();
+      const { card, stage } = await openLesson(page);
+      await card.getByRole('button', { name: 'Weiter', exact: true }).tap();
       await expect(stage).toHaveAttribute('data-beat', '1');
       await expect(stage).toHaveAttribute('data-settled', 'true', { timeout: 20_000 });
       const az0 = await azimuthOf(stage);
@@ -451,8 +431,8 @@ test.describe('figure block', () => {
     test.use(iphone);
 
     test('tap steps the figure', async ({ page }) => {
-      const { stage } = await openLesson(page);
-      await page.getByRole('button', { name: 'Weiter', exact: true }).tap();
+      const { card, stage } = await openLesson(page);
+      await card.getByRole('button', { name: 'Weiter', exact: true }).tap();
       await expect(stage).toHaveAttribute('data-beat', '1');
       await expect(stage).toHaveAttribute('data-settled', 'true', { timeout: 20_000 });
       // WebKit CDP has no Input.dispatchTouchEvent; the page.tap path above

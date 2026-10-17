@@ -72,8 +72,7 @@
 .figure-predict .viz-checkpoint-hints { font-size: 0.875rem; }
 .figure-predict .figure-skip { width: auto; display: inline-flex; min-height: 44px; margin-top: 4px; padding-left: 0; font-size: 0.8125rem; }
 
-.figure-transcript { margin-top: 8px; font-size: 0.875rem; }
-.figure-transcript summary { cursor: pointer; min-height: 24px; }
+.figure-print-description { display: none; }
 .figure-calm { font-size: 0.8rem; color: var(--text-2); margin: 0 0 6px; }
 .figure-runtime[data-kind="inline"] .figure-stage { height: 160px; min-height: 0; aspect-ratio: auto; cursor: default; touch-action: auto; }
 .figure-runtime[data-kind="inline"] .figure-step-body { display: none; }
@@ -89,9 +88,8 @@
   .exercise-layout.has-figure-hint { grid-template-columns: minmax(0, 1fr); }
   .exercise-side-stack { position: static; }
   .figure-hint-card { max-height: 70svh; padding: 12px; }
-  .figure-hint-card .figure-stage { width: min(100%, calc(70svh - 260px)); margin-inline: auto; }
+  .figure-hint-card .figure-stage { width: min(100%, calc(70svh - 270px)); margin-inline: auto; }
   .figure-hint-card .figure-beat-caption { font-size: 0.8rem; }
-  .figure-hint-card .figure-transcript[open] { max-height: 100px; overflow-y: auto; }
 }
 @media (forced-colors: active) {
   .figure-stage svg { forced-color-adjust: none; }
@@ -103,8 +101,7 @@
 }
 @media print {
   .figure-controls, .figure-predict, .figure-hide { display: none !important; }
-  .figure-transcript > * { display: block !important; }
-  .figure-transcript { content-visibility: visible; }
+  .figure-print-description { display: block; }
   .figure-card { break-inside: avoid; max-height: none; }
   .figure-hint-card .figure-stage { width: 100%; }
   .exercise-side-stack { position: static; }
