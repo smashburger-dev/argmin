@@ -1,15 +1,13 @@
 /**
- * SVG painter for the Werkbank figures. Mounts one DOM subtree per item,
- * then writes only changed attributes per frame. Paint order is exactly
- * `paintList` from the pure kit — item groups are re-appended when the
- * item order changes, face paths inside a compound group when its face
- * order changes. Pattern styles (halftone, hatch) fill faces from the
- * shared defs injected by {@link ensureFigureDefs}; prims never get
- * patterns (the board must stay clean print).
+ * SVG painter for the Werkbank figures (style A1 tonal). Mounts one DOM
+ * subtree per item, then writes only changed attributes per frame. Paint
+ * order is exactly `paintList` from the pure kit — item groups are
+ * re-appended when the item order changes, face paths inside a compound
+ * group when its face order changes. {@link ensureFigureDefs} injects the
+ * shared blur filter the halo uses.
  */
 import { lightDir, projector, shadeAt } from '../../assets/js/figures/kit/camera.mjs';
 import { arrowPathD } from '../../assets/js/figures/kit/arrows.mjs';
-import { faceSteps } from '../../assets/js/figures/kit/depth.mjs';
 import { FIGURE_STYLES } from './styles';
 import type { FigureStyleDef, FigureStyleId } from './styles';
 
@@ -92,86 +90,29 @@ function primColor(t: Tokens, tone?: string): { color: string; opacity: number }
   }
 }
 
-/**
- * Halftone coverage ramp (dot fraction of cell area per level 0..4):
- * lightest tops ~8%, mid faces ~26%, the darkest below 55%.
- */
-const A2_RADII = [0.5, 0.71, 0.92, 1.13, 1.34];
-const A2_COV = A2_RADII.map((r) => (Math.PI * r * r) / (3.2 * 3.2));
+/** Tone darkness: where each tone sits on the shade ramp (0 light, 1 dark). */
+const TONE_DARK: Record<string, number> = { lo: 0.25, mid: 0.45, hi: 0.65, fluid: 0.55 };
 
-/** Base ink coverage per tone; screen depth adds up to 30% on top. */
-const TONE_COV: Record<string, number> = {
-  glass: 0.05, hi: 0.06, lo: 0.14, mid: 0.22, lit: 0.22, board: 0.04,
-};
-
-const coverageLevel = (c: number) => {
-  let best = 0;
-  for (let l = 1; l < A2_COV.length; l += 1) if (Math.abs(A2_COV[l]! - c) < Math.abs(A2_COV[best]! - c)) best = l;
-  return best;
-};
-
-/** Tone darkness for non-halftone pattern densities (hatch/tonal ramps). */
-const TONE_DARK: Record<string, number> = { lo: 0.25, mid: 0.45, hi: 0.65, glass: 0.12, fluid: 0.55 };
-
-/** Base color for tonal/matte fills. */
+/** Base color for tonal fills. */
 const toneBase = (t: Tokens, tone?: string) =>
   (tone === 'fluid' ? t.fluid : tone === 'lit' ? t.lit : tone === 'lo' ? t.lo : tone === 'hi' ? t.hi : t.mid);
 
-/** Hatch orientation from the normal's screen direction. */
-function hatchOrient(ctx: PaintCtx, normal: [number, number, number]): 'top' | 'left' | 'right' {
-  if (Math.abs(normal[2]) >= Math.max(Math.abs(normal[0]), Math.abs(normal[1]))) return 'top';
-  const dx = normal[0] * ctx.proj.right[0] + normal[1] * ctx.proj.right[1] + normal[2] * ctx.proj.right[2];
-  return dx >= 0 ? 'right' : 'left';
-}
-
-/** Ghost/fluid fills that bypass the style's shading ramp, or null. */
-function specialFill(tone: string | undefined, def: FigureStyleDef, orient: string): string | null {
-  if (tone === 'ghost') return 'none';
-  if (tone !== 'fluid') return null;
-  if (def.technique === 'halftone') return 'url(#fig-a2-fluid)';
-  if (def.technique === 'hatch') return `url(#fig-a3-fluid-${orient})`;
-  return null;
-}
-
-function halftoneFill(tone: string | undefined, shade: number): string {
-  const level = coverageLevel((TONE_COV[tone ?? 'mid'] ?? 0.22) + (1 - shade) * 0.3);
-  return `url(#fig-a2-${tone === 'lit' ? 'accent' : 'ink'}-${level})`;
-}
-
-function levelFill(def: FigureStyleDef, t: Tokens, tone: string | undefined, shade: number, orient: string): string {
+function levelFill(def: FigureStyleDef, t: Tokens, tone: string | undefined, shade: number): string {
   const level = Math.min(def.levels - 1,
     Math.round(((TONE_DARK[tone ?? 'mid'] ?? 0.45) * 0.55 + (1 - shade) * 0.45) * (def.levels - 1)));
-  if (def.technique === 'hatch') {
-    return `url(#fig-a3-${tone === 'lit' ? 'accent' : 'ink'}-${orient}-${level})`;
-  }
-  const q = level / (def.levels - 1);
-  return mixHex(toneBase(t, tone), t.ink, q * def.strength);
+  return mixHex(toneBase(t, tone), t.ink, (level / (def.levels - 1)) * def.strength);
 }
 
-/**
- * Glass never gets an opaque base — the jar liquid and the heaps must read
- * through the front wall. Print styles draw a sparse transparent sheen
- * pattern (no paper base rect); tonal styles draw a tint whose 0.22
- * fill-opacity faceStyle adds (patterns style opacity per pattern).
- */
-function glassFill(def: FigureStyleDef, t: Tokens, shade: number): string {
-  if (def.technique === 'halftone') return 'url(#fig-a2-glass)';
-  if (def.technique === 'hatch') return 'url(#fig-a3-glass)';
-  return mixHex(t.paper, t.mark, 0.35 + 0.15 * (1 - shade));
-}
-
-/** Face fill for the active style. shade in [0,1]: 1 = fully lit. */
+/** Face fill for A1. shade in [0,1]: 1 = fully lit. */
 function faceFill(def: FigureStyleDef, t: Tokens, ctx: PaintCtx, face: Face, tone?: string): string {
-  const orient = def.technique === 'hatch' ? hatchOrient(ctx, face.normal) : 'top';
-  const special = specialFill(tone, def, orient);
-  if (special) return special;
+  if (tone === 'ghost') return 'none';
   const shade = shadeAt(ctx.light, face.normal);
-  if (tone === 'glass') return glassFill(def, t, shade);
-  // The board face must stay clean print in every style: smooth, high
-  // contrast, never patterned or grained.
+  // Glass never gets an opaque base — the jar liquid and the heaps must
+  // read through the front wall: a tint at 0.22 fill-opacity (faceStyle).
+  if (tone === 'glass') return mixHex(t.paper, t.mark, 0.35 + 0.15 * (1 - shade));
+  // The board face stays clean print: smooth, high contrast, never shaded.
   if (tone === 'board') return mixHex(t.paper, t.ink, 0.05 + 0.06 * (1 - shade));
-  if (def.technique === 'halftone') return halftoneFill(tone, shade);
-  return levelFill(def, t, tone, shade, orient);
+  return levelFill(def, t, tone, shade);
 }
 
 function faceStroke(def: FigureStyleDef, t: Tokens, tone?: string): { stroke: string; width: number; dash?: string } {
@@ -182,9 +123,8 @@ function faceStroke(def: FigureStyleDef, t: Tokens, tone?: string): { stroke: st
 }
 
 /** Hairline stroke in the face's own fill closes AA seams between facets. */
-function seamStroke(def: FigureStyleDef, fill: string): { stroke: string; width: number; dash?: string } {
+function seamStroke(fill: string): { stroke: string; width: number; dash?: string } {
   if (fill === 'none' || fill.startsWith('url(')) return { stroke: 'none', width: 0 };
-  if (def.technique === 'halftone' || def.technique === 'hatch') return { stroke: 'none', width: 0 };
   return { stroke: fill, width: 0.6 };
 }
 
@@ -192,7 +132,7 @@ function seamStroke(def: FigureStyleDef, fill: string): { stroke: string; width:
 
 let defsDone = false;
 
-/** One global hidden svg with every pattern/filter the styles reference. */
+/** One global hidden svg with the shared blur filter the halo uses. */
 export function ensureFigureDefs(): void {
   if (defsDone || typeof document === 'undefined') return;
   defsDone = true;
@@ -202,25 +142,6 @@ export function ensureFigureDefs(): void {
   svg.setAttribute('height', '0');
   svg.style.position = 'absolute';
   const defs = el('defs');
-  for (let l = 0; l < 5; l += 1) {
-    defs.appendChild(dotPattern(`fig-a2-ink-${l}`, 'var(--fig-a2-paper)', 'var(--fig-a2-ink)', A2_RADII[l]!));
-    defs.appendChild(dotPattern(`fig-a2-accent-${l}`, 'var(--fig-a2-paper)', 'var(--fig-a2-lit)', A2_RADII[l]!, true));
-  }
-  // The liquid screen sits at ~45% ink regardless of level: one dedicated
-  // pattern keeps the jar content readable as one medium tone.
-  defs.appendChild(dotPattern('fig-a2-fluid', 'var(--fig-a2-paper)', 'var(--fig-a2-ink)', 1.21));
-  for (const role of ['ink', 'accent']) {
-    for (const orient of ['top', 'left', 'right']) {
-      for (let l = 0; l < 4; l += 1) defs.appendChild(hatchPattern(`fig-a3-${role}-${orient}-${l}`, role, orient, l));
-    }
-  }
-  for (const orient of ['top', 'left', 'right']) {
-    defs.appendChild(fluidHatch(`fig-a3-fluid-${orient}`, orient));
-  }
-  defs.appendChild(haloDotPattern('fig-a2-halo'));
-  defs.appendChild(haloHatchPattern('fig-a3-halo'));
-  defs.appendChild(glassDotPattern('fig-a2-glass'));
-  defs.appendChild(glassHatchPattern('fig-a3-glass'));
   const filter = el('filter');
   filter.setAttribute('id', 'fig-soft');
   const blur = el('feGaussianBlur');
@@ -229,163 +150,6 @@ export function ensureFigureDefs(): void {
   defs.appendChild(filter);
   svg.appendChild(defs);
   document.body.appendChild(svg);
-}
-
-/** Halftone: paper base + one dot per 3.2px cell, explicit dot radius. */
-function dotPattern(id: string, paper: string, ink: string, radius: number, offset = false): SVGPatternElement {
-  const p = el('pattern') as SVGPatternElement;
-  p.setAttribute('id', id);
-  p.setAttribute('width', '3.2');
-  p.setAttribute('height', '3.2');
-  p.setAttribute('patternUnits', 'userSpaceOnUse');
-  // Real two-ink print misregisters: the accent plate rides 0.5px/0.35px off.
-  if (offset) p.setAttribute('patternTransform', 'translate(0.5 0.35)');
-  const bg = el('rect');
-  bg.setAttribute('width', '3.2');
-  bg.setAttribute('height', '3.2');
-  bg.setAttribute('fill', paper);
-  const dot = el('circle');
-  dot.setAttribute('cx', '1.6');
-  dot.setAttribute('cy', '1.6');
-  dot.setAttribute('r', r1(radius));
-  dot.setAttribute('fill', ink);
-  p.appendChild(bg);
-  p.appendChild(dot);
-  return p;
-}
-
-/** Halo screen for the print styles: transparent ground, sparse faint dots. */
-function haloDotPattern(id: string): SVGPatternElement {
-  const p = el('pattern') as SVGPatternElement;
-  p.setAttribute('id', id);
-  p.setAttribute('width', '6.4');
-  p.setAttribute('height', '6.4');
-  p.setAttribute('patternUnits', 'userSpaceOnUse');
-  const dot = el('circle');
-  dot.setAttribute('cx', '3.2');
-  dot.setAttribute('cy', '3.2');
-  dot.setAttribute('r', '0.55');
-  dot.setAttribute('fill', 'var(--fig-a2-ink)');
-  p.appendChild(dot);
-  return p;
-}
-
-/** Glass sheen for the halftone style: no base rect, one tiny dot per 5.6px. */
-function glassDotPattern(id: string): SVGPatternElement {
-  const p = el('pattern') as SVGPatternElement;
-  p.setAttribute('id', id);
-  p.setAttribute('width', '5.6');
-  p.setAttribute('height', '5.6');
-  p.setAttribute('patternUnits', 'userSpaceOnUse');
-  const dot = el('circle');
-  dot.setAttribute('cx', '2.8');
-  dot.setAttribute('cy', '2.8');
-  dot.setAttribute('r', '0.5');
-  dot.setAttribute('fill', 'var(--fig-a2-ink)');
-  p.appendChild(dot);
-  return p;
-}
-
-/** Glass sheen for the engraving style: no base rect, one line per 6px. */
-function glassHatchPattern(id: string): SVGPatternElement {
-  const p = el('pattern') as SVGPatternElement;
-  p.setAttribute('id', id);
-  p.setAttribute('width', '6');
-  p.setAttribute('height', '6');
-  p.setAttribute('patternUnits', 'userSpaceOnUse');
-  const line = el('rect');
-  line.setAttribute('x', '0');
-  line.setAttribute('y', '0');
-  line.setAttribute('width', '6');
-  line.setAttribute('height', '0.5');
-  line.setAttribute('fill', 'var(--fig-a3-ink)');
-  p.appendChild(line);
-  return p;
-}
-
-/** Halo for the engraving style: sparse thin horizontal lines only. */
-function haloHatchPattern(id: string): SVGPatternElement {
-  const p = el('pattern') as SVGPatternElement;
-  p.setAttribute('id', id);
-  p.setAttribute('width', '9');
-  p.setAttribute('height', '9');
-  p.setAttribute('patternUnits', 'userSpaceOnUse');
-  const line = el('rect');
-  line.setAttribute('x', '0');
-  line.setAttribute('y', '0');
-  line.setAttribute('width', '9');
-  line.setAttribute('height', '0.55');
-  line.setAttribute('fill', 'var(--fig-a3-ink)');
-  p.appendChild(line);
-  return p;
-}
-
-/** Liquid hatch: ~45% ink (0.7px lines every 1.55px), no cross-hatch. */
-function fluidHatch(id: string, orient: string): SVGPatternElement {
-  const p = el('pattern') as SVGPatternElement;
-  p.setAttribute('id', id);
-  p.setAttribute('width', '8');
-  p.setAttribute('height', '8');
-  p.setAttribute('patternUnits', 'userSpaceOnUse');
-  p.setAttribute('patternTransform', `rotate(${HATCH_ROT[orient] ?? 0})`);
-  const bg = el('rect');
-  bg.setAttribute('width', '8');
-  bg.setAttribute('height', '8');
-  bg.setAttribute('fill', 'var(--fig-a3-paper)');
-  p.appendChild(bg);
-  for (let x = 0; x < 8; x += 1.56) {
-    const l = el('rect');
-    l.setAttribute('x', r1(x));
-    l.setAttribute('y', '0');
-    l.setAttribute('width', '0.7');
-    l.setAttribute('height', '8');
-    l.setAttribute('fill', 'var(--fig-a3-ink)');
-    p.appendChild(l);
-  }
-  return p;
-}
-
-// Pattern bars are vertical strips before the rotation: top faces read as
-// horizontal hatching (rotate 90), left/right faces as 60/120 degree lines.
-const HATCH_ROT: Record<string, number> = { top: 90, left: 60, right: 120 };
-
-/** Engraving hatch: parallel lines; the darkest level adds a cross-hatch. */
-function hatchPattern(id: string, role: string, orient: string, level: number): SVGPatternElement {
-  const color = `var(--fig-a3-${role === 'accent' ? 'lit' : 'ink'})`;
-  const gap = 5.4 - level * 1.25;
-  const p = el('pattern') as SVGPatternElement;
-  p.setAttribute('id', id);
-  p.setAttribute('width', '8');
-  p.setAttribute('height', '8');
-  p.setAttribute('patternUnits', 'userSpaceOnUse');
-  p.setAttribute('patternTransform', `rotate(${HATCH_ROT[orient] ?? 0})`);
-  const bg = el('rect');
-  bg.setAttribute('width', '8');
-  bg.setAttribute('height', '8');
-  bg.setAttribute('fill', 'var(--fig-a3-paper)');
-  p.appendChild(bg);
-  const line = (x: number, w: number) => {
-    const l = el('rect');
-    l.setAttribute('x', x.toFixed(2));
-    l.setAttribute('y', '0');
-    l.setAttribute('width', w.toFixed(2));
-    l.setAttribute('height', '8');
-    l.setAttribute('fill', color);
-    return l;
-  };
-  for (let x = 0; x < 8; x += gap) p.appendChild(line(x, level === 3 ? 1.0 : 0.7));
-  if (level === 3) {
-    for (let x = gap / 2; x < 8; x += gap * 2) {
-      const c = el('rect');
-      c.setAttribute('x', '0');
-      c.setAttribute('y', x.toFixed(2));
-      c.setAttribute('width', '8');
-      c.setAttribute('height', '0.8');
-      c.setAttribute('fill', color);
-      p.appendChild(c);
-    }
-  }
-  return p;
 }
 
 /** Monotone-chain convex hull of projected screen points. */
@@ -405,30 +169,12 @@ function convexHull(pts: [number, number][]): [number, number][] {
   return [...half(s).slice(0, -1), ...half([...s].reverse()).slice(0, -1)];
 }
 
-/** Deterministic paper grain tile (seeded PRNG -> canvas -> data URL). */
-export function grainTile(dark: boolean): string {
-  const c = document.createElement('canvas');
-  c.width = 256; c.height = 256;
-  const ctx = c.getContext('2d')!;
-  const img = ctx.createImageData(256, 256);
-  let seed = 0x9e3779b9;
-  const rand = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 0xffffffff; };
-  for (let i = 0; i < img.data.length; i += 4) {
-    const v = rand();
-    img.data[i] = dark ? 255 : 30;
-    img.data[i + 1] = dark ? 245 : 26;
-    img.data[i + 2] = dark ? 235 : 24;
-    img.data[i + 3] = Math.round(v * 14 + rand() * 8);
-  }
-  ctx.putImageData(img, 0, 0);
-  return c.toDataURL();
-}
-
 // --- painter ----------------------------------------------------------------
 
 interface ItemBinding {
   g: SVGGElement;
-  faces: Map<number, SVGPathElement>;
+  /** (part|tone|style sig) -> one path holding several faces as subpaths. */
+  groups: Map<string, SVGPathElement>;
   hulls: Map<number, SVGPathElement>;
   prims: Map<string, SVGElement>;
   planeG: SVGGElement | null;
@@ -459,14 +205,6 @@ export class Painter {
     ensureFigureDefs();
   }
 
-  setStyle(style: FigureStyleId): void {
-    this.styleId = style;
-    this.def = FIGURE_STYLES[style];
-    this.tokens = resolveTokens(style);
-    this.itemOrder = '';
-    this.styleVer += 1;
-  }
-
   restyle(): void {
     this.tokens = resolveTokens(this.styleId);
     this.styleVer += 1;
@@ -477,7 +215,7 @@ export class Painter {
     for (const item of items) {
       const binding: ItemBinding = {
         g: el('g') as SVGGElement,
-        faces: new Map(),
+        groups: new Map(),
         hulls: new Map(),
         prims: new Map(),
         planeG: null,
@@ -494,13 +232,9 @@ export class Painter {
   }
 
   private mountSolid(b: ItemBinding, item: Item): void {
-    item.mesh.faces.forEach((_: Face, i: number) => {
-      const p = el('path') as SVGPathElement;
-      p.setAttribute('display', 'none');
-      p.setAttribute('data-face', '1');
-      b.faces.set(i, p);
-      b.g.appendChild(p);
-    });
+    // Face paths are created lazily per (part, fill) bucket: faces of one
+    // convex part never overlap, so all its equally filled faces ride in a
+    // single path as subpaths — ~parts paths instead of ~faces elements.
     // One silhouette path per compound part. It stays a plain child of the
     // group: reorderFaces interleaves it right after the part's last face,
     // so nearer parts of the same item still overpaint the outline.
@@ -558,18 +292,26 @@ export class Painter {
         repaint.add(item);
       }
     }
-    const drawn = new Map<string, number[]>();
+    const drawn = new Map<string, { item: Item; order: number[] }>();
     for (const entry of entries) {
       const { item } = entry;
       if (item.kind === 'solid') {
-        const list = drawn.get(item.id) ?? [];
-        list.push(entry.faceIndex);
-        drawn.set(item.id, list);
+        const rec = drawn.get(item.id) ?? { item, order: [] };
+        rec.order.push(entry.faceIndex);
+        drawn.set(item.id, rec);
+        continue;
       }
       // Same item object at the same camera/style writes identical output.
       if (repaint.has(item)) this.paintEntry(entry, ctx);
     }
-    this.finishSolids(drawn, entries.filter((e) => e.item.kind === 'solid'), ctx, ver);
+    for (const [id, rec] of drawn) {
+      const b = this.items.get(id);
+      // Unpainted this pass = unchanged at this version: faces, order and
+      // hulls are all still valid.
+      if (!b || !repaint.has(rec.item)) continue;
+      this.setAttr(b.g, 'display', rec.item.visible === false ? 'none' : null);
+      this.paintSolid(b, rec.item, rec.order, ctx);
+    }
   }
 
   private orderItems(entries: Array<{ item: Item }>): void {
@@ -591,25 +333,88 @@ export class Painter {
     const { item } = entry;
     const b = this.items.get(item.id);
     if (!b) return;
-    if (item.kind === 'solid') this.paintFace(b, item, entry.face, entry.faceIndex, ctx);
-    else if (item.kind === 'plane') this.paintPlane(b, item, ctx);
+    if (item.kind === 'plane') this.paintPlane(b, item, ctx);
     else this.paintStroke(b, item, ctx);
     this.setAttr(b.g, 'display', item.visible === false ? 'none' : null);
   }
 
-  private paintFace(b: ItemBinding, item: Item, face: Face | null, faceIndex: number, ctx: PaintCtx): void {
-    const p = b.faces.get(faceIndex);
-    if (!p || !face) return;
-    const { fill, opacity, st } = this.faceStyle(item, face, ctx);
-    this.setAttr(p, 'd', this.facePath(item.mesh, faceIndex, ctx));
+  /**
+   * All drawn faces of one solid, grouped into one path per
+   * (part|tone|style) bucket: faces inside a convex part can never overlap
+   * and paint contiguously, so subpaths inside a bucket are order-free and
+   * buckets only need part order. ~parts×fills paths replace ~faces paths.
+   */
+  private paintSolid(b: ItemBinding, item: Item, drawn: number[], ctx: PaintCtx): void {
+    const buckets = new Map<string, { p: SVGPathElement; d: string[] }>();
+    const bucketOf = new Map<number, string>();
+    for (const fi of drawn) {
+      const face = item.mesh.faces[fi];
+      const { fill, opacity, st } = this.faceStyle(item, face, ctx);
+      const tone = face.tone ?? item.tone ?? '';
+      const key = `${face.part ?? 0}|${tone}|${fill}|${opacity ?? ''}|${st.stroke}|${st.width}|${st.dash ?? ''}`;
+      let bucket = buckets.get(key);
+      if (!bucket) {
+        bucket = { p: this.bucketPath(b, key, fill, opacity, st, tone), d: [] };
+        buckets.set(key, bucket);
+      }
+      bucket.d.push(this.facePath(item.mesh, fi, ctx));
+      bucketOf.set(fi, key);
+    }
+    for (const bucket of buckets.values()) this.setAttr(bucket.p, 'd', bucket.d.join(''));
+    for (const [k, p] of b.groups) if (!buckets.has(k)) this.setAttr(p, 'display', 'none');
+    this.reorderSolid(b, item, drawn, bucketOf);
+    this.paintHulls(item, b, drawn, ctx);
+  }
+
+  private bucketPath(
+    b: ItemBinding, key: string, fill: string, opacity: string | null,
+    st: { stroke: string; width: number; dash?: string }, tone: string,
+  ): SVGPathElement {
+    let p = b.groups.get(key);
+    if (!p) {
+      p = el('path') as SVGPathElement;
+      p.setAttribute('data-face', '1');
+      b.groups.set(key, p);
+    }
     this.setAttr(p, 'fill', fill);
     this.setAttr(p, 'fill-opacity', opacity);
     this.setAttr(p, 'stroke', st.stroke);
     this.setAttr(p, 'stroke-width', st.width ? String(st.width) : null);
     this.setAttr(p, 'stroke-dasharray', st.dash ?? null);
     // Guards and DOM inspection read the tone to exempt glass/ghost fills.
-    this.setAttr(p, 'data-tone', face.tone ?? item.tone ?? null);
+    this.setAttr(p, 'data-tone', tone || null);
     this.setAttr(p, 'display', null);
+    return p;
+  }
+
+  /**
+   * Bucket paths + part hulls in paint order. Part faces are contiguous, so
+   * each part's buckets land between its first face and its hull — placed
+   * right after the part's last drawn face, like the per-face order before.
+   */
+  private reorderSolid(b: ItemBinding, item: Item, order: number[], bucketOf: Map<number, string>): void {
+    const lastOf = new Map<number, number>();
+    order.forEach((fi, i) => lastOf.set(item.mesh.faces[fi].part ?? 0, i));
+    const seq: Element[] = [];
+    const keys: string[] = [];
+    const seen = new Set<string>();
+    order.forEach((fi, i) => {
+      const key = bucketOf.get(fi)!;
+      if (!seen.has(key)) {
+        seen.add(key);
+        seq.push(b.groups.get(key)!);
+        keys.push(key);
+      }
+      const part = item.mesh.faces[fi].part ?? 0;
+      if (lastOf.get(part) === i) {
+        const h = b.hulls.get(part);
+        if (h) { seq.push(h); keys.push(`h${part}`); }
+      }
+    });
+    if (this.lastSigsKey(b, 'faceorder', keys.join('|'))) return;
+    const frag = document.createDocumentFragment();
+    for (const e of seq) frag.appendChild(e);
+    b.g.appendChild(frag);
   }
 
   /** Fill + stroke for one face; the ghost tint overrides both. */
@@ -620,50 +425,13 @@ export class Painter {
     const tone = face.tone ?? item.tone;
     const tint = Boolean(tone === 'ghost' && item.tint);
     const fill = tint ? this.tokens.lit : faceFill(this.def, this.tokens, ctx, face, tone);
-    // Ghost load: translucent accent. Translucent glass exists only on the
-    // solid-fill styles — the print styles carry a transparent sheen
-    // pattern whose sparseness lives in the pattern itself.
-    const opacity = tint ? '0.15'
-      : tone === 'glass' && !fill.startsWith('url(') ? '0.22' : null;
+    // Ghost load: translucent accent. Glass: a 0.22 tint over the scene.
+    const opacity = tint ? '0.15' : tone === 'glass' ? '0.22' : null;
     // Smooth (curved) facets get no ink edge stroke — the part silhouette
-    // hull supplies the outline. On solid-fill styles they take a hairline
-    // stroke of their own fill color to close anti-alias seams; print
-    // styles cover seams with their pattern.
-    const st = face.smooth && !tint ? seamStroke(this.def, fill) : faceStroke(this.def, this.tokens, tone);
+    // hull supplies the outline. They take a hairline stroke of their own
+    // fill color to close anti-alias seams between facets.
+    const st = face.smooth && !tint ? seamStroke(fill) : faceStroke(this.def, this.tokens, tone);
     return { fill, tint, opacity, st };
-  }
-
-  /** After all entries: hide un-drawn faces, re-append faces in paint order, draw part silhouettes. */
-  private finishSolids(drawn: Map<string, number[]>, entries: Array<{ item: Item }>, ctx: PaintCtx, ver: string): void {
-    const byId = new Map(entries.map((e) => [e.item.id, e.item]));
-    for (const [id, order] of drawn) {
-      const b = this.items.get(id);
-      const item = byId.get(id);
-      if (!b || !item) continue;
-      // Unpainted this pass = unchanged at this version: faces, order and
-      // hulls are all still valid.
-      if (this.paintedVer.get(item) !== ver) continue;
-      this.hideUndrawn(b, order);
-      this.reorderFaces(b, order, item);
-      this.paintHulls(item, b, order, ctx);
-    }
-  }
-
-  private hideUndrawn(b: ItemBinding, drawn: number[]): void {
-    const seen = new Set(drawn);
-    for (const [i, p] of b.faces) if (!seen.has(i)) this.setAttr(p, 'display', 'none');
-  }
-
-  private reorderFaces(b: ItemBinding, order: number[], item: Item): void {
-    const sig = order.join(',');
-    if (this.lastSigsKey(b, 'faceorder', sig)) return;
-    const frag = document.createDocumentFragment();
-    const partOf = (fi: number) => item.mesh.faces[fi].part ?? 0;
-    for (const step of faceSteps(order, partOf)) {
-      const p = 'faceIndex' in step ? b.faces.get(step.faceIndex) : b.hulls.get(step.hullPart);
-      if (p) frag.appendChild(p);
-    }
-    b.g.appendChild(frag);
   }
 
   /**
@@ -772,22 +540,12 @@ export class Painter {
     this.setAttr(b.g, 'display', item.visible === false ? 'none' : null);
   }
 
-  /** Contact halo under the cabinet: subtle ground cue only — a blurred
-   *  blob for tonal/matte, a sparse transparent screen for print styles. */
+  /** Contact halo under the cabinet: a soft blurred ink blob — subtle
+   *  ground cue only. */
   paintHalo(e: SVGEllipseElement): void {
-    if (this.def.technique === 'halftone') {
-      e.setAttribute('fill', 'url(#fig-a2-halo)');
-      e.setAttribute('fill-opacity', '0.35');
-      e.setAttribute('filter', 'url(#fig-soft)');
-    } else if (this.def.technique === 'hatch') {
-      e.setAttribute('fill', 'url(#fig-a3-halo)');
-      e.setAttribute('fill-opacity', '0.3');
-      e.setAttribute('filter', 'url(#fig-soft)');
-    } else {
-      e.setAttribute('fill', this.tokens.ink);
-      e.setAttribute('fill-opacity', '0.08');
-      e.setAttribute('filter', 'url(#fig-soft)');
-    }
+    e.setAttribute('fill', this.tokens.ink);
+    e.setAttribute('fill-opacity', '0.08');
+    e.setAttribute('filter', 'url(#fig-soft)');
     e.removeAttribute('display');
   }
 

@@ -5,7 +5,8 @@ import { expect, test, type Page } from '@playwright/test';
 // under 4x CPU throttling below 4 ms). Run:
 //   FIGURE_PERF=1 E2E_PORT=4391 npx playwright test tests/e2e/figures-perf.spec.ts --project=chromium
 // Writes .figure-shots/perf.json. Not a CI gate: timings depend on the machine.
-const STYLES = ['a1', 'a2', 'a3', 'a4'] as const;
+// FIGURE_PERF_STYLES=a1 limits the run (style ids comma-separated).
+const STYLES = (process.env.FIGURE_PERF_STYLES || 'a1').split(',').map((style) => style.trim()).filter(Boolean);
 const THROTTLE = 4;
 
 type Sample = { style: string; ms: number; build: number; sort: number; paint: number; faces: number };
@@ -87,7 +88,7 @@ function summarize(style: string, viewport: string, scenario: Scenario, data: { 
 }
 
 async function openFigure(page: Page, style: string, beat: number) {
-  await page.goto(`/index.html#/figurenlabor?stil=${style}&beat=${beat}`);
+  await page.goto(`/index.html#/figurenlabor?beat=${beat}`);
   const stage = page.locator('[aria-roledescription="Figur"]').first();
   await expect(stage).toBeVisible({ timeout: 20_000 });
   await stage.scrollIntoViewIfNeeded();

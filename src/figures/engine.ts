@@ -300,12 +300,6 @@ export class FigureEngine {
     if (visible) { this.last = 0; this.schedule(); }
   }
 
-  restyle(style: FigureStyleId): void {
-    this.style = style;
-    this.painter.setStyle(style);
-    this.paintNow();
-  }
-
   themeChanged(): void {
     this.painter.restyle();
     this.paintNow();

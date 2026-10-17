@@ -8,7 +8,7 @@ import {
   beatDuration, pose, build, cameraFor, readout, describe, formatFrac, frac,
   displayNumbers,
 } from '../assets/js/figures/scenes/smoothie.mjs';
-import { paintOrderErrors, coveringAt } from '../assets/js/figures/kit/depth.mjs';
+import { paintOrderErrors, coveringAt, paintList } from '../assets/js/figures/kit/depth.mjs';
 import { arrowPathD } from '../assets/js/figures/kit/arrows.mjs';
 import { cylinder } from '../assets/js/figures/kit/solids.mjs';
 import { project } from '../assets/js/figures/kit/camera.mjs';
@@ -453,6 +453,35 @@ test('paintOrderErrors is 0 at every beat end across azimuths and elevations', (
     check(items, cameraFor(m, p, vp), `beat ${beatIds[k]} scene-cam`);
   }
   assert.deepEqual(failures.slice(0, 10), [], `${failures.length} paint-order failures`);
+});
+
+test('incremental (warm-cache) paint order equals full order over the beat timeline', () => {
+  const m = model(DEF);
+  // Ten fixed cameras: the scene camera plus nine probe azimuths.
+  const vp = { width: 640, height: 400 };
+  const base = cameraFor(m, pose(m, 0, 0), vp);
+  const cams = [base];
+  for (let i = 1; i < 10; i += 1) {
+    cams.push({ ...base, azimuth: base.azimuth + (i * Math.PI * 2) / 10 });
+  }
+  const seq = (items, cam) =>
+    paintList(items, cam).map((e) => `${e.item.id}#${e.faceIndex}`);
+  for (const cam of cams) {
+    // Walk the beat timeline once (cold), then repeat (warm caches): the
+    // memoized pairwise relations must reproduce the exact same order —
+    // dynamic items are rebuilt per call, so only static pairs hit cache.
+    const cold = [];
+    const warm = [];
+    for (const pass of [cold, warm]) {
+      for (let k = 0; k < beatIds.length; k += 1) {
+        const dur = beatDuration(beatIds[k]);
+        for (const t of [0, dur / 2, dur]) {
+          pass.push(seq(build(m, pose(m, k, t), 'lesson'), cam));
+        }
+      }
+    }
+    assert.deepEqual(warm, cold, `warm order diverged at azimuth ${cam.azimuth}`);
+  }
 });
 
 // --- hint-mode leak check -------------------------------------------------------------

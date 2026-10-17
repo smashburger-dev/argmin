@@ -35,6 +35,13 @@ export default defineConfig({
             includeDependenciesRecursively: false,
             groups: [
               {
+                // Figure kit (camera/depth/motion/solids/arrows) ist zwischen
+                // dem FigureRuntime-Chunk und den Szenen-Chunks geteilt —
+                // ohne eigenen Chunk landet es doppelt in beiden.
+                test: /assets\/js\/figures\/kit\//,
+                name: 'figure-kit',
+              },
+              {
                 test: /core\/procedural\//,
                 name: (id) => {
                   // Die geteilten Kits (py_test_kit, case_family_kit) tragen

@@ -1,6 +1,6 @@
-/* Werkbank figure styles: per-style tokens, stage layout, controls.
-   Tokens are namespaced --fig-<style>-* so four styles can coexist in the
-   figure lab grid without collisions. */
+/* Werkbank figure style A1 "Tonale Werkbank": tokens, stage layout,
+   controls. Tokens are namespaced --fig-<style>-* so a second style can
+   return without touching painter or runtime code. */
 
 :root {
   --fig-a1-paper: var(--surface);
@@ -8,35 +8,12 @@
   --fig-a1-ink: #5c5650; --fig-a1-lit: #6d3fd4;
   /* fluid: the jar liquid — mid-dark, clearly below paper/hi, not accent. */
   --fig-a1-fluid: #9c8d7c;
-
-  --fig-a2-paper: #efe5dc; --fig-a2-ink: #2a2530; --fig-a2-lit: #6d3fd4;
-  --fig-a2-fluid: #8d867e;
-
-  --fig-a3-paper: #f3ead9; --fig-a3-ink: #2b241f; --fig-a3-lit: #6d3fd4;
-  --fig-a3-fluid: #a89a82;
-
-  --fig-a4-paper: var(--surface);
-  --fig-a4-lo: #cfc6d6; --fig-a4-mid: #e6dccf; --fig-a4-hi: #f4efe6;
-  --fig-a4-ink: #3a3342; --fig-a4-lit: #7a4fe0;
-  --fig-a4-fluid: #97889c;
 }
 
 :root[data-theme="dark"] {
   --fig-a1-lo: #3a343f; --fig-a1-mid: #4a4450; --fig-a1-hi: #615a68;
   --fig-a1-ink: #a89f94; --fig-a1-lit: #b79cff;
   --fig-a1-fluid: #7d7488;
-
-  --fig-a2-paper: #1d1a20; --fig-a2-ink: #efe5dc; --fig-a2-lit: #b79cff;
-  --fig-a2-fluid: #6f6a73;
-
-  --fig-a3-paper: #19161a; --fig-a3-ink: #e9dfcf; --fig-a3-lit: #b79cff;
-  --fig-a3-fluid: #75695a;
-
-  --fig-a4-lo: #4a4256; --fig-a4-mid: #5d556b; --fig-a4-hi: #786f88;
-  --fig-a4-fluid: #9890a8;
-  /* A4 shades faces toward a dark ink; markings need a separate light ink
-     or board text, jar marks and glass outlines vanish on the dark panel. */
-  --fig-a4-ink: #141118; --fig-a4-mark: #c9bfce; --fig-a4-lit: #b79cff;
 }
 
 .figure-card {
@@ -68,7 +45,15 @@
 .figure-stage:active { cursor: grabbing; }
 .figure-stage svg { display: block; width: 100%; height: 100%; }
 
-.figure-beat-caption { margin: 0.6em 0 0; }
+.figure-beat-caption { margin: 0.6em 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; justify-content: space-between; }
+.figure-step { font-size: 0.85rem; color: var(--text-2, #6b655c); white-space: nowrap; }
+.figure-dots { display: inline-flex; gap: 5px; margin-left: 8px; vertical-align: middle; }
+.figure-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  border: 1px solid var(--border-strong, var(--text-2));
+}
+.figure-dot.is-done { background: var(--text-2); opacity: 0.45; }
+.figure-dot.is-now { background: var(--accent); border-color: var(--accent); }
 .figure-readout {
   font-family: var(--mono, ui-monospace, monospace);
   font-size: 0.8rem;
@@ -77,12 +62,13 @@
   min-height: 1.2em;
 }
 
-/* Two compact wrap rows; the global mobile .btn full-width rule must not
-   stretch figure buttons — they stay intrinsic-size, flex-wrapped. */
-.figure-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
-.figure-controls + .figure-controls { margin-top: 4px; }
-.figure-controls .btn { width: auto; flex: 0 0 auto; min-width: 44px; min-height: 44px; padding: 6px 10px; }
-.figure-step { font-size: 0.85rem; color: var(--text-2, #6b655c); min-width: 4ch; text-align: center; white-space: nowrap; }
+/* One centered row of at most four buttons, identical on mobile and
+   desktop; the global mobile .btn full-width rule must not stretch figure
+   buttons. The view panel opens directly above the row. */
+.figure-view-panel { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
+.figure-controls { display: flex; justify-content: center; gap: 8px; align-items: center; margin-top: 8px; }
+.figure-controls .btn { width: auto; flex: 0 0 auto; min-height: 44px; padding: 6px 14px; }
+.figure-controls .figure-next { flex: 1 1 auto; max-width: 200px; }
 .figure-icon-btn {
   width: 44px; height: 44px; flex: 0 0 auto;
   display: inline-flex; align-items: center; justify-content: center;
@@ -91,8 +77,5 @@
   font-size: 19px; line-height: 1; cursor: pointer;
 }
 .figure-icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.figure-icon-btn[aria-expanded="true"] { border-color: var(--accent); color: var(--accent); }
 .figure-predict { margin-top: 8px; }
-
-.figlab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-@media (max-width: 800px) { .figlab-grid { grid-template-columns: 1fr; } }
-.figlab-cell > p { margin: 0 0 4px; font-size: 0.85rem; color: var(--text-2, #6b655c); }

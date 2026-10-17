@@ -21,8 +21,8 @@ async function openLesson(page: Page) {
   return { card, stage };
 }
 
-async function openLab(page: Page, style: string, beat: number) {
-  await page.goto(`/index.html#/figurenlabor?stil=${style}&beat=${beat}`);
+async function openLab(page: Page, beat: number) {
+  await page.goto(`/index.html#/figurenlabor?beat=${beat}`);
   const stage = page.locator(STAGE).first();
   await expect(stage).toBeVisible({ timeout: 20_000 });
   await expect(stage).toHaveAttribute('data-settled', 'true', { timeout: 20_000 });
@@ -121,12 +121,12 @@ test.describe('figure block', () => {
 
   test.describe('painted fills (lab)', () => {
     test.skip(process.env.PLAYWRIGHT_PREVIEW === '1', 'The figure lab is dev-only.');
-    for (const style of ['a1', 'a2', 'a3', 'a4'] as const) {
-      for (const theme of ['light', 'dark'] as const) {
-        test(`solid faces are filled — ${style} ${theme}`, async ({ page }) => {
+    const style = 'a1';
+    for (const theme of ['light', 'dark'] as const) {
+      test(`solid faces are filled — ${style} ${theme}`, async ({ page }) => {
           await page.setViewportSize({ width: 960, height: 720 });
           await page.addInitScript((t) => localStorage.setItem('ki-lernplattform:theme', t), theme);
-          const stage = await openLab(page, style, 3);
+          const stage = await openLab(page, 3);
           const svgBox = await stage.locator('svg').first().boundingBox();
           const stageBox = await stage.boundingBox();
           if (!svgBox || !stageBox) throw new Error('figure has no box');
@@ -235,7 +235,7 @@ test.describe('figure block', () => {
           // jar) must differ — translucent glass alone does not pass this.
           // A hash-only change does not remount the lab: go via about:blank.
           await page.goto('about:blank');
-          await openLab(page, style, 0);
+          await openLab(page, 0);
           const stageBox0 = await stage.boundingBox();
           if (!stageBox0) throw new Error('figure has no box');
           const shot0 = await stage.screenshot();
@@ -324,7 +324,6 @@ test.describe('figure block', () => {
           expect(pixels.liquidVsPaper, `${style}/${theme} liquid reads as paper/glass`).toBeGreaterThan(12);
           expect(pixels.liquidVsEmpty, `${style}/${theme} liquid is hidden by opaque glass`).toBeGreaterThan(12);
         });
-      }
     }
   });
 
@@ -333,7 +332,7 @@ test.describe('figure block', () => {
     for (const width of [1440, 375] as const) {
       test(`no text overlaps and >=14px at ${width}px`, async ({ page }) => {
         await page.setViewportSize({ width, height: width > 500 ? 1100 : 1400 });
-        const stage = await openLab(page, 'a2', 4);
+        const stage = await openLab(page, 4);
         const stats = await stage.evaluate((el) => {
           const g = el.querySelector('g[data-item="board-face"]');
           const texts = [...g!.querySelectorAll('text')].filter((t) => t.getAttribute('display') !== 'none');
@@ -355,6 +354,45 @@ test.describe('figure block', () => {
         if (width === 375) expect(stats.minFont).toBeGreaterThanOrEqual(14);
       });
     }
+  });
+
+  test('controls: one row of four at 375px, view panel opens and closes', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 1400 });
+    const { card } = await openLesson(page);
+    const row = card.locator('.figure-controls');
+    const buttons = row.locator('button');
+    await expect(buttons).toHaveCount(4);
+    await expect(card.locator('.figure-step')).toContainText('Schritt 1 von 6');
+    // The step dots are decorative; the text carries the information.
+    await expect(card.locator('.figure-dots')).toHaveAttribute('aria-hidden', 'true');
+    const boxes = await buttons.evaluateAll((els) => els.map((b) => {
+      const r = b.getBoundingClientRect();
+      return { top: r.top, left: r.left, right: r.right };
+    }));
+    const tops = boxes.map((b) => b.top);
+    expect(Math.max(...tops) - Math.min(...tops)).toBeLessThanOrEqual(2);
+    const cardBox = (await card.boundingBox())!;
+    for (const b of boxes) {
+      expect(b.left, 'control overflows the card on the left').toBeGreaterThanOrEqual(cardBox.x);
+      expect(b.right, 'control overflows the card on the right').toBeLessThanOrEqual(cardBox.x + cardBox.width);
+    }
+    // "⋯" opens the single-pointer view panel (WCAG 2.5.7): five buttons.
+    const viewToggle = card.getByRole('button', { name: 'Ansicht', exact: true });
+    await viewToggle.click();
+    await expect(viewToggle).toHaveAttribute('aria-expanded', 'true');
+    const panel = card.locator('.figure-view-panel');
+    await expect(panel.locator('button')).toHaveCount(5);
+    await expect(panel.getByRole('button', { name: 'Nach links drehen' })).toBeVisible();
+    await expect(panel.getByRole('button', { name: 'Ansicht zurücksetzen' })).toBeVisible();
+    // Escape closes and returns focus to the toggle.
+    await panel.getByRole('button', { name: 'Nach links drehen' }).focus();
+    await page.keyboard.press('Escape');
+    await expect(panel).toHaveCount(0);
+    await expect(viewToggle).toBeFocused();
+    await viewToggle.click();
+    await expect(card.locator('.figure-view-panel button')).toHaveCount(5);
+    await viewToggle.click();
+    await expect(card.locator('.figure-view-panel')).toHaveCount(0);
   });
 
   test.describe('Galaxy S5 touch', () => {

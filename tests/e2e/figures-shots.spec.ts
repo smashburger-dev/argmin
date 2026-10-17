@@ -2,8 +2,8 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 
-// Opt-in contact-sheet generator for the four Werkbank styles (Noa's style
-// decision aid, not a CI gate). Run against the dev server:
+// Opt-in contact-sheet generator for the A1 Werkbank style (not a CI
+// gate). Run against the dev server:
 //   FIGURE_SHOTS=1 E2E_REUSE_SERVER=1 E2E_PORT=4391 npx playwright test \
 //     tests/e2e/figures-shots.spec.ts --project=chromium
 // Writes .figure-shots/<width>/<theme>/<style>-b<beat>.png plus
@@ -11,9 +11,6 @@ import { expect, test } from '@playwright/test';
 // viewport x theme).
 const STYLES = [
   { id: 'a1', name: 'A1 Tonale Werkbank' },
-  { id: 'a2', name: 'A2 Zweifarbdruck' },
-  { id: 'a3', name: 'A3 Kupferstich' },
-  { id: 'a4', name: 'A4 Matte Keramik' },
 ] as const;
 const BEATS = [
   { index: 0, name: 'Zutaten' },
@@ -82,7 +79,7 @@ test.describe('figure contact sheet (opt-in)', () => {
             // The lab mounts the start beat once: a full reload per shot
             // keeps beat and settled state honest.
             await page.goto('about:blank');
-            await page.goto(`/#/figurenlabor?stil=${style.id}&beat=${beat.index}`);
+            await page.goto(`/#/figurenlabor?beat=${beat.index}`);
             const stage = page.locator('[aria-roledescription="Figur"]').first();
             await expect(stage).toBeVisible({ timeout: 20_000 });
             await expect(stage).toHaveAttribute('data-settled', 'true', { timeout: 20_000 });

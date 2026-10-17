@@ -9,8 +9,8 @@ import { MathMarkup } from '../ui/MathMarkup';
 import { Button } from '../ui/Button';
 import { VizCheckpointPanel } from '../ui/VisualizationBlock';
 import { FigureEngine } from './engine';
-import { grainTile, resolveTokens } from './painter';
-import { FIGURE_STYLES, resolveFigureStyle } from './styles';
+import { resolveTokens } from './painter';
+import { resolveFigureStyle } from './styles';
 import type { FigureSpec, VizCheckpoint } from '../app/types';
 import type { FigureStyleId } from './styles';
 import './figures.css';
@@ -46,10 +46,11 @@ const IconReplay = () => (
     <path d="M19 2.5v4.9h-4.9" />
   </Icon>
 );
-const IconRestart = () => (
+const IconDots = () => (
   <Icon>
-    <path d="M5 4v12" />
-    <path d="M16.5 4.5 8.5 10l8 5.5z" fill="currentColor" stroke="none" />
+    <circle cx="4.5" cy="10" r="1.4" fill="currentColor" stroke="none" />
+    <circle cx="10" cy="10" r="1.4" fill="currentColor" stroke="none" />
+    <circle cx="15.5" cy="10" r="1.4" fill="currentColor" stroke="none" />
   </Icon>
 );
 const IconRotL = () => (
@@ -84,26 +85,23 @@ function predictCheckpointOf(spec: FigureSpec): VizCheckpoint | null {
   return { prompt, input, expected, tolerance, hints, typicalErrors };
 }
 
-function stageBackground(style: FigureStyleId | undefined, dark: boolean): string | undefined {
-  if (!style) return undefined;
-  const tech = FIGURE_STYLES[style].technique;
-  const paper = resolveTokens(style).paper;
-  if (tech === 'halftone' || tech === 'hatch') {
-    return `${paper} url("${grainTile(dark)}")`;
-  }
-  return paper;
+/** Stage background = the style's paper token (the card surface). */
+function stageBackground(style: FigureStyleId): string {
+  return resolveTokens(style).paper;
 }
 
 export default function FigureRuntime({ scene, spec, style, initialBeat, onPredictDone }: Props) {
   const model = useMemo(() => scene.model(spec.params), [scene, spec]);
   const [beat, setBeat] = useState(initialBeat ?? 0);
   const [predictDone, setPredictDone] = useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const haloRef = useRef<SVGEllipseElement>(null);
   const readoutRef = useRef<HTMLParagraphElement>(null);
   const engineRef = useRef<FigureEngine | null>(null);
   const dragRef = useRef<DragState | null>(null);
+  const viewBtnRef = useRef<HTMLButtonElement>(null);
   const styleId = resolveFigureStyle(style);
   const nBeats = scene.beatIds.length;
 
@@ -140,7 +138,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
     const onMedia = () => engine.setReducedMotion(media.matches);
     media.addEventListener?.('change', onMedia);
     const applyBg = () => {
-      stage.style.background = stageBackground(styleId, document.documentElement.dataset.theme === 'dark') ?? '';
+      stage.style.background = stageBackground(styleId);
     };
     applyBg();
     const mo = new MutationObserver(() => { applyBg(); engine.themeChanged(); });
@@ -233,22 +231,61 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
           <ellipse ref={haloRef} />
         </svg>
       </div>
-      <p class="figure-beat-caption"><MathMarkup html={spec.beats[beat]?.caption ?? ''} inline /></p>
+      <p class="figure-beat-caption">
+        <span><MathMarkup html={spec.beats[beat]?.caption ?? ''} inline /></span>
+        <span class="figure-step">
+          Schritt {beat + 1} von {nBeats}
+          <span class="figure-dots" aria-hidden="true">
+            {scene.beatIds.map((_: string, i: number) => (
+              <span key={i} class={`figure-dot${i === beat ? ' is-now' : i < beat ? ' is-done' : ''}`} />
+            ))}
+          </span>
+        </span>
+      </p>
       <p class="figure-readout" aria-hidden="true" ref={readoutRef} />
       <span class="visually-hidden" aria-live="polite">{scene.describe(model, beat, 'lesson')}</span>
+      {viewOpen ? (
+        <div
+          class="figure-view-panel"
+          role="group"
+          aria-label="Ansicht"
+          onKeyDown={(event) => {
+            if (event.key !== 'Escape') return;
+            event.stopPropagation();
+            setViewOpen(false);
+            viewBtnRef.current?.focus();
+          }}
+        >
+          <button class="figure-icon-btn" type="button" aria-label="Nach links drehen" title="Nach links drehen" onClick={() => engine()?.nudge(-15, 0)}><IconRotL /></button>
+          <button class="figure-icon-btn" type="button" aria-label="Nach rechts drehen" title="Nach rechts drehen" onClick={() => engine()?.nudge(15, 0)}><IconRotR /></button>
+          <button class="figure-icon-btn" type="button" aria-label="Steiler" title="Steiler" onClick={() => engine()?.nudge(0, 5)}><IconUp /></button>
+          <button class="figure-icon-btn" type="button" aria-label="Flacher" title="Flacher" onClick={() => engine()?.nudge(0, -5)}><IconDown /></button>
+          <button class="figure-icon-btn" type="button" aria-label="Ansicht zurücksetzen" title="Ansicht zurücksetzen" onClick={() => engine()?.resetView()}><IconHome /></button>
+        </div>
+      ) : null}
       <div class="figure-controls" role="group" aria-label="Schritte">
         <Button size="sm" disabled={beat === 0} onClick={() => engine()?.prev()}>Zurück</Button>
-        <span class="figure-step" aria-live="off">{beat + 1} / {nBeats}</span>
-        <Button size="sm" variant="primary" disabled={beat >= nBeats - 1 || gatePredict} onClick={next}>Weiter</Button>
+        <Button
+          size="sm"
+          variant="primary"
+          class="figure-next"
+          disabled={gatePredict}
+          onClick={beat >= nBeats - 1 ? () => engine()?.restart() : next}
+        >
+          {beat >= nBeats - 1 ? 'Von vorn' : 'Weiter'}
+        </Button>
         <button class="figure-icon-btn" type="button" aria-label="Nochmal" title="Nochmal" onClick={() => engine()?.replay()}><IconReplay /></button>
-        <button class="figure-icon-btn" type="button" aria-label="Von vorn" title="Von vorn" onClick={() => engine()?.restart()}><IconRestart /></button>
-      </div>
-      <div class="figure-controls figure-controls-view" role="group" aria-label="Ansicht">
-        <button class="figure-icon-btn" type="button" aria-label="Nach links drehen" title="Nach links drehen" onClick={() => engine()?.nudge(-15, 0)}><IconRotL /></button>
-        <button class="figure-icon-btn" type="button" aria-label="Nach rechts drehen" title="Nach rechts drehen" onClick={() => engine()?.nudge(15, 0)}><IconRotR /></button>
-        <button class="figure-icon-btn" type="button" aria-label="Steiler" title="Steiler" onClick={() => engine()?.nudge(0, 5)}><IconUp /></button>
-        <button class="figure-icon-btn" type="button" aria-label="Flacher" title="Flacher" onClick={() => engine()?.nudge(0, -5)}><IconDown /></button>
-        <button class="figure-icon-btn" type="button" aria-label="Ansicht zurücksetzen" title="Ansicht zurücksetzen" onClick={() => engine()?.resetView()}><IconHome /></button>
+        <button
+          ref={viewBtnRef}
+          class="figure-icon-btn"
+          type="button"
+          aria-label="Ansicht"
+          title="Ansicht"
+          aria-expanded={viewOpen}
+          onClick={() => setViewOpen((open) => !open)}
+        >
+          <IconDots />
+        </button>
       </div>
       {atPredict && predictCheckpoint ? (
         <div class="figure-predict">

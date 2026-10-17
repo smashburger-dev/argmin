@@ -81,3 +81,12 @@ E2E_PORT=4391 npm run test:e2e -- --project=chromium
 npm run test:e2e:build
 FIGURE_PERF=1 E2E_REUSE_SERVER=1 E2E_PORT=4391 npx playwright test tests/e2e/figures-perf.spec.ts --project=chromium
 ```
+
+## Nachtrag: nach Noas Stilwahl (A1)
+
+- A2, A3, A4 entfernt; Bedienung auf vier Knöpfe in einer Reihe reduziert (Zurück, Weiter oder „Von vorn“, Nochmal, Ansicht mit fünf Knöpfen zum Drehen und Neigen); „Schritt k von n“ mit Punkten neben der Beat-Beschriftung.
+- Hill Climb (Protokoll `docs/figuren-perf-hillclimb.tsv`, je drei Läufe, Median der Mediane, 1440 / 375 px, vierfach gedrosselt): Beat 7,2 → 5,6 / 5,8 ms, Ziehen 11,6 / 11,1 → etwa 10,4 bis 11,4 ms, Kamerafahrt 11,7 / 14,2 → etwa 9,5 bis 11,7 ms. Behalten: Flächen pro Teil und Füllfarbe zu einem Pfad gebündelt, Überlappungsvergleich pro Itempaar und Blickrichtung zwischengespeichert. Verworfen: Reihenfolge bei Drehung unter 1° wiederverwenden (weicht von der exakten Reihenfolge ab).
+- Ziel „Beat unter 6 ms“ erreicht, „unter 4 ms“ nicht; „Ziehen und Kamerafahrt unter 8 ms“ nicht erreicht. Das Profil zeigt keinen einzelnen großen Block mehr (Clipping 5 %, Attribut-Schreiben 4 %). Nächste Hebel stehen im Skill (Abschnitt 8).
+- Laufzeit-Chunk 8,9 kB gzip (Ziel 10 kB); das Kit liegt als eigener Chunk `figure-kit`, den Laufzeit und Szenen teilen.
+- Geprüft in dieser Runde: 56 Node-Tests der Figur, Compile und Validate, Typecheck, Release-Build, 13 Figuren-E2E in Chromium. Die volle Suite lief zuletzt vor diesen Änderungen.
+- „Werkbank“ ist nur der Kit-Name; jede Familie bekommt ihre eigene Welt (Bühnenkatalog im Skill `.devin/skills/werkbank-figuren/SKILL.md`).

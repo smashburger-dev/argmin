@@ -99,6 +99,7 @@ const dirKey = (camera) => `${Math.round(camera.azimuth * 1e4)}|${Math.round(cam
 const faceOrderCache = new WeakMap(); // mesh -> { key, order }
 const coverCache = new WeakMap();     // item -> { key, box, covers }
 const faceIndexCache = new WeakMap(); // mesh -> Map(face -> face index)
+const pairCache = new WeakMap();      // item -> WeakMap(item -> { key, cmp })
 
 /**
  * Within-item painter order, far to near. Faces of one convex primitive can
@@ -391,15 +392,25 @@ function orderedItems(items, camera, ctx = ctxFor(camera)) {
     return rec.covers;
   };
   const boxes = new Map(items.map((it) => [it, it.visible === false ? null : recordOf(it).box]));
+  // Pairwise outcomes are memoized per (item pair, view direction): the
+  // comparison is a pure function of the two items' geometry, so frames
+  // with an unchanged camera reuse every static-pair result — beats with a
+  // settled camera and repeated drags through the same direction. Newly
+  // built dynamic items miss naturally and recompute.
+  const pairCmp = (a, b) => {
+    let sub = pairCache.get(a);
+    const hit = sub?.get(b);
+    if (hit?.key === key) return hit.cmp;
+    const cmp = coverCmp(coversOf(a), coversOf(b), ctx);
+    if (!sub) { sub = new WeakMap(); pairCache.set(a, sub); }
+    sub.set(b, { key, cmp });
+    return cmp;
+  };
   const out = pairwiseOrder(items.length, (i, j) => {
     const ba = boxes.get(items[i]);
     const bb = boxes.get(items[j]);
     if (!ba || !bb || !boxOverlap(ba, bb)) return 0;
-    return coverCmp(
-      items[i].visible === false ? [] : coversOf(items[i]),
-      items[j].visible === false ? [] : coversOf(items[j]),
-      ctx,
-    );
+    return pairCmp(items[i], items[j]);
   });
   // on-relations are hard constraints: a guest always paints after its host
   // even where their projections do not overlap (the key sort seeds it, a
@@ -454,29 +465,6 @@ export function paintList(items, camera) {
     }
   }
   return out;
-}
-
-/**
- * Per-item paint steps for renderer and silhouette outlines: the drawn
- * face indices in paint order, with each compound part's hull step placed
- * right after that part's LAST drawn face. Nearer parts of the same item
- * then still overpaint an earlier part's outline — a heap's silhouette
- * must never draw through the bin's front wall (grouping all hulls after
- * every face reads as a wireframe).
- * @param {number[]} order face indices, far to near (from paintList)
- * @param {(faceIndex: number) => number} partOf
- * @returns {Array<{ faceIndex: number } | { hullPart: number }>}
- */
-export function faceSteps(order, partOf) {
-  const lastOf = new Map();
-  order.forEach((fi, i) => lastOf.set(partOf(fi), i));
-  const steps = [];
-  order.forEach((fi, i) => {
-    steps.push({ faceIndex: fi });
-    const pk = partOf(fi);
-    if (lastOf.get(pk) === i) steps.push({ hullPart: pk });
-  });
-  return steps;
 }
 
 /**
