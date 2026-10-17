@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-linalg-figuren-s3-archive",
+  "version": 1,
+  "locale": "de",
+  "title": "Archiv der ersetzten Figuren S3",
+  "objectives": ["Ersetzte Visualisierungen bis zur Freigabe aufbewahren"],
+  "competencyIds": ["c-linalg-systems", "c-linalg-gauss", "c-linalg-independence"],
+  "requires": [],
+  "estimatedMinutes": 1,
+  "blocks": [
+    { "blockId": "archive-two-lines", "type": "visualization", "contentRef": "lessons/linear-algebra/two-lines.viz.json" },
+    { "blockId": "archive-solution-cases", "type": "visualization", "contentRef": "lessons/linear-algebra/solution-cases.viz.json" },
+    { "blockId": "archive-span-2d", "type": "visualization", "contentRef": "lessons/linear-algebra/span-2d.viz.json" },
+    { "blockId": "archive-row-operation", "type": "visualization", "contentRef": "lessons/linear-algebra/row-operation.viz.json" }
+  ],
+  "sourceRefs": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "local-only"
+}

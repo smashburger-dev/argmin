@@ -21,9 +21,8 @@ function evaluateValue(value, scope, names) {
   return typeof value === 'number' ? value : compileExpression(value, names)(scope);
 }
 
-test('visualization bundle contains 27 unique, lesson-linked specifications', () => {
-  assert.equal(bundle.visualizations.length, 27);
-  assert.equal(new Set(bundle.visualizations.map((item) => item.visualizationId)).size, 27);
+test('visualization bundle contains unique, lesson-linked specifications', () => {
+  assert.equal(new Set(bundle.visualizations.map((item) => item.visualizationId)).size, bundle.visualizations.length);
   for (const item of bundle.visualizations) {
     const lesson = bundle.lessons.find((entry) => entry.lessonId === item.lessonId);
     assert.ok(lesson, item.visualizationId);

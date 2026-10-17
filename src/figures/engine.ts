@@ -147,8 +147,8 @@ export class FigureEngine {
 
   private cameraNow(): Camera {
     return {
-      azimuth: this.cam.az.x + this.off.az.x,
-      elevation: Math.min(EL_MAX, Math.max(EL_MIN, this.cam.el.x + this.off.el.x)),
+      azimuth: this.cam.az.x + (this.scene.viewMode === 'flat' ? 0 : this.off.az.x),
+      elevation: this.scene.viewMode === 'flat' ? this.cam.el.x : Math.min(EL_MAX, Math.max(EL_MIN, this.cam.el.x + this.off.el.x)),
       zoom: this.cam.zoom.x,
       target: [this.cam.tx.x, this.cam.ty.x, this.cam.tz.x],
     };
@@ -178,24 +178,28 @@ export class FigureEngine {
     return { build: t1 - t0, sort: t2 - t1, paint: t3 - t2, faces };
   }
 
-  /** Soft contact halo under the cabinet: the scene's ground() footprint. */
+  /** Project the ground ellipse itself. An axis-aligned rectangle bound
+   * changes size with azimuth and makes a circular shadow appear to breathe. */
   private paintHalo(cam: Camera): void {
     const g = typeof this.scene.ground === 'function' ? this.scene.ground(this.model) : null;
-    if (!g) { this.halo.setAttribute('display', 'none'); return; }
-    const [cx, cy] = g.center;
-    const [w, d] = g.size;
-    const pts = [
-      project(cam, this.vp, [cx - w / 2, cy - d / 2, 0]),
-      project(cam, this.vp, [cx + w / 2, cy - d / 2, 0]),
-      project(cam, this.vp, [cx + w / 2, cy + d / 2, 0]),
-      project(cam, this.vp, [cx - w / 2, cy + d / 2, 0]),
-    ];
-    const xs = pts.map((p) => p[0]);
-    const ys = pts.map((p) => p[1]);
-    this.halo.setAttribute('cx', ((Math.min(...xs) + Math.max(...xs)) / 2).toFixed(1));
-    this.halo.setAttribute('cy', ((Math.min(...ys) + Math.max(...ys)) / 2).toFixed(1));
-    this.halo.setAttribute('rx', (((Math.max(...xs) - Math.min(...xs)) / 2) * 1.05).toFixed(1));
-    this.halo.setAttribute('ry', (((Math.max(...ys) - Math.min(...ys)) / 2) * 1.05).toFixed(1));
+    if (!g || this.scene.viewMode === 'flat') { this.halo.setAttribute('display', 'none'); return; }
+    const [cx, cy, cz = 0] = g.center;
+    const center = project(cam, this.vp, [cx, cy, cz]);
+    const x = project(cam, this.vp, [cx + g.size[0] / 2, cy, cz]);
+    const y = project(cam, this.vp, [cx, cy + g.size[1] / 2, cz]);
+    const ax = x[0] - center[0], ay = x[1] - center[1];
+    const bx = y[0] - center[0], by = y[1] - center[1];
+    const xx = ax * ax + bx * bx, yy = ay * ay + by * by, xy = ax * ay + bx * by;
+    const delta = Math.hypot(xx - yy, 2 * xy);
+    const rx = Math.sqrt(Math.max(0, (xx + yy + delta) / 2)) * 1.05;
+    const ry = Math.sqrt(Math.max(0, (xx + yy - delta) / 2)) * 1.05;
+    const angle = Math.atan2(2 * xy, xx - yy) * 90 / Math.PI;
+    this.halo.removeAttribute('display');
+    this.halo.setAttribute('cx', center[0].toFixed(1));
+    this.halo.setAttribute('cy', center[1].toFixed(1));
+    this.halo.setAttribute('rx', rx.toFixed(1));
+    this.halo.setAttribute('ry', ry.toFixed(1));
+    this.halo.setAttribute('transform', `rotate(${angle} ${center[0]} ${center[1]})`);
     this.painter.paintHalo(this.halo);
   }
 
@@ -305,10 +309,11 @@ export class FigureEngine {
 
   prev(): void { if (this.beat > 0) this.go(this.beat - 1, false); }
   replay(): void { this.go(this.beat, true); }
-  restart(): void { this.go(0, false); }
+  restart(): void { this.resetView(); this.go(0, false); }
 
   /** Buttons: rotate ±deg and tilt ±deg around the target camera. */
   nudge(dAzimuthDeg: number, dElevationDeg: number): void {
+    if (this.scene.viewMode === 'flat') return;
     this.off.az.target += deg(dAzimuthDeg);
     this.off.el.target += deg(dElevationDeg);
     this.schedule();
@@ -321,6 +326,7 @@ export class FigureEngine {
   }
 
   dragDelta(dxPx: number): void {
+    if (this.scene.viewMode === 'flat') return;
     this.off.az.target += dxPx * deg(0.45);
     this.schedule();
   }

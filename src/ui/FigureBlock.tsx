@@ -21,7 +21,7 @@ interface Props {
 
 type RuntimeComponent = (props: { scene: any; spec: FigureSpec; style?: string | null; initialBeat?: number }) => JSX.Element;
 
-export function FigureBlock({ spec, figureIndex, style, initialBeat }: Props) {
+export function FigureBlock({ spec, style, initialBeat }: Props) {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [parts, setParts] = useState<{ Runtime: RuntimeComponent; scene: any } | null>(null);
   useEffect(() => {
@@ -40,10 +40,9 @@ export function FigureBlock({ spec, figureIndex, style, initialBeat }: Props) {
   return (
     <figure class="figure-card">
       <div class="figure-head">
-        <strong>Abb. {figureIndex} · {spec.title}</strong>
+        <strong>{spec.title}</strong>
         <MathMarkup html={spec.caption} inline />
       </div>
-      <p class="figure-hint">{spec.hint}</p>
       {status === 'loading' ? <p role="status">Figur wird geladen.</p> : null}
       {status === 'error' ? <p role="alert">Die Figur konnte nicht geladen werden.</p> : null}
       {status === 'ready' && parts ? <parts.Runtime scene={parts.scene} spec={spec} style={style} initialBeat={initialBeat} /> : null}

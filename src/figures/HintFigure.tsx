@@ -23,7 +23,7 @@ export default function HintFigure({ entry, instance, onHide }: { entry: HintEnt
     return () => { live = false; };
   }, [entry, instance]);
   return <figure class="figure-card figure-hint-card">
-    <figcaption class="figure-head"><strong>Hinweis · Abb. · {loaded?.spec.title ?? 'Spalten als Zutaten'}</strong></figcaption>
+    <figcaption class="figure-head"><strong>Hinweis · {loaded?.spec.title ?? 'Spalten als Zutaten'}</strong></figcaption>
     {error ? <p role="alert">Die Hinweisfigur konnte nicht geladen werden. Der Texthinweis bleibt verfügbar.</p> : null}
     {loaded ? <>
       {entry.source === 'neighbor' ? <p class="figure-hint">{loaded.spec.caption}</p> : null}

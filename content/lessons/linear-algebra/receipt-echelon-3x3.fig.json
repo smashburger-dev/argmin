@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "receipt-echelon-3x3",
+  "title": "Drei Bedingungen, drei Lösungsfälle",
+  "caption": "Entscheidend sind die Pivots und die vollständige letzte Zeile.",
+  "hint": "Pfeiltasten wechseln den Schritt.",
+  "params": {
+    "contradiction": 5
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Drei Bedingungen stehen als Zeilen einer erweiterten Matrix. Die Spalten gehören zu x, y, z und der rechten Seite b."
+    },
+    {
+      "id": "step-1",
+      "caption": "Ein Pivot in jeder Variablenspalte bindet alle drei Variablen. Es bleibt genau eine Lösung."
+    },
+    {
+      "id": "step-2",
+      "caption": "Eine letzte Zeile ohne Bedingung lässt eine Variable frei. Zähle die Pivots."
+    },
+    {
+      "id": "step-3",
+      "caption": "Eine Nullzeile links mit einem Betrag rechts verlangt Unmögliches."
+    }
+  ],
+  "predict": {
+    "beat": "step-2",
+    "prompt": "Die letzte Zeile lautet 0 = 0. Wie viele Pivots bleiben im gezeigten System?",
+    "input": "numeric",
+    "expected": 2,
+    "tolerance": 0.000001,
+    "hints": [
+      "Zähle nur Zeilen mit einem von null verschiedenen Koeffizienten."
+    ],
+    "typicalErrors": [
+      {
+        "match": 3,
+        "feedback": "Die Nullzeile hat keinen Pivot. Eine Variable bleibt frei."
+      }
+    ]
+  }
+}
