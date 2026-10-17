@@ -35,3 +35,7 @@ Siehe Recherche §4: JSXGraph (nur 2D), Motion, GSAP (Lizenz), Lottie (`eval`), 
 - Jede Szene ist ein eigener Lazy-Chunk, das Kit ein gemeinsamer; Ziele: Szene unter 12 kB gzip, Kit unter 10 kB gzip, Frame-Skriptzeit unter 4 ms bei vierfacher CPU-Drosselung. Gemessen in S1 (`docs/session-2026-10-17-figuren-s1.md`): Szene 9,4 kB, Laufzeit mit vier Stilen 12,6 kB, Frame-Skriptzeit 6,4 bis 7,2 ms beim Abspielen und 9,9 bis 12,3 ms beim Ziehen und bei der Kamerafahrt. Das Budget ist offen.
 - Weil jeder Frame eine reine Funktion von Parametern, Beat, Zeit und Kamera ist, kann ganglion dieselbe Szene ohne Umbau als Video aufnehmen.
 - JSXGraph bleibt, bis die letzte `.viz.json` ersetzt ist; Ersetzungen übernehmen den Checkpoint wörtlich.
+
+## Prüfstrategie nach dem S3-Review, 17.10.2026
+
+Noas aktuelle Regel ersetzt die automatische Testpflicht pro Szene oder neuem Asset: standardmäßig keine neuen figurspezifischen Tests und Snapshot-Sammlungen. Vorhandene Löser, Compiler und Messwerkzeuge verwenden, die entscheidenden Zustände selbst im Browser ansehen und Shrink Complexity anwenden. Neue dauerhafte Tests nur auf ausdrücklichen Auftrag. Bestehende Projekt- und Release-Gates bleiben am passenden Integrationspunkt; ihre Ausführung wird nicht nach jedem visuellen Eingriff wiederholt. Einzelheiten: docs/figuren-design-und-assets.md und Skill werkbank-figuren.

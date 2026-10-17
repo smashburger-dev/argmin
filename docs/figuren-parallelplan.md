@@ -1,5 +1,8 @@
 # Figuren: Verfeinerungen und Parallelplan
 
+Aktuelle Prüfregel aus Noas S3-Review (17.10.2026): Keine neuen figurspezifischen Tests oder Snapshot-Sammlungen standardmäßig anlegen, auch nicht automatisch für neue Assets. Frühere entsprechende Pflichten dieses Plans sind aufgehoben. Vorhandene Löser, Compiler und Messwerkzeuge verwenden; Browser-Sichtung und Shrink Complexity bleiben. Neue dauerhafte Tests nur auf ausdrücklichen Auftrag. Siehe Skill werkbank-figuren und docs/figuren-design-und-assets.md.
+
+
 Stand 17.10.2026, Basis `feature/figuren-s1` bei `7770f79`. Ergänzt `docs/figuren-sessionplan.md` und den Skill `werkbank-figuren`. Bei Widerspruch gilt: Skill, dann dieses Dokument, dann Sessionplan.
 
 ## Teil A: Verfeinerungen (Entscheidungen mit Standardwert)

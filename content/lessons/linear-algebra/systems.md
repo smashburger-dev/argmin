@@ -17,3 +17,5 @@ Eine Portion Hafer und zwei Portionen Beerenmix ergeben $1 \cdot (2,1) + 2 \cdot
 Das macht auch die Lösungsfälle anschaulich. Liefern die Zutaten dasselbe Verhältnis, etwa (2, 1) und (4, 2), ist die zweite nur eine doppelte Portion der ersten. Dann entscheidet das Ziel: Liegt es nicht auf dieser Linie, etwa (4, 5), gibt es **keine Lösung**. Liegt es darauf, etwa (4, 2), gibt es **unendlich viele** Mischungen: zwei Portionen Hafer, eine Portion der zweiten Zutat oder jede Kombination mit $x_1 + 2x_2 = 2$.
 
 Wo der Vergleich hinkt: Portionszahlen im Mixer sind nie negativ. Mathematisch darf $x_i$ negativ sein, und ein „negativer Löffel Hafer“ hat keine Küchenbedeutung, löst aber trotzdem das System.
+
+Die nächste Figur wechselt zu einem abstrakten System mit den Spalten $(2,-1)$ und $(1,2)$ und dem Ziel $b=(3,-1)$. Ihre Achsen zeigen Komponenten statt Nährwerte. Im Zeilenbild lauten dieselben Bedingungen $2x_1+x_2=3$ und $-x_1+2x_2=-1$.

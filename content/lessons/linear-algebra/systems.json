@@ -12,9 +12,8 @@
     { "blockId": "linalg-systems-core", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems.md" },
     { "blockId": "systems-smoothie-figure", "type": "figure", "contentRef": "lessons/linear-algebra/smoothie.fig.json" },
     { "blockId": "linalg-systems-matrix", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems-matrix.md" },
-    { "blockId": "systems-viz", "type": "visualization", "contentRef": "lessons/linear-algebra/two-lines.viz.json" },
+    { "blockId": "systems-viz", "type": "figure", "contentRef": "lessons/linear-algebra/smoothie-row-and-column.fig.json" },
     { "blockId": "systems-solution-cases", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems-solution-cases.md" },
-    { "blockId": "systems-solution-cases-viz", "type": "visualization", "contentRef": "lessons/linear-algebra/solution-cases.viz.json" },
     { "blockId": "systems-close", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems-close.md" }
   ],
   "sourceRefs": [

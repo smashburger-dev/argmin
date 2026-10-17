@@ -1,0 +1,140 @@
+{
+  "date": "2026-10-17",
+  "gates": [
+    {
+      "command": "node tools/compile_content.mjs",
+      "exit": 0,
+      "seconds": 1,
+      "summary": []
+    },
+    {
+      "command": "node tools/validate_content.mjs",
+      "exit": 0,
+      "seconds": 1,
+      "summary": []
+    },
+    {
+      "command": "npm run coverage:check",
+      "exit": 0,
+      "seconds": 1,
+      "summary": []
+    },
+    {
+      "command": "npm run typecheck",
+      "exit": 0,
+      "seconds": 2,
+      "summary": []
+    },
+    {
+      "command": "npm run build:release",
+      "exit": 0,
+      "seconds": 5,
+      "summary": []
+    },
+    {
+      "command": "node tools/build_public.mjs",
+      "exit": 0,
+      "seconds": 1,
+      "summary": []
+    },
+    {
+      "command": "node tools/validate_content.mjs --dir build-next",
+      "exit": 0,
+      "seconds": 0,
+      "summary": []
+    },
+    {
+      "command": "node --test tests/",
+      "exit": 1,
+      "seconds": 43,
+      "summary": [
+        "✖ visualization bundle contains 27 unique, lesson-linked specifications (0.97925ms)",
+        "✖ linear-algebra/gauss.md: letzter Abschnitt ist die Begriffsliste (0.13775ms)",
+        "ℹ tests 2260",
+        "ℹ pass 2258",
+        "ℹ fail 2",
+        "ℹ skipped 0",
+        "✖ failing tests:",
+        "✖ visualization bundle contains 27 unique, lesson-linked specifications (0.97925ms)",
+        "  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+        "✖ linear-algebra/gauss.md: letzter Abschnitt ist die Begriffsliste (0.13775ms)"
+      ]
+    },
+    {
+      "command": "npm run test:project-runner",
+      "exit": 0,
+      "seconds": 0,
+      "summary": [
+        "Ran 20 tests in 0.077s"
+      ]
+    },
+    {
+      "command": "~/.bun/bin/bun lint -f agent --rule 'complexity: [error, 10]' assets/js/figures/kit/cube-plane.mjs assets/js/figures/kit/rational-rows.mjs assets/js/figures/kit/space-sheet.mjs assets/js/figures/objects/*.mjs assets/js/figures/scenes/smoothie-row-and-column.mjs assets/js/figures/scenes/solution-cases-3d.mjs assets/js/figures/scenes/span-carpet.mjs assets/js/figures/scenes/receipt-elimination.mjs assets/js/figures/scenes/receipt-echelon-3x3.mjs tests/figures_f3f4.test.mjs tests/e2e/figures-f3f4.spec.ts",
+      "exit": 0,
+      "seconds": 0,
+      "summary": []
+    },
+    {
+      "command": "E2E_PORT=4402 E2E_REUSE_SERVER=1 npm run test:e2e -- --workers=3",
+      "exit": 1,
+      "seconds": 52,
+      "summary": [
+        "    Error: locator.click: Error: strict mode violation: getByRole('button', { name: 'Weiter', exact: true }) resolved to 2 elements:",
+        "    Error: locator.tap: Error: strict mode violation: getByRole('button', { name: 'Weiter', exact: true }) resolved to 2 elements:",
+        "  2 failed",
+        "  31 skipped",
+        "  100 passed (49.8s)"
+      ]
+    },
+    {
+      "command": "E2E_PORT=4497 npm run test:e2e:build -- --workers=3",
+      "exit": 1,
+      "seconds": 48,
+      "summary": [
+        "    Error: expect(received).toEqual(expected) // deep equality",
+        "    - Expected  -  1",
+        "    + Received  + 58",
+        "    +             \"message\": \"Element has insufficient color contrast of 4.22 (foreground color: #d9cdf4, background color: #6d3fd4, font size: 11.3pt (15px), font weight: normal). Expected contrast ratio of 4.5:1\",",
+        "    +   Element has insufficient color contrast of 4.22 (foreground color: #d9cdf4, background color: #6d3fd4, font size: 11.3pt (15px), font weight: normal). Expected contrast ratio of 4.5:1\",",
+        "    Error: locator.click: Error: strict mode violation: getByRole('button', { name: 'Weiter', exact: true }) resolved to 2 elements:",
+        "    Error: locator.tap: Error: strict mode violation: getByRole('button', { name: 'Weiter', exact: true }) resolved to 2 elements:",
+        "  3 failed",
+        "  32 skipped",
+        "  98 passed (41.9s)"
+      ]
+    }
+  ],
+  "notes": [
+    "Das vollständige Gate wurde einmal ausgeführt. Anschließend wurde die neue S3-Testsuite auf Noas ausdrücklichen Wunsch entfernt. Es verbleiben keine neuen figurspezifischen Testdateien oder Snapshot-Sammlungen.",
+    "Der eigene Gliederungsfehler im Gauß-Text wurde danach korrigiert; bestehende lesson_style-Prüfung 580/580 grün, Compiler, Validierung, Release-Build und Skill-Validator erneut grün.",
+    "Der unabhängige Wiederholungslauf des vorhandenen Tour-A11y-Tests bestätigt den fremden Button-Kontrastfehler.",
+    "Offen im fremden Besitz: starre 27-viz-Assertion, zwei globale Weiter-Selektoren sowie Kontrast von Tour starten."
+  ],
+  "followup": [
+    {
+      "command": "node --test tests/lesson_style.test.mjs",
+      "exit": 0,
+      "passed": 580
+    },
+    {
+      "command": "node tools/compile_content.mjs",
+      "exit": 0
+    },
+    {
+      "command": "node tools/validate_content.mjs",
+      "exit": 0
+    },
+    {
+      "command": "quick_validate.py .devin/skills/werkbank-figuren",
+      "exit": 0
+    },
+    {
+      "command": "npm run build:release",
+      "exit": 0
+    },
+    {
+      "command": "PLAYWRIGHT_PREVIEW=1 E2E_PORT=4497 npx playwright test tests/e2e/dialog-a11y.spec.ts --project=chromium --grep tour --workers=1",
+      "exit": 1
+    }
+  ]
+}

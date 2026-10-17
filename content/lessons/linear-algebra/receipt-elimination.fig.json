@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "engine": "argmin-figure",
+  "scene": "receipt-elimination",
+  "title": "Kassenzettel abziehen",
+  "caption": "Die Zeilenoperation verändert jede Position einschließlich des Betrags.",
+  "hint": "Pfeiltasten wechseln den Schritt. Ansicht zurücksetzen stellt die frontale Darstellung wieder her.",
+  "params": {
+    "lambda": -1
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Jeder Zettel ist eine Bedingung. Kaffee, Croissant und Betrag gehören immer zur selben Zeile."
+    },
+    {
+      "id": "step-1",
+      "caption": "Verdopple den zweiten Zettel. Jeder Posten und der Betrag müssen denselben Faktor bekommen."
+    },
+    {
+      "id": "step-2",
+      "caption": "Ziehe den ersten Zettel vom Doppelten ab. Prüfe auch den Betrag rechts vom Strich."
+    },
+    {
+      "id": "step-3",
+      "caption": "Übertrage auf zwei Geraden: Zeilenoperationen verändern ihren Schnittpunkt nicht."
+    },
+    {
+      "id": "step-4",
+      "caption": "Setze rückwärts ein. Der Kaffeepreis ergänzt die umgeformten Zettel."
+    },
+    {
+      "id": "step-5",
+      "caption": "Wo der Vergleich hinkt: Negative Posten sind auf einem echten Kassenzettel keine verkaufte Ware."
+    }
+  ],
+  "predict": {
+    "beat": "step-3",
+    "prompt": "Setze λ = −1 (Zeile 2′ wird zu y = 1,5x + 2). Welche y-Koordinate hat der Schnittpunkt mit Zeile 1 (y = x + 1)?",
+    "input": "numeric",
+    "expected": -1,
+    "tolerance": 0.000001,
+    "hints": [
+      "Setze x + 1 = 1,5x + 2 und löse nach x — oder nutze, dass Zeilenoperationen die Lösung nicht verändern."
+    ],
+    "typicalErrors": [
+      {
+        "match": 2,
+        "feedback": "Das ist der y-Achsenabschnitt von Zeile 2′ (bei x = 0), nicht der Schnittpunkt mit Zeile 1."
+      },
+      {
+        "match": 3,
+        "feedback": "Vorzeichenfehler beim Umstellen: x + 1 = 1,5x + 2 ergibt x = −2, nicht x = 2."
+      }
+    ]
+  }
+}

@@ -1,5 +1,8 @@
 # Figuren: Sessionplan S2 bis S9
 
+Aktuelle Prüfregel aus Noas S3-Review (17.10.2026): Keine neuen figurspezifischen Tests oder Snapshot-Sammlungen standardmäßig anlegen, auch nicht automatisch für neue Assets. Frühere entsprechende Pflichten dieses Plans sind aufgehoben. Vorhandene Löser, Compiler und Messwerkzeuge verwenden; Browser-Sichtung und Shrink Complexity bleiben. Neue dauerhafte Tests nur auf ausdrücklichen Auftrag. Siehe Skill werkbank-figuren und docs/figuren-design-und-assets.md.
+
+
 Stand 17.10.2026. Stil ist entschieden: A1 Tonale Werkbank als gemeinsame Bildsprache; jede Familie baut ihre eigene Welt aus dem Bühnenkatalog (Skill, Abschnitt 3a), nicht die Werkbank der Smoothie-Szene. Jede Session beginnt mit dem Skill `werkbank-figuren` (`.devin/skills/werkbank-figuren/SKILL.md`) und liest dann ihren Abschnitt hier plus den passenden Abschnitt in `docs/figuren-familienplan.md`. Eine Session baut genau eine Familie (oder die Engine-Arbeit von S2) und endet mit grünem Gate, Kontaktbogen und lokalem Commit. Kein Push, keine Löschung alter `.viz.json` ohne Noas Freigabe.
 
 ## Regeln für jede Session

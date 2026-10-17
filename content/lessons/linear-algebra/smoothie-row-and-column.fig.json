@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "engine": "argmin-figure",
+  "scene": "smoothie-row-and-column",
+  "title": "Zeilen und Spalten",
+  "caption": "Dieselbe Mischung als Pfeilsumme und als Schnittpunkt.",
+  "hint": "Pfeiltasten wechseln den Schritt. Ansicht zurücksetzen stellt die frontale Darstellung wieder her.",
+  "params": {
+    "c1": 3,
+    "c2": -1
+  },
+  "beats": [
+    {
+      "id": "conditions",
+      "caption": "Zwei abstrakte Spaltenvektoren und ein Ziel. Die Achsen zeigen die beiden Komponenten, keine Nährwerte."
+    },
+    {
+      "id": "point",
+      "caption": "Eine Portion von jeder Zutat verfehlt das Ziel. Der Mischversuch trifft zu hoch."
+    },
+    {
+      "id": "predict",
+      "caption": "Bestimme die erste Portionszahl für den Treffer. Nutze die Bedingungen aus der Frage."
+    },
+    {
+      "id": "intersection",
+      "caption": "Die korrigierte Pfeilkette trifft das Ziel. Beachte den deutlich kleineren zweiten Beitrag."
+    },
+    {
+      "id": "reading",
+      "caption": "Wechsle ins Zeilenbild: Derselbe Lösungsvektor ist hier der Schnittpunkt der beiden Bedingungen."
+    },
+    {
+      "id": "limits",
+      "caption": "Wo der Vergleich hinkt: Für ein anderes Ziel wird eine Portion negativ. Der Spaltenpfeil kehrt seine Richtung um."
+    }
+  ],
+  "predict": {
+    "beat": "predict",
+    "prompt": "Setze c₁ = 3 und c₂ = −1. Welche x-Koordinate hat der Schnittpunkt der beiden Geraden?",
+    "input": "numeric",
+    "expected": 1.4,
+    "tolerance": 0.000001,
+    "hints": [
+      "Setze die Geradengleichungen gleich: c₁ − 2x = (c₂ + x)/2 und löse nach x auf."
+    ],
+    "typicalErrors": [
+      {
+        "match": 0.2,
+        "feedback": "Das ist die y-Koordinate des Schnittpunkts — gefragt ist x."
+      },
+      {
+        "match": -1.4,
+        "feedback": "Vorzeichenfehler: 2c₁ − c₂ = 6 − (−1) = 7, geteilt durch 5."
+      }
+    ]
+  }
+}

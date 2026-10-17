@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "engine": "argmin-figure",
+  "scene": "span-carpet",
+  "title": "Wegweiser und Spannfläche",
+  "caption": "Eine neue Richtung spannt Fläche auf. Eine abhängige Richtung tut das nicht.",
+  "hint": "Pfeiltasten wechseln den Schritt. Ansicht zurücksetzen stellt die frontale Darstellung wieder her.",
+  "params": {
+    "k": -1,
+    "s": 1.5
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die beiden Richtungen stammen aus dem Lektionsbeispiel. Jede bringt eine neue Richtung in die Ebene."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die Fliesen zeigen die Fläche des Lektionsbeispiels. Übertrage das Flächenmaß auf das Vektorpaar in der Frage."
+    },
+    {
+      "id": "step-2",
+      "caption": "Die zweite Richtung wird zum halben ersten Vektor. Alle Fliesen klappen zur Linie zusammen: Die Fläche ist null."
+    }
+  ],
+  "predict": {
+    "beat": "step-1",
+    "prompt": "Setze k = −1 und s = 1,5. Welchen Wert hat det(u, v) mit u = (2, 1) und v = (2k, k+s)?",
+    "input": "numeric",
+    "expected": 3,
+    "tolerance": 0.000001,
+    "hints": [
+      "det(u,v) = u₁·v₂ − u₂·v₁ = 2·(k+s) − 1·2k — erst vereinfachen, dann einsetzen."
+    ],
+    "typicalErrors": [
+      {
+        "match": -3,
+        "feedback": "Vorzeichen vertauscht: det(u,v) = u₁v₂ − u₂v₁, nicht umgekehrt."
+      },
+      {
+        "match": 1,
+        "feedback": "Das ist nur 2·(k+s) — der zweite Term −u₂·v₁ = −1·2k fehlt noch."
+      }
+    ]
+  }
+}

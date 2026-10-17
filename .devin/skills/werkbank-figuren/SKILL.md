@@ -12,10 +12,14 @@ Verbindlich für jede Figuren-Session in argmin. Quellen: ADR `docs/adr/0018-fig
 - Wähle zuerst die Darstellungsform am konkreten Beispiel: statischer Vergleich, direkte Objektinteraktion, Erkunden eines Parameters oder ein Ablauf in Beats. Sequenz, Vorhersage, Kamerafahrt und Textfläche sind Werkzeuge mit einem Zweck, keine gemeinsame Pflichtausstattung. Nutze nur bereits implementierte Figurenarten; fehlt ein sinnvoller Vertrag, beschreibe ihn als Anfrage statt das Beispiel in Beats zu zwingen.
 - „Werkbank“ ist der Name des Kits. Die Smoothie-Szene begründet keine allgemeinen Vorgaben für Bühne oder Interaktion. Der Bühnenkatalog (Abschnitt 3a) gibt den Familien eine Ausgangswelt. Passe Ausschnitt, Teile und Interaktion an die jeweilige Lektion und das konkrete Beispiel an; Abweichungen vom Sessionauftrag stehen im Digest.
 - Entwirf Lektion und Figur zusammen: Die vorhandene Lektüre erklärt Begriff und Rechnung; die Figur zeigt den Mechanismus und seine Veränderung. Lies vor dem Bau den Text direkt vor und nach der Figur. Ergänze Text nur für einen fehlenden Bezug zwischen Lektüre und Darstellung.
+- Wähle das gezeigte Beispiel zuerst nach diesem Lektionskontext und seiner grafischen Eignung. Ein übernommener Checkpoint muss im Modell geprüft sein, ist aber kein vorgeschriebenes Hauptmotiv. Wird er zur Übertragungsfrage an einem anderen Vektorpaar, mache den Wechsel in der Frage oder Beat-Beschriftung erkennbar, ohne den alten Checkpoint umzuschreiben.
 - Wähle den Inhalt der Bühne nach dem Vorgang. Beschriftungen, Zahlen und Formeln gehören hinein, wenn sie am Gegenstand etwas ablesbar machen, etwa Zellwerte, Posten oder eine Code-Zeile. Eine vollständige Erklärung oder zusätzliche Textfläche ist keine Pflicht. Ein Beat „Wo der Vergleich hinkt“ zeigt die Grenze am Gegenstand; der Lektionsabsatz kann sie erklären.
 - Halte den Gegenstand im Blick. Eine Kamerafahrt verdient ihren Platz durch eine neue räumliche Einsicht oder ein notwendiges Detail. Ein bloßer Wechsel vom Gegenstand auf Erklärungstext ist kein Fortschritt des Vorgangs. Tafel und Lesefläche im Bühnenkatalog sind Möglichkeiten, keine Pflichtbausteine.
 - Bewegung nur, wo sich im Gegenstand etwas ändert. Keine Deko-Bewegung, keine Requisiten. Jedes Teil gehört zum Mechanismus (Schublade mit Griff ja, Orange auf der Bank nein).
+- Baue jede Szene aus den Teilen auf, die ihr eigener Mechanismus braucht. Wiederverwendung betrifft gezielte Primitive und fachlich gleiche Objekte; ein Import einer anderen vollständigen Szene braucht einen konkreten fachlichen Grund. Prüfe die erzeugte Item-Liste auf fremde Requisiten, versteckte Alt-Geometrie und unnötige Tiefensortierung.
 - Jede Zahl, Länge, Höhe und Position kommt aus `model` und `pose`. Keine Zahl wird in die Darstellung getippt.
+
+Konkrete Entwurfs- und Remix-Regeln: `docs/figuren-design-und-assets.md`. Vor Detailgeometrie eine kleine Ansicht von Anfang, entscheidender Änderung und Ergebnis prüfen. Im Digest Lernfrage, vorhandene Lektüre, gewählte Darstellung, nötige Teile und mobile Lesbarkeit festhalten. Analogie und Lektionsbeispiel dürfen zugunsten der verständlicheren Darstellung angepasst werden; geschützte Checkpoints bleiben unverändert.
 
 ## 2. Stil A1 Tonale Werkbank (Noas Wahl, 17.10.2026)
 
@@ -39,11 +43,16 @@ Regeln:
 - Glatte Flächen (Zylindermantel, runde Kanten) ohne Kantenstrich, mit Strich in Füllfarbe gegen Antialias-Nähte; Silhouette je Teil als ein Umriss.
 - Akzent nie für Struktur, Glas oder Flüssigkeit. Ein beleuchtetes Etikett bekommt Akzent-Text und 1 px Akzent-Umriss auf glatter Platte, keine violette Fläche.
 - Farbe nie allein: der Akzent-Teil hat immer auch Form, Position oder Beschriftung.
+- Text und Trägerfläche als Kontrastpaar behandeln. Auf Objekten gesetzter Text muss in hell und dunkel mindestens 4,5:1 zur tatsächlichen gerenderten Fläche erreichen, einschließlich Schattierung, Deckkraft und Akzentzuständen. Seitenkontrast oder ein passender Tokenname genügt nicht. Für lesbare Werte bei Bedarf eine ungeschattete Lesefläche verwenden. Asset-Karten nennen dieses Paar und den Kontrastprüfung; Beschriftungen nicht als farblich unveränderbare Bitmap einbacken.
 - Halo unter dem Korpus: Ellipse durch die projizierte Grundfläche mal 1,05, weich, dezent.
 
 ## 3. Komposition und Kamera (für jede Welt)
 
 - Der Gegenstand füllt in der Übersicht etwa 60 % der Bühne. Kein Sockel, keine Beine, kein Boden, der mehr Fläche frisst als der Gegenstand.
+- Arbeitswerte bei kleinster Bühne: 16 px äußerer Freiraum, 12 px zwischen unabhängigen Gruppen, 8 px Abstand einer Beschriftung zu fremden Zeichen oder Objekten. Fachlich nötige Kreuzungen ausnehmen und begründen. Alle Zwischenzustände prüfen. Bei Platzmangel zuerst vereinfachen, gruppieren oder Zustände trennen.
+- Plane freien Raum zwischen Formen und um Beschriftungen bereits vor der Detailgeometrie. Prüfe die Komposition bei 343 px: Hauptform, mathematisch nötige Überlagerungen und einzelne Beschriftungen müssen getrennt lesbar bleiben. Eine ganze Figur kleiner zu skalieren schafft keine Ordnung in einem überladenen Gegenstand. Entferne zuerst unnötige Konturen und Teile; wähle eine 2D-Ansicht, wenn Tiefe hier nichts erklärt.
+- Geometrische Diagramme behalten ihre Winkel und Maßstäbe. Prüfe vor Details die Projektion und die tatsächliche Pixelgröße des Hauptmotivs. Vermeide eine flache Raumkamera für eine ebene Flächenaussage; zwei Diagramme gehören nur nebeneinander, wenn beide auf dem Handy gut lesbar bleiben. Sonst die Darstellung vergrößern oder zwischen klar bezeichneten Zuständen wechseln.
+- Sichtbare Kanten tragen Bedeutung: Objektgrenze, Datengrenze oder erklärte Hilfslinie. Interne Mesh-Teilungen und Tiefensortier-Zellen dürfen nicht unbeabsichtigt wie mathematische Unterteilungen aussehen. Prüfe durchgehende Konturen beim Drehen; fehlende oder zusätzliche Kanten sind kein Stilmittel, solange das Modell sie nicht begründet.
 - Kamera nach Gegenstand: Iso (Azimut 35 bis 60°, Elevation 30°) für Objekte; Draufsicht (Elevation 70 bis 90°) für Karten, Felder, Graphen; tiefe Elevation (10 bis 20°) für Landschaften und Flächen; frontal (0°, 0°) für Leseflächen und rein zweidimensionale Diagramme. Eine Szene darf mehrere Presets je Beat haben.
 - Falls eine Lesefläche für den Vorgang gebraucht wird: freie Sicht aus den Statics prüfen; beim Lesen kleinster Text mindestens 14 px bei 343 px Bühnenbreite. Eine reine Textvergrößerung rechtfertigt keinen eigenen Beat.
 - Bühne 4:3 ab 560 px Kartenbreite, sonst 1:1. Lange Welten (Fließband) dürfen 16:9 sein und fahren mit der Kamera entlang.
@@ -82,7 +91,7 @@ Was nie variiert: Akzentregel, Lesbarkeit (14 px), Tastatur- und Touch-Bedienung
 - Gitter mit quadratischen Zellen (Winkel bleiben wahr), Bereich deckt Ursprung, alle Ziele und Zwischenpunkte.
 - Tick-Beschriftung außerhalb des Gitters; die unterste y-Linie bekommt keine Zahl, wenn die x-Reihe dort beginnt. Gitter Ton lo 0,12, Achsen Ton mid 0,26.
 - Pfeil: Schaft 0,32, Kopflänge min(1,1, 0,35 · Länge), Spitze exakt auf dem Ziel. Beschriftung nur Vektorname, Koeffizient nur bei Bruch oder Geist.
-- Kein Text überlappt Text, Pfeilkopf, Ring oder Tick (Ebenen-Test plus DOM-Rechteck-Test unter 2 px²).
+- Kein Text überlappt Text, Pfeilkopf, Ring oder Tick (Sichtprüfung bei tatsächlicher Zielgröße; bei Bedarf einmalig per DOM-Rechteck-Messung prüfen).
 - Formeln als SVG-Textläufe `{ text, italic?, sub?: string, sup?: string }`, `sub` ist der Indextext. Mathe in `KaTeX_Main` / `KaTeX_Math`, Beschriftungen in var(--sans). Kein KaTeX in `foreignObject` (WebKit-Bug 23113).
 
 ## 5. Bedienung von Beats (gleich auf Handy und Desktop)
@@ -103,13 +112,18 @@ Exporte: `id`, `beatIds`, `validateParams`, `model`, `beatDuration`, `pose`, `bu
 
 ## 7. Arbeitsablauf einer Familien-Session
 
-1. Familienplan und angrenzenden Lektionstext lesen, Löser der Aufgabenfamilie finden und die Darstellungsform wählen. Bei Beats für jeden Schritt benennen: Was verändert sich sichtbar am Gegenstand, und welche Einsicht entsteht daraus? Bewegungslose Beats sind für Vorhersage, Vergleich oder bewusstes Betrachten möglich. Der Kontaktbogen muss die inhaltlichen Zustandsänderungen erkennen lassen, auch ohne Kamerafahrt.
-2. Modell und Pose mit Node-Tests zuerst, dann `build`, dann `.fig.json`.
-3. Pflichttests je Szene: Zahlen gegen Löser, Stetigkeit, stabile Topologie, `paintOrderErrors` 0 über Azimut 0 bis 355 in 5°-Schritten bei 15, 30, 50° Elevation und allen eigenen Kameras, Etiketten-Überlappung, Lecksperre im Hinweismodus, Compile-Regeln. Bei Leseflächen zusätzlich freie Sicht und 14 px Text prüfen.
-4. E2E: Füll- und Pixel-Wächter (`tests/e2e/figures.spec.ts`) für die neue Szene ergänzen.
-5. Kontaktbogen erzeugen und die PNGs selbst öffnen und ansehen. DOM-Prüfungen ersetzen das Ansehen nicht: Drahtgitter, deckendes Glas und verdeckte Tafeln haben DOM-Tests in S1 bestanden.
-6. Frame-Zeit messen (unten), Chunk-Größe messen.
-7. Ersetzte `.viz.json`: Checkpoint wörtlich übernehmen; die alte Datei erst nach Noas Freigabe löschen.
+Noas Regel aus dem S3-Review, 17.10.2026: **Keine neuen figurspezifischen Tests oder Snapshot-Sammlungen standardmäßig schreiben.** Das gilt für Szenen, Sequenzen und neu zusammengestellte Assets. Die frühere Pflicht zu einer Testdatei pro Szene oder Kit-Erweiterung ist damit aufgehoben. Neue dauerhafte Tests nur auf ausdrücklichen Auftrag. Bereits vorhandene Projektprüfungen und Referenzlöser weiterverwenden.
+
+1. Familienplan und angrenzenden Lektionstext lesen. Lernfrage, geeignete Darstellung und nötige Teile festlegen. Erst eine einfache mobile Ansicht der entscheidenden Zustände prüfen, dann Details bauen.
+2. Zahlen mit vorhandenem Referenzlöser oder einer unabhängigen direkten Rechnung vergleichen; Compiler für den Szenenvertrag und übernommene Checkpoints verwenden. Kein zweites Modell im Testcode nachbauen.
+3. Die Figur selbst im Browser bedienen: entscheidende Zustände, Zwischenzustände, kleinste Zielgröße, hell/dunkel, Tastatur und Touch ansehen. Proportionen, Freiraum, Kantenbedeutung und Text auf Materialflächen ausdrücklich beurteilen. Bei Bedarf einmalig Messwerkzeuge für Kontrast, Überlappung oder Tiefe verwenden; dafür keine neue permanente Testsuite anlegen.
+4. Kontaktbogen und notwendige Einzelbilder selbst ansehen. Sie sind Review-Artefakte, keine automatisch zu aktualisierenden Snapshot-Assertions. Vorhandene generische Messwerkzeuge für Frame-Zeit und Chunk-Größe nutzen, soweit der Auftrag dies verlangt.
+5. Shrink Complexity auf den geänderten Code anwenden. Ergebnisse und Grenzen im Digest festhalten. Rückmeldungen von Noa gezielt korrigieren; die eigene visuelle Qualitätskontrolle nicht an Noa abgeben.
+6. Ersetzte .viz.json: Checkpoint wörtlich übernehmen; die alte Datei erst nach Noas Freigabe löschen.
+
+## 7a. Assets und Remixe
+
+Gezielte Objekte und Verfahren wiederverwenden, vollständige Szenen als Kompositionsbeispiele behandeln. Ein Asset bekommt eine Karte mit Zweck, Eingaben/Einheiten, Einsatzgrenzen, Labels/Rändern, unterstützter Elementzahl und Kameras, Referenzbildern, Prüfnachweis und Status. „Experimentell“, „visuell geprüft“ und „von Noa freigegeben“ unterscheiden. Der S3-Katalog `docs/figuren-s3/assets.md` zeigt das Format. Bei einem Remix Auswahl der Teile und Eignung für die neue Lektion erneut prüfen; geänderte Datenbereiche, Projektionen und Elementzahlen brauchen neue mobile Referenzansichten. Keine pauschale Übernahme von Bühne oder Perspektive.
 
 ## 8. Budgets und Messung
 
@@ -122,7 +136,7 @@ Exporte: `id`, `beatIds`, `validateParams`, `model`, `beatDuration`, `pose`, `bu
 - Requisiten statt Mechanismus; Tafel in der Frontalansicht verdeckt; Beine, die 40 % der Höhe fressen.
 - `sub` als Schalter statt als Indextext; zu große Pfeilköpfe; Ringe größer als eine Zelle.
 - Malreihenfolge nur nach Schwerpunkt (Kistenwand vor Inhalt). Renderer und Orakel nutzen dieselbe `paintList`.
-- Cache-Schlüssel pro Item statt pro Fläche: alle Körper wurden Drahtgitter. Jede Optimierung braucht den Pixel-Wächter.
+- Cache-Schlüssel pro Item statt pro Fläche: alle Körper wurden Drahtgitter. Bei Optimierungen vorhandene Pixel-Wächter verwenden und das Bild selbst vergleichen; keine neue Snapshot-Sammlung anlegen.
 - Deckendes Glas versteckt die Flüssigkeit.
 - aria-label, das den sichtbaren Text nicht enthält; Vorhersage-Panel, das das Urteil sofort ausblendet; Freischalten bei unlesbarer Eingabe.
 - JSON-Dateien beim Bearbeiten neu formatiert. Nur echte Änderungen im Diff.
@@ -130,15 +144,16 @@ Exporte: `id`, `beatIds`, `validateParams`, `model`, `beatDuration`, `pose`, `bu
 
 ## 10. Prüfung vor jeder Übergabe
 
+Für Figurenänderungen: eigene Browser-Sichtung, fachliche Gegenprüfung mit vorhandenen Lösern, betroffene Inhaltsvalidierung und Shrink Complexity. Beispiel:
+
 ```bash
 node tools/compile_content.mjs && node tools/validate_content.mjs
-node --test tests/
-npm run typecheck && npm run coverage:check
-E2E_PORT=<port> npm run test:e2e -- --project=chromium
-npm run test:e2e:build
-~/.bun/bin/bun lint -f agent --rule 'complexity: [error, 10]' <geänderte Dateien>
+~/.bun/bin/bun lint -f agent --rule 'complexity: [error, 10]' <geänderte Code-Dateien>
 ```
-Commits nur auf dem eigenen Session-Zweig, kein Push, kein Merge in `feature/figuren` (das macht die Integrator-Session).
+
+Bestehende Gesamt-Gates aus dem Sessionauftrag, den Repository-Regeln oder der Release-Abnahme einmal am passenden Integrationspunkt ausführen. Nicht nach jeder visuellen Korrektur das gesamte Projekt erneut testen. Veraltete fremde Assertions im Digest konkret benennen; keine neuen Assertions nur für interne Geometrie, Beat-Anzahl oder selbst erzeugte Referenzbilder hinzufügen.
+
+Commits nur auf dem eigenen Session-Zweig, kein Push, kein Merge in feature/figuren (das macht die Integrator-Session).
 
 ## 11. Pflicht aus `docs/figuren-parallelplan.md` (Teil A)
 
