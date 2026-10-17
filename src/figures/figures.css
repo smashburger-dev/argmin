@@ -79,3 +79,43 @@
 .figure-icon-btn:hover { border-color: var(--accent); color: var(--accent); }
 .figure-icon-btn[aria-expanded="true"] { border-color: var(--accent); color: var(--accent); }
 .figure-predict { margin-top: 8px; }
+
+.figure-transcript { margin-top: 8px; font-size: 0.875rem; }
+.figure-transcript summary { cursor: pointer; min-height: 24px; }
+.figure-drag-hint, .figure-calm { font-size: 0.8rem; color: var(--text-2); margin: 0 0 6px; }
+.figure-view-panel { flex-wrap: wrap; }
+.figure-runtime[data-kind="inline"] .figure-stage { height: 160px; min-height: 0; aspect-ratio: auto; }
+.exercise-side-stack { position: sticky; top: 88px; min-width: 0; }
+.exercise-side-stack .exercise-side { position: static; }
+.figure-hint-card { margin-top: 0; }
+.figure-hint-card .figure-stage { min-height: 0; }
+.figure-hint-card .figure-readout { display: none; }
+.figure-hint-card .figure-runtime { position: relative; }
+.figure-hint-card .figure-view-panel { position: absolute; bottom: 116px; left: 0; right: 0; z-index: 1; padding: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.figure-hint-card .figure-hide { min-height: 44px; margin-top: 4px; }
+.exercise-layout.has-figure-hint { grid-template-columns: minmax(0, 1fr) 420px; }
+@media (max-width: 1099px) {
+  .exercise-layout.has-figure-hint { grid-template-columns: minmax(0, 1fr); }
+  .exercise-side-stack { position: static; }
+  .figure-hint-card { max-height: 70svh; padding: 12px; }
+  .figure-hint-card .figure-stage { width: min(100%, calc(70svh - 260px)); margin-inline: auto; }
+  .figure-hint-card .figure-drag-hint { display: none; }
+  .figure-hint-card .figure-beat-caption { font-size: 0.8rem; }
+  .figure-hint-card .figure-transcript[open] { max-height: 100px; overflow-y: auto; }
+}
+@media (forced-colors: active) {
+  .figure-stage svg { forced-color-adjust: none; }
+  .figure-stage svg [fill] { fill: none !important; }
+  .figure-stage svg [stroke] { stroke: CanvasText !important; }
+  .figure-stage svg text[fill] { fill: CanvasText !important; stroke: none !important; }
+  .figure-stage svg text[data-tone="lit"], .figure-stage svg text[data-tone="ghost"] { fill: Highlight !important; stroke: none !important; }
+  .figure-stage svg [data-tone="lit"], .figure-stage svg [data-tone="ghost"] { stroke: Highlight !important; }
+}
+@media print {
+  .figure-controls, .figure-view-panel, .figure-predict, .figure-drag-hint, .figure-hide { display: none !important; }
+  .figure-transcript > * { display: block !important; }
+  .figure-transcript { content-visibility: visible; }
+  .figure-card { break-inside: avoid; max-height: none; }
+  .figure-hint-card .figure-stage { width: 100%; }
+  .exercise-side-stack { position: static; }
+}

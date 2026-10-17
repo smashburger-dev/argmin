@@ -275,6 +275,7 @@ export interface VisualizationSummary {
 export interface FigureBeatSpec {
   id: string;
   caption: string;
+  cameraTransition?: 'travel' | 'cut';
 }
 
 /** Predict checkpoint = the viz checkpoint contract plus the beat it gates. */
@@ -284,6 +285,7 @@ export interface FigurePredict extends VizCheckpoint {
 
 export interface FigureSpec {
   schemaVersion: 1;
+  kind?: 'beats' | 'explore' | 'compare' | 'static' | 'inline' | 'hint' | 'task';
   engine: 'argmin-figure';
   scene: string;
   title: string;

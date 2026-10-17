@@ -14,6 +14,7 @@ import { resolveFigureStyle } from './styles';
 import type { FigureSpec, VizCheckpoint } from '../app/types';
 import type { FigureStyleId } from './styles';
 import './figures.css';
+import { figureSession } from './session';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -90,11 +91,74 @@ function stageBackground(style: FigureStyleId): string {
   return resolveTokens(style).paper;
 }
 
+function sceneForSpec(scene: any, spec: FigureSpec, still: boolean) {
+  if (!still) return scene;
+  const index = scene.beatIds.indexOf(spec.beats[0]!.id);
+  return { ...scene, beatIds: [spec.beats[0]!.id],
+    pose: (m: any, _index: number, t: number) => scene.pose(m, index, t),
+    describe: (m: any) => scene.describe(m, index, 'lesson'),
+  };
+}
+
+function restoredBeat(key: string, count: number, explicit?: number) {
+  const saved = Number(figureSession(key) ?? 0);
+  const index = explicit ?? saved;
+  return Number.isInteger(index) ? Math.min(count - 1, Math.max(0, index)) : 0;
+}
+
+function BeatCaption({ spec, beat, ids }: { spec: FigureSpec; beat: number; ids: string[] }) {
+  if (spec.kind === 'inline') return null;
+  return <p class="figure-beat-caption">
+    <span><MathMarkup html={spec.beats[beat]?.caption ?? ''} inline /></span>
+    <span class="figure-step">Schritt {beat + 1} von {ids.length}
+      <span class="figure-dots" aria-hidden="true">{ids.map((id, i) =>
+        <span key={id} class={`figure-dot${i === beat ? ' is-now' : i < beat ? ' is-done' : ''}`} />)}</span>
+    </span>
+  </p>;
+}
+
+function PredictPanel({ visible, checkpoint, done, graded, skip }: {
+  visible: boolean; checkpoint: VizCheckpoint | null; done: boolean;
+  graded: (result: { ok: boolean }) => void; skip: () => void;
+}) {
+  if (!visible || !checkpoint) return null;
+  return <div class="figure-predict">
+    <VizCheckpointPanel checkpoint={checkpoint} onGraded={graded} />
+    {done ? null : <Button size="sm" variant="ghost" onClick={skip}>Überspringen</Button>}
+  </div>;
+}
+
+function figureOptions(spec: FigureSpec) {
+  return {
+    mode: spec.kind === 'hint' ? 'hint' as const : 'lesson' as const,
+    still: spec.kind === 'static' || spec.kind === 'inline',
+    storageKey: `${spec.scene}:${spec.kind ?? 'beats'}:${JSON.stringify(spec.params)}`,
+    kind: spec.kind ?? 'beats',
+  };
+}
+
+function sceneBeatIds(scene: any, mode: string): string[] {
+  return mode === 'hint' ? scene.hintBeatIds : scene.beatIds;
+}
+
+function NextBeatButton({ last, gated, next, restart }: { last: boolean; gated: boolean; next: () => void; restart: () => void }) {
+  return <Button size="sm" variant="primary" class="figure-next" disabled={gated} onClick={last ? restart : next}>
+    {last ? 'Von vorn' : 'Weiter'}
+  </Button>;
+}
+
 export default function FigureRuntime({ scene, spec, style, initialBeat, onPredictDone }: Props) {
-  const model = useMemo(() => scene.model(spec.params), [scene, spec]);
-  const [beat, setBeat] = useState(initialBeat ?? 0);
+  const { mode, still, storageKey, kind } = figureOptions(spec);
+  const runtimeScene = useMemo(() => sceneForSpec(scene, spec, still), [scene, spec, still]);
+  const model = useMemo(() => scene.model(spec.params, { mode }), [scene, spec, mode]);
+  const beatIds = sceneBeatIds(runtimeScene, mode);
+  const startBeat = restoredBeat(storageKey, beatIds.length, initialBeat);
+  const [beat, setBeat] = useState(startBeat);
   const [predictDone, setPredictDone] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
+  const [viewUsed, setViewUsed] = useState(figureSession('view-used') === '1');
+  const [calm, setCalm] = useState(figureSession('calm') === '1');
+  const markViewUsed = () => { figureSession('view-used', '1'); setViewUsed(true); };
   const stageRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const haloRef = useRef<SVGEllipseElement>(null);
@@ -103,7 +167,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
   const dragRef = useRef<DragState | null>(null);
   const viewBtnRef = useRef<HTMLButtonElement>(null);
   const styleId = resolveFigureStyle(style);
-  const nBeats = scene.beatIds.length;
+  const nBeats = beatIds.length;
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -112,12 +176,14 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
     if (!stage || !svg || !haloRef.current || !readout) return undefined;
     const rect = stage.getBoundingClientRect();
     const engine = new FigureEngine({
-      svg, halo: haloRef.current, readout, scene, model,
+      svg, halo: haloRef.current, readout, scene: runtimeScene, model, mode,
       style: styleId,
       stage,
       viewport: { width: Math.max(rect.width, 200), height: Math.max(rect.height, 160) },
-      initialBeat: initialBeat ?? 0,
-      onBeat: setBeat,
+      initialBeat: startBeat,
+      onBeat: (index) => { setBeat(index); figureSession(storageKey, String(index)); },
+      onCalm: () => setCalm(true),
+      cuts: spec.beats.filter((b) => b.cameraTransition === 'cut').map((b) => b.id),
     });
     engineRef.current = engine;
     const setSize = () => {
@@ -137,6 +203,12 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
     engine.setReducedMotion(media.matches);
     const onMedia = () => engine.setReducedMotion(media.matches);
     media.addEventListener?.('change', onMedia);
+    const transcript = stage.parentElement?.querySelector<HTMLDetailsElement>('.figure-transcript');
+    let transcriptWasOpen = false;
+    const beforePrint = () => { transcriptWasOpen = Boolean(transcript?.open); if (transcript) transcript.open = true; engine.printState(true); };
+    const afterPrint = () => { if (transcript) transcript.open = transcriptWasOpen; engine.printState(false); };
+    window.addEventListener('beforeprint', beforePrint);
+    window.addEventListener('afterprint', afterPrint);
     const applyBg = () => {
       stage.style.background = stageBackground(styleId);
     };
@@ -149,13 +221,15 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
       io.disconnect();
       mo.disconnect();
       media.removeEventListener?.('change', onMedia);
+      window.removeEventListener('beforeprint', beforePrint);
+      window.removeEventListener('afterprint', afterPrint);
       engineRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene, model, styleId, initialBeat]);
+  }, [runtimeScene, model, styleId, initialBeat]);
 
-  const beatId = scene.beatIds[beat] as string;
-  const atPredict = spec.predict?.beat === beatId;
+  const beatId = beatIds[beat] as string;
+  const atPredict = mode !== 'hint' && spec.predict?.beat === beatId;
   const gatePredict = atPredict && !predictDone;
   const engine = () => engineRef.current;
 
@@ -196,6 +270,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
     if (!d.active) {
       if (Math.abs(dx) <= 6 || Math.abs(dx) <= Math.abs(dy)) return;
       d.active = true;
+      markViewUsed();
       eng.dragging = true;
       stageRef.current?.setPointerCapture(event.pointerId);
     }
@@ -213,7 +288,9 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
   const predictCheckpoint = predictCheckpointOf(spec);
 
   return (
-    <div class="figure-runtime" data-style={styleId}>
+    <div class="figure-runtime" data-style={styleId} data-kind={kind}>
+      {!viewUsed && !still ? <p class="figure-drag-hint">Ziehen dreht die Ansicht. Senkrechtes Wischen scrollt die Seite.</p> : null}
+      {calm ? <p class="figure-calm" role="status">Vereinfachte Bewegung</p> : null}
       <div
         class="figure-stage"
         ref={stageRef}
@@ -227,23 +304,13 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
         onPointerUp={onPointerEnd}
         onPointerCancel={onPointerEnd}
       >
-        <svg ref={svgRef} role="img" aria-label={scene.describe(model, beat, 'lesson')}>
+        <svg ref={svgRef} role="img" aria-label={runtimeScene.describe(model, beat, mode)}>
           <ellipse ref={haloRef} />
         </svg>
       </div>
-      <p class="figure-beat-caption">
-        <span><MathMarkup html={spec.beats[beat]?.caption ?? ''} inline /></span>
-        <span class="figure-step">
-          Schritt {beat + 1} von {nBeats}
-          <span class="figure-dots" aria-hidden="true">
-            {scene.beatIds.map((_: string, i: number) => (
-              <span key={i} class={`figure-dot${i === beat ? ' is-now' : i < beat ? ' is-done' : ''}`} />
-            ))}
-          </span>
-        </span>
-      </p>
+      <BeatCaption spec={spec} beat={beat} ids={beatIds} />
       <p class="figure-readout" aria-hidden="true" ref={readoutRef} />
-      <span class="visually-hidden" aria-live="polite">{scene.describe(model, beat, 'lesson')}</span>
+      <span class="visually-hidden" aria-live="polite">{runtimeScene.describe(model, beat, mode)}</span>
       {viewOpen ? (
         <div
           class="figure-view-panel"
@@ -263,17 +330,9 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
           <button class="figure-icon-btn" type="button" aria-label="Ansicht zurücksetzen" title="Ansicht zurücksetzen" onClick={() => engine()?.resetView()}><IconHome /></button>
         </div>
       ) : null}
-      <div class="figure-controls" role="group" aria-label="Schritte">
+      {!still ? <div class="figure-controls" role="group" aria-label="Schritte">
         <Button size="sm" disabled={beat === 0} onClick={() => engine()?.prev()}>Zurück</Button>
-        <Button
-          size="sm"
-          variant="primary"
-          class="figure-next"
-          disabled={gatePredict}
-          onClick={beat >= nBeats - 1 ? () => engine()?.restart() : next}
-        >
-          {beat >= nBeats - 1 ? 'Von vorn' : 'Weiter'}
-        </Button>
+        <NextBeatButton last={beat >= nBeats - 1} gated={Boolean(gatePredict)} restart={() => engine()?.restart()} next={next} />
         <button class="figure-icon-btn" type="button" aria-label="Nochmal" title="Nochmal" onClick={() => engine()?.replay()}><IconReplay /></button>
         <button
           ref={viewBtnRef}
@@ -282,17 +341,16 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
           aria-label="Ansicht"
           title="Ansicht"
           aria-expanded={viewOpen}
-          onClick={() => setViewOpen((open) => !open)}
+          onClick={() => { markViewUsed(); setViewOpen((open) => !open); }}
         >
           <IconDots />
         </button>
-      </div>
-      {atPredict && predictCheckpoint ? (
-        <div class="figure-predict">
-          <VizCheckpointPanel checkpoint={predictCheckpoint} onGraded={graded} />
-          {predictDone ? null : <Button size="sm" variant="ghost" onClick={skipPredict}>Überspringen</Button>}
-        </div>
-      ) : null}
+      </div> : null}
+      <PredictPanel visible={Boolean(atPredict)} checkpoint={predictCheckpoint} done={predictDone} graded={graded} skip={skipPredict} />
+      <details class="figure-transcript">
+        <summary>Ablauf als Text</summary>
+        <ol>{beatIds.map((id, i) => <li key={id}>{runtimeScene.describe(model, i, mode)}</li>)}</ol>
+      </details>
     </div>
   );
 }

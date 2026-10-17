@@ -252,6 +252,7 @@ export class Painter {
     }
   }
 
+
   private mountPlane(b: ItemBinding, item: Item): void {
     const g = el('g') as SVGGElement;
     b.planeG = g;
@@ -275,7 +276,7 @@ export class Painter {
    * `entries` order, then write changed attributes only.
    */
   paint(entries: Array<{ item: Item; face: Face | null; faceIndex: number }>, camera: Camera, viewport: Viewport): void {
-    const camKey = `${r4(camera.azimuth)}|${r4(camera.elevation)}|${r4(camera.zoom)}|${camera.target.map(r1).join(',')}`;
+    const camKey = `${r4(camera.azimuth)}|${r4(camera.elevation)}|${r4(camera.zoom)}|${camera.target.map(r1).join(',')}|${viewport.width}x${viewport.height}`;
     if (camKey !== this.lastCamKey) { this.camVer += 1; this.lastCamKey = camKey; }
     const pj = projector(camera, viewport) as Projector;
     const ctx: PaintCtx = { proj: pj, light: lightDir(pj) };
@@ -489,6 +490,7 @@ export class Painter {
     return pts;
   }
 
+
   private facePath(mesh: object, faceIndex: number, ctx: PaintCtx): string {
     let byCam = this.dCache.get(mesh);
     if (!byCam) { byCam = new Map(); this.dCache.set(mesh, byCam); }
@@ -592,6 +594,7 @@ function primSig(prim: Prim): string {
 }
 
 function updatePrim(e: SVGElement, prim: Prim, color: string, opacity: number, t: Tokens): void {
+  e.setAttribute('data-tone', prim.tone ?? 'mid');
   e.setAttribute('display', prim.visible === false ? 'none' : 'inline');
   e.setAttribute('stroke', 'none');
   e.setAttribute('fill', 'none');
