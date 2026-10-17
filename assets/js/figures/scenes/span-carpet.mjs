@@ -52,7 +52,10 @@ const scene = createScene({ id: 'span-carpet', defaults, captions, predictBeat: 
   validate: ({ k, s }) => { if (k !== -1 || s !== 1.5) throw new Error('Authored transfer checkpoint only'); },
   model: computeModel, items, predict: (m) => m.checkpoint.det,
   numbers: (m) => [m.det, m.checkpoint.det, ...m.u, ...m.v, ...m.checkpoint.v, m.k, m.s],
-  lines: (m, phase) => [phase < 2 ? 'Lektionsbeispiel: u = (2; 1), v = (1; 3)' : 'Abhängig: v = 0,5 · u'],
+  lines: (m, phase) => [phase < 2 ? 'u = (2; 1), v = (1; 3)' : 'Abhängig: v = 0,5 · u'],
 });
 export const { id, beatIds, validateParams, model, pose, beatDuration, build, ground, readout, describe, predictValue, answerValues, displayNumbers } = scene;
 export const cameraFor = (m, p, vp) => ({ azimuth: 0, elevation: 0, target: m.panel.center, zoom: Math.min(vp.width * 0.9 / 30, vp.height * 0.9 / 36) });
+
+// Flat diagrams keep their authored projection for every input method.
+export const viewMode = 'flat';

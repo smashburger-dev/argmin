@@ -1,6 +1,6 @@
 # Lektüre und Figuren zusammen entwerfen
 
-Entscheidung von Noa im S3-Review, 17.10.2026. Verbindliche Regeln stehen im Skill `werkbank-figuren`, Abschnitt 1. Der Integrator übernimmt diese Skill-Korrektur vor den weiteren Familien-Sessions.
+Entscheidung von Noa im S3-Review, 17.10.2026. Verbindliche Regeln stehen im Skill `workbench`, Abschnitt 1. Der Integrator übernimmt diese Skill-Korrektur vor den weiteren Familien-Sessions.
 
 Die Lektüre trägt die Erklärung. Die Figur trägt den sichtbaren Vorgang. Beide stehen im selben Lernfluss und werden zusammen geprüft. Eine Figur muss keine eigenständige Lehrfolie sein. Fehlende Verständlichkeit wird zuerst am Vorgang und am Bezug zum vorhandenen Text geprüft, nicht durch zusätzliche Erklärblöcke kompensiert.
 

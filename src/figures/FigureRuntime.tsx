@@ -27,47 +27,9 @@ interface Props {
 
 interface DragState { id: number; x: number; y: number; lastX: number; active: boolean }
 
+const FLAT_KEYS = 'Pfeiltasten links/rechts: Schritt. Leertaste: wiederholen.';
 const STAGE_KEYS =
   'Pfeiltasten links/rechts: Schritt. Leertaste: wiederholen. Umschalt+Pfeile: drehen. Pfeile hoch/runter: neigen. Pos1: Ansicht zurücksetzen.';
-
-/** 20px stroke icon in currentColor; icon-only buttons carry aria-label+title. */
-function Icon({ children }: { children: preact.ComponentChildren }) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"
-      stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      {children}
-    </svg>
-  );
-}
-
-const IconReplay = () => (
-  <Icon>
-    <path d="M19 11a8 8 0 1 1-8-8c2.24 0 4.38.89 5.99 2.44L19 7.5" />
-    <path d="M19 2.5v4.9h-4.9" />
-  </Icon>
-);
-const IconDots = () => (
-  <Icon>
-    <circle cx="4.5" cy="10" r="1.4" fill="currentColor" stroke="none" />
-    <circle cx="10" cy="10" r="1.4" fill="currentColor" stroke="none" />
-    <circle cx="15.5" cy="10" r="1.4" fill="currentColor" stroke="none" />
-  </Icon>
-);
-const IconRotL = () => (
-  <Icon>
-    <path d="M2.5 3v4.9h4.9" />
-    <path d="M2.5 7.9a8 8 0 1 0 3.8-2.6L2.5 7.9" />
-  </Icon>
-);
-const IconRotR = () => (
-  <Icon>
-    <path d="M17.5 3v4.9h-4.9" />
-    <path d="M17.5 7.9a8 8 0 1 1-3.8-2.6L17.5 7.9" />
-  </Icon>
-);
-const IconUp = () => (<Icon><path d="M4 13.5 10 6l6 7.5" /></Icon>);
-const IconDown = () => (<Icon><path d="M4 6.5 10 14l6-7.5" /></Icon>);
-const IconHome = () => (<Icon><path d="M3.5 9.5 10 4l6.5 5.5V16h-13z" /></Icon>);
 
 function stageKeyAction(key: string, shift: boolean): string | null {
   if (key === 'ArrowLeft') return shift ? 'rotL' : 'prev';
@@ -90,20 +52,60 @@ function stageBackground(style: FigureStyleId): string {
   return resolveTokens(style).paper;
 }
 
+interface StepPanelProps {
+  scene: any;
+  model: any;
+  spec: FigureSpec;
+  beat: number;
+  predictDone: boolean;
+  readoutRef: preact.RefObject<HTMLParagraphElement>;
+  actions: { previous: () => void; next: () => void; restart: () => void; skip: () => void; graded: (result: { ok: boolean }) => void };
+}
+
+function FigureQuestion({ checkpoint, active, done, actions }: { checkpoint: VizCheckpoint; active: boolean; done: boolean; actions: StepPanelProps['actions'] }) {
+  return (
+    <div class="figure-predict" hidden={!active}>
+      <VizCheckpointPanel checkpoint={checkpoint} onGraded={actions.graded} />
+      {done ? null : <Button size="sm" variant="ghost" class="figure-skip" onClick={actions.skip}>Überspringen</Button>}
+    </div>
+  );
+}
+
+function FigureStepPanel({ scene, model, spec, beat, predictDone, readoutRef, actions }: StepPanelProps) {
+  const nBeats = scene.beatIds.length;
+  const atPredict = spec.predict?.beat === scene.beatIds[beat];
+  const gatePredict = atPredict && !predictDone;
+  const predictCheckpoint = predictCheckpointOf(spec);
+  return (
+      <div class="figure-step-body">
+        <p class="figure-beat-caption"><MathMarkup html={spec.beats[beat]?.caption ?? ''} inline /></p>
+        <p class="figure-readout" aria-hidden="true" ref={readoutRef} />
+        <span class="visually-hidden" aria-live="polite">{scene.describe(model, beat, 'lesson')}</span>
+        {predictCheckpoint ? <FigureQuestion checkpoint={predictCheckpoint} active={atPredict} done={predictDone} actions={actions} /> : null}
+        <div class="figure-controls" role="group" aria-label="Schritte">
+          <Button size="sm" variant="ghost" disabled={beat === 0} onClick={actions.previous}>Zurück</Button>
+          <span class="figure-step" aria-label={`Schritt ${beat + 1} von ${nBeats}`}>{beat + 1} / {nBeats}</span>
+          <Button size="sm" variant="primary" class="figure-next" disabled={gatePredict}
+            onClick={beat >= nBeats - 1 ? actions.restart : actions.next}>
+            {beat >= nBeats - 1 ? 'Von vorn' : 'Weiter'}
+          </Button>
+        </div>
+      </div>
+  );
+}
+
 export default function FigureRuntime({ scene, spec, style, initialBeat, onPredictDone }: Props) {
   const model = useMemo(() => scene.model(spec.params), [scene, spec]);
   const [beat, setBeat] = useState(initialBeat ?? 0);
   const [predictDone, setPredictDone] = useState(false);
-  const [viewOpen, setViewOpen] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const haloRef = useRef<SVGEllipseElement>(null);
   const readoutRef = useRef<HTMLParagraphElement>(null);
   const engineRef = useRef<FigureEngine | null>(null);
   const dragRef = useRef<DragState | null>(null);
-  const viewBtnRef = useRef<HTMLButtonElement>(null);
   const styleId = resolveFigureStyle(style);
-  const nBeats = scene.beatIds.length;
+  const spatial = scene.viewMode !== 'flat';
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -173,6 +175,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
     const action = stageKeyAction(event.key, event.shiftKey);
     const eng = engineRef.current;
     if (!action || !eng) return;
+    if (!spatial && ['rotL', 'rotR', 'tiltUp', 'tiltDown', 'reset'].includes(action)) return;
     event.preventDefault();
     const run: Record<string, () => void> = {
       prev: () => eng.prev(), next, replay: () => eng.replay(),
@@ -184,6 +187,8 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
   };
 
   const onPointerDown = (event: PointerEvent) => {
+    if (!spatial || !event.isPrimary || event.button !== 0) return;
+    if (event.pointerType === 'mouse') event.preventDefault();
     dragRef.current = { id: event.pointerId, x: event.clientX, y: event.clientY, lastX: event.clientX, active: false };
   };
 
@@ -199,6 +204,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
       eng.dragging = true;
       stageRef.current?.setPointerCapture(event.pointerId);
     }
+    event.preventDefault();
     eng.dragDelta(event.clientX - d.lastX);
     d.lastX = event.clientX;
   };
@@ -207,92 +213,36 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
     const d = dragRef.current;
     if (!d || event.pointerId !== d.id) return;
     dragRef.current = null;
+    if (stageRef.current?.hasPointerCapture(event.pointerId)) stageRef.current.releasePointerCapture(event.pointerId);
     if (engineRef.current) engineRef.current.dragging = false;
   };
 
-  const predictCheckpoint = predictCheckpointOf(spec);
-
   return (
-    <div class="figure-runtime" data-style={styleId}>
+    <div class="figure-runtime" data-style={styleId} data-view-mode={spatial ? 'spatial' : 'flat'}>
       <div
         class="figure-stage"
         ref={stageRef}
         tabIndex={0}
         role="group"
         aria-roledescription="Figur"
-        aria-label={`${spec.title}. ${STAGE_KEYS}`}
+        aria-label={`${spec.title}. ${spatial ? STAGE_KEYS : FLAT_KEYS}`}
         onKeyDown={onKeyDown}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerEnd}
         onPointerCancel={onPointerEnd}
+        onLostPointerCapture={(event) => {
+          // Touch transfers implicit capture from the SVG child to the stage.
+          if (event.target === event.currentTarget) onPointerEnd(event);
+        }}
+        onDragStart={(event) => event.preventDefault()}
       >
         <svg ref={svgRef} role="img" aria-label={scene.describe(model, beat, 'lesson')}>
           <ellipse ref={haloRef} />
         </svg>
       </div>
-      <p class="figure-beat-caption">
-        <span><MathMarkup html={spec.beats[beat]?.caption ?? ''} inline /></span>
-        <span class="figure-step">
-          Schritt {beat + 1} von {nBeats}
-          <span class="figure-dots" aria-hidden="true">
-            {scene.beatIds.map((_: string, i: number) => (
-              <span key={i} class={`figure-dot${i === beat ? ' is-now' : i < beat ? ' is-done' : ''}`} />
-            ))}
-          </span>
-        </span>
-      </p>
-      <p class="figure-readout" aria-hidden="true" ref={readoutRef} />
-      <span class="visually-hidden" aria-live="polite">{scene.describe(model, beat, 'lesson')}</span>
-      {viewOpen ? (
-        <div
-          class="figure-view-panel"
-          role="group"
-          aria-label="Ansicht"
-          onKeyDown={(event) => {
-            if (event.key !== 'Escape') return;
-            event.stopPropagation();
-            setViewOpen(false);
-            viewBtnRef.current?.focus();
-          }}
-        >
-          <button class="figure-icon-btn" type="button" aria-label="Nach links drehen" title="Nach links drehen" onClick={() => engine()?.nudge(-15, 0)}><IconRotL /></button>
-          <button class="figure-icon-btn" type="button" aria-label="Nach rechts drehen" title="Nach rechts drehen" onClick={() => engine()?.nudge(15, 0)}><IconRotR /></button>
-          <button class="figure-icon-btn" type="button" aria-label="Steiler" title="Steiler" onClick={() => engine()?.nudge(0, 5)}><IconUp /></button>
-          <button class="figure-icon-btn" type="button" aria-label="Flacher" title="Flacher" onClick={() => engine()?.nudge(0, -5)}><IconDown /></button>
-          <button class="figure-icon-btn" type="button" aria-label="Ansicht zurücksetzen" title="Ansicht zurücksetzen" onClick={() => engine()?.resetView()}><IconHome /></button>
-        </div>
-      ) : null}
-      <div class="figure-controls" role="group" aria-label="Schritte">
-        <Button size="sm" disabled={beat === 0} onClick={() => engine()?.prev()}>Zurück</Button>
-        <Button
-          size="sm"
-          variant="primary"
-          class="figure-next"
-          disabled={gatePredict}
-          onClick={beat >= nBeats - 1 ? () => engine()?.restart() : next}
-        >
-          {beat >= nBeats - 1 ? 'Von vorn' : 'Weiter'}
-        </Button>
-        <button class="figure-icon-btn" type="button" aria-label="Nochmal" title="Nochmal" onClick={() => engine()?.replay()}><IconReplay /></button>
-        <button
-          ref={viewBtnRef}
-          class="figure-icon-btn"
-          type="button"
-          aria-label="Ansicht"
-          title="Ansicht"
-          aria-expanded={viewOpen}
-          onClick={() => setViewOpen((open) => !open)}
-        >
-          <IconDots />
-        </button>
-      </div>
-      {atPredict && predictCheckpoint ? (
-        <div class="figure-predict">
-          <VizCheckpointPanel checkpoint={predictCheckpoint} onGraded={graded} />
-          {predictDone ? null : <Button size="sm" variant="ghost" onClick={skipPredict}>Überspringen</Button>}
-        </div>
-      ) : null}
+      <FigureStepPanel scene={scene} model={model} spec={spec} beat={beat} predictDone={predictDone} readoutRef={readoutRef}
+        actions={{ previous: () => engine()?.prev(), next, restart: () => engine()?.restart(), skip: skipPredict, graded }} />
     </div>
   );
 }

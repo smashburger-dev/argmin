@@ -33,3 +33,6 @@ const scene = createScene({ id: 'receipt-echelon-3x3', title: 'Die letzte Zeile'
   lines: (m, phase) => [['Genau eine Lösung', 'Unendlich viele Lösungen', 'Keine Lösung'][caseAt(phase)], ...rowsAt(m, phase).map(rowLine), 'Links und rechts gemeinsam lesen'],
 });
 export const { id, beatIds, validateParams, model, pose, beatDuration, build, cameraFor, ground, readout, describe, predictValue, answerValues, displayNumbers } = scene;
+
+// Flat diagrams keep their authored projection for every input method.
+export const viewMode = 'flat';

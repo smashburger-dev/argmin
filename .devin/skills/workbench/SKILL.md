@@ -1,9 +1,9 @@
 ---
-name: werkbank-figuren
-description: Build, extend or review argmin figures (Werkbank kit, isometric SVG scenes, style A1). Use for any work on .fig.json, assets/js/figures, src/figures, hint figures in tasks, or a figure family session (F1 to F12).
+name: workbench
+description: Workbench — build, extend or review argmin figures (SVG diagrams and spatial scenes, style A1). Use for any work on .fig.json, assets/js/figures, src/figures, hint figures in tasks, or a figure family session (F1 to F12).
 ---
 
-# Werkbank-Figuren bauen
+# Workbench
 
 Verbindlich für jede Figuren-Session in argmin. Quellen: ADR `docs/adr/0018-figuren-werkbank.md`, Familienplan `docs/figuren-familienplan.md`, Sessionplan `docs/figuren-sessionplan.md`, Referenzszene `assets/js/figures/scenes/smoothie.mjs`. Wenn diese Datei und eine Quelle sich widersprechen, gilt diese Datei; melde den Widerspruch.
 
@@ -53,6 +53,8 @@ Regeln:
 - Plane freien Raum zwischen Formen und um Beschriftungen bereits vor der Detailgeometrie. Prüfe die Komposition bei 343 px: Hauptform, mathematisch nötige Überlagerungen und einzelne Beschriftungen müssen getrennt lesbar bleiben. Eine ganze Figur kleiner zu skalieren schafft keine Ordnung in einem überladenen Gegenstand. Entferne zuerst unnötige Konturen und Teile; wähle eine 2D-Ansicht, wenn Tiefe hier nichts erklärt.
 - Geometrische Diagramme behalten ihre Winkel und Maßstäbe. Prüfe vor Details die Projektion und die tatsächliche Pixelgröße des Hauptmotivs. Vermeide eine flache Raumkamera für eine ebene Flächenaussage; zwei Diagramme gehören nur nebeneinander, wenn beide auf dem Handy gut lesbar bleiben. Sonst die Darstellung vergrößern oder zwischen klar bezeichneten Zuständen wechseln.
 - Sichtbare Kanten tragen Bedeutung: Objektgrenze, Datengrenze oder erklärte Hilfslinie. Interne Mesh-Teilungen und Tiefensortier-Zellen dürfen nicht unbeabsichtigt wie mathematische Unterteilungen aussehen. Prüfe durchgehende Konturen beim Drehen; fehlende oder zusätzliche Kanten sind kein Stilmittel, solange das Modell sie nicht begründet.
+- Neue Szenen deklarieren ausdrücklich `viewMode = 'flat'` oder `'spatial'`. Ebene Diagramme, Zahlenvergleiche, Matrizen und Kassenzettel sind standardmäßig im Entwurf flach: keine Orbit-Geste, kein künstlicher Mindestneigungswinkel, kein Grab-Cursor und kein Bodenschatten. Räumlichkeit begründen, wenn sie selbst etwas erklärt; der Glaswürfel ist ein solches Beispiel. Der Runtime-Fallback für ältere, noch nicht klassifizierte Szenen ist kein Entwurfsstandard.
+- Schatten sind optional und an ein tatsächliches Objekt gebunden. Die reale Grundfläche projizieren, nicht aus einem achsenparallelen Bildschirmrechteck eine Ellipse ableiten: dessen Ausdehnung ändert sich beim Drehen. Runde Grundflächen dürfen bei unverändertem Zoom/Neigungswinkel nicht mit dem Azimut wachsen oder schrumpfen. Kein zusätzlicher Ring als Schattenplattform. Einmal durch mehrere Winkel drehen und Kontakt, Größe sowie Randbeschnitt ansehen.
 - Kamera nach Gegenstand: Iso (Azimut 35 bis 60°, Elevation 30°) für Objekte; Draufsicht (Elevation 70 bis 90°) für Karten, Felder, Graphen; tiefe Elevation (10 bis 20°) für Landschaften und Flächen; frontal (0°, 0°) für Leseflächen und rein zweidimensionale Diagramme. Eine Szene darf mehrere Presets je Beat haben.
 - Falls eine Lesefläche für den Vorgang gebraucht wird: freie Sicht aus den Statics prüfen; beim Lesen kleinster Text mindestens 14 px bei 343 px Bühnenbreite. Eine reine Textvergrößerung rechtfertigt keinen eigenen Beat.
 - Bühne 4:3 ab 560 px Kartenbreite, sonst 1:1. Lange Welten (Fließband) dürfen 16:9 sein und fahren mit der Kamera entlang.
@@ -63,8 +65,8 @@ Regeln:
 |---|---|---|---|
 | F1 Python, Schleifen | Stellwerk mit Gleisrunde: eine Schleife ist eine Runde des Zugs um die Kehre, ein Zähler am Signal zählt Durchläufe; Namensschilder hängen an Wagen (Werte) | Stellpult mit Code-Zeilen, die aktuelle Zeile leuchtet | Iso, Draufsicht für die Kehre |
 | F2 Matrizen, Tensoren, Attention | Archiv: schwebende Zellblöcke, Regale mit Buchrücken (Keys), Leselampen (Gewichte) | das Zellgitter selbst, frontal | Iso, frontal |
-| F3 Vektorraum | Kartentisch mit Wegweisern, für 3D ein Glaswürfel auf einem Drehteller | Kartenblatt am Tischrand | Iso, Draufsicht |
-| F4 Elimination | Café-Theke mit Zettelspieß und Kasse | Kassendisplay | Iso, frontal |
+| F3 Vektorraum | Wegweiser und Flächen; bei räumlicher Schnittfrage Glaswürfel auf Drehteller | Nur falls am Vorgang nötig | frontal für Diagramme, räumlich für den Würfel |
+| F4 Elimination | Frontale Zettel oder erweiterte Matrix; Café-Analogie nur wo hilfreich | Die Zeilen selbst | frontal |
 | F5 Pipeline | Fertigungshalle mit Förderband und Stationen, Fehlerrutsche | Anzeigetafel über der Halle | Kamerafahrt entlang des Bands |
 | F6 Verteilung | Nagelbrett mit Fächern, Würfelband | Messleiste am Fächerrand | frontal leicht von oben |
 | F7 Optimierung | offene Landschaft im Nebel, Wanderer, Wegspur, keine Werkbank | Wegschild mit Rechnung | tiefe Elevation, Draufsicht für Höhenlinien |
@@ -94,17 +96,20 @@ Was nie variiert: Akzentregel, Lesbarkeit (14 px), Tastatur- und Touch-Bedienung
 - Kein Text überlappt Text, Pfeilkopf, Ring oder Tick (Sichtprüfung bei tatsächlicher Zielgröße; bei Bedarf einmalig per DOM-Rechteck-Messung prüfen).
 - Formeln als SVG-Textläufe `{ text, italic?, sub?: string, sup?: string }`, `sub` ist der Indextext. Mathe in `KaTeX_Main` / `KaTeX_Math`, Beschriftungen in var(--sans). Kein KaTeX in `foreignObject` (WebKit-Bug 23113).
 
-## 5. Bedienung von Beats (gleich auf Handy und Desktop)
+## 5. Bedienung von Beats
 
-- Eine Reihe, höchstens vier Knöpfe: Zurück, Weiter (auf dem letzten Beat „Von vorn“), Nochmal (Symbol), Ansicht (Symbol, öffnet fünf Knöpfe: links, rechts drehen, steiler, flacher, zurücksetzen). Alle 44 px hoch.
-- „Schritt k von n“ mit Punkten steht auf der Zeile der Beat-Beschriftung, ist kein Knopf.
-- Ziehen waagerecht dreht (Pointer-Capture, `touch-action: pan-y`), senkrecht scrollt die Seite. Tasten: Pfeile links/rechts Schritt, Leertaste Nochmal, Umschalt plus Pfeil drehen, Pfeil hoch/runter neigen, Pos1 Ansicht zurücksetzen.
-- Sichtbarer Knopftext steht im zugänglichen Namen. Symbolknöpfe haben aria-label und title.
-- Höchstens 4 s pro Beat, kein Autoplay. Reduzierte Bewegung springt an das Beat-Ende. Vorhersage sperrt Weiter bis zu einer lesbaren Antwort (`result.ok`) oder Überspringen; das Urteil bleibt sichtbar.
+- Sichtbare Schrittnavigation: Zurück und Weiter; im letzten Schritt Von vorn. Keine zusätzlichen Wiederholungs- oder Kameraknöpfe, kein Drei-Punkte-Menü. Bedienelemente bleiben mindestens 44 px hoch, auch bei kompakter Typografie.
+- Räumliche Objekte direkt durch waagerechtes Ziehen mit primärer Maustaste oder einem Finger drehen; senkrechtes Wischen scrollt die Seite. Pointer-Capture nach eindeutiger horizontaler Geste, bei Ende/Abbruch sauber lösen. Tastatur: Pfeile links/rechts für Schritte, Leertaste wiederholen, Umschalt+Pfeile drehen, oben/unten neigen, Pos1 Ansicht zurücksetzen. Von vorn setzt auch die Ansicht zurück. Flache Szenen reagieren nur auf die Schrittsteuerung; vertikale Pfeile bleiben zum Scrollen frei.
+- SVG-/Bühnentext während der Manipulation nicht selektierbar machen, Maus-Standardauswahl beim Drag-Start verhindern. Die Sperre nur auf die Bühne anwenden: Lektüre, Bildunterschrift, Frage und Eingaben bleiben normal auswählbar und bedienbar. Bei Touch die vertikale Scrollgeste erhalten.
+- Beim Übertragen der impliziten Touch-Pointer-Capture von einem SVG-Kind zur Bühne dessen hochblubberndes lostpointercapture nicht als Ende der Geste behandeln. Den ganzen Fingerzug und das anschließende vertikale Scrollen einmal tatsächlich bedienen.
+- Titel ohne automatische „Abb. n“-Vorsilbe. Keine sichtbaren generischen Bedienungshinweise zu Pfeiltasten, Reset oder Kameragesten; zugängliche Tastaturinformation bleibt am fokussierbaren Element. Keine Vorankündigung „Mit Frage in Schritt n“. Den Schrittstand einmal klein zwischen Zurück und Weiter zeigen.
+- Beschriftung, gegebenenfalls Frage und Navigation bilden einen gemeinsamen ruhigen Bereich direkt unter der Bühne. Zwischen Hauptbereichen etwa 20–24 px Luft vorsehen; frei werdenden Platz nicht sofort mit Statuszeilen oder Bedienungstext füllen. Kompakte Schrift von etwa 14–16 px mit lesbarem Zeilenabstand; keine verschachtelten Karten und keine zweite abgesetzte Untersektion für die Frage.
+- Prompt und Eingabe einer Vorhersage erst im zugehörigen Schritt zeigen, vor der Navigation. Rückmeldung beim Zurückgehen erhalten. Vorhersage sperrt Weiter bis zu einer lesbaren Antwort (result.ok) oder Überspringen; das Urteil bleibt sichtbar. Keine automatische Fokussierung, die auf dem Handy ungefragt die Tastatur öffnet.
+- Höchstens 4 s pro Beat, kein Autoplay. Reduzierte Bewegung springt ans Beat-Ende. Weitere UI-Bewegung nur mit erkennbarem Zweck.
 
 ## 6. Szenenvertrag (rein, `assets/js/figures/scenes/<name>.mjs`)
 
-Exporte: `id`, `beatIds`, `validateParams`, `model`, `beatDuration`, `pose`, `build`, `cameraFor`, `ground`, `readout`, `describe`, `answerValues`, `predictValue`, `displayNumbers`, bei Aufgaben `evaluate`, bei Hinweisfiguren `hintParams`.
+Exporte: `id`, `beatIds`, `validateParams`, `model`, `beatDuration`, `pose`, `build`, `cameraFor`, `ground`, `readout`, `describe`, `answerValues`, `predictValue`, `displayNumbers`, zusätzlich die ausdrücklich gewählte `viewMode`, bei Aufgaben `evaluate`, bei Hinweisfiguren `hintParams`.
 - `pose(model, beat, t)` stetig: `pose(k, 0)` gleich `pose(k − 1, Ende)`.
 - `build` liefert für jede Pose dieselben Items und Prim-Keys; Verstecktes über `visible: false`. Statische Items sind dieselben Objekte (memoisiert), nur bewegte Teile neu.
 - Kompositkörper bekommen `part`-Indizes; ineinander steckende Teile sind getrennte Items mit `on`.
@@ -154,6 +159,8 @@ node tools/compile_content.mjs && node tools/validate_content.mjs
 Bestehende Gesamt-Gates aus dem Sessionauftrag, den Repository-Regeln oder der Release-Abnahme einmal am passenden Integrationspunkt ausführen. Nicht nach jeder visuellen Korrektur das gesamte Projekt erneut testen. Veraltete fremde Assertions im Digest konkret benennen; keine neuen Assertions nur für interne Geometrie, Beat-Anzahl oder selbst erzeugte Referenzbilder hinzufügen.
 
 Commits nur auf dem eigenen Session-Zweig, kein Push, kein Merge in feature/figuren (das macht die Integrator-Session).
+
+Diese Bedienungsregeln sind die Source of Truth für die Integration aller Figurenarten, einschließlich S2-Hinweisfiguren. Ältere Drei-Punkte-/Kameramenüs und generische Bedienungstexte anderer Sessions bei der Integration entfernen. Implementierung: src/ui/FigureBlock.tsx, src/figures/FigureRuntime.tsx und src/figures/figures.css. Keine zweite abweichende Figurenhülle daneben bauen.
 
 ## 11. Pflicht aus `docs/figuren-parallelplan.md` (Teil A)
 

@@ -4,7 +4,7 @@
   "scene": "span-carpet",
   "title": "Wegweiser und Spannfläche",
   "caption": "Eine neue Richtung spannt Fläche auf. Eine abhängige Richtung tut das nicht.",
-  "hint": "Pfeiltasten wechseln den Schritt. Ansicht zurücksetzen stellt die frontale Darstellung wieder her.",
+  "hint": "Pfeiltasten wechseln den Schritt.",
   "params": {
     "k": -1,
     "s": 1.5

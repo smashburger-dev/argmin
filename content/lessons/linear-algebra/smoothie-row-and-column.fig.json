@@ -4,7 +4,7 @@
   "scene": "smoothie-row-and-column",
   "title": "Zeilen und Spalten",
   "caption": "Dieselbe Mischung als Pfeilsumme und als Schnittpunkt.",
-  "hint": "Pfeiltasten wechseln den Schritt. Ansicht zurücksetzen stellt die frontale Darstellung wieder her.",
+  "hint": "Pfeiltasten wechseln den Schritt.",
   "params": {
     "c1": 3,
     "c2": -1

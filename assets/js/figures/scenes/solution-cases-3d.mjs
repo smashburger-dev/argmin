@@ -80,3 +80,5 @@ const scene = createScene({ id: 'solution-cases-3d', title: 'Bedingungen im Raum
   ],
 });
 export const { id, beatIds, validateParams, model, pose, beatDuration, build, cameraFor, ground, readout, describe, predictValue, answerValues, displayNumbers } = scene;
+
+export const viewMode = 'spatial';

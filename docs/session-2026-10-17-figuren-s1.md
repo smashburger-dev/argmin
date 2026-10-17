@@ -89,4 +89,4 @@ FIGURE_PERF=1 E2E_REUSE_SERVER=1 E2E_PORT=4391 npx playwright test tests/e2e/fig
 - Ziel „Beat unter 6 ms“ erreicht, „unter 4 ms“ nicht; „Ziehen und Kamerafahrt unter 8 ms“ nicht erreicht. Das Profil zeigt keinen einzelnen großen Block mehr (Clipping 5 %, Attribut-Schreiben 4 %). Nächste Hebel stehen im Skill (Abschnitt 8).
 - Laufzeit-Chunk 8,9 kB gzip (Ziel 10 kB); das Kit liegt als eigener Chunk `figure-kit`, den Laufzeit und Szenen teilen.
 - Geprüft in dieser Runde: 56 Node-Tests der Figur, Compile und Validate, Typecheck, Release-Build, 13 Figuren-E2E in Chromium. Die volle Suite lief zuletzt vor diesen Änderungen.
-- „Werkbank“ ist nur der Kit-Name; jede Familie bekommt ihre eigene Welt (Bühnenkatalog im Skill `.devin/skills/werkbank-figuren/SKILL.md`).
+- „Werkbank“ ist nur der Kit-Name; jede Familie bekommt ihre eigene Welt (Bühnenkatalog im Skill `.devin/skills/workbench/SKILL.md`).

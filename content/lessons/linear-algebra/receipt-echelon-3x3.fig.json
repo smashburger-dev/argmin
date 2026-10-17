@@ -4,7 +4,7 @@
   "scene": "receipt-echelon-3x3",
   "title": "Drei Bedingungen, drei Lösungsfälle",
   "caption": "Entscheidend sind die Pivots und die vollständige letzte Zeile.",
-  "hint": "Pfeiltasten wechseln den Schritt. Ansicht zurücksetzen stellt die frontale Darstellung wieder her.",
+  "hint": "Pfeiltasten wechseln den Schritt.",
   "params": {
     "contradiction": 5
   },

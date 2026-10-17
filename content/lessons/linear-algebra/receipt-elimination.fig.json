@@ -4,7 +4,7 @@
   "scene": "receipt-elimination",
   "title": "Kassenzettel abziehen",
   "caption": "Die Zeilenoperation verändert jede Position einschließlich des Betrags.",
-  "hint": "Pfeiltasten wechseln den Schritt. Ansicht zurücksetzen stellt die frontale Darstellung wieder her.",
+  "hint": "Pfeiltasten wechseln den Schritt.",
   "params": {
     "lambda": -1
   },

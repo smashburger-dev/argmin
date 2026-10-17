@@ -54,3 +54,15 @@ Noa hat im weiteren S3-Review die automatische Anlage neuer Figurentests und Sna
 ## Abnahme
 
 Lektion und Figur zusammen ansehen, zusätzlich die einzelnen mobilen PNGs in Originalgröße. Aussage, Perspektive, Proportionen, Raum zwischen Dingen, Kantenbedeutung und Unterschiede der Zustände beurteilen. Mathematik, Bedienung, Kontrast und nötige Laufzeitmessungen mit vorhandenen Werkzeugen prüfen. Keine Liste interner Eigenschaften als neue Testsuite nachbauen. Technisch bestandene Prüfungen beweisen keine hilfreiche oder gelungene Figur.
+
+## Bedienung und Kamera nach dem weiteren S3-Review
+
+Der Skill heißt jetzt Workbench (`.devin/skills/workbench/SKILL.md`). Neue Szenen wählen ausdrücklich `viewMode=flat` oder `spatial`. 2D-Diagramme, Matrizen und die Zettel bleiben flach und ohne Orbit-Bedienung; der Würfel bleibt räumlich. Das ist eine fachliche Wahl, keine gemeinsame Stilpflicht. Textauswahl wird nur auf der manipulierten Bühne unterbunden. Lektüre und Formulare bleiben auswählbar. Maus- und Touch-Gesten müssen das vertikale Scrollen erhalten.
+
+Schrittstand, Erklärung, gegebenenfalls Frage und die zwei Navigationsschaltflächen bilden einen gemeinsamen Bereich. Die Frage wird erst am zugehörigen Schritt sichtbar, oberhalb von Zurück/Weiter. Keine zusätzliche Ankündigung des Frageschritts. Kein zusätzliches Kameramenü. Tastaturbedienung für räumliche Ansichten bleibt. Kleine Typografie bedeutet lesbare 14–16 px bei weiter mindestens 44 px hohen Berührungszielen.
+
+Ein Schatten ist eine Projektion der wirklichen Grundfläche. Die Bildschirm-Bounding-Box eines gedrehten Rechtecks eignet sich nicht als wechselnder Ellipsenradius: sie erzeugt den beobachteten wachsenden Außenring. Runde Grundflächen bei mehreren Drehwinkeln auf konstante Ausdehnung, tatsächlichen Kontakt und freien Rand prüfen. In flachen Szenen entfällt der Bodenschatten.
+
+Titel enthalten keine automatische Abbildungsnummer. Sichtbare generische Bedienungshilfen zu Pfeiltasten, Reset und Kamera entfallen. Der Schrittstand erscheint einmal klein zwischen Zurück und Weiter. Zwischen Hauptbereichen 20–24 px Luft lassen. Der gewonnene Platz wird nicht durch weitere Statuszeilen aufgefüllt. Tastaturinformation bleibt zugänglich am fokussierbaren Element.
+
+Diese Fassung ist bei der geplanten Integration maßgeblich für alle Figurenhüllen, auch S2-Hinweise. Die dort noch vorhandenen Drei-Punkte-/Kameramenüs und Bedienungstexte werden entfernt, statt parallel weitergeführt. Gemeinsame Implementierung: FigureBlock, FigureRuntime und figures.css; eine separate Hinweise-Hülle übernimmt dieselben Regeln.

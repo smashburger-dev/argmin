@@ -100,3 +100,6 @@ export function predictValue(m, beat) {
 }
 export const answerValues = (m) => m.x.map(numberOf);
 export const displayNumbers = (m) => [-3, -2, -1, 0, 1, 2, 3, 4, 5, ...m.x.map(numberOf), m.c1, m.c2];
+
+// Flat diagrams keep their authored projection for every input method.
+export const viewMode = 'flat';

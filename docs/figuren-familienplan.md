@@ -6,7 +6,7 @@ Jede Familie ist eine eigene Session (Recherche §9). Reihenfolge bleibt: F3 und
 
 ## Jede Familie hat ihre eigene Welt
 
-Die Werkbank mit Tafel ist nur die Bühne der Smoothie-Szene. Jede Familie bekommt eine eigene Welt mit eigener Lesefläche und Kamera; die Zuordnung steht im Skill `werkbank-figuren`, Abschnitt 3a (Bühnenkatalog), und gilt vor den Bildbeschreibungen unten. Wo unten „Tafel“ steht, ist die Lesefläche der jeweiligen Welt gemeint. Die Smoothie-Szenen in F3 (`smoothie-row-and-column`) bleiben auf der Werkbank, weil sie die Lektion `l-linalg-systems` fortsetzen; die übrigen F3-Szenen stehen am Kartentisch.
+Die Werkbank mit Tafel ist nur die Bühne der Smoothie-Szene. Jede Familie bekommt eine eigene Welt mit eigener Lesefläche und Kamera; die Zuordnung steht im Skill `workbench`, Abschnitt 3a (Bühnenkatalog), und gilt vor den Bildbeschreibungen unten. Wo unten „Tafel“ steht, ist die Lesefläche der jeweiligen Welt gemeint. Die Smoothie-Szenen in F3 (`smoothie-row-and-column`) bleiben auf der Werkbank, weil sie die Lektion `l-linalg-systems` fortsetzen; die übrigen F3-Szenen stehen am Kartentisch.
 
 ## Gemeinsame Regeln für alle Familien
 

@@ -1,4 +1,4 @@
-# ADR-0018: Eigene Figuren („Werkbank“) als isometrische SVG-Szenen
+# ADR-0018: Eigene Figuren als SVG-Diagramme und räumliche Szenen
 
 Status: Entwurf (Session S1, 17.10.2026). Offen bis Noas Stilwahl: Abschnitt „Stil“. Recherche: `docs/session-2026-10-16-figuren-recherche.md`, Plan pro Familie: `docs/figuren-familienplan.md`.
 
@@ -24,7 +24,7 @@ Ergänzung nach Noas S3-Review, 17.10.2026: Die Lektüre trägt die Erklärung, 
 
 ## Stil
 
-„Werkbank“ ist der Name des Kits, nicht eine Bühne für alle: Jede Familie baut eine eigene Welt (Landschaft, Fließband, Archiv, Stellwerk), siehe Bühnenkatalog im Skill. Entschieden von Noa am 17.10.2026: **A1 Tonale Werkbank** (vier Graustufen, ein violetter Akzent, 0,6 px Linien, weicher Halo). A3 Kupferstich gefiel, wirkt auf dem Handy aber zu unruhig. A2 und A4 sind entfernt. Verbindliche Stil- und Bauregeln: Skill `.devin/skills/werkbank-figuren/SKILL.md`.
+„Werkbank“ ist der Name des Kits, nicht eine Bühne für alle: Jede Familie baut eine eigene Welt (Landschaft, Fließband, Archiv, Stellwerk), siehe Bühnenkatalog im Skill. Entschieden von Noa am 17.10.2026: **A1 Tonale Werkbank** (vier Graustufen, ein violetter Akzent, 0,6 px Linien, weicher Halo). A3 Kupferstich gefiel, wirkt auf dem Handy aber zu unruhig. A2 und A4 sind entfernt. Verbindliche Stil- und Bauregeln: Skill `.devin/skills/workbench/SKILL.md`.
 
 ## Alternativen
 
@@ -38,4 +38,4 @@ Siehe Recherche §4: JSXGraph (nur 2D), Motion, GSAP (Lizenz), Lottie (`eval`), 
 
 ## Prüfstrategie nach dem S3-Review, 17.10.2026
 
-Noas aktuelle Regel ersetzt die automatische Testpflicht pro Szene oder neuem Asset: standardmäßig keine neuen figurspezifischen Tests und Snapshot-Sammlungen. Vorhandene Löser, Compiler und Messwerkzeuge verwenden, die entscheidenden Zustände selbst im Browser ansehen und Shrink Complexity anwenden. Neue dauerhafte Tests nur auf ausdrücklichen Auftrag. Bestehende Projekt- und Release-Gates bleiben am passenden Integrationspunkt; ihre Ausführung wird nicht nach jedem visuellen Eingriff wiederholt. Einzelheiten: docs/figuren-design-und-assets.md und Skill werkbank-figuren.
+Noas aktuelle Regel ersetzt die automatische Testpflicht pro Szene oder neuem Asset: standardmäßig keine neuen figurspezifischen Tests und Snapshot-Sammlungen. Vorhandene Löser, Compiler und Messwerkzeuge verwenden, die entscheidenden Zustände selbst im Browser ansehen und Shrink Complexity anwenden. Neue dauerhafte Tests nur auf ausdrücklichen Auftrag. Bestehende Projekt- und Release-Gates bleiben am passenden Integrationspunkt; ihre Ausführung wird nicht nach jedem visuellen Eingriff wiederholt. Einzelheiten: docs/figuren-design-und-assets.md und Skill workbench.

@@ -39,3 +39,6 @@ const scene = createScene({ id: 'receipt-elimination', title: 'Kaffee und Croiss
     ...rowsAt(m, phase).map(rowLine), phase >= 4 ? `Kaffee = ${textOf(m.coffee)} €` : 'Kaffee = ?'],
 });
 export const { id, beatIds, validateParams, model, pose, beatDuration, build, cameraFor, ground, readout, describe, predictValue, answerValues, displayNumbers } = scene;
+
+// Flat diagrams keep their authored projection for every input method.
+export const viewMode = 'flat';

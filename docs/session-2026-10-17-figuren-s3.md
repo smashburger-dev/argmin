@@ -1,5 +1,7 @@
 # S3 – F3 Vektorraum und F4 Elimination
 
+**Weiterer Auftrag nach dieser Übergabe:** Noa hat die gemeinsame Figurenhülle, Drag-Bedienung und Schattenprojektion ausdrücklich zur Überarbeitung beauftragt. Diese Änderungen erweitern den ursprünglichen S3-Dateibesitz auf Runtime, Engine und Figuren-CSS. Aktueller Stand und Integrationshinweise stehen in `docs/figuren-s3/bedienung.md`. Der Skill heißt jetzt Workbench (`.devin/skills/workbench/SKILL.md`). Die frühere Anfrage nach gesperrter Orbit-Bedienung für flache Diagramme ist damit umgesetzt. Die untenstehenden Performancewerte und Gesamt-Gate-Ergebnisse dokumentieren die ursprüngliche S3-Abnahme vor diesem UI-Nachtrag.
+
 Branch: `feature/figuren-s3`. Kein Push, kein Merge. Grundlage ist der vorhandene Beats-Vertrag von `feature/figuren`; Engine, Painter und vorhandene Kit-Dateien bleiben unverändert. Die beiden Registries und die Public-Allowlist enthalten ausschließlich hinzugefügte Zeilen.
 
 ## Ergebnis und Bezug zur Lektüre
