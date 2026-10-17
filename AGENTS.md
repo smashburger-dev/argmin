@@ -14,6 +14,7 @@
 - Persistence, grading, adapters, and repositories: `assets/js/core/`
 - Pure competency, evidence, policy, diagnosis, planning, registry, and tutor logic: `assets/js/domain/`
 - Pyodide worker and host runtime: `assets/js/runtime/`
+- Figures (Werkbank kit, ADR-0018): pure camera, solids, depth, motion and scene models in `assets/js/figures/`; Preact renderer, styles and the dev-only lab (`#/figurenlabor`) in `src/figures/`; content as `.fig.json` next to lessons
 - Public-first catalog, competencies, tracks, milestones, tools, reviews, coverage, modules, lessons, and families: `content/`
 - JSON Schema 2020-12 content contracts: `schemas/`
 - Architecture, licenses, dependencies, and authoring rules: `docs/`

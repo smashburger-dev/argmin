@@ -279,3 +279,37 @@ Projekt- und Reflexionslektionen (`project-step`, `reflection`) folgen denselben
 - Jede Fertigkeit, die eine kuratierte Aufgabe der Lektion verlangt, wird in der Lektion erklärt.
 - Das durchgerechnete Beispiel löst nie eine verlinkte oder kuratierte Aufgabeninstanz vorweg.
 - Links unter „Direkter Check“ behalten ihr Ziel; nur der Linktext darf sich ändern.
+
+## 10. Figuren (`.fig.json`)
+
+Gilt für animierte Figuren in Lektionen (Werkbank-Kit, ADR-0018). Familienplan und Szenenliste: `docs/figuren-familienplan.md`.
+
+### Wann eine Figur
+
+- Eine Figur zeigt die Analogie der Lektion als Objekt, das arbeitet, und führt dann zur Tafel. Bewegung nur dort, wo sich im Gegenstand etwas verändert (Prozess, Algorithmus, Ablauf).
+- Eine Figur ersetzt eine `.viz.json`, wenn der Gegenstand in 3D klarer wird, die Analogie im Bild arbeiten kann oder der Inhalt ein Ablauf mit Schritten ist. Sie übernimmt dann Frage, erwarteten Wert, Toleranz, Hinweise und `typicalErrors` des alten Checkpoints wörtlich.
+
+### Datei und Platzierung
+
+- Block `{ "type": "figure", "contentRef": "lessons/<bereich>/<name>.fig.json" }` im Lesson-JSON. Die Figur steht zwischen zwei Markdown-Blöcken; für die Platzierung im Text wird das Markdown geteilt (Beispiel `systems.md` und `systems-matrix.md`). Neue Dateien in die Allowlist von `tools/build_public.mjs`.
+- Felder: `scene` (ID aus `assets/js/figures/scenes/index.mjs`), `title`, `caption`, `hint` (wie man die Figur bedient), `params` (prüft die Szene), `beats` (genau die Beat-IDs der Szene in ihrer Reihenfolge, je mit `caption`), optional `predict` (Checkpoint-Felder plus `beat`).
+
+### Was der Compiler erzwingt
+
+- Unbekannte Szene, ungültige Parameter oder abweichende Beat-IDs brechen den Build ab.
+- `predict.expected` muss dem Wert entsprechen, den das Szenenmodell für diesen Beat liefert.
+- Jede Zahl in `title`, `caption`, `hint`, Beat-Beschriftungen und der Vorhersagefrage muss eine Zahl sein, die die Figur selbst zeigt (`displayNumbers` der Szene). Index-Schreibweise wie `a_1` zählt nicht als Zahl.
+- Beschriftungen laufen durch dieselben Textprüfungen wie Lektions-Markdown.
+
+### Beschriftungen
+
+- Eine Beat-Beschriftung sagt in ein bis zwei Sätzen, was dieser Schritt zeigt. Sie verdoppelt nicht, was die Tafel ohnehin zeigt, und verrät keine Vorhersage, bevor sie gestellt ist.
+- Der letzte inhaltliche Beat zeigt, wo der Vergleich hinkt, und beginnt mit „Wo der Vergleich hinkt:“.
+- Sprach- und Formelregeln aus §9 gelten (keine Gedankenstriche, Dezimalkomma als `{,}`, du-Form).
+
+### Szenen bauen
+
+- Szenenmodule sind rein (`assets/js/figures/scenes/<name>.mjs`) und folgen dem Vertrag aus ADR-0018. Jede Zahl, jede Länge und jede Bewegung kommt aus `model` und `pose`; keine Zahl wird in die Darstellung getippt.
+- Höchstens 4 Sekunden pro Beat, kein Autoplay über mehrere Beats, genau ein hervorgehobener Teil pro Beat, Farbe nie allein.
+- Pflichttests einer neuen Szene: Zahlen gegen den Löser, Stetigkeit der Posen an Beat-Grenzen, stabile Topologie, `paintOrderErrors` gleich 0 über die Winkelreihe, Lecksperre im Hinweismodus, Tafeltext mindestens 14 px in der Frontalansicht bei 343 px Breite.
+- Stilwahl und Varianten: nur über Tokens in `src/figures/figures.css` und `src/figures/styles.ts`, nie im Szenencode. Im Entwicklungsbuild zeigt `#/figurenlabor` alle Stile nebeneinander, `?figstil=a1` erzwingt einen Stil auf jeder Route.
