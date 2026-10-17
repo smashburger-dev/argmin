@@ -4,6 +4,14 @@ Worktree: `/Users/no8/Desktop/life/Lifemaxxing/argmin-figuren-s2`.
 Zweig: `feature/figuren-s2`, Basis `51cbc90b` auf `feature/figuren`.
 Normaler Git-Worktree mit gemeinsamer Git-Verwaltung in `argmin/.git`, außerhalb des Windsurf-Verzeichnisses. Port 4401. Kein Push, kein Merge.
 
+## Nachtrag: Testbereinigung auf Wunsch von Noa
+
+Nach der unten dokumentierten Abnahme wurden die beiden neu ergänzten S2-Testsuiten entfernt: neun Node-Fälle und zehn Browser-Fälle, einschließlich Mock-Engine-Prüfung und automatischer Snapshot-Vergleiche. Der Szenengenerator erzeugt jetzt nur Szenenmodul, Spezifikation und Registry-Einträge, keine Tests. Die Anpassungen am bereits bestehenden Smoothie-Test bleiben mit dem geänderten Hinweisvertrag kompatibel.
+
+Die zwölf bisherigen Snapshot-Bilder liegen lokal unter `.figure-shots/s2/lesson-references/`. Aufgabenbilder, Messdateien und selbst angesehener Kontaktbogen unter `.figure-shots/s2/` bleiben erhalten. Neue automatische Tests und Snapshot-Baselines entstehen nur auf ausdrücklichen Wunsch; die Präferenz ist in der `AGENTS.md` des Hauptrepos festgehalten. Die Content-Compiler-Lecksperre bleibt Bestandteil des Builds.
+
+Die folgenden Testzahlen beschreiben die historische Abnahme vor dieser Bereinigung. Dafür wurde keine neue Testsuite angelegt oder erneut ausgeführt. Generator-Syntax und Git-Diff wurden nach der Entfernung geprüft.
+
 ## Basis-Gate vor der Umsetzung
 
 17.10.2026, `npm ci`: 132 Pakete installiert. Der bestehende Lockfile meldet eine hohe npm-Sicherheitswarnung; keine Abhängigkeitsänderung in S2.
@@ -70,7 +78,7 @@ Den Kontaktbogen mit der tatsächlichen Aufgabenansicht bei 1440 und 375 px, jew
 
 - Kontaktbogen lokal: `.figure-shots/s2/kontaktbogen.html` und `.figure-shots/s2/kontaktbogen.png`.
 - Einzelansichten und DOM-Messungen: `.figure-shots/s2/task-<breite>-<theme>.png`, `metrics-<breite>-<theme>.json`.
-- Zwölf eingecheckte Chromium-Referenzen: `tests/e2e/figures-s2.spec.ts-snapshots/`, Übersicht, Tafel und Schlussbeat, beide Breiten und Themes. Erstmals mit bewusstem `--update-snapshots` erzeugt. Die vier Tafelbilder wurden danach einmal wegen der korrigierten echten Frontalansicht erneuert. Der plattformabhängige Dateisuffix wurde entfernt. Weitere Prüfläufe vergleichen ohne Snapshot-Update.
+- Zwölf Chromium-Referenzen: Übersicht, Tafel und Schlussbeat, beide Breiten und Themes. Bei der ursprünglichen Abnahme als Snapshot-Baselines verwendet; seit der Testbereinigung nur noch lokale Reviewbilder unter `.figure-shots/s2/lesson-references/`.
 
 ## Abschluss-Gate
 

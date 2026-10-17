@@ -34,8 +34,6 @@ function figureFiles(id, world, kind) {
   return {
     [`assets/js/figures/scenes/${id}.mjs`]: sceneSource(id, world, ids),
     [`content/figures/${id}.fig.json`]: JSON.stringify(spec, null, 2) + '\n',
-    [`tests/figures_${id.replaceAll('-', '_')}.test.mjs`]: nodeSource(id, ids),
-    [`tests/e2e/figures-${id}.spec.ts`]: browserSource(id),
   };
 }
 
@@ -66,48 +64,6 @@ export const answerValues = (m) => [m.value];
 export const predictValue = (m) => m.value;
 export const displayNumbers = (m) => [m.value];
 export const hintParams = (_familyId, parameters) => Number.isFinite(parameters?.value) ? { value: parameters.value } : null;
-`;
-}
-
-function nodeSource(id, ids) {
-  return `import test from 'node:test';
-import assert from 'node:assert/strict';
-import * as scene from '../assets/js/figures/scenes/${id}.mjs';
-import { paintOrderErrors } from '../assets/js/figures/kit/depth.mjs';
-test('${id}: reference value, stable topology, depth and text size', () => {
-  const m = scene.model({ value: 2 });
-  assert.equal(scene.predictValue(m), 2);
-  const signatures = new Set();
-  for (let beat = 0; beat < ${ids.length}; beat += 1) {
-    const p = scene.pose(m, beat, 1);
-    const items = scene.build(m, p);
-    signatures.add(items.map((item) => item.id).join('|'));
-    const vp = { width: 343, height: 343 };
-    const cam = scene.cameraFor(m, p, vp);
-    assert.deepEqual(paintOrderErrors(items, cam, vp), []);
-    assert.ok(items[0].prims[0].size * cam.zoom >= 14);
-  }
-  assert.equal(signatures.size, 1);
-});
-`;
-}
-
-function browserSource(id) {
-  return `import { expect, test } from '@playwright/test';
-test('${id}: browser module and reading surface', async ({ page }) => {
-  test.skip(process.env.PLAYWRIGHT_PREVIEW === '1', 'Connect the figure to its lesson before release acceptance.');
-  await page.goto('/');
-  const result = await page.evaluate(async () => {
-    const load = new Function('url', 'return import(url)');
-    const scene = await load('/assets/js/figures/scenes/${id}.mjs');
-    const m = scene.model({ value: 2 });
-    const p = scene.pose(m, 0, 1);
-    const items = scene.build(m, p);
-    return { text: scene.describe(m, 0), prims: items.flatMap((item: any) => item.prims ?? []).length };
-  });
-  expect(result.text.length).toBeGreaterThan(0);
-  expect(result.prims).toBeGreaterThan(0);
-});
 `;
 }
 
