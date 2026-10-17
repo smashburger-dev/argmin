@@ -136,4 +136,12 @@ E2E_PORT=<port> npm run test:e2e -- --project=chromium
 npm run test:e2e:build
 ~/.bun/bin/bun lint -f agent --rule 'complexity: [error, 10]' <geänderte Dateien>
 ```
-Kein Commit, kein Push ohne Freigabe des Leads beziehungsweise Noas.
+Commits nur auf dem eigenen Session-Zweig, kein Push, kein Merge in `feature/figuren` (das macht die Integrator-Session).
+
+## 11. Pflicht aus `docs/figuren-parallelplan.md` (Teil A)
+
+- Jede `.fig.json` hat ein `kind` (`beats`, `explore`, `compare`, `static`, `inline`, `hint`, `task`); höchstens zwei `beats`/`explore` pro Lektion.
+- Kamera: Fahrt bei gleichem Gegenstand, sonst 150 ms Überblenden; eine Bewegung pro Beat.
+- Beschriftung höchstens 140 Zeichen; eine Vorhersage pro Figur an der Erkenntnis.
+- Pro Figur: „Ablauf als Text“, Druckansicht, `sessionStorage` für den letzten Beat, adaptive Ruhe nach 30 langsamen Frames, Forced-Colors, Screenshot-Referenzen.
+- Dateibesitz und Ports laut Parallelplan Teil B; fremde Bereiche nur über „Anfrage“ im Digest.

@@ -26,7 +26,8 @@ Ziel: Die Figur wird zur Lösungshilfe in Aufgaben, die Engine ist bereit für a
    - Ab 1100 px Breite: Die Figur erscheint in der rechten Spalte als klebende Karte über „Dein nächster Schritt“; die Spalte wird dafür 420 statt 320 px breit (`.exercise-layout.has-figure-hint`), damit die Tafel im Tafel-Beat mindestens 14 px Text hat und die Figur sichtbar bleibt, während man die Antwort eintippt.
    - Unter 1100 px: Die Figur steht direkt unter dem Hinweisstapel in voller Breite, mit „Figur ausblenden“ (der Hinweis bleibt gezählt). Kein zweites Scrollen nötig, um zwischen Figur und Antwortfeld zu wechseln: Die Karte ist höchstens 70 % der Viewport-Höhe hoch.
    - Kopfzeile der Karte: „Hinweis · Abb. · {Titel}“. Keine Vorhersage im Hinweismodus. Bedienung wie in der Lektion (vier Knöpfe).
-6. **Frame-Budget**: Ergebnis des Hill Climbs aus S1 übernehmen (`docs/figuren-perf-hillclimb.tsv`); wenn ein Ziel offen ist, die dort genannte nächste Maßnahme umsetzen.
+6. **Aus `docs/figuren-parallelplan.md` Teil A, alles in S2:** Feld `kind` mit Compile-Regeln je Art (Laufzeit baut zunächst `beats`, `hint`, `inline`, `static`; `explore` und `compare` als Schema, gebaut in S5); Kamera-Überblenden; `sessionStorage` für den letzten Beat und den Zieh-Hinweis; „Ablauf als Text“; Druckansicht; adaptive Ruhe; Forced-Colors; Screenshot-Referenzen für Smoothie; `tools/new_figure_scene.mjs` mit Vorlage, erprobt an einer Wegwerf-Szene, die wieder gelöscht wird.
+7. **Frame-Budget**: Ergebnis des Hill Climbs aus S1 übernehmen (`docs/figuren-perf-hillclimb.tsv`); wenn ein Ziel offen ist, die dort genannte nächste Maßnahme umsetzen.
 
 Abnahme: Compile bricht bei einem absichtlich eingebauten Leck ab (Test); E2E für beide Breiten (Figur erscheint am richtigen Ort, Hinweiszähler steigt um genau 1, Kompetenzbeleg-Hinweis wie bei Texthinweisen); axe ohne serious/critical; Kontaktbogen der Aufgabenansicht mit Hinweisfigur bei 1440 und 375 px, hell und dunkel, angesehen.
 
