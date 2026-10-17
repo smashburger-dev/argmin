@@ -4,6 +4,10 @@ Stand 17.10.2026, Branch `feature/figuren-s1`. Baut auf `docs/session-2026-10-16
 
 Jede Familie ist eine eigene Session (Recherche §9). Reihenfolge bleibt: F3 und F4, dann F12 mit dem Aufgabentyp-Spike, dann F7, dann F1 und F2, dann F5 und F8, dann der Rest.
 
+## Jede Familie hat ihre eigene Welt
+
+Die Werkbank mit Tafel ist nur die Bühne der Smoothie-Szene. Jede Familie bekommt eine eigene Welt mit eigener Lesefläche und Kamera; die Zuordnung steht im Skill `werkbank-figuren`, Abschnitt 3a (Bühnenkatalog), und gilt vor den Bildbeschreibungen unten. Wo unten „Tafel“ steht, ist die Lesefläche der jeweiligen Welt gemeint. Die Smoothie-Szenen in F3 (`smoothie-row-and-column`) bleiben auf der Werkbank, weil sie die Lektion `l-linalg-systems` fortsetzen; die übrigen F3-Szenen stehen am Kartentisch.
+
 ## Gemeinsame Regeln für alle Familien
 
 - **Szenenvertrag wie in Session 1.** Reines Modul unter `assets/js/figures/scenes/<szene>.mjs` mit `validateParams`, `model`, `beatIds`, `beatDuration`, `pose`, `build`, `cameraFor`, `readout`, `describe`, `answerValues`, `predictValue` und, wo eine Szenen-Aufgabe folgt, `evaluate`. Die Darstellung kommt vollständig aus dem Kit; eine Szene schreibt keine eigene Render-Komponente, solange das Kit die nötigen Teile hat.
@@ -32,7 +36,7 @@ Das Kit aus Session 1 hat Kamera, Quader mit runden Kanten, Zylinder, Ebenen-Inh
 | K11 Zahlenfeld-Steuerung | Parameter aus der Figur als Zahlenfeld mit Plus und Minus (44 px), an das Modell gebunden; Ziehen nur als zweiter Weg | alle mit „Erkunden“ | S3 |
 | K12 Schnüre | Linie von einem Namensschild zu einem Objekt mit Führung um Hindernisse, Endpunkt landet immer auf etwas | F1 | S6 |
 
-Die gemeinsame Objektbibliothek (`assets/js/figures/objects/`) wächst mit: Werkbank, Tafel, Behälter, Schaufel, Mixer (S1); Kassenzettel und Zettelspieß (S3); Waage, Gewichte, Tüte, Ballon (S4); Wanderer-Kugel, Spur (S5); Namensschild, Tablett mit Fächern, Garderobe, Rahmenkarte (S6); Station, Kiste, Förderband (S7). Objekte sind Funktionen `(Parameter, Pose) → Items`, keine SVG-Dateien.
+Die gemeinsame Objektbibliothek (`assets/js/figures/objects/`) enthält Teile, keine Bühnen: Lesefläche, Etikett, Pfeil, Behälter, Schaufel (S1); Kassenzettel und Zettelspieß (S3); Waage, Gewichte, Tüte, Ballon (S4); Wanderer-Kugel, Spur (S5); Namensschild, Tablett mit Fächern, Garderobe, Rahmenkarte (S6); Station, Kiste, Förderband (S7). Objekte sind Funktionen `(Parameter, Pose) → Items`, keine SVG-Dateien.
 
 ## Erweiterungen des Vertrags, die vor F1 und F2 nötig sind
 
@@ -48,7 +52,7 @@ Lektionen: `l-linalg-systems`, `l-linalg-independence`, `l-ml-svm-pca`.
 |---|---|---|---|---|---|
 | `smoothie-column-picture` (S1) | systems | Mixer, Portionen werden Pfeile auf der Tafel | Zutaten, Hafer, Vorhersage, Beeren, Tafel, Geisterportion | Portionen Beeren für (4, 5) | nichts, kommt dazu |
 | `smoothie-row-and-column` | systems | dieselbe Werkbank; die Tafel hat zwei Felder: links das Spaltenbild, rechts die Zeilen als zwei Geraden in der (x₁, x₂)-Ebene; die Portionen sind ein Punkt rechts und die Pfeilkette links | Zwei Bedingungen, eine Mischung als Punkt, Schnittpunkt ist die Mischung, Erkunden c₁ und c₂ | Checkpoint von `two-lines` (x = 1,4 bei c₁ = 3, c₂ = −1) | `two-lines` |
-| `solution-cases-3d` | systems | zuerst zwei Geraden, dann drei Ebenen im Würfel auf der Werkbank, drehbar: Punkt, Buchrücken (gemeinsame Gerade), Prisma (kein gemeinsamer Punkt); die Tafel zeigt die Stufenform | Ein Punkt, Eine Gerade, Keine Lösung, Lesen an der letzten Zeile | Checkpoint von `solution-cases` (a = 1 bei c = 2) | `solution-cases` |
+| `solution-cases-3d` | systems | zuerst zwei Geraden, dann drei Ebenen in einem Glaswürfel auf dem Drehteller des Kartentischs, drehbar: Punkt, Buchrücken (gemeinsame Gerade), Prisma (kein gemeinsamer Punkt); die Tafel zeigt die Stufenform | Ein Punkt, Eine Gerade, Keine Lösung, Lesen an der letzten Zeile | Checkpoint von `solution-cases` (a = 1 bei c = 2) | `solution-cases` |
 | `span-carpet` | independence | zwei Wegweiser auf einer Bodenplatte; das Parallelogramm wird mit Einheitsfliesen ausgelegt, die Zahl der Fliesen ist der Betrag der Determinante; bei Abhängigkeit kippt es zur Linie | Zwei Richtungen, Fläche, Abhängig, in 3D: dritter Vektor in der Ebene der ersten beiden ohne Parallele (die „hinkt“-Stelle der Lektion), Spat wird flach | Checkpoint von `span-2d` (det = 3 bei k = −1, s = 1,5) | `span-2d` |
 | `pca-shadow` | ml-svm-pca | Punktwolke auf einem Drehteller, eine Lampe wirft den Schatten auf ein Lineal; die Breite des Schattens ist die Varianz entlang der Achse; Drehen bis der Schatten am breitesten ist | Wolke, Achse und Schatten, Drehen, beste Achse, Eigenrichtung (Av liegt auf v) | Checkpoints von `pca-axis` (θ = 0,46) und `eigen-direction` (Faktor 3) | `pca-axis`, `eigen-direction` |
 | `kmeans-pizza` | ml-svm-pca | Filialen wandern zum Schwerpunkt ihrer Kunden; Kunden wechseln die Farbe nie allein, sondern mit Form der Marke | Start, Zuordnen, Verschieben, nächste Runde, fest | Zentren nach einer Iteration | nichts |
@@ -89,7 +93,7 @@ Lektionen: `l-foundations-algebra`, `l-foundations-algebra-transformations`.
 
 | Szene | Lektion | Bild, das arbeitet | Beats | Vorhersage | ersetzt |
 |---|---|---|---|---|---|
-| `balance-isolate` | algebra | Balkenwaage auf der Werkbank; x ist eine geschlossene Dose mit unbekanntem Inhalt, Zahlen sind Gewichte; beide Seiten −3, beide Seiten halbieren (Gewichte in zwei gleiche Gruppen teilen); eine ungleiche Operation lässt den Balken sichtbar kippen | Gleichung als Waage, minus 3 auf beiden Seiten, halbieren, x allein, Wo der Vergleich hinkt: negative Zahlen als Ballons, die nach oben ziehen | x nach dem nächsten Schritt | nichts (`linear-function` bleibt JSXGraph, Regel §5a) |
+| `balance-isolate` | algebra | Balkenwaage auf einem Marktstand; x ist eine geschlossene Dose mit unbekanntem Inhalt, Zahlen sind Gewichte; beide Seiten −3, beide Seiten halbieren (Gewichte in zwei gleiche Gruppen teilen); eine ungleiche Operation lässt den Balken sichtbar kippen | Gleichung als Waage, minus 3 auf beiden Seiten, halbieren, x allein, Wo der Vergleich hinkt: negative Zahlen als Ballons, die nach oben ziehen | x nach dem nächsten Schritt | nichts (`linear-function` bleibt JSXGraph, Regel §5a) |
 | `bag-unpack` | algebra-transformations | Einkaufstüten: 3(x + 2) als drei Tüten mit je einem Apfel x und zwei Bananen; Auspacken verteilt; ein Minus vor der Tüte dreht jeden Inhalt in einen Schuldschein | Tüten, Auspacken, Zusammenfassen, Minus vor der Tüte, hinkt: x als Bruch | Term nach dem Auspacken; Checkpoint von `distributive-law` (20 bei a = 4, b = 2, c = 3) | `distributive-law` |
 | `power-stack` | algebra | Potenz als Stapel aus Verdopplungen, Logarithmus als Frage nach der Stapelhöhe | Stapeln, Höhe ablesen, Umkehrfrage | Exponent für eine Zielhöhe | nichts |
 
@@ -131,7 +135,7 @@ Lektionen: `l-foundations-python-state`, `l-foundations-control-flow`, `l-founda
 
 | Szene | Lektion | Bild, das arbeitet | Beats | Vorhersage |
 |---|---|---|---|---|
-| `name-tags` | python-state | Code auf der Tafel, Werte als Klötze auf der Werkbank, Namen als Schilder an Schnüren; Neuzuweisung hängt das Schild um, `a, b = b, a` vertauscht in einem Schritt | je Programmschritt ein Beat | Wert von `a` nach drei Zeilen |
+| `name-tags` | python-state | Stellwerk: Code am Stellpult, Werte als Wagen auf dem Gleis, Namen als Schilder an Schnüren; Neuzuweisung hängt das Schild um, `a, b = b, a` vertauscht in einem Schritt | je Programmschritt ein Beat | Wert von `a` nach drei Zeilen |
 | `bouncer` | control-flow | Türsteher prüft Karten; bei `and` bleibt die zweite Karte grau, wenn die erste schon falsch ist (Kurzschluss); Schleife als Nudeltopf mit Fortschrittsanzeige | je Schritt | Wie oft läuft die Schleife? |
 | `vending-frame` | functions | Getränkeautomat: Münzen sind Argumente, beim Aufruf öffnet sich ein Rahmen (Karte) mit eigenen Schildern, `return` fällt ins Ausgabefach, `print` nur aufs Display | je Schritt | Was steht danach in `x`? |
 | `ledger` | code-reading | Kassenbuch: eine Zeile pro ausgeführtem Schritt, der Zeiger springt bei Schleifen zurück | je Schritt | nächste ausgeführte Zeile |

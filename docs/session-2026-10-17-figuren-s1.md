@@ -10,7 +10,7 @@ Stand 17.10.2026, Branch `feature/figuren-s1` (auf `research/figuren`, lokal com
 
 ## Kontaktbogen
 
-`/Users/no8/.windsurf/worktrees/argmin/argmin-figuren/.figure-shots/kontaktbogen.html` (gitignored, Kopie unter `/tmp/figsheet4/`). Zeilen: Beat 1 Zutaten, Beat 4 Treffer, Beat 5 Tafel, Beat 6 Geisterportion; Spalten: A1 bis A4; je 1440 px und 375 px, hell und dunkel, bei 2×. Neu erzeugen: Dev-Server starten, dann `FIGURE_SHOTS=1 E2E_REUSE_SERVER=1 E2E_PORT=<port> npx playwright test tests/e2e/figures-shots.spec.ts --project=chromium`. Live vergleichen: `npm run dev:next`, dann `#/figurenlabor` (alle vier nebeneinander) oder `#/figurenlabor?stil=a3&beat=4`.
+`/Users/no8/.windsurf/worktrees/argmin/argmin-figuren/.figure-shots/kontaktbogen.html` (gitignored, Kopie unter `/tmp/figsheet4/`). Zeilen: Beat 1 Zutaten, Beat 4 Treffer, Beat 5 Tafel, Beat 6 Geisterportion; Spalten: A1 bis A4; je 1440 px und 375 px, hell und dunkel, bei 2×. Neu erzeugen: Dev-Server starten, dann `FIGURE_SHOTS=1 E2E_REUSE_SERVER=1 E2E_PORT=<port> npx playwright test tests/e2e/figures-shots.spec.ts --project=chromium`. Live ansehen: `npm run dev:next`, dann `#/figurenlabor?beat=4` (seit der A1-Entscheidung nur noch ein Stil).
 
 ## Messwerte
 
