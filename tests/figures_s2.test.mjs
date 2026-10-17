@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import * as smoothie from '../assets/js/figures/scenes/smoothie.mjs';
-import { hintSpec, hintTexts, assertNoHintLeak } from '../assets/js/figures/kit/hints.mjs';
-import { validateFigureHints, validateFigureSpec, validateSourceDocument } from '../tools/compile_content.mjs';
+import { hintSpec, hintTexts, assertNoHintLeak, answerNumbers } from '../assets/js/figures/kit/hints.mjs';
+import { validateFigureHints, validateFigureSpec, validateSourceDocument, validateLessonFigures } from '../tools/compile_content.mjs';
 import { paintList, paintOrderErrors } from '../assets/js/figures/kit/depth.mjs';
 import { deg } from '../assets/js/figures/kit/camera.mjs';
 
@@ -23,6 +23,8 @@ test('hint compiler checks curated cases and fifty seeds of every served profile
 test('compiler rejects an injected leak even when answerValues lies', () => {
   const bad = { ...smoothie, answerValues: () => [], readout: () => 'Gewichte 1,000 und 3.000' };
   assert.throws(() => validateFigureHints({ hints: [entry] }, families, { [entry.scene]: bad }), /E_FIGURE_HINT_LEAK/);
+  const transient = { ...smoothie, readout: (_m, p) => p.t === 0.6 ? 'Gewicht 1' : 'Unbekannt' };
+  assert.throws(() => validateFigureHints({ hints: [entry] }, families, { [entry.scene]: transient }), /E_FIGURE_HINT_LEAK/);
 });
 
 test('leak guard recognizes integers, decimals, fractions and both minus signs', () => {
@@ -30,6 +32,13 @@ test('leak guard recognizes integers, decimals, fractions and both minus signs',
     assert.throws(() => assertNoHintLeak([text], [-1 / 3], 'test'), /E_FIGURE_HINT_LEAK/);
   }
   assert.doesNotThrow(() => assertNoHintLeak(['Gewichte gesucht'], [1, 3], 'test'));
+  assert.deepEqual(answerNumbers({ correctText: '(2,1)' }), [2, 1]);
+});
+
+test('lesson figure limits reject overload and consecutive inline figures', () => {
+  const block = (kind) => ({ fig: { kind } });
+  assert.throws(() => validateLessonFigures({ lessonId: 'test', blocks: [block('beats'), block('explore'), block('beats')] }), /höchstens zwei/);
+  assert.throws(() => validateLessonFigures({ lessonId: 'test', blocks: [block('inline'), block('inline')] }), /benachbarten/);
 });
 
 test('classification must use a fixed neighbor', () => {

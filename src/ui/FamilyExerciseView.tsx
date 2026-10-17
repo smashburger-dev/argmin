@@ -16,6 +16,23 @@ import { ExerciseFrame } from './ExerciseFrame';
 import { formatGermanDate } from './format';
 import { getExerciseContext, practiceCasePool, randomVariantSeed } from './exercise-context';
 import type { CatalogData } from '../app/types';
+import figureHints from '../../content/figure-hints.json';
+import { figureHintFor } from '../../assets/js/figures/kit/hints.mjs';
+import type { HintEntry, HintInstance } from '../figures/HintFigure';
+const HintFigure = lazy(() => import('../figures/HintFigure'));
+
+function FigureHintButton({ entry, visible, busy, runBusy, correct, solutionVisible, onOpen }: {
+  entry: HintEntry | null; visible: boolean; busy: boolean; runBusy: boolean;
+  correct: boolean | null; solutionVisible: boolean; onOpen: () => void;
+}) {
+  if (!entry || visible || solutionVisible || correct === true) return null;
+  return <Button variant="secondary" disabled={busy || runBusy} onClick={onOpen}>Hinweis als Figur</Button>;
+}
+
+function figureHintContent(entry: HintEntry | null, instance: HintInstance, visible: boolean, onHide: () => void) {
+  if (!visible || !entry) return undefined;
+  return <Suspense fallback={<p role="status">Figur wird geladen.</p>}><HintFigure entry={entry} instance={instance} onHide={onHide} /></Suspense>;
+}
 
 // S4D0: öffnet kuratierte Familien-Placements ohne definitionId.
 // Route: #/family/:familyId/:caseId/:seed/:difficulty, '-' heißt Zufall.
@@ -75,6 +92,8 @@ const CodeEditor = lazy(async () => {
 configureExerciseFamilies(loadFamilyIndex());
 
 export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogData; familyRef: string }) {
+  const [figureVisible, setFigureVisible] = useState(false);
+  useEffect(() => { setFigureVisible(false); }, [familyRef]);
   const [answer, setAnswer] = useState<unknown>(null);
   const [verdict, setVerdict] = useState<string | null>(null);
   const [correct, setCorrect] = useState<boolean | null>(null);
@@ -160,6 +179,12 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   // family, not the instance, so it is added explicitly.
   const hintSource = { ...instance, summary };
   const maxHints = familyMaxHints(hintSource);
+  const figureEntry = figureHintFor(figureHints.hints, instance);
+  const openFigureHint = async () => {
+    if (busy || runBusy || correct === true || solutionVisible) return;
+    if (shownHints.length === 0) await openHint();
+    setFigureVisible(true);
+  };
 
   const recordAssistance = async (eventType: string, event: string, hintsUsed: number, revealedSolution: boolean) => {
     if (!learningLedger) return;
@@ -366,12 +391,14 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
           <Button variant="primary" disabled={busy || runBusy || solutionVisible || correct === true} onClick={() => void submit()}>Antwort prüfen</Button>
           {isCode ? <Button variant="secondary" disabled={busy || runBusy || solutionVisible} onClick={() => void runOnly()}>Nur ausführen</Button> : null}
           {shownHints.length < maxHints && !solutionVisible && correct !== true ? <Button variant="secondary" disabled={busy || runBusy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/{maxHints}</Button> : null}
+          <FigureHintButton entry={figureEntry} visible={figureVisible} busy={busy} runBusy={runBusy} solutionVisible={solutionVisible} correct={correct} onOpen={() => void openFigureHint()} />
           {nextHintCostsEvidence ? <p class="privacy-note" style={{ flexBasis: '100%' }}>Dieser Hinweis kostet den Kompetenzbeleg für diese Variante.</p> : null}
           {!solutionVisible && instance.fullSolution ? <Button variant="ghost" onClick={() => void revealSolution()}>Lösung anzeigen</Button> : null}
         </>
       }
       feedback={feedback}
       hints={shownHints}
+      figureHint={figureHintContent(figureEntry, instance, figureVisible, () => setFigureVisible(false))}
       solution={solutionVisible && instance.fullSolution
         ? <div class="solution-panel"><h2>Lösung</h2><MathMarkup html={instance.fullSolution} /><p>Diese Variante zählt nicht mehr als unabhängiger Kompetenznachweis.</p></div>
         : undefined}

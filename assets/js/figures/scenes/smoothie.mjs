@@ -74,6 +74,10 @@ export function validateParams(params, { mode = 'lesson' } = {}) {
   const { a1, a2, b, ghost } = params;
   const det = a1[0] * a2[1] - a1[1] * a2[0];
   if (det === 0) throw new Error('params: a1 and a2 are collinear (det = 0)');
+  validateLessonPortions(a1, a2, b, ghost, det);
+}
+
+function validateLessonPortions(a1, a2, b, ghost, det) {
   const x = cramer(a1, a2, b, det);
   for (const f of x) {
     if (f.d !== 1 || f.n < 0 || f.n > 3) throw new Error('params.b must yield non-negative integer portions <= 3');

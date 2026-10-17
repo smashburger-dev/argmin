@@ -27,7 +27,10 @@ export function hintTexts(items) {
 
 export function answerNumbers(solved) {
   if (typeof solved === 'number') return [solved];
-  if (typeof solved === 'string') return [...solved.matchAll(/[-−]?\d+(?:[.,]\d+)?(?:\s*\/\s*\d+)?/g)].map((m) => parseNumber(m[0]));
+  if (typeof solved === 'string') {
+    const text = solved.replace(/\(\s*([-−]?\d+(?:\.\d+)?)\s*,\s*([-−]?\d+(?:\.\d+)?)\s*\)/g, '($1; $2)');
+    return [...text.matchAll(/[-−]?\d+(?:[.,]\d+)?(?:\s*\/\s*\d+)?/g)].map((m) => parseNumber(m[0]));
+  }
   if (solved && typeof solved === 'object') return Object.values(solved).flatMap(answerNumbers);
   return [];
 }

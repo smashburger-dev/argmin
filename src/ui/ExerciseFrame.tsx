@@ -1,5 +1,5 @@
 import type { ComponentChildren } from 'preact';
-import { useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { ExerciseContext } from './exercise-context';
 import { Breadcrumbs, type BreadcrumbItem } from './Breadcrumbs';
 import { Button } from './Button';
@@ -14,6 +14,7 @@ type Props = {
   actions: ComponentChildren;
   feedback?: ComponentChildren;
   hints: string[];
+  figureHint?: ComponentChildren;
   solution?: ComponentChildren;
   done: boolean;
   /** Context override for the sidebar back button (e.g. the stay-in-challenge
@@ -69,12 +70,20 @@ export function ExerciseFrame({
   actions,
   feedback,
   hints,
+  figureHint,
   solution,
   done,
   backHref: backHrefProp,
   backLabel: backLabelProp,
 }: Props) {
   const back = backTarget(ctx, backHrefProp, backLabelProp);
+  const [wide, setWide] = useState(() => window.matchMedia('(min-width: 1100px)').matches);
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1100px)');
+    const change = () => setWide(media.matches);
+    media.addEventListener('change', change);
+    return () => media.removeEventListener('change', change);
+  }, []);
   const feedbackBox = useRef<HTMLDivElement>(null);
   const hadFeedback = useRef(false);
   useEffect(() => {
@@ -93,7 +102,7 @@ export function ExerciseFrame({
         <h1 id="exercise-title" tabIndex={-1}>{ctx.title}</h1>
         {ctx.summary ? <p class="lede">{ctx.summary}</p> : null}
       </header>
-      <div class="exercise-layout">
+      <div class={`exercise-layout${figureHint ? ' has-figure-hint' : ''}`}>
         <div class="exercise-main">
           <article class="prompt-card" data-tour="exercise-prompt">
             <div class="prompt-content">{prompt}</div>
@@ -103,9 +112,13 @@ export function ExerciseFrame({
           <div class="actions" data-tour="exercise-check">{actions}</div>
           {feedback ? <div class="exercise-feedback" data-tour="exercise-feedback" role="status" tabIndex={-1} ref={feedbackBox}>{feedback}</div> : null}
           <HintStack hints={hints} />
+          {figureHint && !wide ? <div class="exercise-figure-mobile">{figureHint}</div> : null}
           {solution}
         </div>
-        <NextStepsPanel ctx={ctx} done={done} back={back} />
+        <div class="exercise-side-stack">
+          {figureHint && wide ? <div class="exercise-figure-desktop">{figureHint}</div> : null}
+          <NextStepsPanel ctx={ctx} done={done} back={back} />
+        </div>
       </div>
     </section>
   );
