@@ -1173,7 +1173,7 @@ const SAFE_CHUNK_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,96}$/;
 const GENERIC_ACTIVITY_TITLES = new Set([
   'Aufgabe', 'Konzeptfrage', 'Auswahlaufgabe', 'Rechenaufgabe', 'Programmieraufgabe',
   'Ablauf nachvollziehen', 'Code ordnen', 'Begründung', 'Mehrfachauswahl',
-  'Fehlerdiagnose', 'Lückentext',
+  'Fehlerdiagnose', 'Lückentext', 'Szene konstruieren',
 ]);
 
 export function assertCaseTitle(title, ref) {

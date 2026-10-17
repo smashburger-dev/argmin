@@ -73,6 +73,7 @@ export function familyEventInput(instance, extra = {}) {
     competencyIds: [...(instance.competencyIds || [])],
     seed: instance.seed ?? 0,
     masteryEligible: instance.masteryEligible === true,
+    ...(instance.activityType === 'scene-build' ? { activityType: instance.activityType } : {}),
     ...(extra.context ? { context: String(extra.context) } : {}),
   };
 }

@@ -8,6 +8,7 @@
 
 import { buildReviewQueueEntries, buildReviewQueueEntry, resolveReviewParams } from './review_scheduler.js';
 import { migratePayloadToV3, normalizeAttemptV3 } from './progress_migration.mjs';
+import { validAttemptAnswer } from '../domain/scene_answer.mjs';
 
 export const SCHEMA_VERSION = 3;
 const DB_NAME = 'ki-lernplattform';
@@ -190,8 +191,8 @@ const STORE_VALIDATORS = {
   },
   attempts: {
     key: 'exerciseId',
-    valid: (r) => EXERCISE_ID_RE.test(r.exerciseId) && typeof r.correct === 'boolean',
-    keyError: 'exerciseId muss eine stabile Aktivitäts- oder Familien-Fall-ID sein und correct boolean sein',
+    valid: (r) => EXERCISE_ID_RE.test(r.exerciseId) && typeof r.correct === 'boolean' && validAttemptAnswer(r),
+    keyError: 'exerciseId muss stabil, correct boolean und eine scene-build-Antwort im Format v1 sein',
   },
   journal: { key: null, valid: () => true, keyError: '' },
   settings: {

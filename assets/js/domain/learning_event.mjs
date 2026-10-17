@@ -2,6 +2,7 @@
 // not in views or graders. This module must not touch IndexedDB.
 
 import { MASTERY_MAX_HINTS } from './learning_policy.mjs';
+import { snapshotAttemptAnswer } from './scene_answer.mjs';
 
 export { MASTERY_MAX_HINTS };
 
@@ -24,40 +25,51 @@ export function journalFromAttempts(events) {
   }));
 }
 
-export function buildLearningEvent(input = {}) {
+function eventIdentity(input) {
   const definitionId = input.definitionId || input.exerciseId || input.activityId;
   const activityId = input.activityId || definitionId;
-  const cycleId = input.cycleId;
-  const eventType = input.eventType;
-  if (!cycleId) throw new Error('Learning event requires cycleId');
-  if (!eventType) throw new Error('Learning event requires eventType');
   const seed = input.seed ?? 0;
+  return {
+    exerciseId: input.exerciseId || definitionId, activityId, definitionId, seed,
+    activityVersion: String(input.activityVersion ?? 1),
+    instanceId: buildInstanceId(definitionId, input.cycleId, seed),
+  };
+}
+
+function eventEligibility(input, eventType) {
   const revealedSolution = Boolean(input.revealedSolution) || eventType === 'solution-revealed';
   const masteryEligible = eventType === 'attempt' && input.masteryEligible === true;
   const evidenceEligible = Boolean(input.correct)
     && masteryEligible
     && (input.hintsUsed || 0) <= MASTERY_MAX_HINTS
     && !revealedSolution;
+  return { revealedSolution, masteryEligible, evidenceEligible };
+}
+
+function optionalEventFields(input) {
   return {
-    exerciseId: input.exerciseId || definitionId,
-    activityId,
-    activityVersion: String(input.activityVersion ?? 1),
-    definitionId,
-    instanceId: buildInstanceId(definitionId, cycleId, seed),
-    cycleId,
-    competencyIds: [...(input.competencyIds || [])],
-    eventType,
-    seed,
-    answer: input.answer ?? null,
-    durationMs: input.durationMs ?? 0,
-    hintsUsed: input.hintsUsed || 0,
-    correct: Boolean(input.correct),
-    masteryEligible,
-    evidenceEligible,
-    errorType: input.errorType ?? null,
-    revealedSolution,
+    ...(input.activityType === 'scene-build' ? { activityType: input.activityType } : {}),
     ...(input.occurredAt ? { occurredAt: input.occurredAt } : {}),
     ...(input.context ? { context: String(input.context) } : {}),
     ...('event' in input ? { event: input.event } : {}),
+  };
+}
+
+export function buildLearningEvent(input = {}) {
+  const { cycleId, eventType } = input;
+  if (!cycleId) throw new Error('Learning event requires cycleId');
+  if (!eventType) throw new Error('Learning event requires eventType');
+  return {
+    ...eventIdentity(input),
+    cycleId,
+    competencyIds: [...(input.competencyIds || [])],
+    eventType,
+    answer: snapshotAttemptAnswer(input),
+    durationMs: input.durationMs ?? 0,
+    hintsUsed: input.hintsUsed || 0,
+    correct: Boolean(input.correct),
+    ...eventEligibility(input, eventType),
+    errorType: input.errorType ?? null,
+    ...optionalEventFields(input),
   };
 }
