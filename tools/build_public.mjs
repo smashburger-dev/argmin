@@ -110,6 +110,8 @@ const ALLOWED_FILES = [
   'content/lessons/linear-algebra/column-picture.viz.json',
   'content/lessons/linear-algebra/systems.json',
   'content/lessons/linear-algebra/systems.md',
+  'content/lessons/linear-algebra/smoothie.fig.json',
+  'content/lessons/linear-algebra/systems-matrix.md',
   'content/lessons/linear-algebra/two-lines.viz.json',
   'content/lessons/linear-algebra/systems-solution-cases.md',
   'content/lessons/linear-algebra/solution-cases.viz.json',

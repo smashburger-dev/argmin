@@ -101,8 +101,12 @@ interface VizCheckpointFeedback {
 
 /** Compact formative checkpoint under the board. Grading is deterministic
  *  and in-memory only — deliberately NO IndexedDB write and NO
- *  mastery/progress update (formativ per Option-A-Kontrakt). */
-function VizCheckpointPanel({ checkpoint }: { checkpoint: VizCheckpoint }) {
+ *  mastery/progress update (formativ per Option-A-Kontrakt). FigureRuntime
+ *  reuses it for the predict beat; onGraded reports each submission. */
+export function VizCheckpointPanel({ checkpoint, onGraded }: {
+  checkpoint: VizCheckpoint;
+  onGraded?: (result: VizCheckpointFeedback) => void;
+}) {
   const isVector = checkpoint.input === 'vector';
   const [scalar, setScalar] = useState('');
   const [vector, setVector] = useState<[string, string]>(['', '']);
@@ -110,7 +114,9 @@ function VizCheckpointPanel({ checkpoint }: { checkpoint: VizCheckpoint }) {
   const hints = checkpoint.hints || [];
   const submit = (event: Event) => {
     event.preventDefault();
-    setFeedback(gradeVizCheckpoint(checkpoint, isVector ? vector : scalar));
+    const result = gradeVizCheckpoint(checkpoint, isVector ? vector : scalar);
+    setFeedback(result);
+    onGraded?.(result);
   };
   const editVector = (index: number, value: string) => {
     setVector(index === 0 ? [value, vector[1]] : [vector[0], value]);

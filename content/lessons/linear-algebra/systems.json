@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-linalg-systems",
-  "version": 2,
+  "version": 3,
   "locale": "de",
   "title": "Gleichungssysteme als Spaltenbild lesen",
   "objectives": ["Ax=b als Gleichungen und Spaltenkombination deuten", "Koeffizienten eines Zielvektors bestimmen", "eine Lösung in beiden Darstellungen prüfen"],
@@ -10,6 +10,8 @@
   "estimatedMinutes": 50,
   "blocks": [
     { "blockId": "linalg-systems-core", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems.md" },
+    { "blockId": "systems-smoothie-figure", "type": "figure", "contentRef": "lessons/linear-algebra/smoothie.fig.json" },
+    { "blockId": "linalg-systems-matrix", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems-matrix.md" },
     { "blockId": "systems-viz", "type": "visualization", "contentRef": "lessons/linear-algebra/two-lines.viz.json" },
     { "blockId": "systems-solution-cases", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems-solution-cases.md" },
     { "blockId": "systems-solution-cases-viz", "type": "visualization", "contentRef": "lessons/linear-algebra/solution-cases.viz.json" },

@@ -27,6 +27,11 @@ import { initPageEase } from './page-ease';
 const ModuleView = lazy(() => import('./ModuleView').then((module) => ({ default: module.ModuleView })));
 const FamilyExerciseView = lazy(() => import('./FamilyExerciseView').then((module) => ({ default: module.FamilyExerciseView })));
 const ChallengeView = lazy(() => import('./ChallengeView').then((module) => ({ default: module.ChallengeView })));
+// Dev-only figure laboratory: the guard makes the whole chunk tree-shake
+// away in release builds.
+const FigureLab = import.meta.env.DEV
+  ? lazy(() => import('../figures/FigureLab').then((module) => ({ default: module.FigureLab })))
+  : null;
 
 const iconProps = {
   width: 16,
@@ -221,7 +226,7 @@ export function App() {
 
   const mainRef = useRef<HTMLElement>(null);
   useEffect(() => {
-    const section = route.split('/')[0] || 'today';
+    const section = (route.split('?')[0] ?? '').split('/')[0] || 'today';
     document.title = `${routeTitles[section] ?? 'argmin'} – argmin`;
     setNavDrawerOpen(false);
     window.scrollTo(0, 0);
@@ -229,7 +234,7 @@ export function App() {
     requestAnimationFrame(() => document.querySelector<HTMLElement>('main h1')?.focus());
   }, [route]);
 
-  const [section = 'today', routeId = ''] = route.split('/');
+  const [section = 'today', routeId = ''] = (route.split('?')[0] ?? '').split('/');
   const famParts = route.split('/');
   // Recent attempted exercises per module, deduped and recency-sorted by the
   // history timeline (id = 'familyId:caseId').
@@ -360,6 +365,7 @@ export function App() {
                 : section === 'lesson' ? <LessonView catalog={catalog} lessonId={routeId} />
                     : section === 'project' ? <ProjectView catalog={catalog} projectId={routeId} />
                     : section === 'competency' ? <CompetencyView catalog={catalog} progress={progress} competencyId={routeId} />
+                : section === 'figurenlabor' && FigureLab ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Figurenlabor wird geladen</h1></section>}><FigureLab /></Suspense>
                 : <PlaceholderView title="Nicht gefunden" />;
 
   return (

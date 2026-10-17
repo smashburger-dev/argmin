@@ -10,6 +10,8 @@ import { renderMarkdown } from './markdown_content.mjs';
 import { buildGlossary } from './glossary_content.mjs';
 import { compileExpression, compileTemplate } from '../assets/js/domain/expression_eval.mjs';
 import { validateCompetencyGraph } from '../assets/js/domain/competency_graph.mjs';
+import { assertVizCheckpointContract } from '../assets/js/core/viz_checkpoint_grader.mjs';
+import { scenes as figureScenes } from '../assets/js/figures/scenes/index.mjs';
 import { assertFamilyPlacement, configureExerciseFamilies, EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import {
@@ -40,7 +42,7 @@ export { validateCompetencyGraph };
 const defaultProjectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
-  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization',
+  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization', 'figure',
   'capsule-bank',
 ];
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
@@ -288,12 +290,89 @@ function assertUniqueCheckpoints(lessons) {
   }
 }
 
+// --- figure contracts (.fig.json) ---------------------------------------------
+// A figure block names a scene from the pure registry. The compile must
+// prove fail-closed that the authored spec cannot disagree with the scene
+// model: unknown scene ids, beats out of contract order, a predict
+// expectation the model does not produce, or a caption number the scene
+// never displays all reject the build.
+
+export function validateFigureSpec(spec, label) {
+  const scene = figureScenes[spec.scene];
+  if (!scene) throw new Error(`${label}: Unbekannte Figurenszene ${spec.scene}`);
+  scene.validateParams(spec.params);
+  const figureModel = scene.model(spec.params);
+  const beatIds = (spec.beats || []).map((beat) => beat.id);
+  if (JSON.stringify(beatIds) !== JSON.stringify(scene.beatIds)) {
+    throw new Error(`${label}: Beats [${beatIds.join(', ')}] stimmen nicht mit der Szene [${scene.beatIds.join(', ')}] überein`);
+  }
+  if (spec.predict) assertFigurePredict(spec.predict, scene, figureModel, label);
+  assertFigureNumbers(spec, scene, figureModel, label);
+  return true;
+}
+
+function assertFigurePredict(predict, scene, figureModel, label) {
+  const { beat, ...checkpoint } = predict;
+  if (!scene.beatIds.includes(beat)) throw new Error(`${label}: Predict-Beat ${beat} gehört nicht zur Szene`);
+  assertVizCheckpointContract(checkpoint, label);
+  const actual = scene.predictValue(figureModel, beat);
+  const expected = checkpoint.expected;
+  const tolerance = checkpoint.tolerance ?? 1e-6;
+  const mismatch = Array.isArray(expected)
+    ? !Array.isArray(actual) || expected.length !== actual.length || expected.some((v, i) => Math.abs(v - actual[i]) > tolerance)
+    : Math.abs(actual - expected) > tolerance;
+  if (mismatch) throw new Error(`${label}: Predict-Erwartungswert ${JSON.stringify(expected)} widerspricht dem Szenenwert ${JSON.stringify(actual)}`);
+}
+
+// Numbers a learner reads must be model-derived. Index notation (_x and
+// _{...}) is stripped first; U+2212 and decimal commas are accepted.
+function extractDisplayNumbers(text) {
+  const values = [];
+  const rest = String(text)
+    .replace(/_\{[^}]*\}|_[a-zA-Z0-9]/g, ' ')
+    .replace(/−/g, '-');
+  rest
+    .replace(/-?\d+[.,]\d+/g, (m) => { values.push(parseFloat(m.replace(',', '.'))); return ' '; })
+    .replace(/-?\d+\s*\/\s*\d+/g, (m) => { const [n, d] = m.split('/'); values.push(Number(n) / Number(d)); return ' '; })
+    .replace(/-?\d+/g, (m) => { values.push(Number(m)); return ' '; });
+  return values;
+}
+
+function assertFigureNumbers(spec, scene, figureModel, label) {
+  const allowed = scene.displayNumbers(figureModel);
+  const texts = [spec.title, spec.caption, spec.hint, ...(spec.beats || []).map((beat) => beat.caption)];
+  if (spec.predict) texts.push(spec.predict.prompt);
+  for (const text of texts) {
+    for (const value of extractDisplayNumbers(text)) {
+      if (!allowed.some((candidate) => Math.abs(candidate - value) <= 1e-9)) {
+        throw new Error(`${label}: Zahl ${value} in "${String(text).slice(0, 60)}" ist nicht in displayNumbers der Szene`);
+      }
+    }
+  }
+}
+
+function compileFigureBlock(block, lesson, contentRoot, projectRoot, figureIds) {
+  if (!block.contentRef.endsWith('.fig.json')) throw new Error(`${lesson.lessonId}: Figurenreferenz muss auf .fig.json zeigen`);
+  const specPath = resolveContentPath(contentRoot, block.contentRef, ['.fig.json']);
+  const spec = readJson(specPath);
+  validateSourceDocument('figure', spec, projectRoot);
+  const figureId = block.contentRef.split('/').pop().slice(0, -'.fig.json'.length);
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(figureId)) throw new Error(`${lesson.lessonId}: Ungültige Figuren-ID ${figureId}`);
+  const previousFigure = figureIds.get(figureId);
+  if (previousFigure) throw new Error(`Figuren-ID ${figureId} doppelt: ${previousFigure} und ${lesson.lessonId}`);
+  figureIds.set(figureId, lesson.lessonId);
+  validateFigureSpec(spec, `${lesson.lessonId}:${figureId}`);
+  return { ...block, html: '', fig: spec, figureId };
+}
+
 function compileLessonContent(contentRoot, lessons, projectRoot, families, markdownSources = new Map()) {
   for (const lesson of lessons) markdownSources.set(lesson.lessonId, []);
   const visualizationIds = new Map();
+  const figureIds = new Map();
   return lessons.map((lesson) => ({
     ...lesson,
     blocks: lesson.blocks.map((block) => {
+      if (block.type === 'figure') return compileFigureBlock(block, lesson, contentRoot, projectRoot, figureIds);
       if (block.type === 'visualization') {
         if (!block.contentRef.endsWith('.viz.json')) throw new Error(`${lesson.lessonId}: Visualisierungsreferenz muss auf .viz.json zeigen`);
         const specPath = resolveContentPath(contentRoot, block.contentRef, ['.viz.json']);
@@ -307,7 +386,7 @@ function compileLessonContent(contentRoot, lessons, projectRoot, families, markd
         validateVisualizationExpressions(spec, lesson.lessonId, visualizationId);
         return { ...block, html: '', viz: spec, visualizationId };
       }
-      if (!block.contentRef.endsWith('.md')) throw new Error(`${lesson.lessonId}: Content-Referenz muss auf Markdown oder .viz.json zeigen`);
+      if (!block.contentRef.endsWith('.md')) throw new Error(`${lesson.lessonId}: Content-Referenz muss auf Markdown, .viz.json oder .fig.json zeigen`);
       const source = readFileSync(resolveContentPath(contentRoot, block.contentRef, ['.md']), 'utf8');
       markdownSources.get(lesson.lessonId)?.push(source);
       const html = renderMarkdown(source)
@@ -585,7 +664,7 @@ const LEARNER_TEXT_ALLOWED_TAGS = new Set([
 const LEARNER_TEXT_KEYS = new Set([
   'prompt', 'text', 'hint', 'hints', 'fullSolution', 'typicalError',
   'typicalErrors', 'then', 'objective', 'objectives', 'title', 'subtitle',
-  'description', 'summary', 'label', 'must',
+  'description', 'summary', 'label', 'must', 'caption',
 ]);
 
 // Non-prose subtrees: code, expected answers, parameters and structural
@@ -782,7 +861,7 @@ function compileInputFingerprint(projectRoot) {
     })(codeRoot);
     codeFiles.sort();
   }
-  for (const dir of ['content', 'schemas', 'assets/js/core', 'assets/js/domain']) {
+  for (const dir of ['content', 'schemas', 'assets/js/core', 'assets/js/domain', 'assets/js/figures']) {
     const base = join(projectRoot, dir);
     if (!existsSync(base)) { hash.update(dir); continue; }
     const paths = [];
@@ -835,7 +914,8 @@ export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo
 }
 
 function discoverCatalogFiles(contentRoot, catalog) {
-  const lessonFiles = discoverJson(contentRoot, catalogRoot(catalog, 'lessons')).filter((file) => !file.endsWith('.viz.json'));
+  const lessonFiles = discoverJson(contentRoot, catalogRoot(catalog, 'lessons'))
+    .filter((file) => !file.endsWith('.viz.json') && !file.endsWith('.fig.json'));
   return {
     ...Object.fromEntries(Object.keys(CATALOG_ROOTS).map((key) => [key, discoverJson(contentRoot, catalogRoot(catalog, key))])),
     ...Object.fromEntries(Object.keys(CATALOG_OBJECTS).map((key) => [key, discoverJson(contentRoot, catalogRoot(catalog, CATALOG_OBJECTS[key][0]))])),

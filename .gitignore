@@ -9,6 +9,7 @@
 /playwright-report/
 /test-results/
 /graphify-out/
+/.figure-shots/
 
 # Required vendored runtime files overridden from the workspace-wide ignores
 !/vendor/katex/dist/

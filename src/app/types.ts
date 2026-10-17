@@ -96,6 +96,8 @@ export interface LessonBlock {
   html: string;
   viz?: VisualizationSpec;
   visualizationId?: string;
+  fig?: FigureSpec;
+  figureId?: string;
 }
 
 export type VisualizationExpr = number | string;
@@ -268,4 +270,26 @@ export interface VisualizationSummary {
   visualizationId: string;
   lessonId: string;
   spec: VisualizationSpec;
+}
+
+export interface FigureBeatSpec {
+  id: string;
+  caption: string;
+}
+
+/** Predict checkpoint = the viz checkpoint contract plus the beat it gates. */
+export interface FigurePredict extends VizCheckpoint {
+  beat: string;
+}
+
+export interface FigureSpec {
+  schemaVersion: 1;
+  engine: 'argmin-figure';
+  scene: string;
+  title: string;
+  caption: string;
+  hint: string;
+  params: Record<string, unknown>;
+  beats: FigureBeatSpec[];
+  predict?: FigurePredict;
 }

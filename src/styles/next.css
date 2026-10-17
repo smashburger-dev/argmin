@@ -599,7 +599,7 @@ main:focus { outline: none; }
   .lab-layout, .lesson-header, .exercise-layout, .visualization-layout { grid-template-columns: minmax(0, 1fr); }
   .exercise-side, .exercise-feedback { position: static; }
   .mobile-context { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s2) var(--s4); padding: var(--s3) var(--s4); color: var(--text-2); font-size: 13px; }
-  .mobile-more { display: flex; flex-basis: 100%; gap: var(--s4); }
+  .mobile-more { display: flex; flex-basis: 100%; flex-wrap: wrap; gap: var(--s2) var(--s4); }
   .mobile-more a { min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; }
 }
 

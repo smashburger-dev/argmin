@@ -35,7 +35,9 @@ test('public compiler is deterministic and excludes private-only legacy content'
   assert.equal(first.projects.length, expectedCounts.projects);
   assert.equal(first.explanations.length, expectedCounts.explanations);
   assert.equal(first.lessons.every((lesson) => lesson.blocks.every((block) => (
-    block.type === 'visualization' ? block.html === '' && block.viz : block.html?.length > 0
+    block.type === 'visualization' ? block.html === '' && block.viz
+      : block.type === 'figure' ? block.html === '' && block.fig
+        : block.html?.length > 0
   ))), true);
   assert.doesNotMatch(JSON.stringify(first.lessons), /<script|href=\\"javascript:/i);
   assert.equal(first.familyActivities.length, expectedCounts.exercises);
