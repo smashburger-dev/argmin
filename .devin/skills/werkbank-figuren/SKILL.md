@@ -9,8 +9,11 @@ Verbindlich für jede Figuren-Session in argmin. Quellen: ADR `docs/adr/0018-fig
 
 ## 1. Was eine Figur ist
 
-- „Werkbank“ ist nur der Name des Kits. Die Werkbank mit Tafel ist die Bühne einer einzigen Szene (Smoothie). Jede Familie bekommt ihre eigene Welt aus dem Bühnenkatalog (Abschnitt 3a): Landschaft, Fließband, Bibliothek, Schaltwerk, Karte, schwebender Datenblock. Zwei Familien mit derselben Bühne sind ein Fehler, außer der Familienplan sagt es ausdrücklich.
-- Die Analogie der Lektion als Objekt, das arbeitet, dann die Lesefläche mit derselben Rechnung, dann ein Beat „Wo der Vergleich hinkt“. Die Lesefläche gehört zur Welt: Tafel, Display am Gerät, Wegschild, Kartenblatt, Anzeigetafel, oder das Objekt selbst, wenn es schon formal ist (ein Zellgitter, eine Code-Zeile). Die Kamera fährt frontal an sie heran.
+- Wähle zuerst die Darstellungsform am konkreten Beispiel: statischer Vergleich, direkte Objektinteraktion, Erkunden eines Parameters oder ein Ablauf in Beats. Sequenz, Vorhersage, Kamerafahrt und Textfläche sind Werkzeuge mit einem Zweck, keine gemeinsame Pflichtausstattung. Nutze nur bereits implementierte Figurenarten; fehlt ein sinnvoller Vertrag, beschreibe ihn als Anfrage statt das Beispiel in Beats zu zwingen.
+- „Werkbank“ ist der Name des Kits. Die Smoothie-Szene begründet keine allgemeinen Vorgaben für Bühne oder Interaktion. Der Bühnenkatalog (Abschnitt 3a) gibt den Familien eine Ausgangswelt. Passe Ausschnitt, Teile und Interaktion an die jeweilige Lektion und das konkrete Beispiel an; Abweichungen vom Sessionauftrag stehen im Digest.
+- Entwirf Lektion und Figur zusammen: Die vorhandene Lektüre erklärt Begriff und Rechnung; die Figur zeigt den Mechanismus und seine Veränderung. Lies vor dem Bau den Text direkt vor und nach der Figur. Ergänze Text nur für einen fehlenden Bezug zwischen Lektüre und Darstellung.
+- Wähle den Inhalt der Bühne nach dem Vorgang. Beschriftungen, Zahlen und Formeln gehören hinein, wenn sie am Gegenstand etwas ablesbar machen, etwa Zellwerte, Posten oder eine Code-Zeile. Eine vollständige Erklärung oder zusätzliche Textfläche ist keine Pflicht. Ein Beat „Wo der Vergleich hinkt“ zeigt die Grenze am Gegenstand; der Lektionsabsatz kann sie erklären.
+- Halte den Gegenstand im Blick. Eine Kamerafahrt verdient ihren Platz durch eine neue räumliche Einsicht oder ein notwendiges Detail. Ein bloßer Wechsel vom Gegenstand auf Erklärungstext ist kein Fortschritt des Vorgangs. Tafel und Lesefläche im Bühnenkatalog sind Möglichkeiten, keine Pflichtbausteine.
 - Bewegung nur, wo sich im Gegenstand etwas ändert. Keine Deko-Bewegung, keine Requisiten. Jedes Teil gehört zum Mechanismus (Schublade mit Griff ja, Orange auf der Bank nein).
 - Jede Zahl, Länge, Höhe und Position kommt aus `model` und `pose`. Keine Zahl wird in die Darstellung getippt.
 
@@ -42,11 +45,10 @@ Regeln:
 
 - Der Gegenstand füllt in der Übersicht etwa 60 % der Bühne. Kein Sockel, keine Beine, kein Boden, der mehr Fläche frisst als der Gegenstand.
 - Kamera nach Gegenstand: Iso (Azimut 35 bis 60°, Elevation 30°) für Objekte; Draufsicht (Elevation 70 bis 90°) für Karten, Felder, Graphen; tiefe Elevation (10 bis 20°) für Landschaften und Flächen; frontal (0°, 0°) für Leseflächen und rein zweidimensionale Diagramme. Eine Szene darf mehrere Presets je Beat haben.
-- Nichts steht in der Frontalansicht vor der Lesefläche (Test „reading surface fully visible“, aus den Statics berechnet, nicht getippt).
-- Lese-Beat: Lesefläche füllt 98 % der Breite, kleinster Text mindestens 14 px bei 343 px Bühnenbreite.
+- Falls eine Lesefläche für den Vorgang gebraucht wird: freie Sicht aus den Statics prüfen; beim Lesen kleinster Text mindestens 14 px bei 343 px Bühnenbreite. Eine reine Textvergrößerung rechtfertigt keinen eigenen Beat.
 - Bühne 4:3 ab 560 px Kartenbreite, sonst 1:1. Lange Welten (Fließband) dürfen 16:9 sein und fahren mit der Kamera entlang.
 
-## 3a. Bühnenkatalog (eine Welt pro Familie)
+## 3a. Bühnenkatalog (Ausgangswelten)
 
 | Familie | Welt | Lesefläche | Kamera |
 |---|---|---|---|
@@ -64,7 +66,7 @@ Regeln:
 | F12 Waage | Marktstand mit Balkenwaage | Preisschild | Iso |
 | Deep Learning (Training, Regularisierung) | Schichtturm aus Lampenreihen, Signale laufen hoch, Gradienten zurück | Schaltpult am Turmfuß | Iso, frontal |
 
-Neue Welten nur über den Familienplan. Wiederverwendbar sind Teile (Pfeil, Etikett, Zahlenfeld, Lesefläche), nicht Bühnen.
+Die Spalte Lesefläche nennt eine Möglichkeit, keine Baupflicht. Ein anderer Gegenstand oder eine andere Raumansicht ist sinnvoll, wenn das Beispiel dadurch verständlicher wird. Bei laufenden parallelen Sessions den vereinbarten Dateibesitz und Szenenvertrag einhalten und nötige Erweiterungen im Digest anfordern. Wiederverwende Teile und Verfahren; übernimm eine ganze Bühne nur, wenn der Mechanismus derselbe ist.
 
 ## 3b. Spielraum im Stil
 
@@ -83,7 +85,7 @@ Was nie variiert: Akzentregel, Lesbarkeit (14 px), Tastatur- und Touch-Bedienung
 - Kein Text überlappt Text, Pfeilkopf, Ring oder Tick (Ebenen-Test plus DOM-Rechteck-Test unter 2 px²).
 - Formeln als SVG-Textläufe `{ text, italic?, sub?: string, sup?: string }`, `sub` ist der Indextext. Mathe in `KaTeX_Main` / `KaTeX_Math`, Beschriftungen in var(--sans). Kein KaTeX in `foreignObject` (WebKit-Bug 23113).
 
-## 5. Bedienung (gleich auf Handy und Desktop)
+## 5. Bedienung von Beats (gleich auf Handy und Desktop)
 
 - Eine Reihe, höchstens vier Knöpfe: Zurück, Weiter (auf dem letzten Beat „Von vorn“), Nochmal (Symbol), Ansicht (Symbol, öffnet fünf Knöpfe: links, rechts drehen, steiler, flacher, zurücksetzen). Alle 44 px hoch.
 - „Schritt k von n“ mit Punkten steht auf der Zeile der Beat-Beschriftung, ist kein Knopf.
@@ -101,9 +103,9 @@ Exporte: `id`, `beatIds`, `validateParams`, `model`, `beatDuration`, `pose`, `bu
 
 ## 7. Arbeitsablauf einer Familien-Session
 
-1. Familienplan-Abschnitt lesen, Lektionstext lesen (Analogie, „Wo der Vergleich hinkt“), Löser der Aufgabenfamilie finden.
+1. Familienplan und angrenzenden Lektionstext lesen, Löser der Aufgabenfamilie finden und die Darstellungsform wählen. Bei Beats für jeden Schritt benennen: Was verändert sich sichtbar am Gegenstand, und welche Einsicht entsteht daraus? Bewegungslose Beats sind für Vorhersage, Vergleich oder bewusstes Betrachten möglich. Der Kontaktbogen muss die inhaltlichen Zustandsänderungen erkennen lassen, auch ohne Kamerafahrt.
 2. Modell und Pose mit Node-Tests zuerst, dann `build`, dann `.fig.json`.
-3. Pflichttests je Szene: Zahlen gegen Löser, Stetigkeit, stabile Topologie, `paintOrderErrors` 0 über Azimut 0 bis 355 in 5°-Schritten bei 15, 30, 50° Elevation plus Tafelkamera, Tafel frei, Tafeltext 14 px, Etiketten-Überlappung, Lecksperre im Hinweismodus, Compile-Regeln.
+3. Pflichttests je Szene: Zahlen gegen Löser, Stetigkeit, stabile Topologie, `paintOrderErrors` 0 über Azimut 0 bis 355 in 5°-Schritten bei 15, 30, 50° Elevation und allen eigenen Kameras, Etiketten-Überlappung, Lecksperre im Hinweismodus, Compile-Regeln. Bei Leseflächen zusätzlich freie Sicht und 14 px Text prüfen.
 4. E2E: Füll- und Pixel-Wächter (`tests/e2e/figures.spec.ts`) für die neue Szene ergänzen.
 5. Kontaktbogen erzeugen und die PNGs selbst öffnen und ansehen. DOM-Prüfungen ersetzen das Ansehen nicht: Drahtgitter, deckendes Glas und verdeckte Tafeln haben DOM-Tests in S1 bestanden.
 6. Frame-Zeit messen (unten), Chunk-Größe messen.
@@ -142,6 +144,6 @@ Commits nur auf dem eigenen Session-Zweig, kein Push, kein Merge in `feature/fig
 
 - Jede `.fig.json` hat ein `kind` (`beats`, `explore`, `compare`, `static`, `inline`, `hint`, `task`); höchstens zwei `beats`/`explore` pro Lektion.
 - Kamera: Fahrt bei gleichem Gegenstand, sonst 150 ms Überblenden; eine Bewegung pro Beat.
-- Beschriftung höchstens 140 Zeichen; eine Vorhersage pro Figur an der Erkenntnis.
+- Bei Beats: Beschriftung höchstens 140 Zeichen. Eine Vorhersage einsetzen, wenn sie eine prüfbare Einsicht unterstützt; reine Objektinteraktion braucht kein Quiz.
 - Pro Figur: „Ablauf als Text“, Druckansicht, `sessionStorage` für den letzten Beat, adaptive Ruhe nach 30 langsamen Frames, Forced-Colors, Screenshot-Referenzen.
 - Dateibesitz und Ports laut Parallelplan Teil B; fremde Bereiche nur über „Anfrage“ im Digest.

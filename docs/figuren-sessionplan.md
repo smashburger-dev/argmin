@@ -4,6 +4,7 @@ Stand 17.10.2026. Stil ist entschieden: A1 Tonale Werkbank als gemeinsame Bildsp
 
 ## Regeln für jede Session
 
+- Seit Noas S3-Review: Darstellungsform pro Beispiel wählen, den Vorgang im Zusammenhang mit der Lektüre entwerfen. Sequenz, Kamerafahrt, Tafel-Zoom und vollständige Erklärung in der Bühne sind keine allgemeinen Anforderungen. Siehe `docs/figuren-lesson-and-stage.md` und den aktualisierten Skill. Konkrete Technikaufträge und Dateibesitz bleiben gültig.
 - Branch von `feature/figuren-s1` (oder dessen Nachfolger) als `feature/figuren-s<N>`. Worktree mit eigenem Port (`E2E_PORT`).
 - Reihenfolge: Modell und Tests, dann Geometrie, dann Inhalt, dann E2E, dann Kontaktbogen ansehen, dann Messung, dann Commit.
 - Neue Kit-Bausteine (K1 bis K12 im Familienplan) nur, wenn die Familie sie braucht, immer mit Negativtest für das Tiefen-Orakel.
@@ -53,7 +54,7 @@ Szenen `mse-landscape` (ersetzt `mse-bowl`, `secant-tangent`), `residual-springs
 
 Kit: K1 Kachelfläche bis 400 Kacheln mit Höhenlinien und Bodenprojektion; Erkunden (Lernrate als Zahlenfeld). Vorab messen: 400 Kacheln im SVG gegen Canvas 2D unter dem SVG, Entscheidung mit Zahlen im Digest.
 
-Abnahme: alle Punkte aus Recherche §6a (Fläche, Gradientenpfeil mit Komponenten, Spur, Divergenz bei zu großer Lernrate aus derselben Rechnung, Kamerafahrt zur Tafel für `w ← w − η · ∂L/∂w`, Live-Anzeige mit echten Werten); Frame-Zeit beim Ziehen unter 8 ms gedrosselt.
+Abnahme: alle Punkte aus Recherche §6a (Fläche, Gradientenpfeil mit Komponenten, Spur, Divergenz bei zu großer Lernrate aus derselben Rechnung, nachvollziehbarer Bezug zu `w ← w − η · ∂L/∂w` im Lektionsfluss, Live-Anzeige mit echten Werten); die Tafel-Kamerafahrt ist nach dem S3-Review optional. Frame-Zeit beim Ziehen unter 8 ms gedrosselt.
 
 ## S6 Familien F1 und F2 (zwei Sessions, F1 zuerst)
 

@@ -8,6 +8,8 @@ Status: Entwurf (Session S1, 17.10.2026). Offen bis Noas Stilwahl: Abschnitt „
 
 ## Entscheidung
 
+Ergänzung nach Noas S3-Review, 17.10.2026: Die Lektüre trägt die Erklärung, die Figur den sichtbaren Zusammenhang oder Vorgang. Darstellungsform, Interaktion und Kamera werden pro Beispiel gewählt. Sequenz, Vorhersage und Tafel-Zoom aus Smoothie sind keine allgemeinen Anforderungen. Die folgenden Beat-Exporte und Schrittknöpfe beschreiben den vorhandenen Ablauf-Vertrag, nicht die Pflichtform jeder künftigen Figur. Siehe `docs/figuren-lesson-and-stage.md` und den aktualisierten Skill.
+
 1. **Eigenes Kit, keine neue Runtime.** Preact rendert SVG; Kamera, Körper, Tiefensortierung und Bewegung sind eigener Code. Kein Code aus dem anatomy-Skill, keine Animationsbibliothek, kein WebGL, keine CSS-Animationen oder Transitions in Szenen.
 2. **Reine Schicht in `assets/js/figures/`, Darstellung in `src/figures/`.** Kamera (`kit/camera.mjs`), Körper (`kit/solids.mjs`), Tiefe (`kit/depth.mjs`), Bewegung (`kit/motion.mjs`) und jede Szene (`scenes/<name>.mjs`) sind reine ES-Module mit JSDoc, damit Node-Tests, `compile_content` und später der Grader einer Szenen-Aufgabe dieselben Funktionen aufrufen. Das folgt der Karte in `AGENTS.md` (reine Logik unter `assets/js`).
 3. **Orthografische Kamera mit Azimut, Elevation, Zoom und Ziel.** Isometrisch und frontal sind dieselbe Kamera mit anderen Winkeln. Ebenen-Inhalt (Tafel, Etiketten) wird über eine exakte affine Matrix in die Welt gelegt, Text bleibt SVG-Text im DOM.

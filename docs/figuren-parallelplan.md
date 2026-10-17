@@ -18,7 +18,7 @@ Jede `.fig.json` bekommt `kind`. Der Compiler prüft pro Art andere Pflichtfelde
 | `hint` | Hinweisfigur in Aufgaben (S2) | vier Knöpfe, keine Vorhersage | Mixer mit „?“ |
 | `task` | Szenen-Aufgabe (S4) | Formular plus Szene | Mixer einstellen, Waage lösen |
 
-Regel gegen Überladung: höchstens zwei `beats`- oder `explore`-Figuren pro Lektion, `inline` beliebig, aber nie zwei direkt hintereinander.
+Regel gegen Überladung: höchstens zwei `beats`- oder `explore`-Figuren pro Lektion, `inline` beliebig, aber nie zwei direkt hintereinander. Zuerst am Beispiel die passende Form wählen. Eine Sequenz oder Kamerafahrt ist keine Pflicht. Die Lektüre erklärt; die Figur zeigt den Vorgang. Maßgeblich ist die S3-Review-Entscheidung in `docs/figuren-lesson-and-stage.md` und im Skill.
 
 ### A2 Kamerasprache
 
@@ -30,7 +30,7 @@ Regel gegen Überladung: höchstens zwei `beats`- oder `explore`-Figuren pro Lek
 
 - **Platz im Text:** Die erste Figur steht direkt nach „Das Bild dahinter“. Weitere Figuren stehen am Ende des Abschnitts, den sie zeigen, nie mitten in einer Aufzählung.
 - **Beschriftung:** ein Satz pro Beat, höchstens 140 Zeichen, damit sie auf dem Handy in drei Zeilen passt. Der Satz sagt, worauf man schauen soll, nicht was man sieht.
-- **Vorhersage:** genau eine pro Figur, an der Stelle der Erkenntnis, nicht am Anfang. Die Rückmeldung bei falscher Antwort erklärt den typischen Fehler und lässt die Figur dann den richtigen Weg zeigen (Weiter spielt den Beat).
+- **Vorhersage:** gezielt an einer prüfbaren Erkenntnis einsetzen, nicht pauschal pro Figur. Bei einem vorhandenen Checkpoint dessen Vertrag erhalten. Direkte Objektinteraktion oder ein statischer Vergleich brauchen kein zusätzliches Quiz.
 - **Zustand:** Der zuletzt gesehene Beat pro Figur liegt in `sessionStorage` (nicht IndexedDB, kein Fortschrittsereignis). Zurück auf die Lektion zeigt diesen Beat im Endzustand.
 - **Textalternative:** Unter jeder Figur ein eingeklapptes „Ablauf als Text“ mit allen `describe`-Sätzen als nummerierte Liste (WCAG 1.1.1, auch für Druck und langsame Geräte).
 - **Druck:** `@media print` zeigt den Endzustand des letzten inhaltlichen Beats und die Textalternative, keine Knöpfe.
@@ -41,13 +41,13 @@ Regel gegen Überladung: höchstens zwei `beats`- oder `explore`-Figuren pro Lek
 - **Adaptive Ruhe:** Liegen 30 Frames in Folge über 24 ms, schaltet die Figur für diese Sitzung in den Ruhemodus (Beats springen ans Ende, Kamera ohne Feder). Ein kleiner Hinweis „Vereinfachte Bewegung“ erscheint; Ziehen bleibt.
 - **Forced Colors:** Unter `forced-colors: active` zeichnet die Figur Linien in `CanvasText`, Akzent in `Highlight`, Flächen ohne Füllung. Test mit `page.emulateMedia({ forcedColors: 'active' })`.
 - **Zoom 200 %:** Karte und Knöpfe brechen nicht, die Bühne bleibt im Seitenverhältnis (Test bei 640 px Breite mit 2× Schrift).
-- **Bildvergleich:** Jede Szene bekommt Screenshot-Referenzen (`toHaveScreenshot`, Chromium, Toleranz 0,2 %) für Übersicht, Lese-Beat und letzten Beat, hell und dunkel, 1440 und 375 px. Die Pixel-Wächter bleiben zusätzlich. Referenzen werden nur mit bewusstem `--update-snapshots` und Begründung im Digest erneuert.
+- **Bildvergleich:** Jede Szene bekommt Screenshot-Referenzen (`toHaveScreenshot`, Chromium, Toleranz 0,2 %) ihrer inhaltlich verschiedenen Zustände, hell und dunkel, 1440 und 375 px. Bei Beats mindestens Anfang, zentraler Vorgang und Ende; ein Lese-Beat ist keine Pflicht. Die Pixel-Wächter bleiben zusätzlich. Referenzen werden nur mit bewusstem `--update-snapshots` und Begründung im Digest erneuert.
 
 ### A5 Bauen schneller und gleichförmiger
 
 - `tools/new_figure_scene.mjs <id> --world <welt> --kind <kind>` erzeugt Szenenmodul, `.fig.json`, Node-Test, E2E-Abschnitt und Registry-Zeilen aus einer Vorlage. Wird in S2 gebaut; jede Familie startet damit.
 - Teile-Bibliothek `assets/js/figures/objects/`: Lesefläche, Etikett, Pfeil, Zahlenfeld-Anzeige, Behälter. Neue Teile kommen mit eigenem Tiefen-Test.
-- Familien-Review-Checkliste im Digest: Zeigt die Figur die typische Fehlvorstellung? Ist der Vorhersage-Beat die Erkenntnis? Arbeitet die Analogie oder steht sie nur da? Gibt es einen Beat „Wo der Vergleich hinkt“? Ist jede Zahl aus dem Modell?
+- Familien-Review-Checkliste im Digest: Passt die Darstellungsform zum Beispiel? Zeigt sie eine Einsicht, die der vorhandene Text allein schwer vermittelt? Sind die relevanten Zustandsänderungen sichtbar? Bei Vorhersage: liegt sie an der Erkenntnis? Arbeitet die Analogie? Wird ihre Grenze in Szene oder Lektüre erkennbar? Ist jede Zahl aus dem Modell?
 
 ### A6 Noch offene Fragen an Noa (Standard gilt, bis Noa anders entscheidet)
 
