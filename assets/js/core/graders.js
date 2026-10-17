@@ -8,6 +8,7 @@ import { parseCheckpointNumber, DEFAULT_VIZ_CHECKPOINT_TOLERANCE } from './viz_c
 // the domain expression compiler for fading gaps AND algebraic-expression
 // grading (same precedent as exercise_runtime.js). No sympy in the browser.
 import { compileExpression } from '../domain/expression_eval.mjs';
+import { assertSceneBuildContract, gradeSceneBuild } from './scene_build_grader.mjs';
 // The worker host loads lazily: deterministic tasks (the vast majority)
 // never pay for the pyodide runner module in their chunk. The dynamic import
 // itself can stall on a dead connection, so it is raced against a deadline.
@@ -858,6 +859,7 @@ const KNOWN_ACTIVITY_TYPES = new Set([
   'numeric', 'single-choice', 'multiple-choice', 'vector', 'parsons', 'code-trace',
   'predict-output', 'python-code', 'algebraic-expression', 'short-rationale',
   'diagnostic-rationale', 'worked-example-fading',
+  'scene-build',
 ]);
 const KNOWN_GRADERS = new Set(['deterministic', 'pyodide', 'manual-rubric']);
 
@@ -890,61 +892,68 @@ function assertFeedbackKeys(label, type, item) {
   }
 }
 
-export function assertFamilyActivityContracts(document) {
-  const contract = document?.contract || {};
+const ACTIVITY_CONTRACTS = {
+  'multiple-choice': assertMultipleChoiceContract,
+  'diagnostic-rationale': assertDiagnosisContract,
+  'worked-example-fading': assertFadingContract,
+  'algebraic-expression': assertExpressionContract,
+  'scene-build': assertSceneBuildContract,
+};
+
+function assertCaseActivity(label, item, contract) {
   const familyType = contract.activityType;
-  if (familyType === 'diagnostic-rationale' && contract.masteryEligible !== false) {
+  const type = item.activityType ?? familyType;
+  if (item.activityType !== undefined && !KNOWN_ACTIVITY_TYPES.has(item.activityType)) {
+    throw new Error(`${label}: unbekannter activityType "${item.activityType}"`);
+  }
+  if (item.graderId !== undefined && !KNOWN_GRADERS.has(item.graderId)) {
+    throw new Error(`${label}: unbekannte graderId "${item.graderId}"`);
+  }
+  // R14: a diagnosis family stays non-mastery even for foreign-type cases.
+  if (type === 'diagnostic-rationale' || familyType === 'diagnostic-rationale') {
+    if (item.masteryEligible !== false) {
+      throw new Error(`${label}: diagnostic-rationale-Fälle brauchen masteryEligible: false (R14, fail-closed)`);
+    }
+  }
+  assertFeedbackKeys(label, type, item);
+  if (Object.hasOwn(ACTIVITY_CONTRACTS, type)) ACTIVITY_CONTRACTS[type](label, { graderId: contract.graderId, ...item });
+}
+
+function assertFamilyMasteryContract(document, contract) {
+  if (contract.activityType === 'diagnostic-rationale' && contract.masteryEligible !== false) {
     throw new Error(`${document?.familyId}: diagnostic-rationale-Familien brauchen masteryEligible: false (R14, fail-closed)`);
   }
+}
+
+export function assertFamilyActivityContracts(document) {
+  const contract = document?.contract || {};
+  assertFamilyMasteryContract(document, contract);
   for (const item of document?.cases || []) {
-    const type = item.activityType ?? familyType;
     const label = `${document?.familyId}:${item.caseId}`;
-    if (item.activityType !== undefined && !KNOWN_ACTIVITY_TYPES.has(item.activityType)) {
-      throw new Error(`${label}: unbekannter activityType "${item.activityType}"`);
-    }
-    if (item.graderId !== undefined && !KNOWN_GRADERS.has(item.graderId)) {
-      throw new Error(`${label}: unbekannte graderId "${item.graderId}"`);
-    }
-    // R14 fail-closed: a diagnostic-rationale family makes every case
-    // non-mastery regardless of the case's own activityType — otherwise a
-    // mastery-flagged foreign-type case could leak evidence into the family.
-    if (type === 'diagnostic-rationale' || familyType === 'diagnostic-rationale') {
-      if (item.masteryEligible !== false) {
-        throw new Error(`${label}: diagnostic-rationale-Fälle brauchen masteryEligible: false (R14, fail-closed)`);
-      }
-    }
-    const check = type === 'multiple-choice' ? assertMultipleChoiceContract
-      : type === 'diagnostic-rationale' ? assertDiagnosisContract
-      : type === 'worked-example-fading' ? assertFadingContract
-      : type === 'algebraic-expression' ? assertExpressionContract
-      : null;
-    assertFeedbackKeys(label, type, item);
-    if (check) check(label, item);
+    assertCaseActivity(label, item, contract);
     for (const [index, variant] of (item.variants || []).entries()) {
       const merged = { ...item, ...variant };
       const variantLabel = `${label}:variant-${index + 1}`;
-      assertFeedbackKeys(variantLabel, merged.activityType ?? familyType, merged);
-      if (check) check(variantLabel, merged);
+      assertCaseActivity(variantLabel, merged, contract);
     }
   }
 }
 
 // --- registry ------------------------------------------------------------------------
 
+const DETERMINISTIC_GRADERS = {
+  numeric: gradeNumeric, 'scene-build': gradeSceneBuild, 'single-choice': gradeChoice,
+  vector: gradePair, parsons: gradeParsons, 'code-trace': gradeCodeTrace,
+  'predict-output': gradePredictOutput, 'multiple-choice': gradeMultipleChoice,
+  'diagnostic-rationale': gradeDiagnosis, 'worked-example-fading': gradeFading,
+  'algebraic-expression': gradeExpression,
+};
+
 export const graders = {
   deterministic: {
     grade: async (exercise, answer) => {
       const type = exercise.activityType || exercise.type;
-      if (type === 'numeric') return gradeNumeric(exercise, answer);
-      if (type === 'single-choice') return gradeChoice(exercise, answer);
-      if (type === 'vector') return gradePair(exercise, answer);
-      if (type === 'parsons') return gradeParsons(exercise, answer);
-      if (type === 'code-trace') return gradeCodeTrace(exercise, answer);
-      if (type === 'predict-output') return gradePredictOutput(exercise, answer);
-      if (type === 'multiple-choice') return gradeMultipleChoice(exercise, answer);
-      if (type === 'diagnostic-rationale') return gradeDiagnosis(exercise, answer);
-      if (type === 'worked-example-fading') return gradeFading(exercise, answer);
-      if (type === 'algebraic-expression') return gradeExpression(exercise, answer);
+      if (Object.hasOwn(DETERMINISTIC_GRADERS, type)) return DETERMINISTIC_GRADERS[type](exercise, answer);
       throw new Error('deterministic: unbekannter Aufgabentyp ' + type);
     },
   },

@@ -9,6 +9,10 @@ const outputName = 'content/competency-family-coverage.json';
 
 function buildCoverage(projectRoot = defaultRoot) {
   const bundle = compileContent({ projectRoot, profile: 'public' });
+  return coverageForBundle(bundle);
+}
+
+export function coverageForBundle(bundle) {
   const familyById = new Map(bundle.families.map((family) => [family.familyId, family]));
   const coverage = bundle.competencies.map((competency) => {
     const familyIds = new Set();
