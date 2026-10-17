@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {
   id, beatIds, validateParams, model, evaluate, predictValue, answerValues,
   beatDuration, pose, build, cameraFor, readout, describe, formatFrac, frac,
-  displayNumbers,
+  displayNumbers, hintBeatIds,
 } from '../assets/js/figures/scenes/smoothie.mjs';
 import { paintOrderErrors, coveringAt, paintList } from '../assets/js/figures/kit/depth.mjs';
 import { arrowPathD } from '../assets/js/figures/kit/arrows.mjs';
@@ -155,14 +155,16 @@ function signature(items) {
 
 test('build: stable topology across all beats and times', () => {
   const m = model(DEF);
-  const sigs = new Set();
-  for (let k = 0; k < beatIds.length; k += 1) {
-    for (const t of [0, beatDuration(beatIds[k]) / 2, beatDuration(beatIds[k])]) {
-      sigs.add(signature(build(m, pose(m, k, t), 'lesson')));
-      sigs.add(signature(build(m, pose(m, k, t), 'hint')));
+  for (const mode of ['lesson', 'hint']) {
+    const sigs = new Set();
+    const ids = mode === 'hint' ? hintBeatIds : beatIds;
+    for (let k = 0; k < ids.length; k += 1) {
+      for (const t of [0, beatDuration(ids[k]) / 2, beatDuration(ids[k])]) {
+        sigs.add(signature(build(m, pose(m, k, t, mode), mode)));
+      }
     }
+    assert.equal(sigs.size, 1, `topology changed in ${mode}`);
   }
-  assert.equal(sigs.size, 1, `topology changed: ${[...sigs][0]?.slice(0, 200)}`);
 });
 
 test('build: mechanism-only density, honest solid count', () => {
@@ -509,8 +511,9 @@ function notations(v) {
  */
 function answerStrings(m, mode) {
   const out = [];
-  for (let k = 0; k < beatIds.length; k += 1) {
-    const p = pose(m, k, beatDuration(beatIds[k]));
+  const ids = mode === 'hint' ? hintBeatIds : beatIds;
+  for (let k = 0; k < ids.length; k += 1) {
+    const p = pose(m, k, beatDuration(ids[k]), mode);
     for (const item of build(m, p, mode)) {
       for (const prim of item.prims || []) {
         if (!/^eq-|^arr-label-/.test(prim.key)) continue;

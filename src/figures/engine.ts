@@ -9,6 +9,7 @@ import { paintList } from '../../assets/js/figures/kit/depth.mjs';
 import { clampDt, follow, settle } from '../../assets/js/figures/kit/motion.mjs';
 import { Painter } from './painter';
 import type { FigureStyleId } from './styles';
+import { figureSession } from './session';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Scene = any;
@@ -17,8 +18,8 @@ type Viewport = { width: number; height: number };
 
 interface Spring { x: number; v: number }
 const spring = (x: number): Spring => ({ x, v: 0 });
-const EL_MIN = deg(5);
-const EL_MAX = deg(75);
+const EL_MIN = 0;
+const EL_MAX = deg(90);
 
 declare global {
   interface Window {
@@ -38,6 +39,9 @@ export interface EngineOpts {
   stage?: HTMLElement | null;
   initialBeat?: number;
   onBeat?: (index: number) => void;
+  mode?: 'lesson' | 'hint';
+  onCalm?: () => void;
+  cuts?: string[];
 }
 
 export class FigureEngine {
@@ -71,12 +75,23 @@ export class FigureEngine {
   private builtItems: any[] | null = null;
   private targetKey = '';
   private targetCam: Camera | null = null;
+  private mode: 'lesson' | 'hint';
+  private slowFrames = 0;
+  private adaptiveCalm = figureSession('calm') === '1';
+  private onCalm: () => void;
+  private cuts: string[];
+  private fadeUntil = 0;
+  private get ids(): string[] { return this.mode === 'hint' ? this.scene.hintBeatIds : this.scene.beatIds; }
 
   constructor(opts: EngineOpts) {
     this.svg = opts.svg;
     this.halo = opts.halo;
     this.readout = opts.readout;
     this.scene = opts.scene;
+    this.mode = opts.mode ?? 'lesson';
+    this.onCalm = opts.onCalm ?? (() => {});
+    this.cuts = opts.cuts ?? [];
+    this.calm = this.adaptiveCalm;
     this.model = opts.model;
     this.style = opts.style;
     this.vp = opts.viewport;
@@ -89,14 +104,14 @@ export class FigureEngine {
     this.painter.mount(items);
     this.snapCamera();
     this.paintNow(items);
-    this.svg.setAttribute('aria-label', this.scene.describe(this.model, this.beat, 'lesson'));
+    this.svg.setAttribute('aria-label', this.scene.describe(this.model, this.beat, this.mode));
     if (this.stage) {
       this.stage.dataset.beat = String(this.beat);
       this.stage.dataset.settled = 'true';
     }
   }
 
-  private duration(b: number): number { return this.scene.beatDuration(this.scene.beatIds[b]); }
+  private duration(b: number): number { return this.scene.beatDuration(this.ids[b]); }
 
   /** Pose memoized on (beat, beatT): a drag tick reuses the same object, so
    *  build() and the painter see identical items and can skip rebuilds. */
@@ -104,7 +119,7 @@ export class FigureEngine {
     const key = `${this.beat}|${this.beatT}`;
     if (key !== this.poseKey) {
       this.poseKey = key;
-      this.poseCache = this.scene.pose(this.model, this.beat, this.beatT, 'lesson');
+      this.poseCache = this.scene.pose(this.model, this.beat, this.beatT, this.mode);
     }
     return this.poseCache;
   }
@@ -115,7 +130,7 @@ export class FigureEngine {
   private buildItems(pose: any) {
     if (pose === this.builtPose && this.builtItems) return this.builtItems;
     this.builtPose = pose;
-    this.builtItems = this.scene.build(this.model, pose, 'lesson');
+    this.builtItems = this.scene.build(this.model, pose, this.mode);
     return this.builtItems;
   }
 
@@ -154,7 +169,7 @@ export class FigureEngine {
     const t2 = performance.now();
     this.painter.paint(entries, cam, this.vp);
     this.paintHalo(cam);
-    const text = this.scene.readout(this.model, p, 'lesson');
+    const text = this.scene.readout(this.model, p, this.mode);
     if (text !== this.lastReadout) { this.lastReadout = text; this.readout.textContent = text; }
     const t3 = performance.now();
     if (this.stage) this.stage.dataset.azimuth = ((cam.azimuth * 180) / Math.PI).toFixed(1);
@@ -198,7 +213,7 @@ export class FigureEngine {
   }
 
   private needsFrame(): boolean {
-    return this.playing || this.dragging || this.springsMoving() || this.offsetsMoving();
+    return this.playing || this.dragging || this.springsMoving() || this.offsetsMoving() || this.fadeUntil > performance.now();
   }
 
   private schedule(): void {
@@ -215,6 +230,11 @@ export class FigureEngine {
     const t0 = performance.now();
     const dt = clampDt(now, this.last || now - 16);
     this.last = now;
+    this.observeFrame(dt);
+    if (this.fadeUntil) {
+      this.svg.style.opacity = String(Math.min(1, Math.max(0, 1 - (this.fadeUntil - now) / 150)));
+      if (now >= this.fadeUntil) this.fadeUntil = 0;
+    }
     if (this.playing) {
       this.beatT = Math.min(this.beatT + dt, this.duration(this.beat));
       if (this.beatT >= this.duration(this.beat)) this.playing = false;
@@ -239,13 +259,26 @@ export class FigureEngine {
 
   private notify(): void { this.onBeat(this.beat); }
 
+  private observeFrame(dt: number): void {
+    // The opt-in benchmark measures full motion, before the adaptive fallback.
+    if (Array.isArray(window.__argminFigurePerf)) return;
+    this.slowFrames = dt > 0.024 ? this.slowFrames + 1 : 0;
+    if (this.slowFrames < 30 || this.adaptiveCalm) return;
+    this.adaptiveCalm = true;
+    figureSession('calm', '1');
+    this.setReducedMotion(true);
+    this.onCalm();
+  }
+
   private go(index: number, animate: boolean): void {
+    const previousCamera = this.pose().camera;
     this.beat = index;
     this.beatT = animate && !this.calm ? 0 : this.duration(index);
     this.playing = animate && !this.calm;
-    if (this.scene.beatIds[index] === 'board') { this.off.az.target = 0; this.off.el.target = 0; }
+    if (this.ids[index] === 'board') { this.off.az.target = 0; this.off.el.target = 0; }
+    this.transitionCamera(previousCamera, animate);
     // describe() is written only on a beat change, not per frame.
-    this.svg.setAttribute('aria-label', this.scene.describe(this.model, index, 'lesson'));
+    this.svg.setAttribute('aria-label', this.scene.describe(this.model, index, this.mode));
     if (this.stage) {
       this.stage.dataset.beat = String(index);
       this.stage.dataset.settled = 'false';
@@ -255,8 +288,19 @@ export class FigureEngine {
     else { this.paintNow(); this.schedule(); }
   }
 
+  private transitionCamera(previous: string, animate: boolean): void {
+    const cameraChanged = previous !== this.pose().camera;
+    if (this.cuts.includes(this.ids[this.beat]!) || (this.calm && cameraChanged)) {
+      this.beatT = this.duration(this.beat);
+      this.playing = false;
+      this.snapCamera();
+      this.fadeUntil = performance.now() + 150;
+      this.svg.style.opacity = '0';
+    } else if (!animate) this.snapCamera();
+  }
+
   next(): void {
-    if (this.beat < this.scene.beatIds.length - 1) this.go(this.beat + 1, true);
+    if (this.beat < this.ids.length - 1) this.go(this.beat + 1, true);
   }
 
   prev(): void { if (this.beat > 0) this.go(this.beat - 1, false); }
@@ -285,25 +329,41 @@ export class FigureEngine {
     const same = Math.abs(vp.width - this.vp.width) < 1 && Math.abs(vp.height - this.vp.height) < 1;
     if (same) return;
     this.vp = vp;
+    this.snapCamera();
     this.paintNow();
   }
 
   setReducedMotion(calm: boolean): void {
+    calm = calm || this.adaptiveCalm;
     if (calm === this.calm) return;
     this.calm = calm;
-    if (calm) { this.beatT = this.duration(this.beat); this.playing = false; }
+    if (calm) { this.beatT = this.duration(this.beat); this.playing = false; this.snapCamera(); }
     this.paintNow();
   }
 
   setVisible(visible: boolean): void {
     this.visible = visible;
-    if (visible) { this.last = 0; this.schedule(); }
+    if (!visible) return;
+    this.last = 0;
+    if (this.fadeUntil && this.fadeUntil <= performance.now()) {
+      this.fadeUntil = 0;
+      this.svg.style.opacity = '1';
+    }
+    this.schedule();
   }
 
   themeChanged(): void {
     this.painter.restyle();
     this.paintNow();
   }
+
+  printState(last: boolean): void {
+    if (last) { this.printBeat = this.beat; this.go(this.ids.length - 1, false); }
+    else this.go(this.printBeat, false);
+    this.fadeUntil = 0;
+    this.svg.style.opacity = '1';
+  }
+  private printBeat = 0;
 
   dispose(): void { if (this.raf) cancelAnimationFrame(this.raf); this.raf = 0; }
 }

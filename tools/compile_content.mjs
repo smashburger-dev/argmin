@@ -12,6 +12,7 @@ import { compileExpression, compileTemplate } from '../assets/js/domain/expressi
 import { validateCompetencyGraph } from '../assets/js/domain/competency_graph.mjs';
 import { assertVizCheckpointContract } from '../assets/js/core/viz_checkpoint_grader.mjs';
 import { scenes as figureScenes } from '../assets/js/figures/scenes/index.mjs';
+import { hintSpec, hintTexts, answerNumbers, assertNoHintLeak } from '../assets/js/figures/kit/hints.mjs';
 import { assertFamilyPlacement, configureExerciseFamilies, EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import {
@@ -42,7 +43,7 @@ export { validateCompetencyGraph };
 const defaultProjectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
-  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization', 'figure',
+  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization', 'figure', 'figure-hints',
   'capsule-bank',
 ];
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
@@ -300,15 +301,107 @@ function assertUniqueCheckpoints(lessons) {
 export function validateFigureSpec(spec, label) {
   const scene = figureScenes[spec.scene];
   if (!scene) throw new Error(`${label}: Unbekannte Figurenszene ${spec.scene}`);
-  scene.validateParams(spec.params);
-  const figureModel = scene.model(spec.params);
+  const mode = spec.kind === 'hint' ? 'hint' : 'lesson';
+  scene.validateParams(spec.params, { mode });
+  const figureModel = scene.model(spec.params, { mode });
+  assertFigureKind(spec, scene, label);
+  if (!Array.isArray(spec.beats)) return true;
   const beatIds = (spec.beats || []).map((beat) => beat.id);
-  if (JSON.stringify(beatIds) !== JSON.stringify(scene.beatIds)) {
+  const expectedBeats = mode === 'hint' ? scene.hintBeatIds : scene.beatIds;
+  const subset = ['inline', 'static', 'explore', 'compare'].includes(spec.kind);
+  if (!subset && JSON.stringify(beatIds) !== JSON.stringify(expectedBeats)) {
     throw new Error(`${label}: Beats [${beatIds.join(', ')}] stimmen nicht mit der Szene [${scene.beatIds.join(', ')}] überein`);
   }
   if (spec.predict) assertFigurePredict(spec.predict, scene, figureModel, label);
   assertFigureNumbers(spec, scene, figureModel, label);
   return true;
+}
+
+function assertFigureKind(spec, scene, label) {
+  const fail = (reason) => { throw new Error(`${label}: ${reason}`); };
+  if (spec.beats?.from === 'trace' && typeof scene.trace !== 'function') fail('trace-Beats brauchen scene.trace');
+  assertKindParameters(spec, scene, fail);
+  assertFigureBeatLimits(spec, scene, fail);
+}
+
+function assertKindParameters(spec, scene, fail) {
+  const checks = {
+    explore: () => assertExploreField(spec, fail),
+    compare: () => { if (!spec.compare?.a || !spec.compare?.b) fail('compare braucht a und b'); },
+    hint: () => { if (!scene.hintBeatIds?.length) fail('Hinweis-Beats fehlen'); },
+  };
+  checks[spec.kind]?.();
+  if (['hint', 'inline', 'static'].includes(spec.kind) && spec.predict) fail('Diese Figurenart erlaubt keine Vorhersage');
+  if (['inline', 'static'].includes(spec.kind) && spec.beats?.length !== 1) fail('inline/static brauchen genau einen Zustand');
+}
+
+function assertExploreField(spec, fail) {
+  const e = spec.explore;
+  if (!e || e.min >= e.max || e.step <= 0 || typeof spec.params[e.parameter] !== 'number') fail('explore braucht gültiges Zahlenfeld');
+  if (Array.isArray(spec.beats) && spec.beats.length > 3) fail('explore erlaubt höchstens drei Beats');
+}
+
+function assertFigureBeatLimits(spec, scene, fail) {
+  for (const beat of Array.isArray(spec.beats) ? spec.beats : []) {
+    if (!scene.beatIds.includes(beat.id)) fail(`Beats enthalten unbekannten Schritt ${beat.id}`);
+    if (beat.caption.length > 140) fail('Beat-Beschriftung länger als 140 Zeichen');
+    if (scene.beatDuration(beat.id) > 4) fail('Beat länger als vier Sekunden');
+  }
+}
+
+export function validateFigureHints(document, families, scenes = figureScenes) {
+  for (const entry of document.hints) validateHintEntry(entry, families, scenes);
+}
+
+function validateHintEntry(entry, families, scenes) {
+  const family = EXERCISE_FAMILIES.get(entry.familyId);
+  const scene = scenes[entry.scene];
+  if (!family || !scene?.hintParams || !scene.hintBeatIds?.length) throw new Error(`${entry.familyId}: Hinweisvertrag fehlt`);
+  if (family.taskArchetype === 'choice-diagnose' && entry.source !== 'neighbor') throw new Error('Klassifikationshinweise brauchen source: neighbor');
+  validateHintCases(entry, families, scene, family);
+}
+
+function validateHintCases(entry, families, scene, family) {
+  const cases = families.find((item) => item.familyId === entry.familyId)?.cases ?? [];
+  const selected = entry.caseIds ?? family.caseTypes.map((item) => item.caseId);
+  for (const caseId of selected) {
+    if (!family.caseTypes.some((item) => item.caseId === caseId)) throw new Error(`Unbekannter Hinweisfall ${caseId}`);
+    const authored = cases.find((item) => item.caseId === caseId);
+    if (authored) checkHintCase(entry, scene, family, { familyId: entry.familyId, caseId, parameters: { caseId, ...authored.parameters } });
+    checkHintSeeds(entry, scene, family, caseId);
+  }
+}
+
+function checkHintSeeds(entry, scene, family, caseId) {
+  let profiles = 0;
+  for (const difficulty of family.difficultyProfiles) {
+    try { family.generate({ seed: 0, caseId, difficulty }); }
+    catch (error) {
+      if (/Unbekannter Fall .* für Profil|Unbekanntes Profil/.test(error.message)) continue;
+      throw error;
+    }
+    profiles += 1;
+    for (let seed = 0; seed < 50; seed += 1) {
+      const instance = EXERCISE_FAMILIES.instantiate(entry.familyId, seed, difficulty, caseId);
+      checkHintCase(entry, scene, family, instance);
+    }
+  }
+  if (!profiles) throw new Error(`${caseId}: kein prüfbares Hinweisprofil`);
+}
+
+function checkHintCase(entry, scene, family, instance) {
+  const spec = hintSpec(entry, scene, instance);
+  const m = scene.model(spec.params, { mode: 'hint' });
+  const answers = answerNumbers(family.solve(instance.parameters));
+  if (!answers.length) throw new Error(`${entry.familyId}: keine prüfbare Solverantwort`);
+  for (const [index, beat] of spec.beats.entries()) {
+    const duration = scene.beatDuration(beat.id);
+    for (const time of [0, duration / 2, duration]) {
+      const p = scene.pose(m, index, time, 'hint');
+      const texts = [spec.title, spec.caption, beat.caption, scene.readout(m, p, 'hint'), scene.describe(m, index, 'hint'), ...hintTexts(scene.build(m, p, 'hint'))];
+      assertNoHintLeak(texts, answers, `${entry.familyId}:${instance.caseId ?? 'curated'}:${beat.id}`);
+    }
+  }
 }
 
 function assertFigurePredict(predict, scene, figureModel, label) {
@@ -369,7 +462,7 @@ function compileLessonContent(contentRoot, lessons, projectRoot, families, markd
   for (const lesson of lessons) markdownSources.set(lesson.lessonId, []);
   const visualizationIds = new Map();
   const figureIds = new Map();
-  return lessons.map((lesson) => ({
+  const compiled = lessons.map((lesson) => ({
     ...lesson,
     blocks: lesson.blocks.map((block) => {
       if (block.type === 'figure') return compileFigureBlock(block, lesson, contentRoot, projectRoot, figureIds);
@@ -395,6 +488,19 @@ function compileLessonContent(contentRoot, lessons, projectRoot, families, markd
       return { ...block, html };
     }),
   }));
+  for (const lesson of compiled) validateLessonFigures(lesson);
+  return compiled;
+}
+
+export function validateLessonFigures(lesson) {
+  const figures = lesson.blocks.filter((block) => block.fig);
+  const heavy = figures.filter((block) => ['beats', 'explore'].includes(block.fig.kind));
+  if (heavy.length > 2) throw new Error(`${lesson.lessonId}: höchstens zwei beats/explore-Figuren`);
+  for (let i = 1; i < lesson.blocks.length; i += 1) {
+    if (lesson.blocks[i].fig?.kind === 'inline' && lesson.blocks[i - 1].fig?.kind === 'inline') {
+      throw new Error(`${lesson.lessonId}: keine benachbarten inline-Figuren`);
+    }
+  }
 }
 
 // Fail-closed: every `#/glossary/<id>` link in lesson markup must resolve
@@ -906,6 +1012,9 @@ export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo
   validateLoadedCatalog(contentRoot, catalog, files, entities);
   filterPublicEntities(entities);
   const bundle = compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion, entities);
+  const figureHints = readJson(join(contentRoot, 'figure-hints.json'));
+  validateSourceDocument('figure-hints', figureHints, projectRoot);
+  validateFigureHints(figureHints, entities.families);
   validateCompiledContent(bundle);
   const hashInput = { ...bundle, contentVersion: undefined };
   bundle.contentVersion = createHash('sha256').update(JSON.stringify(canonicalize(hashInput))).digest('hex');
