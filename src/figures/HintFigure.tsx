@@ -14,7 +14,9 @@ export default function HintFigure({ entry, instance, onHide }: { entry: HintEnt
     let live = true;
     setLoaded(null);
     setError(false);
-    SCENE_IMPORTS[entry.scene]!().then((scene) => {
+    const sceneImport = SCENE_IMPORTS[entry.scene];
+    if (!sceneImport) { setError(true); return undefined; }
+    sceneImport().then((scene) => {
       const spec = hintSpec(entry, scene, instance) as FigureSpec;
       if (live) setLoaded({ scene, spec });
     }).catch(() => { if (live) setError(true); });

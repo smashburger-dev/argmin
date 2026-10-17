@@ -286,13 +286,7 @@ export class Painter {
     // face: marking the item painted after its first entry would skip the
     // rest of its faces (they keep display:none — the wireframe bug). Decide
     // for all items first, then paint every entry of the dirty items.
-    const repaint = new Set<Item>();
-    for (const { item } of entries) {
-      if (this.paintedVer.get(item) !== ver) {
-        this.paintedVer.set(item, ver);
-        repaint.add(item);
-      }
-    }
+    const repaint = this.dirtyItems(entries, ver);
     const drawn = new Map<string, { item: Item; order: number[] }>();
     for (const entry of entries) {
       const { item } = entry;
@@ -313,6 +307,16 @@ export class Painter {
       this.setAttr(b.g, 'display', rec.item.visible === false ? 'none' : null);
       this.paintSolid(b, rec.item, rec.order, ctx);
     }
+  }
+
+  private dirtyItems(entries: Array<{ item: Item }>, version: string): Set<Item> {
+    const dirty = new Set<Item>();
+    for (const { item } of entries) {
+      if (this.paintedVer.get(item) === version) continue;
+      this.paintedVer.set(item, version);
+      dirty.add(item);
+    }
+    return dirty;
   }
 
   private orderItems(entries: Array<{ item: Item }>): void {
@@ -352,7 +356,7 @@ export class Painter {
       const face = item.mesh.faces[fi];
       const { fill, opacity, st } = this.faceStyle(item, face, ctx);
       const tone = face.tone ?? item.tone ?? '';
-      const key = `${face.part ?? 0}|${tone}|${fill}|${opacity ?? ''}|${st.stroke}|${st.width}|${st.dash ?? ''}`;
+      const key = faceBucketKey(face, tone, fill, opacity, st);
       let bucket = buckets.get(key);
       if (!bucket) {
         bucket = { p: this.bucketPath(b, key, fill, opacity, st, tone), d: [] };
@@ -559,6 +563,10 @@ export class Painter {
     }
     if (prev !== value) e.setAttribute(name, value);
   }
+}
+
+function faceBucketKey(face: Face, tone: string, fill: string, opacity: string | null, stroke: { stroke: string; width: number; dash?: string }): string {
+  return `${face.part ?? 0}|${tone}|${fill}|${opacity ?? ''}|${stroke.stroke}|${stroke.width}|${stroke.dash ?? ''}`;
 }
 
 /**

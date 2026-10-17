@@ -147,6 +147,18 @@ function NextBeatButton({ last, gated, next, restart }: { last: boolean; gated: 
   </Button>;
 }
 
+function StaticExplanation({ text, close }: { text: string | null; close: () => void }) {
+  if (!text) return null;
+  return <section class="figure-part-card" role="status"><p>{text}</p>
+    <Button size="sm" variant="ghost" onClick={close}>Erklärung schließen</Button>
+  </section>;
+}
+
+function stageInstructions(kind: string): string {
+  if (kind === 'static') return 'Teile antippen oder Eingabetaste: Erklärung öffnen. Umschalt+Pfeile: drehen. Pfeile hoch/runter: neigen.';
+  return STAGE_KEYS;
+}
+
 export default function FigureRuntime({ scene, spec, style, initialBeat, onPredictDone }: Props) {
   const { mode, still, storageKey, kind } = figureOptions(spec);
   const runtimeScene = useMemo(() => sceneForSpec(scene, spec, still), [scene, spec, still]);
@@ -158,6 +170,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
   const [viewOpen, setViewOpen] = useState(false);
   const [viewUsed, setViewUsed] = useState(figureSession('view-used') === '1');
   const [calm, setCalm] = useState(figureSession('calm') === '1');
+  const [partText, setPartText] = useState<string | null>(null);
   const markViewUsed = () => { figureSession('view-used', '1'); setViewUsed(true); };
   const stageRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -244,6 +257,11 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
+    if (kind === 'static' && ['Enter', ' '].includes(event.key)) {
+      event.preventDefault();
+      setPartText(runtimeScene.describe(model, beat, mode));
+      return;
+    }
     const action = stageKeyAction(event.key, event.shiftKey);
     const eng = engineRef.current;
     if (!action || !eng) return;
@@ -286,6 +304,11 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
   };
 
   const predictCheckpoint = predictCheckpointOf(spec);
+  const inspectPart = (event: MouseEvent) => {
+    if (kind !== 'static') return;
+    const item = (event.target as Element).closest('[data-item]')?.getAttribute('data-item');
+    if (item) setPartText(runtimeScene.describe(model, beat, mode, item));
+  };
 
   return (
     <div class="figure-runtime" data-style={styleId} data-kind={kind}>
@@ -294,11 +317,12 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
       <div
         class="figure-stage"
         ref={stageRef}
-        tabIndex={0}
+        tabIndex={kind === 'inline' ? undefined : 0}
         role="group"
         aria-roledescription="Figur"
-        aria-label={`${spec.title}. ${STAGE_KEYS}`}
+        aria-label={`${spec.title}. ${stageInstructions(kind)}`}
         onKeyDown={onKeyDown}
+        onClick={inspectPart}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerEnd}
@@ -347,6 +371,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
         </button>
       </div> : null}
       <PredictPanel visible={Boolean(atPredict)} checkpoint={predictCheckpoint} done={predictDone} graded={graded} skip={skipPredict} />
+      <StaticExplanation text={partText} close={() => setPartText(null)} />
       <details class="figure-transcript">
         <summary>Ablauf als Text</summary>
         <ol>{beatIds.map((id, i) => <li key={id}>{runtimeScene.describe(model, i, mode)}</li>)}</ol>

@@ -1098,15 +1098,7 @@ export function describe(m, beatIndex, mode = 'lesson') {
     'Die Tafel zeigt die Rechnung x₁·a₁ + x₂·a₂ = b.',
     `Das Ziel ${fmtPair(m, m.ghost[0], m.ghost[1])} verlangt ${formatFrac(m.xGhost[0])} Hafer: eine Geisterportion.`,
   ];
-  const hint = [
-    'Hafer und Beerenmix stehen bereit, das Ziel steht an der Tafel.',
-    'Hafer wird portioniert; auf der Tafel wächst der erste Pfeil.',
-    'Wie viele Portionen Beerenmix treffen das Ziel?',
-    'Der Beerenmix folgt; der zweite Pfeil wächst ans Ziel.',
-    'Die Tafel zeigt die Rechnung x₁·a₁ + x₂·a₂ = b.',
-    'Das zweite Ziel verlangt eine negative Portion: eine Geisterportion.',
-  ];
-  return (mode === 'hint' ? hint : lesson)[beatIndex];
+  return lesson[beatIndex];
 }
 
 const HINT_TEXT = [

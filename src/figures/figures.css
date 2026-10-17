@@ -85,6 +85,8 @@
 .figure-drag-hint, .figure-calm { font-size: 0.8rem; color: var(--text-2); margin: 0 0 6px; }
 .figure-view-panel { flex-wrap: wrap; }
 .figure-runtime[data-kind="inline"] .figure-stage { height: 160px; min-height: 0; aspect-ratio: auto; }
+.figure-runtime[data-kind="inline"] .figure-stage { cursor: default; touch-action: auto; }
+.figure-part-card { padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .exercise-side-stack { position: sticky; top: 88px; min-width: 0; }
 .exercise-side-stack .exercise-side { position: static; }
 .figure-hint-card { margin-top: 0; }
