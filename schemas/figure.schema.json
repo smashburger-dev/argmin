@@ -4,9 +4,24 @@
   "title": "Figure specification",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "engine", "scene", "title", "caption", "hint", "params", "beats"],
+  "required": ["schemaVersion", "kind", "engine", "scene", "title", "caption", "hint", "params", "beats"],
   "properties": {
     "schemaVersion": { "const": 1 },
+    "kind": { "enum": ["beats", "explore", "compare", "static", "inline", "hint", "task"] },
+    "explore": {
+      "type": "object", "additionalProperties": false,
+      "required": ["parameter", "min", "max", "step", "input"],
+      "properties": {
+        "parameter": { "type": "string", "minLength": 1 },
+        "min": { "type": "number" }, "max": { "type": "number" },
+        "step": { "type": "number", "exclusiveMinimum": 0 },
+        "input": { "const": "number" }
+      }
+    },
+    "compare": {
+      "type": "object", "additionalProperties": false, "required": ["a", "b"],
+      "properties": { "a": { "type": "object" }, "b": { "type": "object" } }
+    },
     "engine": { "const": "argmin-figure" },
     "scene": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
     "title": { "type": "string", "minLength": 1 },
@@ -14,9 +29,10 @@
     "hint": { "type": "string", "minLength": 1 },
     "params": { "type": "object" },
     "beats": {
-      "type": "array",
-      "minItems": 1,
-      "items": { "$ref": "#/$defs/beat" }
+      "oneOf": [
+        { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/beat" } },
+        { "type": "object", "additionalProperties": false, "required": ["from"], "properties": { "from": { "const": "trace" } } }
+      ]
     },
     "predict": { "$ref": "#/$defs/predict" }
   },
@@ -27,7 +43,8 @@
       "required": ["id", "caption"],
       "properties": {
         "id": { "type": "string", "minLength": 1 },
-        "caption": { "type": "string", "minLength": 1 }
+        "caption": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "cameraTransition": { "enum": ["travel", "cut"] }
       }
     },
     "predict": {

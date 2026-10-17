@@ -8,6 +8,15 @@ import { span, burst } from '../kit/motion.mjs';
 
 export const id = 'smoothie-column-picture';
 export const beatIds = ['ingredients', 'oats', 'predict', 'berries', 'board', 'ghost'];
+export const hintBeatIds = ['ingredients', 'oats', 'board', 'ghost'];
+
+export function hintParams(familyId, parameters) {
+  if (familyId !== 'transform-system-2x2-elimination' || !parameters?.A) return null;
+  const { A, b } = parameters;
+  const a1 = A.map((row) => row[0]);
+  const a2 = A.map((row) => row[1]);
+  return { a1, a2, b, ghost: a1.map((v, i) => -v + a2[i]) };
+}
 
 const DURATIONS = { ingredients: 1.2, oats: 2.4, predict: 0.8, berries: 3.6, board: 2.2, ghost: 4.0 };
 
@@ -57,7 +66,8 @@ const cramer = (a1, a2, rhs, det) => [
  * integers <= 3 (countable scoops); the ghost solution has exactly one
  * negative component.
  */
-export function validateParams(params) {
+export function validateParams(params, { mode = 'lesson' } = {}) {
+  if (mode === 'hint') return validateHintParams(params);
   for (const name of ['a1', 'a2', 'b', 'ghost']) {
     if (!isVec(params[name])) throw new Error(`params.${name} must be an integer 2-vector in [-6, 6]`);
   }
@@ -78,8 +88,8 @@ export function validateParams(params) {
  * @returns {{ a1: number[], a2: number[], b: number[], ghost: number[], det: number,
  *   x: [Frac, Frac], xGhost: [Frac, Frac] }}
  */
-export function model(params) {
-  validateParams(params);
+export function model(params, options = {}) {
+  validateParams(params, options);
   const { a1, a2, b, ghost } = params;
   const det = a1[0] * a2[1] - a1[1] * a2[0];
   return {
@@ -278,6 +288,7 @@ const T_HIT = cumDur(beatIds.indexOf('berries') + 1);
  * deep-equals pose(k-1, dur).state. beat/focus/camera are discrete selectors.
  */
 export function pose(m, beatIndex, t, mode = 'lesson') {
+  if (mode === 'hint') return hintPose(beatIndex, t);
   const beat = beatIds[beatIndex];
   const dur = DURATIONS[beat];
   const tt = Math.min(Math.max(t, 0), dur);
@@ -839,6 +850,7 @@ const lit = (idv, focus, base = 'mid') => (FOCUS_ITEMS[focus]?.has(idv) ? 'lit' 
  * prim keys for every pose of a model+mode; hidden parts use visible:false.
  */
 export function build(m, p, mode = 'lesson') {
+  if (mode === 'hint') return buildHint(m, p);
   const st = staticsFor(m);
   const M = st.meshes;
   const { state } = p;
@@ -1027,6 +1039,7 @@ function pourStream(scoop, pos) {
  * @returns {import('../kit/camera.mjs').Camera}
  */
 export function cameraFor(m, p, viewport) {
+  if (p.mode === 'hint') return cameraFor(hintBase(), { ...p, mode: 'lesson' }, viewport);
   const st = staticsFor(m);
   if (p.camera === 'board') {
     const zoom = Math.min((0.98 * viewport.width) / st.layout.w, (0.9 * viewport.height) / st.layout.h);
@@ -1070,6 +1083,7 @@ export function readout(m, p, mode = 'lesson') {
 
 /** One German sentence per beat for screen readers (changes per beat). */
 export function describe(m, beatIndex, mode = 'lesson') {
+  if (mode === 'hint') return HINT_TEXT[beatIndex];
   const x1 = formatFrac(m.x[0]);
   const x2 = formatFrac(m.x[1]);
   const lesson = [
@@ -1089,4 +1103,69 @@ export function describe(m, beatIndex, mode = 'lesson') {
     'Das zweite Ziel verlangt eine negative Portion: eine Geisterportion.',
   ];
   return (mode === 'hint' ? hint : lesson)[beatIndex];
+}
+
+const HINT_TEXT = [
+  'Jede Zutat steht für eine Spalte. Die Gewichte bleiben unbekannt.',
+  'Der gestrichelte Strahl zeigt nur die Richtung, keine Portionen oder gesuchte Länge.',
+  'Gewichte die Spalten, addiere komponentenweise und vergleiche mit dem Ziel deiner Aufgabe.',
+  'Wo der Vergleich hinkt: Negative Gewichte sind rechnerisch möglich, echte Zutaten lassen sich so nicht mischen.',
+];
+
+function validateHintParams(params) {
+  for (const key of ['a1', 'a2', 'b', 'ghost']) {
+    const v = params?.[key];
+    if (!Array.isArray(v) || v.length !== 2 || !v.every((n) => Number.isFinite(n) && Math.abs(n) <= 1e6)) {
+      throw new Error(`params.${key}: finite hint vector required`);
+    }
+  }
+  if (params.a1[0] * params.a2[1] === params.a1[1] * params.a2[0]) throw new Error('params: collinear hint vectors');
+}
+
+let hintBaseModel;
+function hintBase() {
+  hintBaseModel ??= model({ a1: [2, 1], a2: [1, 3], b: [5, 5], ghost: [-1, 2] });
+  return hintBaseModel;
+}
+
+function hintPose(index, t) {
+  const beat = hintBeatIds[index];
+  if (!beat) throw new Error('unknown hint beat');
+  return { ...pose(hintBase(), 0, 0), beat, beatIndex: index, t, mode: 'hint',
+    camera: index >= 2 ? 'board' : 'iso', focus: index === 1 ? 'oats' : 'equation' };
+}
+
+const hintBuildCache = new WeakMap();
+function buildHint(m, p) {
+  let beats = hintBuildCache.get(m);
+  if (!beats) { beats = new Map(); hintBuildCache.set(m, beats); }
+  if (beats.has(p.beatIndex)) return beats.get(p.beatIndex);
+  const base = hintBase();
+  const items = build(base, pose(base, 0, 0)).map((item) => hintItem(item, m, p));
+  beats.set(p.beatIndex, items);
+  return items;
+}
+
+function hintItem(item, m, p) {
+  if (['scoop', 'scoop-load', 'scoop-rest', 'pour-stream', 'jar-marks', 'mixer-liquid'].includes(item.id)) return { ...item, visible: false, prims: [] };
+  if (item.id === 'board-face') return { ...item, tone: 'lo', prims: hintBoard(m, p) };
+  if (item.id === 'mixer-display') return { ...item, prims: [
+    textPrim('unknown-portions', 2.2, 1.7, [{ text: '? Portionen' }], 0.65, { font: 'label' }),
+  ] };
+  if (item.id === 'oats-label' || item.id === 'berries-label') return { ...item, prims: [
+    textPrim('ingredient-name', item.size[0] / 2, item.size[1] / 2, [{ text: item.id === 'oats-label' ? 'Hafer' : 'Beeren' }], 1.1),
+  ] };
+  return item;
+}
+
+function hintBoard(m, p) {
+  const direction = (v) => { const n = Math.hypot(...v); return [14 + 6 * v[0] / n, 14 - 6 * v[1] / n]; };
+  return [
+    textPrim('hint-title', 20, 4, [{ text: 'Gewichte gesucht' }], 2.1, { font: 'label' }),
+    { t: 'line', key: 'oats-ray', from: [14, 14], to: direction(m.a1), tone: p.beatIndex === 1 ? 'ghost' : 'mid', dash: [0.8, 0.6], width: 0.18 },
+    { t: 'line', key: 'berries-ray', from: [14, 14], to: direction(m.a2), tone: 'mid', dash: [0.8, 0.6], width: 0.18 },
+    textPrim('hint-unknown', 28, 16, [{ text: '?' }], 3.6, { tone: 'lit', font: 'math' }),
+    textPrim('hint-equation', 20, 26, [{ text: '? · Hafer + ? · Beeren' }], 2.1, { font: 'label' }),
+    textPrim('hint-target', 20, 30, [{ text: '= Ziel' }], 2.1, { font: 'label' }),
+  ];
 }

@@ -1,6 +1,6 @@
 # ADR-0018: Eigene Figuren („Werkbank“) als isometrische SVG-Szenen
 
-Status: Entwurf (Session S1, 17.10.2026). Offen bis Noas Stilwahl: Abschnitt „Stil“. Recherche: `docs/session-2026-10-16-figuren-recherche.md`, Plan pro Familie: `docs/figuren-familienplan.md`.
+Status: Angenommen (17.10.2026). Stil: A1 Tonale Werkbank. Recherche: `docs/session-2026-10-16-figuren-recherche.md`, Plan pro Familie: `docs/figuren-familienplan.md`.
 
 ## Kontext
 
