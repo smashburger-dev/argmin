@@ -369,7 +369,7 @@ main { min-width: 0; }
   .lesson-toc a.is-active { color: var(--text); }
   .lesson-toc a.is-active::before { background: var(--accent); }
 }
-.lesson-prose { display: grid; gap: var(--s4); align-content: start; width: 100%; margin-inline: auto; padding: 0; border: 0; background: none; box-shadow: none; counter-reset: lesson-section; }
+.lesson-prose { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s4); align-content: start; width: 100%; margin-inline: auto; padding: 0; border: 0; background: none; box-shadow: none; counter-reset: lesson-section; }
 .lesson-lead { font-size: 19px; line-height: 1.7; }
 .lesson-lead > div > :last-child { margin-bottom: 0; }
 @media (min-width: 420px) { .lesson-lead { text-align: justify; hyphens: auto; } }

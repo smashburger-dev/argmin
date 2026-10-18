@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "balance-isolate",
+  "title": "Beide Seiten gleich verändern",
+  "caption": "Die gleiche Operation erhält die Lösung.",
+  "hint": "Vergleiche die Operation auf beiden Seiten.",
+  "params": {
+    "example": 1
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Zwei x-Pakete und drei Einheiten entsprechen sieben Einheiten."
+    },
+    {
+      "id": "step-1",
+      "caption": "Ziehe auf beiden Seiten drei ab. Welchen Wert hat ein einzelnes x-Paket?"
+    },
+    {
+      "id": "step-2",
+      "caption": "Teile beide Seiten durch zwei. x steht allein."
+    },
+    {
+      "id": "step-3",
+      "caption": "Anderes Beispiel: −2x = 1 ergibt x = −1/2. Die Waage ist hier nur ein Rechenbild."
+    }
+  ],
+  "predict": {
+    "beat": "step-1",
+    "prompt": "Welchen Wert hat x nach dem Teilen beider Seiten durch zwei?",
+    "input": "numeric",
+    "expected": 2,
+    "tolerance": 0.000001,
+    "hints": [
+      "Nach dem Abziehen von drei gilt 2x = 4."
+    ]
+  }
+}

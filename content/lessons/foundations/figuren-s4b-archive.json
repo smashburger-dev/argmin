@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-foundations-figuren-s4b-archive",
+  "version": 1,
+  "locale": "de",
+  "title": "Archiv der ersetzten Figur S4b",
+  "objectives": ["Ersetzte Visualisierung bis zur Freigabe aufbewahren"],
+  "competencyIds": ["c-algebra"],
+  "requires": [],
+  "estimatedMinutes": 1,
+  "blocks": [
+    { "blockId": "archive-distributive-law", "type": "visualization", "contentRef": "lessons/foundations/distributive-law.viz.json" }
+  ],
+  "sourceRefs": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "local-only"
+}
