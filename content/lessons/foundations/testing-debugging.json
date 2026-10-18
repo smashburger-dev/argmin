@@ -1,14 +1,17 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-foundations-testing-debugging",
-  "version": 2,
+  "version": 3,
   "locale": "de",
   "title": "Beobachtungen in Tests festhalten",
   "objectives": ["einen Fehler zuverlässig reproduzieren", "Arrange, Act und Assert trennen", "einen Fix gegen Ursache und Regression prüfen"],
   "competencyIds": ["c-testing-debugging"],
   "requires": ["c-python-functions", "c-python-files-errors"],
   "estimatedMinutes": 70,
-  "blocks": [{ "blockId": "testing-debugging-core", "type": "project-step", "contentRef": "lessons/foundations/testing-debugging.md" }],
+  "blocks": [
+    {"blockId":"testing-debugging-core","type":"project-step","contentRef":"lessons/foundations/testing-debugging.md"},
+    {"blockId":"smoke-detector","type":"figure","contentRef":"lessons/foundations/smoke-detector.fig.json"}
+  ],
   "sourceRefs": [
     { "sourceId": "py-tutorial-official-3.14", "role": "reference", "locator": "Kapitel 8: Exceptions als reproduzierbare Fehlergrenze" }
   ],

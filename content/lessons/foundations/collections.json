@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-foundations-collections",
-  "version": 3,
+  "version": 4,
   "locale": "de",
   "title": "Zugriff und Invarianten entscheiden",
   "objectives": ["Liste, Dictionary und Set über ihren Zugriff unterscheiden", "Häufigkeiten mit einem Dictionary zählen", "Duplikate mit einem Set erkennen"],
@@ -9,8 +9,10 @@
   "requires": ["c-python-control-flow"],
   "estimatedMinutes": 70,
   "blocks": [
-    { "blockId": "collections-core", "type": "worked-example", "contentRef": "lessons/foundations/collections.md" },
-    { "blockId": "collections-viz", "type": "visualization", "contentRef": "lessons/foundations/running-sum.viz.json" }
+    {"blockId":"collections-core","type":"worked-example","contentRef":"lessons/foundations/collections.md"},
+    {"blockId":"two-tags-one-list","type":"figure","contentRef":"lessons/foundations/two-tags-one-list.fig.json"},
+    {"blockId":"collections-core-after-trace","type":"worked-example","contentRef":"lessons/foundations/collections-trace-after.md"},
+    {"blockId":"collections-viz","type":"visualization","contentRef":"lessons/foundations/running-sum.viz.json"}
   ],
   "sourceRefs": [
     { "sourceId": "py-tutorial-official-3.14", "role": "practice", "locator": "Kapitel 5: Data Structures" }

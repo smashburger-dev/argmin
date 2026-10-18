@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-foundations-functions",
-  "version": 3,
+  "version": 4,
   "locale": "de",
   "title": "Eingaben, Wirkung und Vertrag klären",
   "objectives": ["Parameter, Rückgabe und Seiteneffekt unterscheiden", "eine Funktion aus Beispielen ableiten", "Grenzfälle vor der Implementierung notieren"],
@@ -9,8 +9,10 @@
   "requires": ["c-python-basics", "c-python-control-flow"],
   "estimatedMinutes": 60,
   "blocks": [
-    { "blockId": "functions-core", "type": "worked-example", "contentRef": "lessons/foundations/functions.md" },
-    { "blockId": "functions-viz", "type": "visualization", "contentRef": "lessons/foundations/function-composition.viz.json" }
+    {"blockId":"functions-core","type":"worked-example","contentRef":"lessons/foundations/functions.md"},
+    {"blockId":"vending-frame","type":"figure","contentRef":"lessons/foundations/vending-frame.fig.json"},
+    {"blockId":"functions-core-after-trace","type":"worked-example","contentRef":"lessons/foundations/functions-trace-after.md"},
+    {"blockId":"functions-viz","type":"visualization","contentRef":"lessons/foundations/function-composition.viz.json"}
   ],
   "sourceRefs": [
     { "sourceId": "py-tutorial-official-3.14", "role": "practice", "locator": "Kapitel 4.9: Defining Functions" }
