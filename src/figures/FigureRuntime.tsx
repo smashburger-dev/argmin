@@ -45,12 +45,6 @@ function stageKeyAction(key: string, shift: boolean): string | null {
   return null;
 }
 
-function predictCheckpointOf(spec: FigureSpec): VizCheckpoint | null {
-  if (!spec.predict) return null;
-  const { prompt, input, expected, tolerance, hints, typicalErrors } = spec.predict;
-  return { prompt, input, expected, tolerance, hints, typicalErrors };
-}
-
 /** Stage background = the style's paper token (the card surface). */
 function stageBackground(style: FigureStyleId): string {
   return resolveTokens(style).paper;
@@ -123,7 +117,7 @@ function FigureStepPanel({ scene, model, spec, beat, predictDone, mode, still, b
   const nBeats = beatIds.length;
   const atPredict = spec.predict?.beat === beatIds[beat];
   const gatePredict = atPredict && !predictDone;
-  const predictCheckpoint = mode === 'hint' ? null : predictCheckpointOf(spec);
+  const predictCheckpoint = mode === 'hint' ? null : spec.predict;
   return (
       <div class="figure-step-body">
         <p class="figure-beat-caption"><MathMarkup html={spec.beats[beat]?.caption ?? ''} inline /></p>

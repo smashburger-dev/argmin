@@ -25,6 +25,7 @@ Noa hat folgende konkrete Erweiterungen ausdrücklich freigegeben:
 - `stepContent` und `onRestart()` in FigureBlock/Runtime. Beim Modellwechsel entfernt die Runtime ihre alten SVG-Items; sonst blieben beim Neuaufbau unsichtbar veraltete Painter-Knoten erhalten. Engine und Painter bleiben unverändert.
 - Kleine gemeinsame CSS-Korrektur: `minmax(0, 1fr)` in der Lektürespalte verhindert eine 678-px-Gridspur in der mobilen 332-px-Spalte.
 - Genau `balance-solve` und `mix-to-target` im vorhandenen Familien-Golden-Korpus und dessen bestehender Abweichungsliste ergänzen. Keine neue Testdatei oder Snapshot-Baseline.
+- Abschließend die unveränderte Checkpoint-Feldkopie `predictCheckpointOf` entfernen und `spec.predict` direkt an das vorhandene Fragenpanel übergeben, um das gemeinsame Runtime-Budget einzuhalten.
 
 Schema, Compiler-Figurenteil und bestehende Hinweiszuordnungen bleiben unverändert. Es gibt keine private Ersatz-Runtime und keinen zusätzlichen Grader.
 
@@ -81,13 +82,15 @@ Abschlussstand:
 
 Die Dev-Sichtung lief mit strikt gebundenem Port 4404. Vor dem Release-Lauf wurde dieser Server beendet; der Release-Lauf nutzte keinen Dev-Server wieder. Keine neuen dauerhaften Tests oder Szenen-Snapshot-Sammlungen angelegt; die Browserproben waren einmalige Skripte außerhalb des Repositorys.
 
+Nach der zusätzlich freigegebenen Runtime-Vereinfachung erneut geprüft: Typecheck und Runtime-Komplexitätsprüfung bestanden; vollständiges Chromium-Release-Gate mit eigenem Preview auf Port 4404 erneut bestanden, 95 bestanden und 27 übersprungen (34,1 s). Public-Content und Next-Build erneut validiert. Die Änderung entfernt nur die Feldkopie vor dem bestehenden Fragenpanel; die vorhandenen Checkpoint-Felder und Darstellung bleiben dieselben.
+
 ## Budgets und bekannte Basisbefunde
 
 Alle eigenen Szenen-Chunks liegen unter 12.000 Byte gzip. Gemessene Chunks: balance-isolate 1.191, bag-unpack 1.333, power-stack 955, balance-solve 688, mix-to-target 1.117 Byte. Gemeinsame gezielte F12-Helfer: 1.109 Byte; zusätzlich vorhandene linalg-stage-/figure-kit-Teile werden wiederverwendet, nicht kopiert. Das eigene lazy Formularmodul hat 2.142 Byte gzip.
 
 Auch einschließlich der zusätzlich geladenen gemeinsamen Diagrammteile und des benötigten Waagenmodells bleiben die Lektionsfiguren darunter: balance-isolate 10.222, bag-unpack 9.431, power-stack 9.053 Byte gzip als Summe der einzeln komprimierten Chunks. Die gemeinsame Runtime ist separat gemessen.
 
-Die gemeinsame Runtime lag bereits an der Welle-1-Basis bei 10.003 Byte gzip und damit drei Byte über dem strikten 10.000-Byte-Budget. Mit den freigegebenen Schnittstellen sind es zunächst 10.060 Byte (+57). Eine konkrete Vereinfachung der unveränderten Checkpoint-Feldkopie wurde als zusätzliche Integrator-Anfrage gestellt; bis zur Entscheidung ist das Runtime-Budget ausdrücklich offen.
+Die gemeinsame Runtime lag bereits an der Welle-1-Basis bei 10.003 Byte gzip und damit drei Byte über dem strikten 10.000-Byte-Budget. Mit den freigegebenen Schnittstellen waren es zunächst 10.060 Byte (+57). Noa hat die zusätzliche Vereinfachung der unveränderten Checkpoint-Feldkopie freigegeben. Die direkte Übergabe von `spec.predict` entfernt diese Kopie; der finale Runtime-Chunk misst 9.979 Byte gzip. Damit liegt er 21 Byte unter dem Budget und 24 Byte unter der Welle-1-Basis, einschließlich der neuen Formularschnittstellen. Der Komplexitätslauf der Runtime besteht weiterhin bei höchstens 10.
 
 Der Komplexitätslauf über alle berührten UI-/Szenenmodule meldet nur geerbte Funktionen in FamilyExerciseView: `parseFamilyRef` 16, `FamilyExerciseView` 62, `submit` 29 und `workspaceOutput` 12. Ihre Basiswerte sind identisch. Der bereits bestehende Loader ist von 12 auf 10 reduziert. Keine eigene neue Funktion überschreitet 10. Das gemeinsame große View-Modul wurde nicht außerhalb der notwendigen Dispatch-Anbindung umgebaut.
 
@@ -95,4 +98,4 @@ Bestehende Build-Hinweise: deprecated `advancedChunks` und große sonstige Bundl
 
 ## Übergabe
 
-F12-Kompositionen, scene-build-Formulare, Datenpfad, Content und Nachweise sind lokal reviewbar. Runtime-Budgetentscheidung und Noas visuelle Freigabe bleiben ausdrücklich offen. Keine Engine-/Painter-Änderung, kein Push und kein Merge in `feature/figuren`.
+F12-Kompositionen, scene-build-Formulare, Datenpfad, Content und Nachweise sind lokal reviewbar. Die Runtime-Anfrage ist freigegeben und das Budget erfüllt. Es bestehen keine offenen Schnittstellenanfragen. Eine visuelle Freigabe durch Noa wird weiterhin nicht behauptet. Keine Engine-/Painter-Änderung, kein Push und kein Merge in `feature/figuren`.
