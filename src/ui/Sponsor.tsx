@@ -2,7 +2,7 @@ import { createPortal } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';
 import { Button } from './Button';
 
-const SPONSOR_EMAIL = 'kontakt@noakatana.com';
+const SPONSOR_EMAIL = 'contact@noakatana.com';
 // Noa: Ko-fi-URL eintragen, sobald das Konto steht, z.B. 'https://ko-fi.com/deinname'.
 // Bei leerem String zeigt das Fenster keinen Ko-fi-Knopf.
 const KOFI_URL = '';
