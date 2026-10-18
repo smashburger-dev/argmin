@@ -1,0 +1,414 @@
+{
+  "runs": [
+    {
+      "run": 1,
+      "width": 1440,
+      "throttle": 4,
+      "results": [
+        {
+          "style": "a1",
+          "viewport": "1440",
+          "scenario": "beat",
+          "ticks": 263,
+          "frames": 352,
+          "scriptMedian": 4.9,
+          "scriptP95": 7,
+          "scriptMax": 12.7,
+          "buildMedian": 0.6,
+          "sortMedian": 2.1,
+          "paintMedian": 2.2,
+          "faces": 234,
+          "frameMedian": 8.3,
+          "frameP95": 16,
+          "longFrames": 1
+        },
+        {
+          "style": "a1",
+          "viewport": "1440",
+          "scenario": "drag",
+          "ticks": 509,
+          "frames": 556,
+          "scriptMedian": 9.8,
+          "scriptP95": 12.4,
+          "scriptMax": 36.2,
+          "buildMedian": 0,
+          "sortMedian": 4,
+          "paintMedian": 5.7,
+          "faces": 236,
+          "frameMedian": 25.2,
+          "frameP95": 41.7,
+          "longFrames": 1
+        },
+        {
+          "style": "a1",
+          "viewport": "1440",
+          "scenario": "board",
+          "ticks": 124,
+          "frames": 128,
+          "scriptMedian": 9.5,
+          "scriptP95": 12.2,
+          "scriptMax": 39.7,
+          "buildMedian": 0.2,
+          "sortMedian": 2.7,
+          "paintMedian": 6.2,
+          "faces": 236,
+          "frameMedian": 25.1,
+          "frameP95": 41.8,
+          "longFrames": 2
+        }
+      ]
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "throttle": 4,
+      "results": [
+        {
+          "style": "a1",
+          "viewport": "375",
+          "scenario": "beat",
+          "ticks": 271,
+          "frames": 360,
+          "scriptMedian": 4.5,
+          "scriptP95": 6.3,
+          "scriptMax": 14.6,
+          "buildMedian": 0.5,
+          "sortMedian": 2,
+          "paintMedian": 2,
+          "faces": 234,
+          "frameMedian": 8.3,
+          "frameP95": 9.4,
+          "longFrames": 1
+        },
+        {
+          "style": "a1",
+          "viewport": "375",
+          "scenario": "drag",
+          "ticks": 516,
+          "frames": 585,
+          "scriptMedian": 9.4,
+          "scriptP95": 11.5,
+          "scriptMax": 31.5,
+          "buildMedian": 0,
+          "sortMedian": 3.7,
+          "paintMedian": 5.6,
+          "faces": 236,
+          "frameMedian": 17.4,
+          "frameP95": 33.3,
+          "longFrames": 0
+        },
+        {
+          "style": "a1",
+          "viewport": "375",
+          "scenario": "board",
+          "ticks": 146,
+          "frames": 151,
+          "scriptMedian": 8.9,
+          "scriptP95": 11.9,
+          "scriptMax": 39,
+          "buildMedian": 0.1,
+          "sortMedian": 2.5,
+          "paintMedian": 5.7,
+          "faces": 236,
+          "frameMedian": 24.6,
+          "frameP95": 41.7,
+          "longFrames": 0
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "throttle": 4,
+      "results": [
+        {
+          "style": "a1",
+          "viewport": "1440",
+          "scenario": "beat",
+          "ticks": 262,
+          "frames": 351,
+          "scriptMedian": 5,
+          "scriptP95": 6.6,
+          "scriptMax": 12.4,
+          "buildMedian": 0.5,
+          "sortMedian": 2.1,
+          "paintMedian": 2.2,
+          "faces": 234,
+          "frameMedian": 8.3,
+          "frameP95": 16.4,
+          "longFrames": 1
+        },
+        {
+          "style": "a1",
+          "viewport": "1440",
+          "scenario": "drag",
+          "ticks": 521,
+          "frames": 568,
+          "scriptMedian": 9.8,
+          "scriptP95": 12,
+          "scriptMax": 46.1,
+          "buildMedian": 0,
+          "sortMedian": 3.9,
+          "paintMedian": 5.6,
+          "faces": 236,
+          "frameMedian": 25.1,
+          "frameP95": 41.7,
+          "longFrames": 5
+        },
+        {
+          "style": "a1",
+          "viewport": "1440",
+          "scenario": "board",
+          "ticks": 131,
+          "frames": 135,
+          "scriptMedian": 9.4,
+          "scriptP95": 12.9,
+          "scriptMax": 52.9,
+          "buildMedian": 0.2,
+          "sortMedian": 2.6,
+          "paintMedian": 6.1,
+          "faces": 236,
+          "frameMedian": 24.9,
+          "frameP95": 40.9,
+          "longFrames": 2
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "throttle": 4,
+      "results": [
+        {
+          "style": "a1",
+          "viewport": "375",
+          "scenario": "beat",
+          "ticks": 269,
+          "frames": 356,
+          "scriptMedian": 4.7,
+          "scriptP95": 6.1,
+          "scriptMax": 11.5,
+          "buildMedian": 0.5,
+          "sortMedian": 2,
+          "paintMedian": 2.1,
+          "faces": 234,
+          "frameMedian": 8.3,
+          "frameP95": 9.4,
+          "longFrames": 1
+        },
+        {
+          "style": "a1",
+          "viewport": "375",
+          "scenario": "drag",
+          "ticks": 521,
+          "frames": 584,
+          "scriptMedian": 9.2,
+          "scriptP95": 11.7,
+          "scriptMax": 52.9,
+          "buildMedian": 0,
+          "sortMedian": 3.7,
+          "paintMedian": 5.3,
+          "faces": 236,
+          "frameMedian": 17.2,
+          "frameP95": 33.4,
+          "longFrames": 1
+        },
+        {
+          "style": "a1",
+          "viewport": "375",
+          "scenario": "board",
+          "ticks": 157,
+          "frames": 161,
+          "scriptMedian": 8.8,
+          "scriptP95": 12.3,
+          "scriptMax": 33.5,
+          "buildMedian": 0.1,
+          "sortMedian": 2.4,
+          "paintMedian": 5.6,
+          "faces": 236,
+          "frameMedian": 24.3,
+          "frameP95": 34,
+          "longFrames": 0
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "width": 1440,
+      "throttle": 4,
+      "results": [
+        {
+          "style": "a1",
+          "viewport": "1440",
+          "scenario": "beat",
+          "ticks": 258,
+          "frames": 347,
+          "scriptMedian": 5.2,
+          "scriptP95": 7.3,
+          "scriptMax": 12.9,
+          "buildMedian": 0.6,
+          "sortMedian": 2.2,
+          "paintMedian": 2.3,
+          "faces": 234,
+          "frameMedian": 8.4,
+          "frameP95": 16.5,
+          "longFrames": 1
+        },
+        {
+          "style": "a1",
+          "viewport": "1440",
+          "scenario": "drag",
+          "ticks": 505,
+          "frames": 551,
+          "scriptMedian": 10.2,
+          "scriptP95": 12.7,
+          "scriptMax": 54.3,
+          "buildMedian": 0,
+          "sortMedian": 4.1,
+          "paintMedian": 5.8,
+          "faces": 236,
+          "frameMedian": 25.7,
+          "frameP95": 41.8,
+          "longFrames": 3
+        },
+        {
+          "style": "a1",
+          "viewport": "1440",
+          "scenario": "board",
+          "ticks": 118,
+          "frames": 123,
+          "scriptMedian": 10.4,
+          "scriptP95": 13.7,
+          "scriptMax": 17.9,
+          "buildMedian": 0.1,
+          "sortMedian": 2.8,
+          "paintMedian": 6.8,
+          "faces": 236,
+          "frameMedian": 25.5,
+          "frameP95": 49.3,
+          "longFrames": 4
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "width": 375,
+      "throttle": 4,
+      "results": [
+        {
+          "style": "a1",
+          "viewport": "375",
+          "scenario": "beat",
+          "ticks": 267,
+          "frames": 358,
+          "scriptMedian": 4.9,
+          "scriptP95": 7,
+          "scriptMax": 13.4,
+          "buildMedian": 0.6,
+          "sortMedian": 2.1,
+          "paintMedian": 2.1,
+          "faces": 234,
+          "frameMedian": 8.3,
+          "frameP95": 16.1,
+          "longFrames": 1
+        },
+        {
+          "style": "a1",
+          "viewport": "375",
+          "scenario": "drag",
+          "ticks": 506,
+          "frames": 574,
+          "scriptMedian": 9.8,
+          "scriptP95": 12.4,
+          "scriptMax": 40.3,
+          "buildMedian": 0,
+          "sortMedian": 3.9,
+          "paintMedian": 5.8,
+          "faces": 236,
+          "frameMedian": 17.5,
+          "frameP95": 33.6,
+          "longFrames": 1
+        },
+        {
+          "style": "a1",
+          "viewport": "375",
+          "scenario": "board",
+          "ticks": 146,
+          "frames": 151,
+          "scriptMedian": 8.8,
+          "scriptP95": 12.2,
+          "scriptMax": 40.1,
+          "buildMedian": 0.1,
+          "sortMedian": 2.5,
+          "paintMedian": 5.7,
+          "faces": 236,
+          "frameMedian": 24.2,
+          "frameP95": 40.8,
+          "longFrames": 1
+        }
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "width": 1440,
+      "scenario": "beat",
+      "runMedians": [
+        4.9,
+        5,
+        5.2
+      ],
+      "medianOfMedians": 5
+    },
+    {
+      "width": 1440,
+      "scenario": "drag",
+      "runMedians": [
+        9.8,
+        9.8,
+        10.2
+      ],
+      "medianOfMedians": 9.8
+    },
+    {
+      "width": 1440,
+      "scenario": "board",
+      "runMedians": [
+        9.4,
+        9.5,
+        10.4
+      ],
+      "medianOfMedians": 9.5
+    },
+    {
+      "width": 375,
+      "scenario": "beat",
+      "runMedians": [
+        4.5,
+        4.7,
+        4.9
+      ],
+      "medianOfMedians": 4.7
+    },
+    {
+      "width": 375,
+      "scenario": "drag",
+      "runMedians": [
+        9.2,
+        9.4,
+        9.8
+      ],
+      "medianOfMedians": 9.4
+    },
+    {
+      "width": 375,
+      "scenario": "board",
+      "runMedians": [
+        8.8,
+        8.8,
+        8.9
+      ],
+      "medianOfMedians": 8.8
+    }
+  ]
+}

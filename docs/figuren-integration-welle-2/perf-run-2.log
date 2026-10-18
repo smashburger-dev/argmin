@@ -1,0 +1,28 @@
+
+Running 2 tests using 1 worker
+
+
+
+[1/2] [chromium] › tests/e2e/figures-perf.spec.ts:139:9 › figure frame budget (opt-in) › script time per frame at 1440 px under 4x CPU throttling
+[chromium] › tests/e2e/figures-perf.spec.ts:139:9 › figure frame budget (opt-in) › script time per frame at 1440 px under 4x CPU throttling
+┌─────────┬───────┬──────────┬──────────┬───────┬────────┬──────────────┬───────────┬───────────┬─────────────┬────────────┬─────────────┬───────┬─────────────┬──────────┬────────────┐
+│ (index) │ style │ viewport │ scenario │ ticks │ frames │ scriptMedian │ scriptP95 │ scriptMax │ buildMedian │ sortMedian │ paintMedian │ faces │ frameMedian │ frameP95 │ longFrames │
+├─────────┼───────┼──────────┼──────────┼───────┼────────┼──────────────┼───────────┼───────────┼─────────────┼────────────┼─────────────┼───────┼─────────────┼──────────┼────────────┤
+│ 0       │ 'a1'  │ '1440'   │ 'beat'   │ 262   │ 351    │ 5            │ 6.6       │ 12.4      │ 0.5         │ 2.1        │ 2.2         │ 234   │ 8.3         │ 16.4     │ 1          │
+│ 1       │ 'a1'  │ '1440'   │ 'drag'   │ 521   │ 568    │ 9.8          │ 12        │ 46.1      │ 0           │ 3.9        │ 5.6         │ 236   │ 25.1        │ 41.7     │ 5          │
+│ 2       │ 'a1'  │ '1440'   │ 'board'  │ 131   │ 135    │ 9.4          │ 12.9      │ 52.9      │ 0.2         │ 2.6        │ 6.1         │ 236   │ 24.9        │ 40.9     │ 2          │
+└─────────┴───────┴──────────┴──────────┴───────┴────────┴──────────────┴───────────┴───────────┴─────────────┴────────────┴─────────────┴───────┴─────────────┴──────────┴────────────┘
+
+[2/2] [chromium] › tests/e2e/figures-perf.spec.ts:139:9 › figure frame budget (opt-in) › script time per frame at 375 px under 4x CPU throttling
+[chromium] › tests/e2e/figures-perf.spec.ts:139:9 › figure frame budget (opt-in) › script time per frame at 375 px under 4x CPU throttling
+┌─────────┬───────┬──────────┬──────────┬───────┬────────┬──────────────┬───────────┬───────────┬─────────────┬────────────┬─────────────┬───────┬─────────────┬──────────┬────────────┐
+│ (index) │ style │ viewport │ scenario │ ticks │ frames │ scriptMedian │ scriptP95 │ scriptMax │ buildMedian │ sortMedian │ paintMedian │ faces │ frameMedian │ frameP95 │ longFrames │
+├─────────┼───────┼──────────┼──────────┼───────┼────────┼──────────────┼───────────┼───────────┼─────────────┼────────────┼─────────────┼───────┼─────────────┼──────────┼────────────┤
+│ 0       │ 'a1'  │ '375'    │ 'beat'   │ 269   │ 356    │ 4.7          │ 6.1       │ 11.5      │ 0.5         │ 2          │ 2.1         │ 234   │ 8.3         │ 9.4      │ 1          │
+│ 1       │ 'a1'  │ '375'    │ 'drag'   │ 521   │ 584    │ 9.2          │ 11.7      │ 52.9      │ 0           │ 3.7        │ 5.3         │ 236   │ 17.2        │ 33.4     │ 1          │
+│ 2       │ 'a1'  │ '375'    │ 'board'  │ 157   │ 161    │ 8.8          │ 12.3      │ 33.5      │ 0.1         │ 2.4        │ 5.6         │ 236   │ 24.3        │ 34       │ 0          │
+└─────────┴───────┴──────────┴──────────┴───────┴────────┴──────────────┴───────────┴───────────┴─────────────┴────────────┴─────────────┴───────┴─────────────┴──────────┴────────────┘
+
+  2 passed (51.2s)
+(node:72017) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

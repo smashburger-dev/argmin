@@ -52,6 +52,45 @@ Gesammelt aus `session-2026-10-17-figuren-s2.md`, `session-2026-10-17-figuren-s3
 - S3: Sichere Hinweisadapter und Zuordnungen für `transform-rank-dependence-rowops`, `classify-rank-solution-case` und `formula-det2-independence` fehlen noch. Nur mit S2s Hinweisvertrag, Compile-Lecksperre und sicheren Nachbarbeispielen ergänzen.
 - S3: `pca-shadow` und `kmeans-pizza` bleiben für S5b vorgemerkt. Die Matrixdarstellung wurde von Noa als passend bewertet; daraus folgt keine pauschale gestalterische Freigabe aller anderen Szenen. Alte `.viz.json` bleiben bis zur ausdrücklichen Freigabe erhalten.
 
+## Anfragen aus Welle 2 und nächste Zuständigkeit
+
+Stand 18.10.2026. Quellen: `session-2026-10-17-figuren-s4b.md`, `session-2026-10-17-figuren-s5.md`, `session-2026-10-17-figuren-s6a.md` und `figuren-s6a/trace-contract.md`. Diese Zuordnung ergänzt die offenen Welle-1-Punkte. Die aktuellen Regeln zu Tests und Dateibesitz gehen älteren Aufträgen unten vor.
+
+### S2b, nächste gemeinsame Engine-/Vertragssession
+
+- S5, Explore: Den vorhandenen Vertrag `{parameter,min,max,step,input:'number'}` tatsächlich bedienen. Endliche, bereichsgültige Werte erst nach `scene.validateParams` übernehmen, Modell neu berechnen und Pose/Kamera definiert zurücksetzen; Vorhersagezustand nach Parametersatz trennen. F7 benötigt `eta`. Keine private Familien-Runtime.
+- S5, Compare: Benannte Parametersätze A/B durch denselben Modell-/Build-Pfad mit gleicher Kamera und gleichen Achsengrenzen führen. Mobil zugänglicher Umschalter oder lesbare Ansichten untereinander. Bei Ridge/Lasso den regularisierten Zustand vergleichen; Phase 0 zeigt zweimal unregularisierte Gewichte.
+- S5, Canvas: 400 identische Kacheln ergaben isoliert SVG 2,4 ms, Canvas 0,7 ms. Ein gemeinsamer Layer braucht einen Vertrag für Größe/DPR, Kamera, Theme, Reduced Motion, Forced Colors, Druck und Viewport-Pause. Erst nach diesem Vertrag einbauen. Die veröffentlichte 64-Kachel-F7-Szene erreicht laut Digest 3,9 ms Beat / 7,2 ms Drag und benötigt keinen vorgezogenen Renderer-Fork.
+- S5/S6a: Das integrierte Runtime-Budget erneut messen. Nach Integration beträgt FigureRuntime 10027 B gzip, also 27 B über dem strikten Ziel unter 10000 B; Shared-Kit 5975 B separat. S4bs Vereinfachung allein erreichte 9979 B, S6as Schrift-/Weißraum-Unterstützung und die gemeinsame Bündelung ändern das Ergebnis. Die früheren Branchwerte sind keine gemeinsame Budgetabnahme. Smoothie-Frame-Befunde aus Welle 1 bleiben offen.
+  Integrator 2 hat drei vorhandene Messläufe wiederholt (4× CPU, Median der Laufmediane): Desktop/Mobil Beat 5,0/4,7 ms, Ziehen 9,8/9,4 ms, Kamerafahrt 9,5/8,8 ms. Bevorzugtes Beatziel und Zieh-/Kameraziele bleiben offen. Nachweise in `figuren-integration-welle-2/performance.json`.
+- S6a/S6b: Direkte Namens-, Objekt- und Zellenauswahl zentral festlegen: Auswahlziel, Tastaturäquivalent und Rückmeldung am Gegenstand. Kein universeller Auswahlvertrag ist bereits vorhanden. F2 darf Modelle, Geometrie und feste Lektionsbeispiele parallel entwickeln, interaktive Auswahl erst nach Übergabe dieses Vertrags.
+- S6a, dauerhafte CPython-Gegenprüfung: Datenvertrag für Code, Eingaben, Aufrufrahmen, sichtbare Ereignisse und normalisierte Objektidentitäten entwerfen. Aliasgleichheit statt Speicheradressen vergleichen; return, print und Exceptions unterscheiden. Die einmaligen S6a-Proben sind keine dauerhafte Suite. Neue permanente Prüfungen erst nach Noas konkretem Auftrag implementieren.
+- S6a, Hinweis-Präfix: Pro Fall Ziellinie, gesuchte Namen/Werte und letzten erlaubten Zustand festlegen. Spätere Bindungen, Objekte, Ausgabe und Ausnahmeklassifikation auch geometrisch verbergen. Bis zum sicheren Vertrag bleiben die sechs neuen F1-Szenen im Hinweismodus gesperrt.
+- Gemeinsame Aufgabenverträge für `pick-learning-rate` und `tag-after-line` vor einer Umsetzung zuweisen. S4as Antwortformat und deterministische Grader bleiben maßgeblich. Freie F1-Parameter benötigen erzeugte, gegengeprüfte Spuren und den gemeinsamen Eingabevertrag; für das Kurzschlussbeispiel fehlt noch ein passender vorhandener Familienfall.
+- Welle-1-Nachlauf: Labor-Szenenauswahl und Messwerkzeug sowie die dokumentierten Bestands-Komplexitätsbefunde bleiben eigene Aufträge. Keine pauschale Reparatur fremder Funktionen während einer Familienintegration.
+
+### Nächster F7-Nachlauf nach S2b
+
+- Explore/Compare mit den vorhandenen F7-Modellen anbinden und Lernrate sowie regularisierten Ridge/Lasso-Vergleich selbst im Browser bedienen. Neue Hinweise erst nach sicherem Fall-/Nachbarvertrag und bestehender Lecksperre; gesuchtes neues Gewicht numerisch und geometrisch verbergen. `pick-learning-rate` ist weiterhin offen. Keine neue Szene als Ersatz für fehlende gemeinsame Bedienung erfinden.
+- Die vorhandene 400-/64-Kachel-Messung und Abstandskorrekturen aus `figuren-s5/` verwenden. Gemeinsamer Readout ist noch 13 px; seine lesbare Typografie gehört S2b. Familienlayout und tatsächliche Trägerkontraste erneut bei mobiler Größe prüfen.
+
+### Nächster F1-Nachlauf nach den gemeinsamen Verträgen
+
+- Die sechs festen Programme und Compiler-Expansion sind integriert. `beats: {from: 'trace'}` wird zentral in normale, validierte Beat-Arrays erweitert; dieser frühere Welle-1-Blocker ist erledigt. Keine zweite Expansion in Runtime oder Lektionen bauen.
+- Sichere Hinweise, direkte Auswahl, `tag-after-line`, freie Parameter und Kurzschluss-Familienfall bleiben offen. Den genauen Zustand aus `docs/figuren-s6a/trace-contract.md` übernehmen. CPython-Nachweise aus dem Digest erhalten, nicht als Freigabe beliebiger Programme auslegen.
+
+### F12 / S4b abgeschlossen, gemeinsame Schnittstellen erhalten
+
+- S4b meldet keine offene Schnittstellenanfrage. `stepContent`, `onRestart`, kanonische Objektantworten und das Entfernen alter SVG-Items beim Modellwechsel sind integriert. `spec.predict` geht direkt an das vorhandene Fragenpanel. F12 und die beiden Aufgaben sind lokal reviewbar; eine visuelle Freigabe durch Noa ist damit nicht behauptet.
+
+### Welle 3: vier Familien parallel, gemeinsame Dateien eindeutig zuweisen
+
+- S6b/F2 auf 4407, S7/F5+F8 auf 4408, S8a/F6+F9 auf 4409 und S8b/F10+F11+statische Figuren auf 4410 starten vom finalen lokalen Welle-2-Integrationscommit. Normale Git-Worktrees unter `/Users/no8/Desktop/life/Lifemaxxing/`, kein Push und kein Merge durch Familien.
+- Geteilte Lektionen haben genau einen Schreiber: S7 besitzt `l-data-cleaning`; S8a liefert dafür einen Vorschlag im eigenen Digest. S8b besitzt `l-genai-rag` und `l-capstone-freeze`; S7 liefert dafür Vorschläge im eigenen Digest. Das umfasst jeweils Lektions-JSON und bestehende Markdown-Dateien. Neue eigene Fragmentdateien sind erlaubt, ihre Einbindung übernimmt der Besitzer beziehungsweise Integrator.
+- S8b besitzt neue gemeinsame Graph-Primitive K7; S7 fordert benötigte Schnittstellen an und arbeitet bis zur Übergabe an eigenen reinen Modellen. Kein paralleles Anlegen derselben Kit-/Objektdatei. Bestehende gemeinsame Dateien bleiben beim Integrator.
+- S2b kann parallel ausschließlich die oben zugewiesenen gemeinsamen Verträge bearbeiten (4411). Familien verwenden bis zu deren Übergabe den vorhandenen Vertrag; keine Ersatzbedienung und kein fremder Schema-/Runtime-Fork. S2b vor abhängigen Familienänderungen integrieren und die konkrete Basisübergabe dokumentieren. Vollständige Prompts und Übergabereihenfolge: `docs/figuren-welle-3-prompts.md`.
+- S5b/PCA/K-Means und die sicheren F3/F4-Hinweise bleiben ein separater Nachlauf aus Welle 1. Nicht stillschweigend einem der vier Welle-3-Zweige zuweisen.
+
 ## S2 Engine, Bedienung, Hinweismodus in Aufgaben
 
 Ziel: Die Figur wird zur Lösungshilfe in Aufgaben, die Engine ist bereit für alle Familien.
