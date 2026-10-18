@@ -13,6 +13,46 @@
   ],
   "placements": [
     {
+      "placementId": "p-s4b-mix-to-target-unique",
+      "role": "curated",
+      "familyId": "mix-to-target",
+      "caseId": "unique",
+      "seed": 3,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-s4b-mix-to-target-infinite",
+      "role": "curated",
+      "familyId": "mix-to-target",
+      "caseId": "infinite",
+      "seed": 5,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-s4b-mix-to-target-none",
+      "role": "curated",
+      "familyId": "mix-to-target",
+      "caseId": "none",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-s4b-mix-to-target-practice",
+      "role": "practice-space",
+      "familyId": "mix-to-target",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
       "placementId": "p-linalg-systems-00-column-vector-authored",
       "role": "curated",
       "familyId": "formula-scalar-product",

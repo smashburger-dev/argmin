@@ -6,6 +6,11 @@
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const SCENE_IMPORTS: Record<string, () => Promise<any>> = {
+  'bag-unpack': () => import('../../assets/js/figures/scenes/bag-unpack.mjs'),
+  'balance-isolate': () => import('../../assets/js/figures/scenes/balance-isolate.mjs'),
+  'balance-solve': () => import('../../assets/js/figures/scenes/balance-solve.mjs'),
+  'mix-to-target': () => import('../../assets/js/figures/scenes/mix-to-target.mjs'),
+  'power-stack': () => import('../../assets/js/figures/scenes/power-stack.mjs'),
   'receipt-echelon-3x3': () => import('../../assets/js/figures/scenes/receipt-echelon-3x3.mjs'),
   'receipt-elimination': () => import('../../assets/js/figures/scenes/receipt-elimination.mjs'),
   'smoothie-column-picture': () => import('../../assets/js/figures/scenes/smoothie.mjs'),

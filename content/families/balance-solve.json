@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "familyId": "balance-solve",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "isolate",
+      "title": "Gleichung auf der Waage lösen",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "figuren-s4b-balance-solve-isolate"
+      ]
+    }
+  ]
+}

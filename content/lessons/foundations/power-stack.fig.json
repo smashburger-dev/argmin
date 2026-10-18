@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "power-stack",
+  "title": "Verdopplungen zählen",
+  "caption": "Der Logarithmus fragt nach der Zahl der Multiplikationen.",
+  "hint": "Zähle die Multiplikationen, beginnend bei eins.",
+  "params": {
+    "base": 2,
+    "exponent": 5
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Starte bei eins: noch keine Verdopplung."
+    },
+    {
+      "id": "step-1",
+      "caption": "Drei Verdopplungen führen zu acht."
+    },
+    {
+      "id": "step-2",
+      "caption": "Fünf Verdopplungen führen zu 32. Die Stufen zählen Operationen, keine lineare Menge."
+    },
+    {
+      "id": "step-3",
+      "caption": "Wie viele Verdopplungen führen von eins zum Zielwert 32?"
+    }
+  ],
+  "predict": {
+    "beat": "step-3",
+    "prompt": "Welcher Exponent k erfüllt 2 hoch k = 32?",
+    "input": "numeric",
+    "expected": 5,
+    "tolerance": 0.000001,
+    "hints": [
+      "Zähle die Multiplikationen mit zwei, beginnend bei eins."
+    ]
+  }
+}
