@@ -1,0 +1,30 @@
+{
+  "compression": "node:zlib gzipSync, final Release",
+  "sceneGzipBytes": {
+    "baseline-sorter": 527,
+    "cleaning-line": 582,
+    "evaluation-sorter": 645,
+    "fold-rotation": 659,
+    "goods-in": 560,
+    "house-ablation": 516,
+    "logistic-sorter": 604,
+    "mail-sorter": 543,
+    "responsible-sorter": 576,
+    "token-conveyor": 530,
+    "trades-stopwatch": 572
+  },
+  "sharedGzipBytes": {
+    "FigureRuntime": 10027,
+    "figure-kit": 5975,
+    "pipeline-model": 1458,
+    "pipeline-stage": 2791,
+    "threshold-stage": 2694,
+    "optimization-plot": 1747,
+    "linalg-stage": 1018,
+    "f12-diagram": 1110
+  },
+  "sceneLimitBytesExclusive": 12000,
+  "runtimeLimitBytesExclusive": 10000,
+  "runtimeBudgetPassed": false,
+  "note": "Runtime liegt wie die Welle-2-Basis um 27 B über dem strikten Budget. Keine gemeinsame Runtimeänderung durch S7. Geteilte Modelle und Hilfen werden separat ausgewiesen."
+}
