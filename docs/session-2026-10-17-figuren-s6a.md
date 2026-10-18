@@ -94,7 +94,7 @@ Das Gesamt-Gate wurde am Abschluss einmal vollständig ausgeführt. Dabei traten
 | Chromium Release, `E2E_PORT=4406 npm run test:e2e:build` | 95 bestanden, 27 übersprungen |
 | `git diff --check` | bestanden |
 
-Die Browser-Gates liefen vor der abschließenden Platzierungskorrektur des Rauchmelders; die anschließende Frame-Messung öffnete alle sechs endgültig kompilierten Lektionen erneut bei beiden Breiten. Der eigene Server wurde danach beendet, Port 4406 ist frei.
+Die Browser-Gates liefen vor der abschließenden Platzierungskorrektur des Rauchmelders; die anschließende Frame-Messung öffnete alle sechs endgültig kompilierten Lektionen erneut bei beiden Breiten. Der eigene Server wurde danach beendet, Port 4406 ist frei. Die abschließende Whitespace-Prüfung gegen die gesamte Basis fand noch überzählige Leerzeilen am Dateiende der Aufzeichnungen und sechs Wrapper. Ausschließlich diese Leerzeilen wurden entfernt, alle übrigen Quellbytes sind identisch. `measurements.json` hält den gemessenen und den bereinigten Aufzeichnungs-Hash getrennt fest; dafür wurde keine inhaltlich identische Messserie wiederholt.
 
 Shrink-Complexity-Lauf über alle 13 geänderten/neuen JS-/TS-Dateien mit Grenze 10: keine Überschreitung in neuen oder geänderten Funktionen. Der Gesamtaufruf endet dennoch mit Exit 1 wegen sieben unveränderter Compilerfunktionen: `validateChallengeContracts` 59, `validateChoiceContract` 11, `validateVisualizationExpressions` 15, `mathDelimiterErrorIndex` 20, `stripLearnerMathSpans` 19, `learnerTextWalk` 16 und `attachSourceModuleUsage` 20. Ihre Quellabschnitte wurden gegen die Basis verglichen und sind identisch. Keine Lint-Unterdrückungen und keine neue permanente Testdatei.
 

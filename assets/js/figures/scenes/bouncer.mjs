@@ -5,4 +5,3 @@ const scene = createTraceScene("bouncer", {
   "2": "Die Altersprüfung ist falsch. ticket wird nicht gelesen; hier entsteht deshalb kein NameError."
 }, null);
 export const { id, viewMode, beatIds, validateParams, model, beatDuration, pose, build, trace, cameraFor, ground, readout, describe, answerValues, predictValue, displayNumbers } = scene;
-

@@ -5,4 +5,3 @@ const scene = createTraceScene("name-tags", {
   "3": "Nur a hängt jetzt an einem anderen Objekt. b bleibt an seinem bisherigen Objekt."
 }, {"beat":"step-2","step":3,"binding":"global.a"});
 export const { id, viewMode, beatIds, validateParams, model, beatDuration, pose, build, trace, cameraFor, ground, readout, describe, answerValues, predictValue, displayNumbers } = scene;
-

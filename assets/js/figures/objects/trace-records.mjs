@@ -814,4 +814,3 @@ export const records = {
     "python": "3.14.7"
   }
 };
-

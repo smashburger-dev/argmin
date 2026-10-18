@@ -5,7 +5,9 @@
   "tool": "tests/e2e/figures-perf.spec.ts measurement functions, temporary driver against compiled lessons on port 4406",
   "scenario": "critical beat",
   "traceStageSha256": "1791cdc48e16e8f1c65859b6105133574c87e4e9db9f6dc2ca97c0ed7f0d7aee",
-  "traceRecordsSha256": "3c9d7cb40cc19568ead20e5c61bbeee9d3f8d7ce7f3928ba3eae93730e1310ec",
+  "traceRecordsSha256": "55412bbad94b290bfe97d33e45f5887c4f2fbfb85057566b3f5c5421f59d6584",
+  "measuredTraceRecordsSha256": "3c9d7cb40cc19568ead20e5c61bbeee9d3f8d7ce7f3928ba3eae93730e1310ec",
+  "postMeasurementChange": "Only redundant blank lines at EOF removed from trace-records and six scene wrappers; all other source bytes unchanged.",
   "summaries": [
     {
       "scene": "name-tags",

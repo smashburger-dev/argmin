@@ -7,4 +7,3 @@ const scene = createTraceScene("two-tags-one-list", {
   "5": "x wird neu gebunden. y bleibt an o1; die bisherige Liste wird nicht überschrieben."
 }, null);
 export const { id, viewMode, beatIds, validateParams, model, beatDuration, pose, build, trace, cameraFor, ground, readout, describe, answerValues, predictValue, displayNumbers } = scene;
-
