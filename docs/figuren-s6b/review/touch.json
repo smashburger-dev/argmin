@@ -1,0 +1,86 @@
+[
+  {
+    "id": "order-times-prices",
+    "theme": "light",
+    "before": 7755,
+    "after": 7924,
+    "delta": 169
+  },
+  {
+    "id": "plug-adapter",
+    "theme": "light",
+    "before": 5110,
+    "after": 5277,
+    "delta": 167
+  },
+  {
+    "id": "tensor-address",
+    "theme": "light",
+    "before": 4543,
+    "after": 4708,
+    "delta": 165
+  },
+  {
+    "id": "library-attention",
+    "theme": "light",
+    "before": 6125,
+    "after": 6284,
+    "delta": 159
+  },
+  {
+    "id": "frozen-matrix-strips",
+    "theme": "light",
+    "before": 4145,
+    "after": 4308,
+    "delta": 163
+  },
+  {
+    "id": "team-mask",
+    "theme": "light",
+    "before": 3227,
+    "after": 3391,
+    "delta": 164
+  },
+  {
+    "id": "order-times-prices",
+    "theme": "dark",
+    "before": 7755,
+    "after": 7918,
+    "delta": 163
+  },
+  {
+    "id": "plug-adapter",
+    "theme": "dark",
+    "before": 5110,
+    "after": 5272,
+    "delta": 162
+  },
+  {
+    "id": "tensor-address",
+    "theme": "dark",
+    "before": 4543,
+    "after": 4709,
+    "delta": 166
+  },
+  {
+    "id": "library-attention",
+    "theme": "dark",
+    "before": 6125,
+    "after": 6292,
+    "delta": 167
+  },
+  {
+    "id": "frozen-matrix-strips",
+    "theme": "dark",
+    "before": 4145,
+    "after": 4311,
+    "delta": 166
+  },
+  {
+    "id": "team-mask",
+    "theme": "dark",
+    "before": 3226,
+    "after": 3387,
+    "delta": 161
+  }
+]

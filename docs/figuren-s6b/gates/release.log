@@ -1,0 +1,323 @@
+
+> argmin@0.9.2 build:release
+> npm run build:next
+
+
+> argmin@0.9.2 prebuild:next
+> npm run content:compile && npm run coverage:check
+
+
+> argmin@0.9.2 content:compile
+> node tools/compile_content.mjs
+
+Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)
+Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)
+
+> argmin@0.9.2 coverage:check
+> node tools/build_coverage_matrix.mjs --check
+
+Kompetenz-Familien-Coverage aktuell
+
+> argmin@0.9.2 build:next
+> vite build && node tools/build_public.mjs --out build-next --next-dir .next-ui && node tools/validate_content.mjs --dir build-next && node tools/validate_next_build.mjs build-next
+
+vite v8.2.2 building client environment for production...
+
+ WARN  advancedChunks option is deprecated, please use codeSplitting instead.
+
+transforming...
+✓ 553 modules transformed.
+rendering chunks...
+computing gzip size...
+.next-ui/index.html                                                    1.20 kB │ gzip:   0.65 kB
+.next-ui/assets/SceneBuildControls-Dv-jQrDV.css                        0.99 kB │ gzip:   0.47 kB
+.next-ui/assets/FigureRuntime-af-wuB6n.css                             4.35 kB │ gzip:   1.37 kB
+.next-ui/assets/index-DdbhD3f_.css                                    58.50 kB │ gzip:  11.65 kB
+.next-ui/assets/pyodide_runner-BPxBEes1.js                             0.08 kB │ gzip:   0.09 kB
+.next-ui/assets/procedural-transform-XOijixfe.js                       0.31 kB │ gzip:   0.18 kB
+.next-ui/assets/balance-solve-BGiYAvU8.js                              0.32 kB │ gzip:   0.24 kB
+.next-ui/assets/formula-quadratic-error-metric-CX_uLZ-J.js             0.48 kB │ gzip:   0.33 kB
+.next-ui/assets/smoke-detector-BP3jggGL.js                             0.49 kB │ gzip:   0.30 kB
+.next-ui/assets/transform-linear-equation-isolate-DlBYKqmT.js          0.49 kB │ gzip:   0.32 kB
+.next-ui/assets/ledger-BZeFqbOh.js                                     0.51 kB │ gzip:   0.31 kB
+.next-ui/assets/vending-frame-WaxVjRBF.js                              0.60 kB │ gzip:   0.39 kB
+.next-ui/assets/mix-to-target-BDqmU4wG.js                              0.65 kB │ gzip:   0.31 kB
+.next-ui/assets/bouncer-DhBENrhD.js                                    0.68 kB │ gzip:   0.42 kB
+.next-ui/assets/name-tags-CN0_e2yF.js                                  0.71 kB │ gzip:   0.44 kB
+.next-ui/assets/receipt-stage-DfD2kdW7.js                              0.78 kB │ gzip:   0.51 kB
+.next-ui/assets/two-tags-one-list-DfMohncI.js                          0.79 kB │ gzip:   0.50 kB
+.next-ui/assets/validate-test-design-coverage-CJZ38AjV.js              1.07 kB │ gzip:   0.67 kB
+.next-ui/assets/HintFigure-ClRTBBYU.js                                 1.08 kB │ gzip:   0.62 kB
+.next-ui/assets/balance-solve-Bm4uTjgS.js                              1.10 kB │ gzip:   0.68 kB
+.next-ui/assets/scene-build-state-_XVXI9_b.js                          1.13 kB │ gzip:   0.64 kB
+.next-ui/assets/validate-shape-contract-DpFMZZzJ.js                    1.17 kB │ gzip:   0.65 kB
+.next-ui/assets/preload-helper-HclGiUj8.js                             1.21 kB │ gzip:   0.67 kB
+.next-ui/assets/formula-det2-independence-Y-vvPsjX.js                  1.48 kB │ gzip:   0.82 kB
+.next-ui/assets/power-stack-vzn9t9O2.js                                1.65 kB │ gzip:   0.95 kB
+.next-ui/assets/transform-expression-simplify-canonical-BunNr7XQ.js    1.69 kB │ gzip:   0.74 kB
+.next-ui/assets/procedural-compose-CDhmw7Sr.js                         1.74 kB │ gzip:   0.98 kB
+.next-ui/assets/team-mask-B4w-6l2g.js                                  1.76 kB │ gzip:   1.00 kB
+.next-ui/assets/procedural-balance-DFflOjDG.js                         1.76 kB │ gzip:   1.06 kB
+.next-ui/assets/procedural-mix-B_AXizKz.js                             1.76 kB │ gzip:   1.06 kB
+.next-ui/assets/construct-test-structure-aaa-CVnEipMu.js               1.77 kB │ gzip:   0.69 kB
+.next-ui/assets/aggregate-topk-relevance-arithmetic-Ct_yxLF6.js        1.82 kB │ gzip:   0.98 kB
+.next-ui/assets/linalg-stage-BJBaaYrO.js                               1.83 kB │ gzip:   1.01 kB
+.next-ui/assets/mse-section-C07SwR9X.js                                1.86 kB │ gzip:   1.09 kB
+.next-ui/assets/trace-chunk-window-loop-CnTsob-6.js                    1.90 kB │ gzip:   1.04 kB
+.next-ui/assets/trace-substring-flag-sum-5roJD3uN.js                   1.92 kB │ gzip:   1.06 kB
+.next-ui/assets/construct-safe-bugfix-workflow-BR1BQEyh.js             1.97 kB │ gzip:   0.76 kB
+.next-ui/assets/residual-springs-Dy8V193L.js                           1.97 kB │ gzip:   1.16 kB
+.next-ui/assets/balance_model-_Hk2bGpC.js                              1.97 kB │ gzip:   0.93 kB
+.next-ui/assets/construct-guarded-loop-DV91wdzs.js                     1.99 kB │ gzip:   0.86 kB
+.next-ui/assets/f12-diagram-Dxt0c7uQ.js                                2.01 kB │ gzip:   1.11 kB
+.next-ui/assets/mix-to-target-CCRb-4e0.js                              2.04 kB │ gzip:   1.11 kB
+.next-ui/assets/tensor-address-DQ1UMRoE.js                             2.09 kB │ gzip:   1.20 kB
+.next-ui/assets/rubber-band-coefficients-BB-GTaoA.js                   2.09 kB │ gzip:   1.23 kB
+.next-ui/assets/trace-toposort-dependency-order-Eu7KiJFx.js            2.10 kB │ gzip:   1.09 kB
+.next-ui/assets/training-book-DFUGkX5M.js                              2.11 kB │ gzip:   1.18 kB
+.next-ui/assets/balance-isolate-DeOtBfUf.js                            2.18 kB │ gzip:   1.19 kB
+.next-ui/assets/classify-row-operation-validity-D-GHuLFv.js            2.19 kB │ gzip:   1.02 kB
+.next-ui/assets/classify-eval-hazard-gkVc47l3.js                       2.27 kB │ gzip:   1.15 kB
+.next-ui/assets/frozen-matrix-strips-C6PKptQi.js                       2.36 kB │ gzip:   1.31 kB
+.next-ui/assets/classify-provenance-duty-c_6VIAqd.js                   2.37 kB │ gzip:   1.22 kB
+.next-ui/assets/trace-stub-doc-sentence-select-XWWa5oau.js             2.38 kB │ gzip:   1.24 kB
+.next-ui/assets/classify-freeze-purpose-L33s4v2K.js                    2.40 kB │ gzip:   1.25 kB
+.next-ui/assets/construct-regression-test-suite-ClLJcTrr.js            2.40 kB │ gzip:   0.78 kB
+.next-ui/assets/receipt-elimination-DQ6tA-lp.js                        2.43 kB │ gzip:   1.36 kB
+.next-ui/assets/classify-rank-solution-case-BwIMK9Xc.js                2.47 kB │ gzip:   1.09 kB
+.next-ui/assets/classify-hash-semantics-1vYQ6dAM.js                    2.51 kB │ gzip:   1.27 kB
+.next-ui/assets/receipt-echelon-3x3-Bz5e4gXx.js                        2.51 kB │ gzip:   1.36 kB
+.next-ui/assets/transform-system-2x2-elimination-CDn4X02h.js           2.56 kB │ gzip:   1.19 kB
+.next-ui/assets/classify-tool-policy-DW6plTCj.js                       2.56 kB │ gzip:   1.33 kB
+.next-ui/assets/span-carpet-DiN2XeDc.js                                2.58 kB │ gzip:   1.44 kB
+.next-ui/assets/early-stopping-flag-BilZIZ1W.js                        2.58 kB │ gzip:   1.31 kB
+.next-ui/assets/classify-freeze-scope-MwmLa_pj.js                      2.59 kB │ gzip:   1.30 kB
+.next-ui/assets/bag-unpack-DRiTMMJK.js                                 2.60 kB │ gzip:   1.33 kB
+.next-ui/assets/classify-silent-fallback-hazard-BIPvE76O.js            2.66 kB │ gzip:   1.32 kB
+.next-ui/assets/classify-question-quality-Cga4e2PC.js                  2.66 kB │ gzip:   1.32 kB
+.next-ui/assets/procedural-rank-DjFmN_85.js                            2.70 kB │ gzip:   1.36 kB
+.next-ui/assets/plug-adapter-CcKzMbfd.js                               2.72 kB │ gzip:   1.51 kB
+.next-ui/assets/transform-power-log-exponent-BNXBBoLS.js               2.76 kB │ gzip:   0.77 kB
+.next-ui/assets/classify-rag-stage-Dl1YKkCv.js                         2.84 kB │ gzip:   1.35 kB
+.next-ui/assets/order-times-prices-Y2GRDYZF.js                         2.87 kB │ gzip:   1.53 kB
+.next-ui/assets/classify-attack-surface-BWYGSWp3.js                    2.96 kB │ gzip:   1.45 kB
+.next-ui/assets/formula-metric-spread-range-DMdeuFLv.js                3.00 kB │ gzip:   1.18 kB
+.next-ui/assets/construct-error-journal-order-CPIQVbGW.js              3.19 kB │ gzip:   1.53 kB
+.next-ui/assets/aggregate-majority-rule-count-CSl7KQxT.js              3.27 kB │ gzip:   1.37 kB
+.next-ui/assets/optimization-plot-ZjFu1SzL.js                          3.30 kB │ gzip:   1.74 kB
+.next-ui/assets/trace-dict-state-update-hj_0Yddm.js                    3.33 kB │ gzip:   1.01 kB
+.next-ui/assets/library-attention-DK4vsnPS.js                          3.43 kB │ gzip:   1.82 kB
+.next-ui/assets/solution-cases-3d-DZC36Bce.js                          3.43 kB │ gzip:   1.73 kB
+.next-ui/assets/count-remaining-rows-cleaning-rule-FKyspx0l.js         3.54 kB │ gzip:   1.41 kB
+.next-ui/assets/aggregate-validate-and-count-records-Cp3SKxjq.js       3.58 kB │ gzip:   1.29 kB
+.next-ui/assets/optimize-mse-gradient-closed-form-CymS1KeF.js          3.59 kB │ gzip:   1.62 kB
+.next-ui/assets/trace-call-composition-Dvy__uVG.js                     3.63 kB │ gzip:   1.65 kB
+.next-ui/assets/reproduce-canonical-hash-verify-BpoLFzjL.js            3.67 kB │ gzip:   1.60 kB
+.next-ui/assets/classify-column-combination-CYIx6AiB.js                3.68 kB │ gzip:   1.65 kB
+.next-ui/assets/optimize-backprop-path-sum-B1s4KrdY.js                 3.72 kB │ gzip:   1.62 kB
+.next-ui/assets/classify-control-construct-C_R-_6r-.js                 3.76 kB │ gzip:   1.46 kB
+.next-ui/assets/classify-python-collection-choice-FGSisRcO.js          3.95 kB │ gzip:   1.59 kB
+.next-ui/assets/family-core-DtUYdmdo.js                                3.95 kB │ gzip:   1.78 kB
+.next-ui/assets/smoothie-row-and-column-98rUo2ZL.js                    4.06 kB │ gzip:   2.16 kB
+.next-ui/assets/classify-test-attitude-BfPC2utv.js                     4.13 kB │ gzip:   1.71 kB
+.next-ui/assets/ModuleView-Cgd2BJrF.js                                 4.13 kB │ gzip:   1.54 kB
+.next-ui/assets/procedural-classify-CvoGxFul.js                        4.16 kB │ gzip:   1.94 kB
+.next-ui/assets/classify-set-operation-semantics-D-GWzEWC.js           4.17 kB │ gzip:   1.35 kB
+.next-ui/assets/classify-string-immutability-j1Rm1Uv6.js               4.32 kB │ gzip:   1.38 kB
+.next-ui/assets/transform-rank-dependence-rowops-PpkYqMp2.js           4.50 kB │ gzip:   1.68 kB
+.next-ui/assets/classify-exception-placement-KTFtWw7g.js               4.51 kB │ gzip:   1.80 kB
+.next-ui/assets/classify-independence-multiple-dlfqEuda.js             4.54 kB │ gzip:   1.82 kB
+.next-ui/assets/procedural-transform-B7z8-IQp.js                       4.56 kB │ gzip:   1.71 kB
+.next-ui/assets/validate-goalshift-flag-rules-7zuM8gm1.js              4.76 kB │ gzip:   1.60 kB
+.next-ui/assets/classify-evidence-vs-demo-C4LMlAQN.js                  4.77 kB │ gzip:   2.03 kB
+.next-ui/assets/classify-fairness-aggregation-LTmMtAC0.js              4.88 kB │ gzip:   2.11 kB
+.next-ui/assets/classify-matrix-shape-DEHe2IIh.js                      4.88 kB │ gzip:   1.76 kB
+.next-ui/assets/tools-fr6O-Fg1.js                                      4.91 kB │ gzip:   1.95 kB
+.next-ui/assets/trace-training-loop-count-Co9BeI4b.js                  4.93 kB │ gzip:   2.14 kB
+.next-ui/assets/SceneBuildControls-BCcD_SUH.js                         4.98 kB │ gzip:   2.14 kB
+.next-ui/assets/l-foundations-learning-DJAkBaWE.js                     5.00 kB │ gzip:   2.16 kB
+.next-ui/assets/classify-cv-leakage-Bn9K9xep.js                        5.21 kB │ gzip:   2.24 kB
+.next-ui/assets/aggregate-accumulator-count-6Zhn6KNq.js                5.22 kB │ gzip:   1.87 kB
+.next-ui/assets/f2-models-DtOS1q2H.js                                  5.26 kB │ gzip:   2.41 kB
+.next-ui/assets/construct-normalize-chunk-contract-VB8jwWTC.js         5.27 kB │ gzip:   1.88 kB
+.next-ui/assets/trace-library-api-output-DZYTE_wq.js                   5.28 kB │ gzip:   2.21 kB
+.next-ui/assets/mse-landscape-DCecKWDM.js                              5.35 kB │ gzip:   2.74 kB
+.next-ui/assets/aggregate-parity-threshold-selection-Dh59SSuh.js       5.37 kB │ gzip:   1.84 kB
+.next-ui/assets/classify-lora-tradeoff-CYuZCnpe.js                     5.38 kB │ gzip:   2.19 kB
+.next-ui/assets/l-foundations-git-C_xrNQpx.js                          5.43 kB │ gzip:   2.37 kB
+.next-ui/assets/formula-descriptive-stats-numpy-CuICXclX.js            5.57 kB │ gzip:   1.87 kB
+.next-ui/assets/classify-shape-contract-BuIGZp62.js                    5.67 kB │ gzip:   2.22 kB
+.next-ui/assets/optimize-decode-greedy-loop-4myLhgGm.js                5.68 kB │ gzip:   2.26 kB
+.next-ui/assets/optimize-bpe-merge-learn-DW6gB9Nw.js                   5.72 kB │ gzip:   2.01 kB
+.next-ui/assets/classify-decoding-strategy-D9Af2GyW.js                 5.76 kB │ gzip:   2.18 kB
+.next-ui/assets/construct-linalg-contract-synthesis-CbqyGY0A.js        5.89 kB │ gzip:   2.36 kB
+.next-ui/assets/l-foundations-files-errors-BkIXixtJ.js                 5.94 kB │ gzip:   2.55 kB
+.next-ui/assets/classify-sigmoid-regime-VRgxjgDG.js                    6.03 kB │ gzip:   2.25 kB
+.next-ui/assets/validate-text-normalize-match-DwMlxzK6.js              6.04 kB │ gzip:   2.11 kB
+.next-ui/assets/classify-svm-margin-v6FiMvts.js                        6.06 kB │ gzip:   2.27 kB
+.next-ui/assets/classify-attention-roles-DDWzjBmf.js                   6.07 kB │ gzip:   2.35 kB
+.next-ui/assets/classify-benchmark-reading-De7AwDyl.js                 6.13 kB │ gzip:   2.46 kB
+.next-ui/assets/formula-stat-from-table-k6tllO2N.js                    6.15 kB │ gzip:   2.65 kB
+.next-ui/assets/classify-backprop-path-rule-D-z0qzFH.js                6.28 kB │ gzip:   2.34 kB
+.next-ui/assets/l-foundations-algebra-transformations-DQYeQdnh.js      6.32 kB │ gzip:   2.70 kB
+.next-ui/assets/transform-bpe-merge-apply-DANFw3Sh.js                  6.34 kB │ gzip:   2.15 kB
+.next-ui/assets/classify-subword-principle-BkzUQEBQ.js                 6.36 kB │ gzip:   2.53 kB
+.next-ui/assets/ChallengeView-B5-3sJAe.js                              6.40 kB │ gzip:   2.57 kB
+.next-ui/assets/classify-dropout-regime-C7eVjQsc.js                    6.41 kB │ gzip:   2.39 kB
+.next-ui/assets/classify-confounding-DV821GvW.js                       6.42 kB │ gzip:   2.37 kB
+.next-ui/assets/l-foundations-testing-debugging-BMtnhWPN.js            6.44 kB │ gzip:   2.69 kB
+.next-ui/assets/l-ml-error-analysis-CGSqrTeG.js                        6.57 kB │ gzip:   2.68 kB
+.next-ui/assets/fit-seeded-split-sgd-linear-CK-_UhHd.js                6.58 kB │ gzip:   2.53 kB
+.next-ui/assets/classify-missingness-CWKlkLa5.js                       6.65 kB │ gzip:   2.53 kB
+.next-ui/assets/diagnostic-rationale-ml-eval-C-rIwiM4.js               6.65 kB │ gzip:   2.58 kB
+.next-ui/assets/classify-task-type-hFwAn3Ak.js                         6.68 kB │ gzip:   2.49 kB
+.next-ui/assets/classify-error-drift-CP2GdBwI.js                       6.71 kB │ gzip:   2.51 kB
+.next-ui/assets/validate-leakage-rule-audit-CBqy8w3g.js                6.73 kB │ gzip:   2.26 kB
+.next-ui/assets/l-ml-baseline-CEK1m92D.js                              6.87 kB │ gzip:   3.03 kB
+.next-ui/assets/l-ml-repro-dgduMd_x.js                                 6.93 kB │ gzip:   2.96 kB
+.next-ui/assets/procedural-formula-BhxBh_qD.js                         6.98 kB │ gzip:   2.36 kB
+.next-ui/assets/l-capstone-repro-DO6KkAY9.js                           7.10 kB │ gzip:   3.16 kB
+.next-ui/assets/classify-training-curve-rEPWx5md.js                    7.10 kB │ gzip:   2.66 kB
+.next-ui/assets/l-capstone-acceptance-BqTtpU_8.js                      7.11 kB │ gzip:   3.03 kB
+.next-ui/assets/classify-error-hypothesis-CEBI8cxp.js                  7.12 kB │ gzip:   2.51 kB
+.next-ui/assets/l-ml-ensembles-DJVuXlKN.js                             7.12 kB │ gzip:   3.13 kB
+.next-ui/assets/l-capstone-freeze-SVS28hci.js                          7.13 kB │ gzip:   3.23 kB
+.next-ui/assets/l-foundations-code-reading-DI2eWlsi.js                 7.29 kB │ gzip:   2.80 kB
+.next-ui/assets/fit-weight-decay-ablation-BQU4XV0E.js                  7.32 kB │ gzip:   2.69 kB
+.next-ui/assets/l-capstone-regression-Bi0Qf1UF.js                      7.34 kB │ gzip:   3.22 kB
+.next-ui/assets/formula-lora-delta-apply-Ddrho02D.js                   7.40 kB │ gzip:   2.27 kB
+.next-ui/assets/procedural-rank-472ldzc5.js                            7.61 kB │ gzip:   2.42 kB
+.next-ui/assets/l-capstone-runner-Bu4133dG.js                          7.65 kB │ gzip:   3.43 kB
+.next-ui/assets/rank-evidence-table-MTyyBZbd.js                        7.70 kB │ gzip:   2.46 kB
+.next-ui/assets/construct-stub-prototype-contract-ykLM6Ezd.js          7.71 kB │ gzip:   2.61 kB
+.next-ui/assets/l-foundations-python-state-2stHrSb1.js                 7.71 kB │ gzip:   2.88 kB
+.next-ui/assets/construct-matvec-shape-contract-BTq2dRHt.js            7.84 kB │ gzip:   2.67 kB
+.next-ui/assets/optimize-multi-head-attention-CChO3WFW.js              7.90 kB │ gzip:   2.47 kB
+.next-ui/assets/fit-early-stopping-roundtrip-BLcG0VSL.js               8.01 kB │ gzip:   2.73 kB
+.next-ui/assets/fit-mlp-val-curve-argmin-BFSPK73Q.js                   8.02 kB │ gzip:   2.84 kB
+.next-ui/assets/transform-tokenize-roundtrip-DR1zT_xs.js               8.12 kB │ gzip:   2.57 kB
+.next-ui/assets/l-ml-cv-BXtaEhuD.js                                    8.14 kB │ gzip:   3.67 kB
+.next-ui/assets/l-foundations-control-flow-CzatZWuB.js                 8.35 kB │ gzip:   3.46 kB
+.next-ui/assets/l-dl-autograd-DnmilZkL.js                              8.35 kB │ gzip:   3.61 kB
+.next-ui/assets/l-foundations-collections-B-7VT1IJ.js                  8.37 kB │ gzip:   3.47 kB
+.next-ui/assets/l-foundations-functions-CbmpJG_7.js                    8.45 kB │ gzip:   3.40 kB
+.next-ui/assets/optimize-tree-best-split-CO90YXQh.js                   8.45 kB │ gzip:   2.37 kB
+.next-ui/assets/optimize-sgd-step-pure-update-CMk111JC.js              8.54 kB │ gzip:   3.05 kB
+.next-ui/assets/l-tf-inference-BpML7aBb.js                             8.59 kB │ gzip:   3.66 kB
+.next-ui/assets/worked-example-fading-distributive-gmhSwJ3k.js         8.62 kB │ gzip:   2.48 kB
+.next-ui/assets/formula-ridge-lasso-closed-form-iOvW_SJX.js            8.67 kB │ gzip:   2.74 kB
+.next-ui/assets/worked-example-fading-linear-equations-D2-4E2oK.js     8.70 kB │ gzip:   2.68 kB
+.next-ui/assets/l-data-cleaning-BUTQwQTF.js                            8.80 kB │ gzip:   3.52 kB
+.next-ui/assets/formula-ratio-percent-metric-BQYgVbrM.js               8.82 kB │ gzip:   3.20 kB
+.next-ui/assets/construct-freeze-assert-guard-CrfS1XYW.js              8.85 kB │ gzip:   3.05 kB
+.next-ui/assets/l-genai-prototype-Cl_ssTSr.js                          8.94 kB │ gzip:   3.85 kB
+.next-ui/assets/procedural-compose-SakblQvI.js                         9.03 kB │ gzip:   2.90 kB
+.next-ui/assets/compose-toy-inference-pipeline-CRqtHxiI.js             9.12 kB │ gzip:   2.94 kB
+.next-ui/assets/l-tf-papers-6FXcMeQs.js                                9.13 kB │ gzip:   3.97 kB
+.next-ui/assets/construct-attention-mask-DWgrL2eT.js                   9.32 kB │ gzip:   2.62 kB
+.next-ui/assets/l-genai-security-BEYY71hQ.js                           9.33 kB │ gzip:   4.13 kB
+.next-ui/assets/aggregate-evidence-rule-audit-RrFCwm71.js              9.34 kB │ gzip:   2.91 kB
+.next-ui/assets/l-ml-linear-C3aCg4OA.js                                9.37 kB │ gzip:   3.96 kB
+.next-ui/assets/trace-collection-state-CNpV3Qoy.js                     9.65 kB │ gzip:   2.42 kB
+.next-ui/assets/l-ml-logistic-DOSNZl59.js                              9.92 kB │ gzip:   4.28 kB
+.next-ui/assets/l-foundations-algebra-BvB7ZFRe.js                      9.97 kB │ gzip:   4.10 kB
+.next-ui/assets/l-eda-distributions-DNQU0vo8.js                       10.01 kB │ gzip:   4.40 kB
+.next-ui/assets/l-genai-eval-DTj0PHza.js                              10.13 kB │ gzip:   4.33 kB
+.next-ui/assets/formula-count-from-construction-D5sY2tGV.js           10.16 kB │ gzip:   3.69 kB
+.next-ui/assets/diagnostic-rationale-python-errors-CIoeyuaH.js        10.17 kB │ gzip:   3.47 kB
+.next-ui/assets/l-tf-tokenizer-Bu5y7nhQ.js                            10.23 kB │ gzip:   3.99 kB
+.next-ui/assets/formula-scalar-product-1iXANV91.js                    10.32 kB │ gzip:   3.74 kB
+.next-ui/assets/l-linalg-gauss-OcXkmqhr.js                            10.57 kB │ gzip:   4.01 kB
+.next-ui/assets/trace-exception-path-CR8T2v5y.js                      10.65 kB │ gzip:   2.10 kB
+.next-ui/assets/construct-secure-prototype-contract-BDO3xLbN.js       10.82 kB │ gzip:   3.04 kB
+.next-ui/assets/optimize-backprop-gradient-check-BEe3LYEH.js          11.01 kB │ gzip:   3.46 kB
+.next-ui/assets/l-linalg-independence-BSkF-QeK.js                     11.06 kB │ gzip:   4.51 kB
+.next-ui/assets/optimize-training-primitive-contract-D8zAP0XI.js      11.12 kB │ gzip:   3.61 kB
+.next-ui/assets/l-dl-regularization-Dv19hwvG.js                       11.27 kB │ gzip:   4.64 kB
+.next-ui/assets/l-dl-tensors-GRX_C573.js                              11.27 kB │ gzip:   4.76 kB
+.next-ui/assets/reproduce-seeded-split-_F_rcIDG.js                    11.30 kB │ gzip:   3.38 kB
+.next-ui/assets/l-numpy-shape-contracts-DlJLp6Qn.js                   11.41 kB │ gzip:   4.62 kB
+.next-ui/assets/trace-stage-DYU-ef80.js                               11.49 kB │ gzip:   3.09 kB
+.next-ui/assets/procedural-worked-BbvozvES.js                         11.57 kB │ gzip:   3.58 kB
+.next-ui/assets/l-tf-attention-D0XN4Aui.js                            11.88 kB │ gzip:   4.86 kB
+.next-ui/assets/l-genai-rag-lSOw5lgV.js                               11.90 kB │ gzip:   5.15 kB
+.next-ui/assets/l-tf-finetuning-D5Kv2N5h.js                           12.12 kB │ gzip:   5.09 kB
+.next-ui/assets/l-dl-training-DyfwYYZF.js                             12.12 kB │ gzip:   5.15 kB
+.next-ui/assets/l-ml-regularization-BwU6d2U_.js                       12.20 kB │ gzip:   4.99 kB
+.next-ui/assets/optimize-softmax-attention-mask-a3UaclqL.js           12.21 kB │ gzip:   3.79 kB
+.next-ui/assets/construct-ensemble-predictor-comparison-BdXZDJ2p.js   12.82 kB │ gzip:   2.70 kB
+.next-ui/assets/validate-data-quality-contract-BJTTNNge.js            13.08 kB │ gzip:   3.58 kB
+.next-ui/assets/classify-supervision-scaling-BLXyJV-s.js              13.21 kB │ gzip:   4.23 kB
+.next-ui/assets/validate-report-guard-compose-CIk5Y8dE.js             13.21 kB │ gzip:   3.59 kB
+.next-ui/assets/l-capstone-baseline-DzgluwHf.js                       13.29 kB │ gzip:   5.34 kB
+.next-ui/assets/procedural-classify-CjyXaqzQ.js                       13.37 kB │ gzip:   3.65 kB
+.next-ui/assets/classify-rule-cascade-priority-BwpFpWSM.js            13.45 kB │ gzip:   3.69 kB
+.next-ui/assets/jsxRuntime.module-CiWe4dQY.js                         13.60 kB │ gzip:   5.57 kB
+.next-ui/assets/fit-pca-kmeans-pipeline-DJjIAU7v.js                   13.94 kB │ gzip:   3.76 kB
+.next-ui/assets/l-ml-svm-pca-JIgdw4wg.js                              14.03 kB │ gzip:   5.49 kB
+.next-ui/assets/l-research-question-Dfe73gHG.js                       14.06 kB │ gzip:   5.34 kB
+.next-ui/assets/procedural-transform-BUPyWCVe.js                      14.28 kB │ gzip:   4.15 kB
+.next-ui/assets/classify-repro-contract-DhfUzwfn.js                   14.32 kB │ gzip:   4.64 kB
+.next-ui/assets/l-responsible-ai-DPjne9_3.js                          14.38 kB │ gzip:   5.84 kB
+.next-ui/assets/reproduce-seeded-experiment-report-uX0MkJwF.js        14.55 kB │ gzip:   3.64 kB
+.next-ui/assets/figure-kit-DIuEQc-M.js                                14.55 kB │ gzip:   5.97 kB
+.next-ui/assets/classify-ensemble-effect-Bz-WQUNk.js                  14.59 kB │ gzip:   4.61 kB
+.next-ui/assets/l-grad-regression-Df6A11HW.js                         14.65 kB │ gzip:   5.80 kB
+.next-ui/assets/classify-regularizer-effect-CDTj00GP.js               14.68 kB │ gzip:   4.88 kB
+.next-ui/assets/aggregate-retrieval-ranking-metric-ui1-9bLu.js        14.87 kB │ gzip:   3.96 kB
+.next-ui/assets/l-linalg-matrices-Bmp51FwQ.js                         14.88 kB │ gzip:   5.60 kB
+.next-ui/assets/fit-predict-metrics-2NSEfVJB.js                       15.27 kB │ gzip:   4.26 kB
+.next-ui/assets/reproduce-run-digest-assert-DqmP9UrF.js               15.36 kB │ gzip:   4.71 kB
+.next-ui/assets/visualizations-DfJ85som.js                            15.71 kB │ gzip:   4.94 kB
+.next-ui/assets/l-linalg-systems-ImeS3EQ5.js                          16.69 kB │ gzip:   6.03 kB
+.next-ui/assets/l-research-cards-BqFU2SKL.js                          16.96 kB │ gzip:   6.40 kB
+.next-ui/assets/procedural-trace-8TQg7Gy5.js                          17.97 kB │ gzip:   6.44 kB
+.next-ui/assets/aggregate-detector-eval-compare-Cr5B6wbJ.js           18.23 kB │ gzip:   4.65 kB
+.next-ui/assets/validate-required-field-raise-BU9XbEYk.js             18.39 kB │ gzip:   5.22 kB
+.next-ui/assets/fit-forward-layer-chain-contract-D6n-A0Hw.js          18.55 kB │ gzip:   4.85 kB
+.next-ui/assets/trace-assignment-state-CgVHFuG0.js                    18.62 kB │ gzip:   5.71 kB
+.next-ui/assets/procedural-validate-ChueBoQB.js                       18.67 kB │ gzip:   6.35 kB
+.next-ui/assets/classify-parameter-origin-C5O7-hon.js                 18.81 kB │ gzip:   4.52 kB
+.next-ui/assets/validate-rule-catalog-scan-BY_Xd7WT.js                18.84 kB │ gzip:   5.14 kB
+.next-ui/assets/optimize-gradient-update-rule--YzxtxRt.js             19.98 kB │ gzip:   5.95 kB
+.next-ui/assets/procedural-formula-DVmMSSEk.js                        21.38 kB │ gzip:   5.78 kB
+.next-ui/assets/aggregate-grouped-metrics-report-n2gbiQkk.js          21.83 kB │ gzip:   6.06 kB
+.next-ui/assets/procedural-reproduce-B2WqOhgU.js                      21.98 kB │ gzip:   7.15 kB
+.next-ui/assets/multiple-choice-linalg-independence-CUVhP7Ro.js       22.48 kB │ gzip:   5.36 kB
+.next-ui/assets/smoothie-sJ2R4Eug.js                                  24.75 kB │ gzip:   9.54 kB
+.next-ui/assets/procedural-trace-CrHlYgPp.js                          26.55 kB │ gzip:   9.56 kB
+.next-ui/assets/procedural-construct-CTsKU_v9.js                      26.62 kB │ gzip:   9.35 kB
+.next-ui/assets/procedural-aggregate-BPof6Aqi.js                      26.85 kB │ gzip:   9.27 kB
+.next-ui/assets/FigureRuntime-BtONC94T.js                             27.75 kB │ gzip:  10.02 kB
+.next-ui/assets/procedural-fit-nM4QiB76.js                            28.85 kB │ gzip:   7.45 kB
+.next-ui/assets/aggregate-confusion-metric-Sh8jpgvR.js                31.35 kB │ gzip:   8.86 kB
+.next-ui/assets/reproduce-pipeline-status-report-yzT9ChR4.js          33.00 kB │ gzip:   7.94 kB
+.next-ui/assets/classify-git-operation-ClY9-c_h.js                    34.01 kB │ gzip:   6.57 kB
+.next-ui/assets/procedural-construct-Chixv8q5.js                      34.20 kB │ gzip:  10.66 kB
+.next-ui/assets/FamilyExerciseView-BxYVe-lf.js                        36.82 kB │ gzip:  12.50 kB
+.next-ui/assets/multiple-choice-ml-linear-fj6Xe_hH.js                 37.47 kB │ gzip:   8.43 kB
+.next-ui/assets/procedural-optimize-BIFbuqFA.js                       38.11 kB │ gzip:  11.53 kB
+.next-ui/assets/sources-B23KuPeW.js                                   46.21 kB │ gzip:  11.03 kB
+.next-ui/assets/procedural-validate-B5oE6RtY.js                       57.45 kB │ gzip:  14.23 kB
+.next-ui/assets/procedural-construct-BNsXNcm0.js                      62.00 kB │ gzip:  14.33 kB
+.next-ui/assets/glossary-BxdXhJ5u.js                                  63.45 kB │ gzip:  18.14 kB
+.next-ui/assets/procedural-aggregate-BDT2-7st.js                      69.19 kB │ gzip:  17.06 kB
+.next-ui/assets/procedural-fit-CS8pqJ0p.js                            77.08 kB │ gzip:  19.18 kB
+.next-ui/assets/procedural-reproduce-C9oQSTCw.js                      77.43 kB │ gzip:  18.59 kB
+.next-ui/assets/procedural-optimize-CAebIA9Y.js                       89.80 kB │ gzip:  23.29 kB
+.next-ui/assets/family-core-ClJM2XID.js                              241.77 kB │ gzip:  59.22 kB
+.next-ui/assets/family-core-FE9nO7NQ.js                              318.52 kB │ gzip: 101.84 kB
+.next-ui/assets/procedural-classify-CWsecG8-.js                      418.39 kB │ gzip: 109.71 kB
+.next-ui/assets/CodeEditor-CVZQB9-f.js                               458.17 kB │ gzip: 152.53 kB
+.next-ui/assets/index-yIm6pWH0.js                                    565.83 kB │ gzip: 120.38 kB
+
+✓ built in 860ms
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+build-next erstellt: /Users/no8/Desktop/life/Lifemaxxing/argmin-figuren-s6b/build-next
+  Dateien: 980, Groesse: 29.7 MB
+Public-Content-Bundle: 46 Kompetenzen, 50 Lektionen, 290 Aktivitäten
+Next-Build validiert: 980 Dateien, JS 123.3 KiB gzip, CSS 13.2 KiB gzip

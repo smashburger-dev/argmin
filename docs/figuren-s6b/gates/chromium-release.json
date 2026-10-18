@@ -1,0 +1,14 @@
+{
+  "code": 1,
+  "port": 4407,
+  "strict": true,
+  "summary": [
+    "  Dateien: 980, Groesse: 29.7 MB",
+    "Public-Content-Bundle: 46 Kompetenzen, 50 Lektionen, 290 Aktivitäten",
+    "    Error: expect(locator).toBeVisible() failed",
+    "    Error: element(s) not found",
+    "  1 failed",
+    "  27 skipped",
+    "  94 passed (41.6s)"
+  ]
+}

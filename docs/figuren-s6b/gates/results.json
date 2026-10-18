@@ -1,0 +1,80 @@
+[
+  {
+    "name": "compile",
+    "code": 0,
+    "seconds": 1.1,
+    "summary": [
+      "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)"
+    ]
+  },
+  {
+    "name": "content",
+    "code": 0,
+    "seconds": 1.2,
+    "summary": [
+      "Content-Bundle: 46 Kompetenzen, 50 Lektionen, 290 Aktivitäten"
+    ]
+  },
+  {
+    "name": "node",
+    "code": 1,
+    "seconds": 46.6,
+    "summary": [
+      "✔ Zug ohne caseId verschluckt keine echten Generatorfehler (0.482416ms)",
+      "ℹ tests 2240",
+      "ℹ pass 2233",
+      "ℹ fail 2",
+      "ℹ skipped 5"
+    ]
+  },
+  {
+    "name": "typecheck",
+    "code": 0,
+    "seconds": 2.6,
+    "summary": [
+      "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)"
+    ]
+  },
+  {
+    "name": "release",
+    "code": 0,
+    "seconds": 6,
+    "summary": [
+      "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+      "  Dateien: 980, Groesse: 29.7 MB",
+      "Public-Content-Bundle: 46 Kompetenzen, 50 Lektionen, 290 Aktivitäten"
+    ]
+  },
+  {
+    "name": "release-negative",
+    "code": 0,
+    "seconds": 2.3,
+    "summary": [
+      "ℹ tests 12",
+      "ℹ pass 12",
+      "ℹ fail 0",
+      "ℹ skipped 0"
+    ]
+  },
+  {
+    "name": "project-runner",
+    "code": 0,
+    "seconds": 0.4,
+    "summary": [
+      "Ran 20 tests in 0.081s"
+    ]
+  },
+  {
+    "name": "chromium-dev",
+    "code": 1,
+    "seconds": 55.1,
+    "summary": [
+      "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+      "    Error: expect(locator).toBeVisible() failed",
+      "    Error: element(s) not found",
+      "  1 failed",
+      "  25 skipped",
+      "  96 passed (52.6s)"
+    ]
+  }
+]

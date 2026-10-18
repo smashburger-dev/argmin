@@ -1,0 +1,437 @@
+{
+  "checks": [
+    "Matrixprodukt gegen NumPy",
+    "NumPy @ ([2, 3], [3, 2])",
+    "NumPy @ ([3], [3])",
+    "NumPy @ ([3], [3, 4])",
+    "NumPy @ ([2, 3], [3])",
+    "NumPy @ ([5, 2, 3], [1, 3, 4])",
+    "NumPy @ ([2, 3], [4, 2])",
+    "NumPy @ ([0, 2, 3], [1, 3, 4])",
+    "NumPy broadcast ([3, 2], [2])",
+    "NumPy broadcast ([3, 2], [3, 1])",
+    "NumPy broadcast ([3, 2], [3])",
+    "NumPy broadcast ([2, 1, 4], [3, 4])",
+    "NumPy broadcast ([0, 3], [1, 3])",
+    "NumPy broadcast ([], [3])",
+    "optimize-softmax-attention-mask unmaskiert",
+    "optimize-softmax-attention-mask kausal",
+    "Temperatur/Top-k via Attention-Referenz warm",
+    "Temperatur/Top-k via Attention-Referenz cold",
+    "Temperatur/Top-k via Attention-Referenz filtered",
+    "formula-lora-delta-apply Delta",
+    "formula-lora-delta-apply W+Delta",
+    "LoRA Parameter",
+    "Feste Dropout-Maske",
+    "Invertierte Trainingsskalierung",
+    "Inferenz ohne Skalierung",
+    "Erwartungswert über alle gleichwahrscheinlichen Masken",
+    "classify-shape-contract $(32,16)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 8 auf 16 umprojiziert; $b$ wird zeilenweise broadcastet.",
+    "classify-shape-contract $(32,3)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 16 auf 3 umprojiziert; $b$ wird zeilenweise broadcastet.",
+    "validate-shape-contract row-broadcast: (3,2)"
+  ],
+  "predictions": [
+    {
+      "id": "order-times-prices",
+      "actual": [
+        4,
+        7
+      ],
+      "expected": [
+        4,
+        7
+      ],
+      "tolerance": 0.000001,
+      "verbatim": true
+    },
+    {
+      "id": "plug-adapter",
+      "actual": 4,
+      "expected": 4,
+      "tolerance": 0.000001,
+      "verbatim": true
+    },
+    {
+      "id": "library-attention",
+      "actual": 0.8807970779778823,
+      "expected": 0.88,
+      "tolerance": 0.005,
+      "verbatim": true
+    }
+  ],
+  "examples": {
+    "order": {
+      "a": [
+        [
+          2,
+          1,
+          0
+        ],
+        [
+          1,
+          2,
+          1
+        ]
+      ],
+      "b": [
+        [
+          3,
+          4
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          4,
+          3
+        ]
+      ],
+      "result": [
+        [
+          8,
+          10
+        ],
+        [
+          11,
+          11
+        ]
+      ]
+    },
+    "matmulCases": [
+      {
+        "a": [
+          2,
+          3
+        ],
+        "b": [
+          3,
+          2
+        ],
+        "actual": [
+          2,
+          2
+        ]
+      },
+      {
+        "a": [
+          3
+        ],
+        "b": [
+          3
+        ],
+        "actual": []
+      },
+      {
+        "a": [
+          3
+        ],
+        "b": [
+          3,
+          4
+        ],
+        "actual": [
+          4
+        ]
+      },
+      {
+        "a": [
+          2,
+          3
+        ],
+        "b": [
+          3
+        ],
+        "actual": [
+          2
+        ]
+      },
+      {
+        "a": [
+          5,
+          2,
+          3
+        ],
+        "b": [
+          1,
+          3,
+          4
+        ],
+        "actual": [
+          5,
+          2,
+          4
+        ]
+      },
+      {
+        "a": [
+          2,
+          3
+        ],
+        "b": [
+          4,
+          2
+        ],
+        "actual": "error"
+      },
+      {
+        "a": [
+          0,
+          2,
+          3
+        ],
+        "b": [
+          1,
+          3,
+          4
+        ],
+        "actual": [
+          0,
+          2,
+          4
+        ]
+      }
+    ],
+    "broadcasts": [
+      {
+        "a": [
+          3,
+          2
+        ],
+        "b": [
+          2
+        ],
+        "actual": [
+          3,
+          2
+        ]
+      },
+      {
+        "a": [
+          3,
+          2
+        ],
+        "b": [
+          3,
+          1
+        ],
+        "actual": [
+          3,
+          2
+        ]
+      },
+      {
+        "a": [
+          3,
+          2
+        ],
+        "b": [
+          3
+        ],
+        "actual": "error"
+      },
+      {
+        "a": [
+          2,
+          1,
+          4
+        ],
+        "b": [
+          3,
+          4
+        ],
+        "actual": [
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "a": [
+          0,
+          3
+        ],
+        "b": [
+          1,
+          3
+        ],
+        "actual": [
+          0,
+          3
+        ]
+      },
+      {
+        "a": [],
+        "b": [
+          3
+        ],
+        "actual": [
+          3
+        ]
+      }
+    ],
+    "attention": {
+      "q": [
+        [
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "k": [
+        [
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "v": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "plain": [
+        [
+          1.4621171572600098,
+          0.5378828427399902
+        ],
+        [
+          0.5378828427399902,
+          1.4621171572600098
+        ]
+      ],
+      "causal": [
+        [
+          2,
+          0
+        ],
+        [
+          0.5378828427399902,
+          1.4621171572600098
+        ]
+      ],
+      "logits": [
+        2,
+        1,
+        0
+      ],
+      "warm": [
+        0.6652409557748218,
+        0.24472847105479764,
+        0.09003057317038046
+      ],
+      "cold": [
+        0.8668133321973347,
+        0.11731042782619835,
+        0.015876239976466762
+      ],
+      "filtered": [
+        0.8807970779778823,
+        0.11920292202211755,
+        0
+      ]
+    },
+    "lora": {
+      "w": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "a": [
+        [
+          1,
+          2
+        ]
+      ],
+      "b": [
+        [
+          1
+        ],
+        [
+          3
+        ]
+      ],
+      "alpha": 2,
+      "rank": 1,
+      "delta": [
+        [
+          2,
+          4
+        ],
+        [
+          6,
+          12
+        ]
+      ],
+      "updated": [
+        [
+          3,
+          4
+        ],
+        [
+          6,
+          13
+        ]
+      ],
+      "parameters": 4096,
+      "full": 262144
+    },
+    "dropout": {
+      "a": [
+        2,
+        4,
+        6,
+        8
+      ],
+      "keep": 0.5,
+      "draws": [
+        0.2,
+        0.8,
+        0.1,
+        0.7
+      ],
+      "mask": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "training": [
+        4,
+        0,
+        12,
+        0
+      ],
+      "inference": [
+        2,
+        4,
+        6,
+        8
+      ]
+    }
+  }
+}
