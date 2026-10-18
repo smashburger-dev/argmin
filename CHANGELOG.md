@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.3 — 2026-10-18
+
+Neues Logo, ein Link zum GitHub-Repo in der Kopfzeile und ein leise pulsierender Hintergrund aus Ziffern und Formelzeichen.
+
+Für Lernende: **Hinter den Inhalten pulsiert jetzt ein gedithertes Feld aus Ziffern und Symbolen** wie ∑, ∂, ∇ und λ, nur knapp kontrastreicher als der Hintergrund. Fährt die Maus über eine freie Fläche, geraten die Zeichen in Bewegung, und um den Cursor setzt sich in der Akzentfarbe der Schriftzug „argmin“ zusammen. Über Karten, Text und Bedienelementen bleibt der Effekt aus. Karten und Panels haben dafür denselben Milchglas-Look wie die Kopfzeile. Bei reduzierter Bewegung steht das Muster still, auf Touch-Geräten pulsiert es ohne Cursor-Effekt. Links oben steht statt „Lokal“ jetzt ein Link zum GitHub-Repo, auf dem Handy nur als Symbol. Das Logo in der Kopfzeile ist enger gesetzt. Die Werkzeug-Karten zeigen nur noch Zweck und Einstieg, die Listen „Kann“ und „Grenzen“ entfallen. Sponsoring-Anfragen gehen an kontakt@noakatana.com, und das Sponsor-Fenster dunkelt jetzt die ganze Seite ab statt nur die Kopfzeile.
+
+Für Beitragende: Der Hintergrund ist ein `<canvas class="dither-bg">` mit `z-index: -1` aus `src/ui/DitherBackground.tsx`. Ein 14-px-Raster wird per 4×4-Bayer-Schwelle gegen ein Sinusfeld gedithert, die Glyphen kommen aus einem Atlas pro Theme. Gezeichnet wird mit 15 fps im Leerlauf, 30 fps bei aktivem Cursor und 10 fps auf Geräten ohne Hover. Der Schriftzug nutzt die Pfade aus `WORDMARK_PATHS` (`src/ui/Brand.tsx`), gerastert als Coverage-Maske mit 56 Spalten und einer Zelle Dilatation. „Freie Fläche“ heißt: kein interaktives Element, kein Element mit Hintergrund oder `backdrop-filter` zwischen Ziel und `<main>`, kein direkter Text am Ziel. `body` trägt keinen eigenen Hintergrund mehr, weil der die Canvas verdecken würde; `html` malt `--bg`. Die Tokens `--frost`/`--frost-blur` gelten für Kopfzeile und Karten. Weil `backdrop-filter` einen Containing Block für `position: fixed` bildet, rendert `SponsorModal` jetzt per `createPortal` in `document.body`. Das GitHub-Symbol ist der Octicons-Pfad `mark-github` (MIT), inline ohne Embed-Script; Eintrag in `docs/dependency-matrix.md`. Die Felder `capabilities`/`limitations` bleiben im Tool-Schema und in `content/tools/`, die Ansicht nutzt sie nur nicht mehr.
+
 ## 0.9.2 — 2026-10-16
 
 Aufgaben tragen jetzt echte Titel statt abgeschnittener Prompt-Fragmente, und die Überschrift einer Aufgabenseite nennt die Aufgabe statt nur den Aufgabentyp.

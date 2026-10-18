@@ -1,7 +1,8 @@
+import { createPortal } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';
 import { Button } from './Button';
 
-const SPONSOR_EMAIL = 'no8@tuta.com';
+const SPONSOR_EMAIL = 'kontakt@noakatana.com';
 // Noa: Ko-fi-URL eintragen, sobald das Konto steht, z.B. 'https://ko-fi.com/deinname'.
 // Bei leerem String zeigt das Fenster keinen Ko-fi-Knopf.
 const KOFI_URL = '';
@@ -36,7 +37,9 @@ function SponsorModal({ onClose }: { onClose: () => void }) {
     addEventListener('keydown', onKey);
     return () => removeEventListener('keydown', onKey);
   }, [onClose]);
-  return (
+  // Portalled to body: inside the topbar the backdrop-filter there would make
+  // this fixed overlay resolve against the 64px header instead of the viewport.
+  return createPortal(
     <div class="sponsor-backdrop" onClick={onClose}>
       <div class="sponsor-modal" role="dialog" aria-modal="true" aria-labelledby="sponsor-title" tabIndex={-1} ref={(element: HTMLElement | null) => element?.focus()} onClick={(event) => event.stopPropagation()}>
         <h2 id="sponsor-title">Werde Sponsor</h2>
@@ -58,7 +61,8 @@ function SponsorModal({ onClose }: { onClose: () => void }) {
           <Button variant="ghost" onClick={onClose}>Schließen</Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

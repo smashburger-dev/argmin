@@ -8,9 +8,9 @@ test('sponsor slots open the modal with contact options', async ({ page }) => {
   await page.getByRole('button', { name: 'Werde Sponsor' }).first().click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
-  await expect(dialog).toContainText('no8@tuta.com');
+  await expect(dialog).toContainText('kontakt@noakatana.com');
   await expect(dialog).toContainText('einen Monat');
-  await expect(page.getByRole('link', { name: 'E-Mail-Programm öffnen' })).toHaveAttribute('href', /^mailto:no8@tuta\.com/);
+  await expect(page.getByRole('link', { name: 'E-Mail-Programm öffnen' })).toHaveAttribute('href', /^mailto:kontakt@noakatana\.com/);
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
   expect(errors).toEqual([]);
