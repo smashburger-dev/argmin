@@ -27,4 +27,3 @@ Erkläre ohne Rechnung, welcher Schritt in $4x + 3 = 19 \to 4x = 16$ ausgeführt
 - **Potenz** (englisch *power*): Ausdruck der Form $a^n$, also wiederholte Multiplikation der Basis.
 - **Logarithmus** (englisch *logarithm*): $\log_b(y)$ ist die Zahl $k$ mit $b^k = y$; bei Basis 2 zählt er Verdopplungen.
 - **Äquivalenzumformung**: dieselbe Operation auf beiden Seiten einer Gleichung; lässt die Lösungsmenge unverändert.
-

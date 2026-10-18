@@ -40,4 +40,3 @@ Vereinfache $5(2x - 1) - 3(x + 4)$. Markiere zuerst die beiden Verteilungen. Fas
 - **Koeffizient** (englisch *coefficient*): die Zahl, die vor einer Variablen steht und sie multipliziert.
 - **Gleichartige Terme** (englisch *like terms*): Terme mit exakt demselben Variablenteil; nur sie lassen sich über die Koeffizienten zusammenfassen.
 - **Distributivgesetz** (englisch *distributive law*): Regel $a(b + c) = ab + ac$; verteilt einen Faktor auf jeden Klammerinhalt.
-

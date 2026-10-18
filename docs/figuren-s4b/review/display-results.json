@@ -1,0 +1,348 @@
+{
+  "summary": {
+    "samples": 30,
+    "minTextPx": 14.09999942779541,
+    "minContrast": 5.1013186520941005,
+    "minTarget": 44,
+    "overflow": false,
+    "failures": [],
+    "policy": {
+      "hintCap": true,
+      "revealAfterReload": true,
+      "freshSeed": true,
+      "next": "#/family/balance-solve/isolate/1443476386/intro"
+    }
+  },
+  "results": [
+    {
+      "theme": "light",
+      "title": "Beide Seiten gleich verändern",
+      "beat": 0,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.1013186520941005,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Beide Seiten gleich verändern",
+      "beat": 1,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.1013186520941005,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Beide Seiten gleich verändern",
+      "beat": 2,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.1013186520941005,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Beide Seiten gleich verändern",
+      "beat": 3,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.635952163279221,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Verdopplungen zählen",
+      "beat": 0,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.821903235333682,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Verdopplungen zählen",
+      "beat": 1,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.1013186520941005,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Verdopplungen zählen",
+      "beat": 2,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.1013186520941005,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Verdopplungen zählen",
+      "beat": 3,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.1013186520941005,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Jeden Inhalt auspacken",
+      "beat": 0,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.1013186520941005,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Jeden Inhalt auspacken",
+      "beat": 1,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.1013186520941005,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Jeden Inhalt auspacken",
+      "beat": 2,
+      "stageWidth": 309,
+      "minPx": 18.00499987602234,
+      "minContrast": 5.1013186520941005,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Jeden Inhalt auspacken",
+      "beat": 3,
+      "stageWidth": 309,
+      "minPx": 16.619999885559082,
+      "minContrast": 5.1013186520941005,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Jeden Inhalt auspacken",
+      "beat": 4,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 6.432056174360287,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Deine Waage",
+      "beat": 0,
+      "stageWidth": 267,
+      "minPx": 14.09999942779541,
+      "minContrast": 5.821903235333682,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "light",
+      "title": "Deine Linearkombination",
+      "beat": 0,
+      "stageWidth": 267,
+      "minPx": 14.09999942779541,
+      "minContrast": 5.635952163279221,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Beide Seiten gleich verändern",
+      "beat": 0,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Beide Seiten gleich verändern",
+      "beat": 1,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Beide Seiten gleich verändern",
+      "beat": 2,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Beide Seiten gleich verändern",
+      "beat": 3,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Verdopplungen zählen",
+      "beat": 0,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Verdopplungen zählen",
+      "beat": 1,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Verdopplungen zählen",
+      "beat": 2,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Verdopplungen zählen",
+      "beat": 3,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Jeden Inhalt auspacken",
+      "beat": 0,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Jeden Inhalt auspacken",
+      "beat": 1,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Jeden Inhalt auspacken",
+      "beat": 2,
+      "stageWidth": 309,
+      "minPx": 18.00499987602234,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Jeden Inhalt auspacken",
+      "beat": 3,
+      "stageWidth": 309,
+      "minPx": 16.619999885559082,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Jeden Inhalt auspacken",
+      "beat": 4,
+      "stageWidth": 309,
+      "minPx": 14.680999898910523,
+      "minContrast": 6.383103508064552,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Deine Waage",
+      "beat": 0,
+      "stageWidth": 267,
+      "minPx": 14.09999942779541,
+      "minContrast": 5.708192119744705,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    },
+    {
+      "theme": "dark",
+      "title": "Deine Linearkombination",
+      "beat": 0,
+      "stageWidth": 267,
+      "minPx": 14.09999942779541,
+      "minContrast": 6.383103508064552,
+      "minTarget": 44,
+      "overflow": false,
+      "failures": []
+    }
+  ]
+}

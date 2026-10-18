@@ -8,5 +8,3 @@ Löse $5x - 7 = 2x + 8$. Steht eine Klammer im Weg, multipliziere sie zuerst aus
 4. **Probe im Original: dein Zug**: Setze $x = 5$ ein und rechne beide Seiten aus: links $5 \cdot 5 - 7 = ???$, rechts $2 \cdot 5 + 8 = ???$. Beide Seiten müssen denselben Wert ergeben.
 
 Die Probe ist kein Schmuck am Ende. Sie trennt einen plausibel aussehenden Rechenweg von einer bestätigten Lösung.
-
-

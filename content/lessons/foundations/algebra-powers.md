@@ -23,5 +23,3 @@ $$1 \to 2 \to 4 \to 8 \to 16 \to 32.$$
 Das sind 5 Verdopplungen, also $\log_2(32) = 5$, gesprochen „Logarithmus von 32 zur Basis 2“. Allgemein ist $\log_2(y)$ die Zahl $k$ mit $2^k = y$. Bei Unsicherheit übersetze eine Logarithmusaufgabe immer in diese Potenzform zurück.
 
 Logarithmen zur Basis 2 zählen also Verdopplungen, zur Basis 10 Zehnerpotenzen. Werte zwischen zwei Potenzen liegen zwischen den ganzen Antworten: $\log_2(50)$ liegt zwischen 5 und 6, weil 50 zwischen $2^5 = 32$ und $2^6 = 64$ liegt.
-
-

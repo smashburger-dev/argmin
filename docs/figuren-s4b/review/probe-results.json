@@ -1,0 +1,92 @@
+{
+  "tasks": [
+    "balance: zero/x scaling rejected; divide-first fraction path accepted",
+    "balance: collect-first two-sided fraction path accepted",
+    "mixer: field errors; unicode minus and fractions; draft reload and lifetime hint count",
+    "mixer: alternate dependent-vector solution accepted",
+    "mixer: impossible target classified correctly"
+  ],
+  "touch": {
+    "before": 2081,
+    "after": 2332,
+    "delta": 251,
+    "flat": "flat"
+  },
+  "roundtrip": {
+    "schema": 3,
+    "same": true,
+    "attempts": 9,
+    "everyAnswerObject": true,
+    "mixerHints": 1,
+    "draftCount": 5
+  },
+  "perf": [
+    {
+      "width": 375,
+      "title": "Beide Seiten gleich verändern",
+      "throttle": 4,
+      "medians": [
+        2.199999999254942,
+        2.300000000745058,
+        2.400000002235174
+      ],
+      "medianOfMedians": 2.300000000745058
+    },
+    {
+      "width": 375,
+      "title": "Verdopplungen zählen",
+      "throttle": 4,
+      "medians": [
+        1.6000000014901161,
+        1.699999999254942,
+        1.699999999254942
+      ],
+      "medianOfMedians": 1.699999999254942
+    },
+    {
+      "width": 375,
+      "title": "Jeden Inhalt auspacken",
+      "throttle": 4,
+      "medians": [
+        1.3999999985098839,
+        1.3999999985098839,
+        1.5
+      ],
+      "medianOfMedians": 1.3999999985098839
+    },
+    {
+      "width": 1440,
+      "title": "Beide Seiten gleich verändern",
+      "throttle": 4,
+      "medians": [
+        2.100000001490116,
+        2.199999999254942,
+        2.199999999254942
+      ],
+      "medianOfMedians": 2.199999999254942
+    },
+    {
+      "width": 1440,
+      "title": "Verdopplungen zählen",
+      "throttle": 4,
+      "medians": [
+        1.300000000745058,
+        1.5,
+        1.699999999254942
+      ],
+      "medianOfMedians": 1.5
+    },
+    {
+      "width": 1440,
+      "title": "Jeden Inhalt auspacken",
+      "throttle": 4,
+      "medians": [
+        1.5,
+        1.5,
+        1.5
+      ],
+      "medianOfMedians": 1.5
+    }
+  ],
+  "display": []
+}
