@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "library-attention",
+  "title": "Keys lesen, Values mischen",
+  "caption": "Die Leselänge steht für Gewicht. Maskierung verändert die Verteilung vor dem Mischen.",
+  "hint": "Das feste Beispiel ergänzt die Rechnung in der Lektüre.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Query und Keys des Handbeispiels liefern skalierte Scores. Die Buchnummer hält Key und Value zusammen."
+    },
+    {
+      "id": "step-1",
+      "caption": "Softmax verteilt die Leseanteile. Die Balken verwenden dieselbe Skala; angezeigte Dezimalwerte sind Näherungen."
+    },
+    {
+      "id": "step-2",
+      "caption": "Die Values werden mit diesen Anteilen gemischt. Es entsteht eine gewichtete Summe, kein ausgewähltes Buch."
+    },
+    {
+      "id": "step-3",
+      "caption": "Kausal darf die erste Query das zweite Buch nicht lesen. Seine Gewichtung ist exakt null, nicht nur klein."
+    },
+    {
+      "id": "step-4",
+      "caption": "Übertragung auf die drei Logits des alten Checkpoints: zunächst ohne Maske und ohne Top-k, bei Temperatur eins."
+    },
+    {
+      "id": "step-5",
+      "caption": "Die niedrigere Temperatur verschärft die Verteilung. Die Scores werden vor Softmax durch T geteilt."
+    },
+    {
+      "id": "step-6",
+      "caption": "Top-k behält die beiden größten Logits und normiert neu. Der gesuchte Anteil bleibt bis zum nächsten Schritt verdeckt."
+    },
+    {
+      "id": "step-7",
+      "caption": "Die verbleibenden Anteile summieren sich wieder zu eins. Der gerundete Wert ist keine exakte Wahrscheinlichkeit."
+    }
+  ],
+  "predict": {
+    "beat": "step-6",
+    "prompt": "Setze T = 0,5 und k = 2. Welcher Anteil q₁ bleibt auf dem ersten Token nach der Top-k-Renormalisierung?",
+    "input": "numeric",
+    "expected": 0.88,
+    "tolerance": 0.005,
+    "hints": [
+      "Bei k = 2 zählen nur die zwei größten Logits: q₁ = e^(2/T)/(e^(2/T) + e^(1/T)) = 1/(1 + e^(−2)) für T = 0,5."
+    ],
+    "typicalErrors": [
+      {
+        "match": 0.87,
+        "feedback": "Das ist ungefähr p₁ = 0,867 vor der Renormalisierung — bei k = 2 fällt das dritte Token weg und die Masse verteilt sich auf zwei Tokens neu."
+      },
+      {
+        "match": 0.67,
+        "feedback": "Das ist p₁ bei T = 1. Prüfe die Temperatur: T = 0,5 macht die Verteilung schärfer."
+      }
+    ]
+  }
+}

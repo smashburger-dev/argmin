@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "tensor-address",
+  "title": "Tensoradresse und Schichtformen",
+  "caption": "Eine kleine vollständige Seite macht die Adresse lesbar; große Schichten bleiben bezeichnete Blöcke.",
+  "hint": "Das feste Beispiel ergänzt die Rechnung in der Lektüre.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Ein Tensor ist ein Array. Hier sind die Achsen Seite, Zeile, Spalte; die Adressen zählen wie in Python ab null."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die Seitenadresse wechselt, die Zeilen- und Spaltenordnung bleibt gleich. Jede Ansicht zeigt eine ganze Seite."
+    },
+    {
+      "id": "step-2",
+      "caption": "Die Adresse wählt genau eine Zelle. Eine zusätzliche Achse erfordert keine perspektivisch winzigen Zellquader."
+    },
+    {
+      "id": "step-3",
+      "caption": "Im Lektionsnetz wirkt W auf die Features jedes Beispiels. Große Arrays erscheinen als bezeichnete Blöcke."
+    },
+    {
+      "id": "step-4",
+      "caption": "ReLU ändert die Form nicht. Der zweite Layer erhält die Hidden-Breite, die Batch-Achse bleibt erhalten."
+    }
+  ]
+}

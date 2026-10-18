@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "team-mask",
+  "title": "Ein fester Dropout-Schritt",
+  "caption": "Invertiertes Dropout skaliert im Training. Bei Inferenz bleiben die Aktivierungen unverändert.",
+  "hint": "Das feste Beispiel ergänzt die Rechnung in der Lektüre.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Vier Aktivierungen vor Dropout. p ist hier die Behaltewahrscheinlichkeit, nicht die Ausfallwahrscheinlichkeit."
+    },
+    {
+      "id": "step-1",
+      "caption": "Feste Ziehwerte u: Ein Teammitglied bleibt genau dann, wenn u kleiner als p ist. Die Maske bleibt für diesen Schritt fest."
+    },
+    {
+      "id": "step-2",
+      "caption": "Training mit invertiertem Dropout: behaltene Aktivierungen durch p teilen, ausgefallene auf null setzen."
+    },
+    {
+      "id": "step-3",
+      "caption": "Bei Inferenz ist das ganze Team da. Keine Maske und keine zusätzliche Skalierung bei dieser Konvention."
+    }
+  ]
+}
