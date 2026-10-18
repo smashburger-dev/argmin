@@ -8,6 +8,7 @@ import { FAMILY_SPEC as AGGREGATE_EVIDENCE_RULE_AUDIT } from '../core/procedural
 import { FAMILY_SPEC as AGGREGATE_GROUPED_METRICS_REPORT } from '../core/procedural/aggregate-grouped-metrics-report.mjs';
 import { FAMILY_SPEC as AGGREGATE_PARITY_THRESHOLD_SELECTION } from '../core/procedural/aggregate-parity-threshold-selection.mjs';
 import { FAMILY_SPEC as AGGREGATE_RETRIEVAL_RANKING_METRIC } from '../core/procedural/aggregate-retrieval-ranking-metric.mjs';
+import { FAMILY_SPEC as BALANCE_SOLVE } from '../core/procedural/balance-solve.mjs';
 import { FAMILY_SPEC as CLASSIFY_RULE_CASCADE_PRIORITY } from '../core/procedural/classify-rule-cascade-priority.mjs';
 import { FAMILY_SPEC as COMPOSE_TOY_INFERENCE_PIPELINE } from '../core/procedural/compose-toy-inference-pipeline.mjs';
 import { FAMILY_SPEC as CONSTRUCT_ATTENTION_MASK } from '../core/procedural/construct-attention-mask.mjs';
@@ -27,6 +28,7 @@ import { FAMILY_SPEC as FIT_WEIGHT_DECAY_ABLATION } from '../core/procedural/fit
 import { FAMILY_SPEC as FORMULA_DESCRIPTIVE_STATS_NUMPY } from '../core/procedural/formula-descriptive-stats-numpy.mjs';
 import { FAMILY_SPEC as FORMULA_LORA_DELTA_APPLY } from '../core/procedural/formula-lora-delta-apply.mjs';
 import { FAMILY_SPEC as FORMULA_RIDGE_LASSO_CLOSED_FORM } from '../core/procedural/formula-ridge-lasso-closed-form.mjs';
+import { FAMILY_SPEC as MIX_TO_TARGET } from '../core/procedural/mix-to-target.mjs';
 import { FAMILY_SPEC as OPTIMIZE_BACKPROP_GRADIENT_CHECK } from '../core/procedural/optimize-backprop-gradient-check.mjs';
 import { FAMILY_SPEC as OPTIMIZE_BPE_MERGE_LEARN } from '../core/procedural/optimize-bpe-merge-learn.mjs';
 import { FAMILY_SPEC as OPTIMIZE_DECODE_GREEDY_LOOP } from '../core/procedural/optimize-decode-greedy-loop.mjs';
@@ -64,6 +66,7 @@ export const PROCEDURAL_FAMILY_SPECS = [
   AGGREGATE_GROUPED_METRICS_REPORT,
   AGGREGATE_PARITY_THRESHOLD_SELECTION,
   AGGREGATE_RETRIEVAL_RANKING_METRIC,
+  BALANCE_SOLVE,
   CLASSIFY_RULE_CASCADE_PRIORITY,
   COMPOSE_TOY_INFERENCE_PIPELINE,
   CONSTRUCT_ATTENTION_MASK,
@@ -83,6 +86,7 @@ export const PROCEDURAL_FAMILY_SPECS = [
   FORMULA_DESCRIPTIVE_STATS_NUMPY,
   FORMULA_LORA_DELTA_APPLY,
   FORMULA_RIDGE_LASSO_CLOSED_FORM,
+  MIX_TO_TARGET,
   OPTIMIZE_BACKPROP_GRADIENT_CHECK,
   OPTIMIZE_BPE_MERGE_LEARN,
   OPTIMIZE_DECODE_GREEDY_LOOP,

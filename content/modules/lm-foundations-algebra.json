@@ -15,6 +15,24 @@
   ],
   "placements": [
     {
+      "placementId": "p-s4b-balance-solve-isolate",
+      "role": "curated",
+      "familyId": "balance-solve",
+      "caseId": "isolate",
+      "seed": 3,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-s4b-balance-solve-practice",
+      "role": "practice-space",
+      "familyId": "balance-solve",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
       "placementId": "p-foundations-algebra-two-step-seeded-retrieval",
       "role": "curated",
       "familyId": "transform-linear-equation-isolate",

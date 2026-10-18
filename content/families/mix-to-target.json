@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "familyId": "mix-to-target",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "unique",
+      "title": "Ziel mit zwei unabhängigen Zutaten treffen",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "figuren-s4b-mix-to-target-unique"
+      ]
+    },
+    {
+      "caseId": "infinite",
+      "title": "Ziel mit parallelen Zutaten treffen",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "figuren-s4b-mix-to-target-infinite"
+      ]
+    },
+    {
+      "caseId": "none",
+      "title": "Ein unerreichbares Mischziel erkennen",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "figuren-s4b-mix-to-target-none"
+      ]
+    }
+  ]
+}

@@ -5,6 +5,7 @@
  * the real DOM once and then only writes changed attributes.
  */
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import type { ComponentChildren } from 'preact';
 import { MathMarkup } from '../ui/MathMarkup';
 import { Button } from '../ui/Button';
 import { VizCheckpointPanel } from '../ui/VisualizationBlock';
@@ -24,6 +25,8 @@ interface Props {
   style?: FigureStyleId | null;
   initialBeat?: number;
   onPredictDone?: () => void;
+  stepContent?: ComponentChildren;
+  onRestart?: () => void;
 }
 
 interface DragState { id: number; x: number; y: number; lastX: number; active: boolean }
@@ -103,6 +106,7 @@ interface StepPanelProps {
   still: boolean;
   beatIds: string[];
   readoutRef: preact.RefObject<HTMLParagraphElement>;
+  stepContent?: ComponentChildren;
   actions: { previous: () => void; next: () => void; restart: () => void; skip: () => void; graded: (result: { ok: boolean }) => void };
 }
 
@@ -115,7 +119,7 @@ function FigureQuestion({ checkpoint, active, done, actions }: { checkpoint: Viz
   );
 }
 
-function FigureStepPanel({ scene, model, spec, beat, predictDone, mode, still, beatIds, readoutRef, actions }: StepPanelProps) {
+function FigureStepPanel({ scene, model, spec, beat, predictDone, mode, still, beatIds, readoutRef, stepContent, actions }: StepPanelProps) {
   const nBeats = beatIds.length;
   const atPredict = spec.predict?.beat === beatIds[beat];
   const gatePredict = atPredict && !predictDone;
@@ -126,6 +130,7 @@ function FigureStepPanel({ scene, model, spec, beat, predictDone, mode, still, b
         <p class="figure-readout" aria-hidden="true" ref={readoutRef} />
         <span class="visually-hidden" aria-live="polite">{scene.describe(model, beat, mode)}</span>
         {predictCheckpoint ? <FigureQuestion checkpoint={predictCheckpoint} active={atPredict} done={predictDone} actions={actions} /> : null}
+        {stepContent}
         {!still ? <div class="figure-controls" role="group" aria-label="Schritte">
           <Button size="sm" variant="ghost" disabled={beat === 0} onClick={actions.previous}>Zurück</Button>
           <span class="figure-step" aria-label={`Schritt ${beat + 1} von ${nBeats}`}>{beat + 1} / {nBeats}</span>
@@ -138,7 +143,7 @@ function FigureStepPanel({ scene, model, spec, beat, predictDone, mode, still, b
   );
 }
 
-export default function FigureRuntime({ scene, spec, style, initialBeat, onPredictDone }: Props) {
+export default function FigureRuntime({ scene, spec, style, initialBeat, onPredictDone, stepContent, onRestart }: Props) {
   const { mode, still, storageKey, kind } = figureOptions(spec);
   const runtimeScene = useMemo(() => sceneForSpec(scene, spec, still), [scene, spec, still]);
   const model = useMemo(() => scene.model(spec.params, { mode }), [scene, spec, mode]);
@@ -203,6 +208,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     return () => {
       engine.dispose();
+      svg.querySelectorAll('[data-item]').forEach((item) => item.remove());
       ro.disconnect();
       io.disconnect();
       mo.disconnect();
@@ -313,8 +319,8 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
         </svg>
       </div>
       <FigureStepPanel scene={runtimeScene} model={model} spec={spec} beat={beat} predictDone={predictDone}
-        mode={mode} still={still} beatIds={beatIds} readoutRef={readoutRef}
-        actions={{ previous: () => engine()?.prev(), next, restart: () => engine()?.restart(), skip: skipPredict, graded }} />
+        mode={mode} still={still} beatIds={beatIds} readoutRef={readoutRef} stepContent={stepContent}
+        actions={{ previous: () => engine()?.prev(), next, restart: () => { engine()?.restart(); onRestart?.(); }, skip: skipPredict, graded }} />
       <StaticExplanation text={partText} close={() => setPartText(null)} />
       <div class="figure-print-description">
         <ol>{beatIds.map((id, i) => <li key={id}>{runtimeScene.describe(model, i, mode)}</li>)}</ol>

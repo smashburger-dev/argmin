@@ -17,12 +17,13 @@
     {
       "competencyId": "c-algebra",
       "familyIds": [
+        "balance-solve",
         "classify-error-hypothesis",
         "transform-expression-simplify-canonical",
         "transform-linear-equation-isolate",
         "worked-example-fading-linear-equations"
       ],
-      "placedCaseCount": 8,
+      "placedCaseCount": 9,
       "seededFamilyCount": 0
     },
     {
@@ -102,9 +103,10 @@
         "classify-column-combination",
         "classify-rank-solution-case",
         "formula-scalar-product",
+        "mix-to-target",
         "transform-system-2x2-elimination"
       ],
-      "placedCaseCount": 4,
+      "placedCaseCount": 7,
       "seededFamilyCount": 0
     },
     {
