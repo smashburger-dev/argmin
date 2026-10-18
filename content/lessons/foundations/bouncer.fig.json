@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "bouncer",
+  "title": "Kurzschluss am Eingang",
+  "caption": "Ist der linke Teil von and falsch, wird der rechte Teil nicht gelesen.",
+  "hint": "Verfolge die ausgeführte Zeile und den zugehörigen Zustand.",
+  "params": {},
+  "beats": {
+    "from": "trace"
+  }
+}

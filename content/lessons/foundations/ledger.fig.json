@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "ledger",
+  "title": "Zeilensprünge im Kassenbuch",
+  "caption": "Der Zeiger kehrt zur Schleifenbedingung zurück. Der bisherige Zustand bleibt erhalten.",
+  "hint": "Verfolge die ausgeführte Zeile und den zugehörigen Zustand.",
+  "params": {},
+  "beats": {
+    "from": "trace"
+  },
+  "predict": {
+    "beat": "step-11",
+    "prompt": "n ist jetzt 0. Welche Zeilennummer wird nach der letzten Prüfung der Schleifenbedingung ausgeführt?",
+    "input": "numeric",
+    "expected": 6,
+    "tolerance": 0.000001
+  }
+}

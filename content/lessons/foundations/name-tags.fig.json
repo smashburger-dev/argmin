@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "name-tags",
+  "title": "Namensschilder umhängen",
+  "caption": "Eine Zuweisung ändert eine Bindung. Bereits berechnete Werte anderer Namen bleiben erhalten.",
+  "hint": "Verfolge die ausgeführte Zeile und den zugehörigen Zustand.",
+  "params": {},
+  "beats": {
+    "from": "trace"
+  },
+  "predict": {
+    "beat": "step-2",
+    "prompt": "Das nächste Beispiel verwendet a = b − 2. Welchen Wert hat a nach dieser Zeile?",
+    "input": "numeric",
+    "expected": 5,
+    "tolerance": 0.000001
+  }
+}

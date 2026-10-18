@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "vending-frame",
+  "title": "Aufrufen, zurückgeben, drucken",
+  "caption": "Lokale Namen gehören zum jeweiligen Aufruf. Ein Rückgabewert ist noch keine Bildschirmausgabe.",
+  "hint": "Verfolge die ausgeführte Zeile und den zugehörigen Zustand.",
+  "params": {},
+  "beats": {
+    "from": "trace"
+  },
+  "predict": {
+    "beat": "step-1",
+    "prompt": "g hat das Argument 2 erhalten. Welchen Wert gibt g zurück?",
+    "input": "numeric",
+    "expected": 6,
+    "tolerance": 0.000001
+  }
+}
