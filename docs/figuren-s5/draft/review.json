@@ -1,0 +1,306 @@
+[
+  {
+    "id": "mse-section",
+    "theme": "light",
+    "beat": 0,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "x₀ = 1,5, h = 0,5. Sekantensteigung 3,5; Grenzwert 3."
+  },
+  {
+    "id": "mse-section",
+    "theme": "light",
+    "beat": 1,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "x₀ = 1,5, h = 0,1. Sekantensteigung 3,1; Grenzwert 3."
+  },
+  {
+    "id": "mse-section",
+    "theme": "light",
+    "beat": 2,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "x₀ = 1,5, h = 0. Sekantensteigung 3; Grenzwert 3."
+  },
+  {
+    "id": "mse-landscape",
+    "theme": "light",
+    "beat": 0,
+    "minFont": 28.40888375113346,
+    "labels": [],
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "theme": "light",
+    "beat": 1,
+    "minFont": 28.40888375113346,
+    "labels": [],
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "theme": "light",
+    "beat": 2,
+    "minFont": 28.40888375113346,
+    "labels": [],
+    "readout": "η = 0,05, Schritt 12. w = 2,049, b = 0,881. MSE = 0,003. ∂w = 0,016, ∂b = -0,041, |∇L| = 0,044."
+  },
+  {
+    "id": "residual-springs",
+    "theme": "light",
+    "beat": 0,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "w = 1, b = 0. MSE = 1,125."
+  },
+  {
+    "id": "residual-springs",
+    "theme": "light",
+    "beat": 1,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "w = 1, b = 0. MSE = 3,625."
+  },
+  {
+    "id": "residual-springs",
+    "theme": "light",
+    "beat": 2,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "w = 1,8, b = -0,5. MSE = 0,575."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "theme": "light",
+    "beat": 0,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Ridge, λ = 2. Gewichte: 3; 1,5; -1."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "theme": "light",
+    "beat": 1,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "theme": "light",
+    "beat": 2,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0."
+  },
+  {
+    "id": "training-book",
+    "theme": "light",
+    "beat": 0,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "η = 0,4. 0 Updates, w = 2. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "theme": "light",
+    "beat": 1,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "η = 0,4. 1 Updates, w = 0,4. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "theme": "light",
+    "beat": 2,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "η = 0,4. 4 Updates, w = 0,003. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "theme": "light",
+    "beat": 3,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "η = 0,4. 8 Updates, w = 0. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "early-stopping-flag",
+    "theme": "light",
+    "beat": 0,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Epoche 6. Beste Epoche 6: Validierung 0,309. Stopp bei 9, Patience 3."
+  },
+  {
+    "id": "early-stopping-flag",
+    "theme": "light",
+    "beat": 1,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Epoche 9. Beste Epoche 6: Validierung 0,309. Stopp bei 9, Patience 3."
+  },
+  {
+    "id": "early-stopping-flag",
+    "theme": "light",
+    "beat": 2,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Epoche 6. Beste Epoche 6: Validierung 0,309. Stopp bei 9, Patience 3."
+  },
+  {
+    "id": "mse-section",
+    "theme": "dark",
+    "beat": 0,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "x₀ = 1,5, h = 0,5. Sekantensteigung 3,5; Grenzwert 3."
+  },
+  {
+    "id": "mse-section",
+    "theme": "dark",
+    "beat": 1,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "x₀ = 1,5, h = 0,1. Sekantensteigung 3,1; Grenzwert 3."
+  },
+  {
+    "id": "mse-section",
+    "theme": "dark",
+    "beat": 2,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "x₀ = 1,5, h = 0. Sekantensteigung 3; Grenzwert 3."
+  },
+  {
+    "id": "mse-landscape",
+    "theme": "dark",
+    "beat": 0,
+    "minFont": 28.40888375113346,
+    "labels": [],
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "theme": "dark",
+    "beat": 1,
+    "minFont": 28.40888375113346,
+    "labels": [],
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "theme": "dark",
+    "beat": 2,
+    "minFont": 28.40888375113346,
+    "labels": [],
+    "readout": "η = 0,05, Schritt 12. w = 2,049, b = 0,881. MSE = 0,003. ∂w = 0,016, ∂b = -0,041, |∇L| = 0,044."
+  },
+  {
+    "id": "residual-springs",
+    "theme": "dark",
+    "beat": 0,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "w = 1, b = 0. MSE = 1,125."
+  },
+  {
+    "id": "residual-springs",
+    "theme": "dark",
+    "beat": 1,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "w = 1, b = 0. MSE = 3,625."
+  },
+  {
+    "id": "residual-springs",
+    "theme": "dark",
+    "beat": 2,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "w = 1,8, b = -0,5. MSE = 0,575."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "theme": "dark",
+    "beat": 0,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Ridge, λ = 2. Gewichte: 3; 1,5; -1."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "theme": "dark",
+    "beat": 1,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "theme": "dark",
+    "beat": 2,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0."
+  },
+  {
+    "id": "training-book",
+    "theme": "dark",
+    "beat": 0,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "η = 0,4. 0 Updates, w = 2. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "theme": "dark",
+    "beat": 1,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "η = 0,4. 1 Updates, w = 0,4. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "theme": "dark",
+    "beat": 2,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "η = 0,4. 4 Updates, w = 0,003. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "theme": "dark",
+    "beat": 3,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "η = 0,4. 8 Updates, w = 0. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "early-stopping-flag",
+    "theme": "dark",
+    "beat": 0,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Epoche 6. Beste Epoche 6: Validierung 0,309. Stopp bei 9, Patience 3."
+  },
+  {
+    "id": "early-stopping-flag",
+    "theme": "dark",
+    "beat": 1,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Epoche 9. Beste Epoche 6: Validierung 0,309. Stopp bei 9, Patience 3."
+  },
+  {
+    "id": "early-stopping-flag",
+    "theme": "dark",
+    "beat": 2,
+    "minFont": 14.045500755310059,
+    "labels": [],
+    "readout": "Epoche 6. Beste Epoche 6: Validierung 0,309. Stopp bei 9, Patience 3."
+  }
+]

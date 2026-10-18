@@ -1,0 +1,12 @@
+[
+  {
+    "command": "npm run test:e2e:build",
+    "exit": 0,
+    "seconds": 39,
+    "log": "/private/tmp/figuren-s5-release-0.log",
+    "summary": [
+      "  27 skipped",
+      "  95 passed (32.4s)"
+    ]
+  }
+]

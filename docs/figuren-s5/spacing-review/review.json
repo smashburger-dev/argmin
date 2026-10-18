@@ -1,0 +1,2758 @@
+[
+  {
+    "id": "mse-landscape",
+    "width": 375,
+    "theme": "light",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "b",
+        "size": 14.643583917770783,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w",
+        "size": 14.643583917770783,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 375,
+    "theme": "light",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "b",
+        "size": 14.643583917770783,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "∂w",
+        "size": 14.643583917770783,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "∂b",
+        "size": 14.643583917770783,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w",
+        "size": 14.643583917770783,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 375,
+    "theme": "light",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "b",
+        "size": 14.643583917770783,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w",
+        "size": 14.643583917770783,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 12. w = 2,049, b = 0,881. MSE = 0,003. ∂w = 0,016, ∂b = -0,041, |∇L| = 0,044."
+  },
+  {
+    "id": "residual-springs",
+    "width": 375,
+    "theme": "light",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "x",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "y",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "MSE = 1,125",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "w = 1, b = 0. MSE = 1,125."
+  },
+  {
+    "id": "residual-springs",
+    "width": 375,
+    "theme": "light",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "x",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "y",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "MSE = 3,625",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "w = 1, b = 0. MSE = 3,625."
+  },
+  {
+    "id": "residual-springs",
+    "width": 375,
+    "theme": "light",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "x",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "y",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "MSE = 0,575",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "w = 1,8, b = -0,5. MSE = 0,575."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 375,
+    "theme": "light",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Ohne Strafe → Ridge",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "λ = 0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₁ = 3",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₂ = 1,5",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₃ = -1",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "+3",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "Ohne Strafe, λ = 0. Gewichte: 3; 1,5; -1."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 375,
+    "theme": "light",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Ridge → Lasso",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "λ = 2",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₁ = 1",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₂ = 0,5",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₃ = -0,333",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "+3",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 375,
+    "theme": "light",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Lasso",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "λ = 2",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₁ = 1",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₂ = 0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₃ = 0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "+3",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0."
+  },
+  {
+    "id": "training-book",
+    "width": 375,
+    "theme": "light",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "1",
+        "size": 14.045500755310059,
+        "contrast": 5.1013186520941005
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "3",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "4",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "Updates: 0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w = 2",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,4. 0 Updates, w = 2, L = 4. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 375,
+    "theme": "light",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "1",
+        "size": 14.045500755310059,
+        "contrast": 5.1013186520941005
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "3",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "4",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "Updates: 1",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w = 0,4",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,4. 1 Updates, w = 0,4, L = 0,16. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 375,
+    "theme": "light",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "1",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "3",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "4",
+        "size": 14.045500755310059,
+        "contrast": 5.1013186520941005
+      },
+      {
+        "text": "Updates: 4",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w = 0,003",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,4. 4 Updates, w = 0,003, L = 1,024E-5. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 375,
+    "theme": "light",
+    "beat": 3,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 2",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "1",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "3",
+        "size": 14.045500755310059,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "4",
+        "size": 14.045500755310059,
+        "contrast": 5.1013186520941005
+      },
+      {
+        "text": "Updates: 8",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w = 5,12E-6",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,4. 8 Updates, w = 5,12E-6, L = 2,621E-11. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 375,
+    "theme": "dark",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "b",
+        "size": 14.643583917770783,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w",
+        "size": 14.643583917770783,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 375,
+    "theme": "dark",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "b",
+        "size": 14.643583917770783,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "∂w",
+        "size": 14.643583917770783,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "∂b",
+        "size": 14.643583917770783,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w",
+        "size": 14.643583917770783,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 375,
+    "theme": "dark",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "b",
+        "size": 14.643583917770783,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w",
+        "size": 14.643583917770783,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 12. w = 2,049, b = 0,881. MSE = 0,003. ∂w = 0,016, ∂b = -0,041, |∇L| = 0,044."
+  },
+  {
+    "id": "residual-springs",
+    "width": 375,
+    "theme": "dark",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "x",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "y",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "MSE = 1,125",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "w = 1, b = 0. MSE = 1,125."
+  },
+  {
+    "id": "residual-springs",
+    "width": 375,
+    "theme": "dark",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "x",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "y",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "MSE = 3,625",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "w = 1, b = 0. MSE = 3,625."
+  },
+  {
+    "id": "residual-springs",
+    "width": 375,
+    "theme": "dark",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "x",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "y",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "MSE = 0,575",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "w = 1,8, b = -0,5. MSE = 0,575."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 375,
+    "theme": "dark",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Ohne Strafe → Ridge",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "λ = 0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₁ = 3",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₂ = 1,5",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₃ = -1",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "+3",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "Ohne Strafe, λ = 0. Gewichte: 3; 1,5; -1."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 375,
+    "theme": "dark",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Ridge → Lasso",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "λ = 2",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₁ = 1",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₂ = 0,5",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₃ = -0,333",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "+3",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 375,
+    "theme": "dark",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Lasso",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "λ = 2",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₁ = 1",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₂ = 0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₃ = 0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "+3",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0."
+  },
+  {
+    "id": "training-book",
+    "width": 375,
+    "theme": "dark",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "1",
+        "size": 14.045500755310059,
+        "contrast": 6.531258153081779
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "3",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "4",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "Updates: 0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w = 2",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,4. 0 Updates, w = 2, L = 4. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 375,
+    "theme": "dark",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "1",
+        "size": 14.045500755310059,
+        "contrast": 6.531258153081779
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "3",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "4",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "Updates: 1",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w = 0,4",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,4. 1 Updates, w = 0,4, L = 0,16. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 375,
+    "theme": "dark",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "1",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "3",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "4",
+        "size": 14.045500755310059,
+        "contrast": 6.531258153081779
+      },
+      {
+        "text": "Updates: 4",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w = 0,003",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,4. 4 Updates, w = 0,003, L = 1,024E-5. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 375,
+    "theme": "dark",
+    "beat": 3,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 2",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "1",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "3",
+        "size": 14.045500755310059,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "4",
+        "size": 14.045500755310059,
+        "contrast": 6.531258153081779
+      },
+      {
+        "text": "Updates: 8",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w = 5,12E-6",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "2",
+        "size": 14.045500755310059,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 309,
+    "overflow": false,
+    "readout": "η = 0,4. 8 Updates, w = 5,12E-6, L = 2,621E-11. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 1440,
+    "theme": "light",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "b",
+        "size": 37.94432530756917,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w",
+        "size": 37.94432530756917,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 1440,
+    "theme": "light",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "b",
+        "size": 37.94432530756917,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "∂w",
+        "size": 37.94432530756917,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "∂b",
+        "size": 37.94432530756917,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w",
+        "size": 37.94432530756917,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 1440,
+    "theme": "light",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "b",
+        "size": 37.94432530756917,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w",
+        "size": 37.94432530756917,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 12. w = 2,049, b = 0,881. MSE = 0,003. ∂w = 0,016, ∂b = -0,041, |∇L| = 0,044."
+  },
+  {
+    "id": "residual-springs",
+    "width": 1440,
+    "theme": "light",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "x",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "y",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "MSE = 1,125",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "w = 1, b = 0. MSE = 1,125."
+  },
+  {
+    "id": "residual-springs",
+    "width": 1440,
+    "theme": "light",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "x",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "y",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "MSE = 3,625",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "w = 1, b = 0. MSE = 3,625."
+  },
+  {
+    "id": "residual-springs",
+    "width": 1440,
+    "theme": "light",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "x",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "y",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "MSE = 0,575",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "w = 1,8, b = -0,5. MSE = 0,575."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 1440,
+    "theme": "light",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Ohne Strafe → Ridge",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "λ = 0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₁ = 3",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₂ = 1,5",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₃ = -1",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "+3",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "Ohne Strafe, λ = 0. Gewichte: 3; 1,5; -1."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 1440,
+    "theme": "light",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Ridge → Lasso",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "λ = 2",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₁ = 1",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₂ = 0,5",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₃ = -0,333",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "+3",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 1440,
+    "theme": "light",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Lasso",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "λ = 2",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₁ = 1",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₂ = 0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w₃ = 0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "+3",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0."
+  },
+  {
+    "id": "training-book",
+    "width": 1440,
+    "theme": "light",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "1",
+        "size": 27.067999839782715,
+        "contrast": 5.1013186520941005
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "3",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "4",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "Updates: 0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w = 2",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,4. 0 Updates, w = 2, L = 4. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 1440,
+    "theme": "light",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "1",
+        "size": 27.067999839782715,
+        "contrast": 5.1013186520941005
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "3",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "4",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "Updates: 1",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w = 0,4",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,4. 1 Updates, w = 0,4, L = 0,16. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 1440,
+    "theme": "light",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "1",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "3",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "4",
+        "size": 27.067999839782715,
+        "contrast": 5.1013186520941005
+      },
+      {
+        "text": "Updates: 4",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w = 0,003",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,4. 4 Updates, w = 0,003, L = 1,024E-5. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 1440,
+    "theme": "light",
+    "beat": 3,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 2",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "1",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "3",
+        "size": 27.067999839782715,
+        "contrast": 5.821903235333682
+      },
+      {
+        "text": "4",
+        "size": 27.067999839782715,
+        "contrast": 5.1013186520941005
+      },
+      {
+        "text": "Updates: 8",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "w = 5,12E-6",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 6.432056174360287
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,4. 8 Updates, w = 5,12E-6, L = 2,621E-11. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "b",
+        "size": 37.94432530756917,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w",
+        "size": 37.94432530756917,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "b",
+        "size": 37.94432530756917,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "∂w",
+        "size": 37.94432530756917,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "∂b",
+        "size": 37.94432530756917,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w",
+        "size": 37.94432530756917,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26."
+  },
+  {
+    "id": "mse-landscape",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "b",
+        "size": 37.94432530756917,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w",
+        "size": 37.94432530756917,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,05, Schritt 12. w = 2,049, b = 0,881. MSE = 0,003. ∂w = 0,016, ∂b = -0,041, |∇L| = 0,044."
+  },
+  {
+    "id": "residual-springs",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "x",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "y",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "MSE = 1,125",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "w = 1, b = 0. MSE = 1,125."
+  },
+  {
+    "id": "residual-springs",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "x",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "y",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "MSE = 3,625",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "w = 1, b = 0. MSE = 3,625."
+  },
+  {
+    "id": "residual-springs",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Residuum = Ziel − Vorhersage",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "x",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "y",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "MSE = 0,575",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "w = 1,8, b = -0,5. MSE = 0,575."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Ohne Strafe → Ridge",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "λ = 0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₁ = 3",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₂ = 1,5",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₃ = -1",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "+3",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "Ohne Strafe, λ = 0. Gewichte: 3; 1,5; -1."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Ridge → Lasso",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "λ = 2",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₁ = 1",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₂ = 0,5",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₃ = -0,333",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "+3",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333."
+  },
+  {
+    "id": "rubber-band-coefficients",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Lasso",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "λ = 2",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₁ = 1",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₂ = 0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w₃ = 0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "+3",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0."
+  },
+  {
+    "id": "training-book",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 0,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "1",
+        "size": 27.067999839782715,
+        "contrast": 6.531258153081779
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "3",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "4",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "Updates: 0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w = 2",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,4. 0 Updates, w = 2, L = 4. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 1,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "1",
+        "size": 27.067999839782715,
+        "contrast": 6.531258153081779
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "3",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "4",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "Updates: 1",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w = 0,4",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,4. 1 Updates, w = 0,4, L = 0,16. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 2,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 1",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "1",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "3",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "4",
+        "size": 27.067999839782715,
+        "contrast": 6.531258153081779
+      },
+      {
+        "text": "Updates: 4",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w = 0,003",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,4. 4 Updates, w = 0,003, L = 1,024E-5. Jeder Batch hat hier denselben Beispielverlust w²."
+  },
+  {
+    "id": "training-book",
+    "width": 1440,
+    "theme": "dark",
+    "beat": 3,
+    "labels": [
+      {
+        "text": "Kapitel / Epoche 2",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "1",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "3",
+        "size": 27.067999839782715,
+        "contrast": 5.708192119744705
+      },
+      {
+        "text": "4",
+        "size": 27.067999839782715,
+        "contrast": 6.531258153081779
+      },
+      {
+        "text": "Updates: 8",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "w = 5,12E-6",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "0",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      },
+      {
+        "text": "2",
+        "size": 27.067999839782715,
+        "contrast": 6.383103508064552
+      }
+    ],
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ],
+    "stageWidth": 794,
+    "overflow": false,
+    "readout": "η = 0,4. 8 Updates, w = 5,12E-6, L = 2,621E-11. Jeder Batch hat hier denselben Beispielverlust w²."
+  }
+]

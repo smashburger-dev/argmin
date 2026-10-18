@@ -1,0 +1,5 @@
+run	change	beat1440	drag1440	board1440	beat375	drag375	board375	kept
+f7-baseline	400 Kacheln, vorhandene Engine, CPU 4x	22.2	38.9	n/a	22.0	39.0	n/a	yes-baseline
+f7-g1	Nur Render-Auflösung 20x20 auf 8x8, Modell unverändert	2.8	6.4	n/a	3.0	6.0	n/a	keep
+f7-final	Zwischenstand nach Komponentenlabels und beschnittener Divergenzspur	2.9	6.1	n/a	3.1	6.1	n/a	keep-intermediate
+f7-spacing-final	Nach Noas Abstandskorrekturen, echte Lektionen, 3 Läufe CPU 4x, Drag mit sichtbarer Bühne und Tick-Prüfung	3.9	7.2	n/a	3.9	7.2	n/a	yes-final
