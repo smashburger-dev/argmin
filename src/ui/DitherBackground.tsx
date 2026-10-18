@@ -1,29 +1,25 @@
 import { useEffect, useRef } from 'preact/hooks';
-import { WORDMARK_PATHS, WORDMARK_VIEWBOX } from './Brand';
+import { BANNER_WORDS, BAYER, WORD_CELL, WORD_GLYPH_CHARS, buildBannerLayout, buildTextLayout, createBanner } from './dither-banner';
 
-// Animated dither field painted behind the app: a glyph grid on a 14 px cell,
+// Animated dither field painted behind the app: a glyph grid on an 11 px cell,
 // gated by a 4x4 Bayer threshold against a slow sine pulse. While the pointer
-// rests on free space inside <main>, an accent-colored "argmin" materializes
-// cell by cell around the cursor.
-const CELL = 14;
+// is anywhere inside <main>, an accent-colored "argmin" banner is towed behind
+// the cursor on a second canvas (see dither-banner.ts).
+// The background repaints only cells whose discrete state actually changed.
+const CELL = 11;
 const GLYPHS = [...'0123456789+−×÷=<>∑∂∇λθπσμ∫√%·'];
-const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-const INK_LOW = 0.07;
-const INK_HIGH = 0.12;
-const HALO_ALPHA = 0.2;
-const WORD_ALPHA = 0.9;
-const HALO_RADIUS = 9;
+const INK_LOW = 0.035;
+const INK_HIGH = 0.09;
 const REROLL_BASE = 0.015;
-const REROLL_HALO = 0.35;
-const REROLL_WORD = 0.05;
-const MS_IDLE = 1000 / 15;
+const MS_IDLE = 1000 / 12;
 const MS_TOUCH_IDLE = 1000 / 10;
-const MS_ENGAGED = 1000 / 30;
-const BLOCKED = 'a,button,input,select,textarea,label,summary,pre,code,svg,canvas,img,table,[role],[contenteditable]';
-// Word cells only draw dense glyphs — thin marks (· − = < > + × ÷) punch holes.
-const WORD_GLYPHS = [...'0123456789%∑∂∇λθπσμ∫√'].map((g) => GLYPHS.indexOf(g));
+const CLICK_BLOCKED = 'a,button,input,select,textarea,label,summary,[role=button],[contenteditable]';
 
-type WordMask = { cols: number; rows: number; dil: Float32Array };
+// Single field formula, shared by the background hot loop (fed per-axis trig
+// tables) and the word layer's field() (fed continuous-coordinate trig).
+function fieldMix(a: number, b: number, s: number, breathe: number): number {
+  return (0.5 + 0.5 * (0.6 * a * b + 0.4 * s)) * breathe;
+}
 
 function themeColors(): { ink: string; accent: string; mono: string } {
   const style = getComputedStyle(document.documentElement);
@@ -34,127 +30,67 @@ function themeColors(): { ink: string; accent: string; mono: string } {
   };
 }
 
-// Glyphs are pre-rendered per theme: row 0 = ink, row 1 = accent. Drawing a
-// cell is a drawImage out of this strip, batched per alpha level.
-function buildAtlas(ink: string, accent: string, mono: string, dpr: number): HTMLCanvasElement {
+// Glyphs are pre-rendered per theme, one canvas row per color, on integer
+// device-pixel cells so source rects stay integer.
+function buildAtlas(rowColors: string[], mono: string, dpr: number, cellCss: number, fontCssPx: number, glyphs: string[]): { atlas: HTMLCanvasElement; src: number } {
+  const src = Math.max(1, Math.round(cellCss * dpr));
   const atlas = document.createElement('canvas');
-  atlas.width = Math.ceil(GLYPHS.length * CELL * dpr);
-  atlas.height = Math.ceil(CELL * 2 * dpr);
+  atlas.width = src * glyphs.length;
+  atlas.height = src * rowColors.length;
   const ctx = atlas.getContext('2d')!;
-  ctx.scale(dpr, dpr);
-  ctx.font = `11px ${mono}`;
+  ctx.font = `${fontCssPx * dpr}px ${mono}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  [ink, accent].forEach((color, row) => {
+  rowColors.forEach((color, row) => {
     ctx.fillStyle = color;
-    GLYPHS.forEach((glyph, i) => ctx.fillText(glyph, (i + 0.5) * CELL, row * CELL + CELL / 2));
+    glyphs.forEach((glyph, i) => ctx.fillText(glyph, (i + 0.5) * src, (row + 0.5) * src));
   });
-  return atlas;
+  return { atlas, src };
 }
 
-// Mean alpha per cell over an ss×ss supersampled block.
-function cellCoverage(pixels: Uint8ClampedArray, cols: number, rows: number, ss: number): Float32Array {
-  const cov = new Float32Array(cols * rows);
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      let sum = 0;
-      for (let y = 0; y < ss; y++) {
-        for (let x = 0; x < ss; x++) {
-          sum += pixels[((r * ss + y) * cols * ss + c * ss + x) * 4 + 3]!;
-        }
-      }
-      cov[r * cols + c] = sum / (ss * ss * 255);
-    }
-  }
-  return cov;
-}
 
-// Plus-shaped one-cell dilation: hairline strokes survive at cell scale.
-function dilatePlus(cov: Float32Array, cols: number, rows: number): Float32Array {
-  const dil = new Float32Array(cols * rows);
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const i = r * cols + c;
-      dil[i] = Math.max(
-        cov[i]!,
-        r > 0 ? cov[i - cols]! : 0,
-        r < rows - 1 ? cov[i + cols]! : 0,
-        c > 0 ? cov[i - 1]! : 0,
-        c < cols - 1 ? cov[i + 1]! : 0,
-      );
-    }
-  }
-  return dil;
-}
 
-// The wordmark is rasterized once into a coverage mask: `cols` grid cells wide,
-// each cell sampled at 4x4 px.
-function buildWordMask(gridCols: number): WordMask {
-  const cols = Math.max(8, Math.min(56, Math.floor(gridCols * 0.7)));
-  const rows = Math.max(2, Math.round((cols * WORDMARK_VIEWBOX.height) / WORDMARK_VIEWBOX.width));
-  const ss = 4;
-  const cv = document.createElement('canvas');
-  cv.width = cols * ss;
-  cv.height = rows * ss;
-  const ctx = cv.getContext('2d', { willReadFrequently: true })!;
-  ctx.scale((cols * ss) / WORDMARK_VIEWBOX.width, (rows * ss) / WORDMARK_VIEWBOX.height);
-  ctx.fillStyle = '#fff';
-  for (const { d, evenodd } of WORDMARK_PATHS) {
-    ctx.fill(new Path2D(d), evenodd ? 'evenodd' : 'nonzero');
-  }
-  const pixels = ctx.getImageData(0, 0, cols * ss, rows * ss).data;
-  return { cols, rows, dil: dilatePlus(cellCoverage(pixels, cols, rows, ss), cols, rows) };
-}
-
-function hasVisibleBackground(el: Element): boolean {
-  const style = getComputedStyle(el);
-  const bg = style.backgroundColor.match(/[\d.]+%?/g);
-  if (bg && Number(bg[3] ?? 1) > 0) return true;
-  const filter = style.backdropFilter || (style as CSSStyleDeclaration & { webkitBackdropFilter?: string }).webkitBackdropFilter;
-  return filter !== undefined && filter !== 'none';
-}
-
-// "Free" = a gap inside <main>: no interactive or painted element between the
-// target and main, and the target carries no direct text.
-function hasDirectText(el: Element): boolean {
-  for (const node of el.childNodes) {
-    if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) return true;
-  }
-  return false;
-}
-
-function isFree(target: Element, main: HTMLElement): boolean {
-  if (target !== main && !main.contains(target)) return false;
-  if (hasDirectText(target)) return false;
-  let el: Element | null = target;
-  while (el) {
-    if (el.matches(BLOCKED) || hasVisibleBackground(el)) return false;
-    if (el === main) return true;
-    el = el.parentElement;
-  }
-  return true;
-}
-
-function startEngine(canvas: HTMLCanvasElement): () => void {
+function startEngine(canvas: HTMLCanvasElement, wordCanvas: HTMLCanvasElement): () => void {
   const maybeCtx = canvas.getContext('2d');
-  if (!maybeCtx) return () => {};
+  const maybeWctx = wordCanvas.getContext('2d');
+  if (!maybeCtx || !maybeWctx) return () => {};
   const ctx = maybeCtx;
+  const wctx = maybeWctx;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const motionQuery = matchMedia('(prefers-reduced-motion: reduce)');
   const hoverQuery = matchMedia('(hover: hover)');
   const schemeQuery = matchMedia('(prefers-color-scheme: dark)');
   const colors = themeColors();
+  const bg = buildAtlas([colors.ink, colors.accent], colors.mono, dpr, CELL, 9, GLYPHS);
+  const wg = buildAtlas([colors.accent], colors.mono, dpr, WORD_CELL, 4, WORD_GLYPH_CHARS);
+  const layout = buildBannerLayout(WORD_CELL);
+  const banner = createBanner(layout);
   const state = {
     cols: 0,
     rows: 0,
     glyphs: new Uint8Array(0),
-    atlas: buildAtlas(colors.ink, colors.accent, colors.mono, dpr),
-    mask: buildWordMask(1024 / CELL),
+    // Packed per-cell state: 0 = hidden, else level*32 + glyph (level 1 low,
+    // 2 high, 3 halo). 0xFF forces a full repaint after resize/theme change.
+    cellState: new Uint8Array(0),
+    sinC: new Float32Array(0),
+    cosR: new Float32Array(0),
+    sinCR: new Float32Array(0),
+    lClear: new Int32Array(0),
+    lLow: new Int32Array(0),
+    lHigh: new Int32Array(0),
+    atlas: bg.atlas,
+    atlasSrc: bg.src,
+    wordAtlas: wg.atlas,
     pointer: { x: 0, y: 0, active: false, free: false, target: null as Element | null },
     engage: 0,
-    wordX: 0,
-    wordY: 0,
-    lastDraw: 0,
+    t: 0,
+    breathe: 1,
+    wordOn: false,
+    nC: 0,
+    n1: 0,
+    n2: 0,
+    lastBg: 0,
+    prevFrame: 0,
     raf: 0,
   };
   const bayerOf = (c: number, r: number) => (BAYER[((r & 3) << 2) | (c & 3)]! + 0.5) / 16;
@@ -165,98 +101,129 @@ function startEngine(canvas: HTMLCanvasElement): () => void {
   function rebuildGrid() {
     canvas.width = Math.ceil(innerWidth * dpr);
     canvas.height = Math.ceil(innerHeight * dpr);
+    wordCanvas.width = canvas.width;
+    wordCanvas.height = canvas.height;
     state.cols = Math.ceil(innerWidth / CELL);
     state.rows = Math.ceil(innerHeight / CELL);
-    state.glyphs = new Uint8Array(state.cols * state.rows);
-    for (let i = 0; i < state.glyphs.length; i++) state.glyphs[i] = (Math.random() * GLYPHS.length) | 0;
-    state.mask = buildWordMask(state.cols);
+    const n = state.cols * state.rows;
+    state.glyphs = new Uint8Array(n);
+    for (let i = 0; i < n; i++) state.glyphs[i] = (Math.random() * GLYPHS.length) | 0;
+    state.cellState = new Uint8Array(n).fill(0xff);
+    state.sinC = new Float32Array(state.cols);
+    state.cosR = new Float32Array(state.rows);
+    state.sinCR = new Float32Array(state.cols + state.rows);
+    state.lClear = new Int32Array(n);
+    state.lLow = new Int32Array(n);
+    state.lHigh = new Int32Array(n);
   }
 
-  // Buckets per alpha level so globalAlpha is set once per level per frame.
-  const buckets: number[][] = [[], [], [], []];
-  function isWordCell(wc: number, wr: number, bn: number): boolean {
-    const { cols, rows, dil } = state.mask;
-    return wc >= 0 && wc < cols && wr >= 0 && wr < rows
-      && dil[wr * cols + wc]! > 0.2 + 0.3 * bn && bn < state.engage;
+  // Next discrete state byte for a cell: 0 hidden, else level*32 + glyph.
+  function nextState(i: number, bn: number, v: number): number {
+    if (v <= bn) return 0;
+    return (v > 0.75 ? 64 : 32) + state.glyphs[i]!;
   }
 
-  function classify(c: number, r: number, i: number, bn: number, v: number, pc: number, pr: number) {
-    if (isWordCell(c - Math.round(state.wordX - state.mask.cols / 2),
-      r - Math.round(state.wordY - state.mask.rows / 2), bn)) {
-      if (Math.random() < REROLL_WORD) state.glyphs[i] = WORD_GLYPHS[(Math.random() * WORD_GLYPHS.length) | 0]!;
-      buckets[3]!.push(i);
-      return;
-    }
-    if (v <= bn) return;
-    if (state.engage > 0 && (c - pc) ** 2 + (r - pr) ** 2 <= HALO_RADIUS * HALO_RADIUS) {
-      if (Math.random() < REROLL_HALO * state.engage) reroll(i);
-      buckets[2]!.push(i);
-    } else {
-      buckets[v > 0.75 ? 1 : 0]!.push(i);
-    }
-  }
-
-  function draw(t: number) {
-    const { cols, rows, glyphs, atlas } = state;
-    for (const b of buckets) b.length = 0;
-    const breathe = 0.75 + 0.25 * Math.sin(t * 0.8);
-    const sinC = new Float32Array(cols);
-    const cosR = new Float32Array(rows);
-    const sinCR = new Float32Array(cols + rows);
-    for (let c = 0; c < cols; c++) sinC[c] = Math.sin(c * 0.09 + t * 0.6);
-    for (let r = 0; r < rows; r++) cosR[r] = Math.cos(r * 0.11 - t * 0.4);
-    for (let i = 0; i < cols + rows; i++) sinCR[i] = Math.sin(i * 0.05 + t * 0.9);
-    const pc = state.pointer.x / CELL;
-    const pr = state.pointer.y / CELL;
+  // Diff pass: compute next state per cell, bucket changed cells for clear
+  // and per-level redraw. No allocations in the hot loop.
+  function diffCells(breathe: number): void {
+    const { cols, rows, cellState, lClear, lLow, lHigh, sinC, cosR, sinCR } = state;
+    let nC = 0;
+    let n1 = 0;
+    let n2 = 0;
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         const i = r * cols + c;
-        const v = (0.5 + 0.5 * (0.6 * sinC[c]! * cosR[r]! + 0.4 * sinCR[c + r]!)) * breathe;
-        classify(c, r, i, bayerOf(c, r), v, pc, pr);
+        const v = fieldMix(sinC[c]!, cosR[r]!, sinCR[c + r]!, breathe);
+        const s = nextState(i, bayerOf(c, r), v);
+        if (s === cellState[i]) continue;
+        cellState[i] = s;
+        lClear[nC++] = i;
+        if (s >= 64) lHigh[n2++] = i;
+        else if (s > 0) lLow[n1++] = i;
       }
     }
+    state.nC = nC;
+    state.n1 = n1;
+    state.n2 = n2;
+  }
+
+  function draw(t: number) {
+    const { cols, rows } = state;
+    state.t = t;
+    const breathe = 0.75 + 0.25 * Math.sin(t * 0.8);
+    state.breathe = breathe;
+    for (let c = 0; c < cols; c++) state.sinC[c] = Math.sin(c * 0.09 + t * 0.6);
+    for (let r = 0; r < rows; r++) state.cosR[r] = Math.cos(r * 0.11 - t * 0.4);
+    for (let i = 0; i < cols + rows; i++) state.sinCR[i] = Math.sin(i * 0.05 + t * 0.9);
     const scatter = Math.round(cols * rows * REROLL_BASE);
     for (let k = 0; k < scatter; k++) reroll((Math.random() * cols * rows) | 0);
+    diffCells(breathe);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
-    const src = CELL * dpr;
-    const paint = (bucket: number[], row: number, denseOnly = false) => {
-      for (const i of bucket) {
-        const g = denseOnly ? WORD_GLYPHS[glyphs[i]! % WORD_GLYPHS.length]! : glyphs[i]!;
-        ctx.drawImage(atlas, g * src, row * src, src, src, (i % cols) * CELL, ((i / cols) | 0) * CELL, CELL, CELL);
-      }
-    };
-    ctx.globalAlpha = INK_LOW; paint(buckets[0]!, 0);
-    ctx.globalAlpha = INK_HIGH; paint(buckets[1]!, 0);
-    ctx.globalAlpha = HALO_ALPHA * state.engage; paint(buckets[2]!, 0);
-    ctx.globalAlpha = WORD_ALPHA; paint(buckets[3]!, 1, true);
+    for (let k = 0; k < state.nC; k++) {
+      const i = state.lClear[k]!;
+      ctx.clearRect((i % cols) * CELL, ((i / cols) | 0) * CELL, CELL, CELL);
+    }
+    paintList(state.lLow, state.n1, INK_LOW);
+    paintList(state.lHigh, state.n2, INK_HIGH);
     ctx.globalAlpha = 1;
   }
 
-  function tick(now: number) {
-    state.raf = requestAnimationFrame(tick);
-    const free = state.pointer.active && state.pointer.free;
-    const idleMs = hoverQuery.matches ? MS_IDLE : MS_TOUCH_IDLE;
-    const minDelta = free || state.engage > 0 ? MS_ENGAGED : idleMs;
-    const elapsed = now - state.lastDraw;
-    if (elapsed < minDelta) return;
-    state.lastDraw = now;
-    const wasIdle = state.engage === 0;
-    state.engage = Math.min(1, Math.max(0, state.engage + (free ? elapsed / 250 : -elapsed / 400)));
-    if (free) {
-      // Re-entry: after a full fade-out the word snaps to the cursor instead
-      // of gliding in from its old position.
-      if (wasIdle) { state.wordX = state.pointer.x / CELL; state.wordY = state.pointer.y / CELL; }
-      state.wordX += (state.pointer.x / CELL - state.wordX) * 0.18;
-      state.wordY += (state.pointer.y / CELL - state.wordY) * 0.18;
+  function paintList(list: Int32Array, n: number, alpha: number) {
+    const { cols, atlas, atlasSrc, cellState } = state;
+    ctx.globalAlpha = alpha;
+    for (let k = 0; k < n; k++) {
+      const i = list[k]!;
+      ctx.drawImage(atlas, (cellState[i]! & 31) * atlasSrc, 0, atlasSrc, atlasSrc, (i % cols) * CELL, ((i / cols) | 0) * CELL, CELL, CELL);
     }
-    draw(now / 1000);
   }
 
+  // Continuous background-field value at a word-dot position (px) — same
+  // fieldMix formula the background loop uses, fed continuous trig.
+  const wordField = (x: number, y: number) => fieldMix(
+    Math.sin((x / CELL) * 0.09 + state.t * 0.6),
+    Math.cos((y / CELL) * 0.11 - state.t * 0.4),
+    Math.sin(((x + y) / CELL) * 0.05 + state.t * 0.9),
+    state.breathe,
+  );
+
+  function frame(now: number) {
+    state.raf = requestAnimationFrame(frame);
+    const dtMs = Math.min(50, now - state.prevFrame);
+    state.prevFrame = now;
+    const free = state.pointer.active && state.pointer.free;
+    const wasIdle = state.engage === 0;
+    state.engage = Math.min(1, Math.max(0, state.engage + (free ? dtMs / 250 : -dtMs / 400)));
+    if (free && wasIdle) banner.reset(state.pointer.x, state.pointer.y);
+    // Background at idle cadence always — the word layer carries motion.
+    if (now - state.lastBg >= (hoverQuery.matches ? MS_IDLE : MS_TOUCH_IDLE)) {
+      state.lastBg = now;
+      draw(now / 1000);
+    }
+    updateWord(now, dtMs);
+  }
+
+  // The word layer runs at full frame rate while engaged — the lag needs it.
+  function updateWord(now: number, dtMs: number) {
+    wctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (state.engage > 0) {
+      banner.step(state.pointer.x, state.pointer.y, dtMs, now / 1000);
+      banner.draw(wctx, state.wordAtlas, dpr, state.engage, wordField);
+      state.wordOn = true;
+    } else if (state.wordOn) {
+      banner.draw(wctx, state.wordAtlas, dpr, 0, wordField);
+      state.wordOn = false;
+    }
+  }
+
+  // "Free" = pointer over #main-content or anything inside it — the banner
+  // and halo track over cards, text and controls too, since the frost lets
+  // the pattern show through. They only fade when the pointer leaves main.
   function computeFree(target: EventTarget | null) {
     const main = document.getElementById('main-content');
     state.pointer.target = target instanceof Element ? target : null;
-    state.pointer.free = Boolean(main && target instanceof Element && isFree(target, main));
+    state.pointer.free = Boolean(
+      main && target instanceof Element && (target === main || main.contains(target)),
+    );
   }
 
   const onMove = (event: PointerEvent) => {
@@ -272,20 +239,45 @@ function startEngine(canvas: HTMLCanvasElement): () => void {
     state.pointer.target = null;
   };
   const onOut = (event: PointerEvent) => { if (!event.relatedTarget) clearPointer(); };
-  // A still cursor over scrolled content changes what is under it — recompute.
-  const onScroll = () => {
-    if (state.pointer.active) computeFree(document.elementFromPoint(state.pointer.x, state.pointer.y));
-  };
   const rebuildAtlas = () => {
     const next = themeColors();
-    state.atlas = buildAtlas(next.ink, next.accent, next.mono, dpr);
+    const nbg = buildAtlas([next.ink, next.accent], next.mono, dpr, CELL, 9, GLYPHS);
+    const nwg = buildAtlas([next.accent], next.mono, dpr, WORD_CELL, 4, WORD_GLYPH_CHARS);
+    state.atlas = nbg.atlas;
+    state.atlasSrc = nbg.src;
+    state.wordAtlas = nwg.atlas;
+    state.cellState.fill(0xff); // force a full repaint in the new palette
   };
-  const onThemeChange = () => { rebuildAtlas(); if (motionQuery.matches) draw(0); };
+  const onThemeChange = () => { rebuildAtlas(); if (motionQuery.matches) draw(state.t); };
   const onResize = () => { rebuildGrid(); if (motionQuery.matches) draw(0); };
+  // Clicking the banner cycles the word (argmin keeps the wordmark layout,
+  // the rest are rasterized per character and cached lazily).
+  let wordIndex = 0;
+  const layoutCache = new Map([[BANNER_WORDS[0]!, layout]]);
+  const onClick = (event: MouseEvent) => {
+    if (!hoverQuery.matches || motionQuery.matches || state.engage <= 0.5) return;
+    if (!banner.hit(event.clientX, event.clientY)) return;
+    const target = event.target;
+    if (target instanceof Element && target.closest(CLICK_BLOCKED)) return;
+    wordIndex = (wordIndex + 1) % BANNER_WORDS.length;
+    const word = BANNER_WORDS[wordIndex]!;
+    let next = layoutCache.get(word);
+    if (!next) {
+      next = word === 'argmin' ? buildBannerLayout(WORD_CELL) : buildTextLayout(word, WORD_CELL);
+      layoutCache.set(word, next);
+    }
+    banner.setLayout(next);
+  };
   const onMotionChange = () => {
     cancelAnimationFrame(state.raf);
-    if (motionQuery.matches) draw(0);
-    else { state.lastDraw = 0; state.raf = requestAnimationFrame(tick); }
+    if (motionQuery.matches) {
+      if (state.wordOn) { wctx.clearRect(0, 0, wordCanvas.width, wordCanvas.height); state.wordOn = false; }
+      draw(0);
+    } else {
+      state.lastBg = 0;
+      state.prevFrame = 0;
+      state.raf = requestAnimationFrame(frame);
+    }
   };
   const themeObserver = new MutationObserver(onThemeChange);
 
@@ -293,12 +285,12 @@ function startEngine(canvas: HTMLCanvasElement): () => void {
   if (motionQuery.matches) {
     draw(0);
   } else {
-    state.raf = requestAnimationFrame(tick);
+    state.raf = requestAnimationFrame(frame);
   }
   window.addEventListener('pointermove', onMove, { passive: true });
   window.addEventListener('pointerout', onOut);
   window.addEventListener('blur', clearPointer);
-  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('click', onClick);
   window.addEventListener('resize', onResize);
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   schemeQuery.addEventListener('change', onThemeChange);
@@ -309,7 +301,7 @@ function startEngine(canvas: HTMLCanvasElement): () => void {
     window.removeEventListener('pointermove', onMove);
     window.removeEventListener('pointerout', onOut);
     window.removeEventListener('blur', clearPointer);
-    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('click', onClick);
     window.removeEventListener('resize', onResize);
     themeObserver.disconnect();
     schemeQuery.removeEventListener('change', onThemeChange);
@@ -318,7 +310,16 @@ function startEngine(canvas: HTMLCanvasElement): () => void {
 }
 
 export function DitherBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => (canvasRef.current ? startEngine(canvasRef.current) : undefined), []);
-  return <canvas ref={canvasRef} class="dither-bg" aria-hidden="true" />;
+  const bgRef = useRef<HTMLCanvasElement>(null);
+  const wordRef = useRef<HTMLCanvasElement>(null);
+  useEffect(
+    () => (bgRef.current && wordRef.current ? startEngine(bgRef.current, wordRef.current) : undefined),
+    [],
+  );
+  return (
+    <>
+      <canvas ref={bgRef} class="dither-bg" aria-hidden="true" />
+      <canvas ref={wordRef} class="dither-word" aria-hidden="true" />
+    </>
+  );
 }

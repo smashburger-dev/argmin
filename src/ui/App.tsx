@@ -389,7 +389,6 @@ export function App() {
             <Button variant="ghost" size="sm" class="nav-toggle" aria-label={navCollapsed ? 'Navigation ausklappen' : 'Navigation einklappen'} aria-expanded={!navCollapsed} onClick={toggleNav}>{navToggleIcon(navCollapsed)}</Button>
             {navLinks(!navCollapsed)}
           </div>
-          <div class="nav-footer">Katalog {catalog.version}</div>
         </nav>
         <main id="main-content" ref={mainRef} tabIndex={-1}>{view}</main>
       </div>
@@ -411,15 +410,9 @@ export function App() {
               </Button>
             </div>
             {navLinks(true)}
-            <div class="nav-footer">Katalog {catalog.version}</div>
           </div>
         </div>
       ) : null}
-      <footer class="mobile-context" aria-label="Lokaler Status">
-        <span>Local-first</span>
-        <span>{catalog.competencies.length} Kompetenzen</span>
-        <nav class="mobile-more" aria-label="Mehr" data-tour="nav-more">{navigation.filter((item) => item.secondary).map((item) => <a key={item.route} href={`#/${item.route}`}>{item.label}</a>)}</nav>
-      </footer>
       {showOnboarding ? (
         <OnboardingOverlay
           catalog={catalog}
