@@ -13,7 +13,9 @@
   "requires": ["c-pandas-cleaning", "c-eda-viz"],
   "estimatedMinutes": 60,
   "blocks": [
-    { "blockId": "ml-baseline-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-baseline.md" }
+    { "blockId": "ml-baseline-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-baseline.md" },
+    { "blockId": "baseline-sorter-figure", "type": "figure", "contentRef": "lessons/data-ml/baseline-sorter.fig.json" },
+    { "blockId": "ml-baseline-s7-after", "type": "worked-example", "contentRef": "lessons/data-ml/ml-baseline-s7-after.md" }
   ],
   "sourceRefs": [
     { "sourceId": "devries-ml", "role": "primary", "locator": "Kapitel zu Lernverfahren und Modellbewertung" },

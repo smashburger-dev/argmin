@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "mail-sorter",
+  "title": "Datenumschlag und Werkzeuggrenze",
+  "caption": "Das Dokument bleibt untrusted. Nur der ausdrücklich erlaubte Werkzeugwunsch passiert die Schranke.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Das Dokument bleibt untrusted. Nur der ausdrücklich erlaubte Werkzeugwunsch passiert die Schranke."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die eingeschmuggelte Versandanweisung erhält keine Autorität. Die Allowlist verweigert das Werkzeug."
+    }
+  ]
+}
+

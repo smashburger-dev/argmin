@@ -23,6 +23,8 @@
       "type": "worked-example",
       "contentRef": "lessons/research/capstone-runner.md"
     },
+    { "blockId": "trades-stopwatch-figure", "type": "figure", "contentRef": "lessons/research/trades-stopwatch.fig.json" },
+    { "blockId": "capstone-runner-s7-after", "type": "worked-example", "contentRef": "lessons/research/capstone-runner-s7-after.md" },
     {
       "blockId": "capstone-runner-check",
       "type": "checkpoint",

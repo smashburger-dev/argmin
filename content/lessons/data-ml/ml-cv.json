@@ -14,6 +14,8 @@
   "estimatedMinutes": 65,
   "blocks": [
     { "blockId": "ml-cv-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-cv.md" },
+    { "blockId": "fold-rotation-figure", "type": "figure", "contentRef": "lessons/data-ml/fold-rotation.fig.json" },
+    { "blockId": "ml-cv-s7-after", "type": "worked-example", "contentRef": "lessons/data-ml/ml-cv-s7-after.md" },
     { "blockId": "ml-cv-viz", "type": "visualization", "contentRef": "lessons/data-ml/bias-variance.viz.json" }
   ],
   "sourceRefs": [

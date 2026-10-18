@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "house-ablation",
+  "title": "Dieselben Fragen, eine Kontrolle weniger",
+  "caption": "Die Kontrolle blockiert die Injektionsfrage. Das kostet einen Retrieval-Treffer.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die Kontrolle blockiert die Injektionsfrage. Das kostet einen Retrieval-Treffer."
+    },
+    {
+      "id": "step-1",
+      "caption": "Nach Entfernen der Kontrolle steigt der Recall. Gleichzeitig wird die unsichere Freigabe sichtbar."
+    }
+  ]
+}
+

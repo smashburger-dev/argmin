@@ -8,7 +8,9 @@
   "competencyIds": ["c-python-files-errors"],
   "requires": ["c-python-functions", "c-python-collections"],
   "estimatedMinutes": 70,
-  "blocks": [{ "blockId": "files-errors-core", "type": "project-step", "contentRef": "lessons/foundations/files-errors.md" }],
+  "blocks": [{ "blockId": "files-errors-core", "type": "worked-example", "contentRef": "lessons/foundations/files-errors.md" },
+    { "blockId": "goods-in-figure", "type": "figure", "contentRef": "lessons/foundations/goods-in.fig.json" },
+    { "blockId": "files-errors-s7-after", "type": "worked-example", "contentRef": "lessons/foundations/files-errors-s7-after.md" }],
   "sourceRefs": [
     { "sourceId": "py-tutorial-official-3.14", "role": "reference", "locator": "Kapitel 7 und 8: Input and Output; Errors and Exceptions" }
   ],

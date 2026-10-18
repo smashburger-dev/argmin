@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "fold-rotation",
+  "title": "Folds rotieren, Information bleibt getrennt",
+  "caption": "Das erste Blatt wird zurückgehalten. Der Rest liefert die Statistik.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Das erste Blatt wird zurückgehalten. Der Rest liefert die Statistik."
+    },
+    {
+      "id": "step-1",
+      "caption": "Das nächste Blatt wird zum Test. Die Statistik wird aus dem neuen Train-Anteil gelernt."
+    },
+    {
+      "id": "step-2",
+      "caption": "Jeder Fold dient einmal als unbekanntes Testblatt."
+    },
+    {
+      "id": "step-3",
+      "caption": "Auch bei ungleichen Größen bleiben alle Zeilen genau einmal einem Fold zugeordnet."
+    },
+    {
+      "id": "step-4",
+      "caption": "Das letzte Blatt bleibt vom fit ausgeschlossen."
+    },
+    {
+      "id": "step-5",
+      "caption": "Gegenbeispiel: Der fit sieht alle Zeilen. Die Testinformation hat die Grenze überschritten."
+    }
+  ]
+}
+

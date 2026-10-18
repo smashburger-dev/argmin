@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "responsible-sorter",
+  "title": "Teilgruppen sehen statt Gesamtzahl glauben",
+  "caption": "Die Auswahlraten beider Gruppen werden aus den gelabelten Einzelfällen berechnet.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {
+    "threshold": 0.5
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die Auswahlraten beider Gruppen werden aus den gelabelten Einzelfällen berechnet."
+    },
+    {
+      "id": "step-1",
+      "caption": "Bei veränderter Schwelle ändern sich Fehler und Auswahlraten gemeinsam. Das Paritätsband bleibt fest."
+    },
+    {
+      "id": "step-2",
+      "caption": "Ein Kandidat außerhalb des Bands bleibt ausgeschlossen. Das Qualitätsoptimum entscheidet erst innerhalb des Bands."
+    }
+  ]
+}
+
