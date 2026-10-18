@@ -35,6 +35,8 @@ Alle Einträge sind in `package-lock.json` exakt aufgelöst. `npm audit` meldete
 | `@types/markdown-it` | 14.2.0 | Markdown-Typen | MIT | nur Entwicklung |
 | `@types/node` | 26.2.0 | Node-Typen für Config und Tools | MIT | nur Entwicklung |
 
+Inline-UI-Asset ohne Paketbezug: das GitHub-Symbol in der Kopfzeile (`src/ui/App.tsx`, `.repo-link`) ist der Octicons-Pfad `mark-github` (MIT, github.com/primer/octicons), als SVG eingebettet — kein CDN, kein Embed-Script.
+
 ## Bewusst nicht übernommen (Begründung in ADR-0002/0005)
 
 | System | Lizenz | Grund der Ablehnung |

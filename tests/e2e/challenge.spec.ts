@@ -24,7 +24,7 @@ test('challenge route renders its empty state deterministically across reload', 
   expect(errors).toEqual([]);
 });
 
-test('challenge is reachable via secondary nav and the mobile-more link', async ({ page, browserName }) => {
+test('challenge is reachable via secondary nav and the mobile drawer', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'Nav roundtrip runs in Chromium.');
   await page.goto('/index.html#/today');
   const nav = page.getByRole('navigation', { name: 'Hauptnavigation' });
@@ -32,8 +32,10 @@ test('challenge is reachable via secondary nav and the mobile-more link', async 
   await expect(navLink).toHaveAttribute('href', '#/challenge');
   await navLink.click();
   await expect(page.getByRole('heading', { level: 1, name: 'Challenge' })).toBeVisible();
-  // Secondary entries hide on mobile; the mobile-more footer carries the link.
-  await expect(page.locator('.mobile-more a[href="#/challenge"]')).toHaveCount(1);
+  // Secondary entries hide on mobile; the drawer carries all nav links.
+  await page.setViewportSize({ width: 672, height: 800 });
+  await page.getByRole('button', { name: 'Navigation öffnen' }).click();
+  await expect(page.locator('.nav-drawer-panel a[href="#/challenge"]')).toBeVisible();
 });
 
 test('today teaser stays hidden while the pool is empty and no streak exists', async ({ page, browserName }) => {
