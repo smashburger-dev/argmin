@@ -1,0 +1,12 @@
+[
+  {
+    "command": "npm run test:e2e -- --project=chromium",
+    "exit": 0,
+    "seconds": 44,
+    "log": "/private/tmp/figuren-s5-dev-0.log",
+    "summary": [
+      "  26 skipped",
+      "  96 passed (41.9s)"
+    ]
+  }
+]

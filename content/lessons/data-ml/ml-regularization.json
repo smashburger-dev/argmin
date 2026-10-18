@@ -25,8 +25,13 @@
     },
     {
       "blockId": "ml-regularization-viz",
-      "type": "visualization",
-      "contentRef": "lessons/data-ml/ridge-shrink.viz.json"
+      "type": "figure",
+      "contentRef": "lessons/data-ml/rubber-band-coefficients.fig.json"
+    },
+    {
+      "blockId": "ml-regularization-details",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/ml-regularization-details.md"
     }
   ],
   "sourceRefs": [

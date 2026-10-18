@@ -22,8 +22,13 @@
     },
     {
       "blockId": "dl-regularization-viz",
-      "type": "visualization",
-      "contentRef": "lessons/deep-learning/early-stopping.viz.json"
+      "type": "figure",
+      "contentRef": "lessons/deep-learning/early-stopping-flag.fig.json"
+    },
+    {
+      "blockId": "dl-regularization-save",
+      "type": "worked-example",
+      "contentRef": "lessons/deep-learning/dl-regularization-save.md"
     },
     {
       "blockId": "dl-regularization-checkpoint",

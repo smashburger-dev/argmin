@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "mse-section",
+  "title": "Von der Sekante zur Tangente",
+  "caption": "Der zweite Punkt rückt an den ersten heran. Beide Achsen haben denselben Maßstab.",
+  "hint": "Die Lektüre erklärt das Beispiel und seine Grenzen.",
+  "params": {
+    "x0": 1.5
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Zwei Punkte bestimmen die Sekante. Hier ist x₀ bereits auf den Wert der Übertragungsfrage eingestellt."
+    },
+    {
+      "id": "step-1",
+      "caption": "Der zweite Punkt rückt heran. Die Steigung nähert sich der Ableitung am festen Punkt."
+    },
+    {
+      "id": "step-2",
+      "caption": "Im Grenzwert bleibt die Tangente. Bei der MSE-Fläche entspricht dies dem Schnitt bei festem b."
+    }
+  ],
+  "predict": {
+    "beat": "step-1",
+    "prompt": "Stelle x₀ = 1,5 ein und schiebe h gegen 0. Gegen welche Steigung strebt die Sekante?",
+    "input": "numeric",
+    "expected": 3,
+    "tolerance": 0.05,
+    "hints": [
+      "Die Sekantensteigung ist 2·x₀ + h. Für h → 0 bleibt 2·x₀ = 2·1,5."
+    ],
+    "typicalErrors": [
+      {
+        "match": 3.05,
+        "feedback": "Das ist der Wert bei h = 0,05. Der Grenzwert lässt h ganz gegen 0 laufen und ergibt 2·x₀ = 3."
+      },
+      {
+        "match": 2.5,
+        "feedback": "Das wäre die Tangente bei x₀ = 1. Bei x₀ = 1,5 ist die Steigung 2·x₀ = 3."
+      }
+    ]
+  }
+}

@@ -1,0 +1,108 @@
+[
+  {
+    "width": 375,
+    "kind": "book",
+    "centers": [
+      {
+        "number": "1",
+        "dx": -0.7098209152463824,
+        "dy": -0.03232249547727406
+      },
+      {
+        "number": "2",
+        "dx": -0.24689642898738384,
+        "dy": -0.14891112479381263
+      },
+      {
+        "number": "3",
+        "dx": -0.24689738266170025,
+        "dy": -0.03232249547727406
+      },
+      {
+        "number": "4",
+        "dx": -0.28118910966441035,
+        "dy": -0.03232249547727406
+      }
+    ],
+    "scale": {
+      "zeroCenterError": -0.0000019073486328125,
+      "twoCenterError": -0.0000019073486328125,
+      "baselineDifference": 0
+    }
+  },
+  {
+    "width": 375,
+    "kind": "residual",
+    "headingToY": 22.327392578125,
+    "scaleToMSE": 19.518310546875
+  },
+  {
+    "width": 375,
+    "kind": "ridge",
+    "headingToLambda": 27.94561004638672
+  },
+  {
+    "width": 375,
+    "kind": "landscape",
+    "minimumTextEdge": 24,
+    "labels": [
+      "b",
+      "∂w",
+      "∂b",
+      "w"
+    ]
+  },
+  {
+    "width": 1440,
+    "kind": "book",
+    "centers": [
+      {
+        "number": "1",
+        "dx": -1.367932746419683,
+        "dy": -0.062156615080311894
+      },
+      {
+        "number": "2",
+        "dx": -0.47579228691756725,
+        "dy": -0.28684216062538326
+      },
+      {
+        "number": "3",
+        "dx": -0.4758008699864149,
+        "dy": -0.062156615080311894
+      },
+      {
+        "number": "4",
+        "dx": -0.5418934370391071,
+        "dy": -0.062156615080311894
+      }
+    ],
+    "scale": {
+      "zeroCenterError": -0.0000095367431640625,
+      "twoCenterError": -0.0000019073486328125,
+      "baselineDifference": 0
+    }
+  },
+  {
+    "width": 1440,
+    "kind": "residual",
+    "headingToY": 43.7904052734375,
+    "scaleToMSE": 38.3768310546875
+  },
+  {
+    "width": 1440,
+    "kind": "ridge",
+    "headingToLambda": 54.61756896972656
+  },
+  {
+    "width": 1440,
+    "kind": "landscape",
+    "minimumTextEdge": 25.901641845703125,
+    "labels": [
+      "b",
+      "∂w",
+      "∂b",
+      "w"
+    ]
+  }
+]

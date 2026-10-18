@@ -21,8 +21,13 @@
     },
     {
       "blockId": "dl-training-viz",
-      "type": "visualization",
-      "contentRef": "lessons/deep-learning/lr-step.viz.json"
+      "type": "figure",
+      "contentRef": "lessons/deep-learning/training-book.fig.json"
+    },
+    {
+      "blockId": "dl-training-updates",
+      "type": "worked-example",
+      "contentRef": "lessons/deep-learning/dl-training-updates.md"
     },
     {
       "blockId": "dl-training-checkpoint",

@@ -1,0 +1,203 @@
+{
+  "cpu": 4,
+  "results": [
+    {
+      "run": 0,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 81,
+      "medianMs": 4.100000001490116,
+      "build": 0.19999999925494194,
+      "sort": 1.800000000745058,
+      "paint": 1.800000000745058
+    },
+    {
+      "run": 0,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 109,
+      "medianMs": 7.199999999254942,
+      "build": 0,
+      "sort": 2.2999999970197678,
+      "paint": 4.899999998509884
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 104,
+      "medianMs": 3.899999998509884,
+      "build": 0.19999999925494194,
+      "sort": 1.699999999254942,
+      "paint": 1.5
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 111,
+      "medianMs": 7.100000001490116,
+      "build": 0,
+      "sort": 2.199999999254942,
+      "paint": 4.699999999254942
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 89,
+      "medianMs": 3.899999998509884,
+      "build": 0.20000000298023224,
+      "sort": 1.6000000014901161,
+      "paint": 1.699999999254942
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 106,
+      "medianMs": 7.199999999254942,
+      "build": 0,
+      "sort": 2.199999999254942,
+      "paint": 4.800000000745058
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 101,
+      "medianMs": 4.100000001490116,
+      "build": 0.19999999925494194,
+      "sort": 1.7999999970197678,
+      "paint": 1.699999999254942
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 110,
+      "medianMs": 7.199999999254942,
+      "build": 0,
+      "sort": 2.199999999254942,
+      "paint": 4.800000000745058
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 91,
+      "medianMs": 3.800000000745058,
+      "build": 0.3999999985098839,
+      "sort": 1.6000000014901161,
+      "paint": 1.699999999254942
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 108,
+      "medianMs": 6.900000002235174,
+      "build": 0,
+      "sort": 2.100000001490116,
+      "paint": 4.699999999254942
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 100,
+      "medianMs": 3.7999999970197678,
+      "build": 0.19999999925494194,
+      "sort": 1.699999999254942,
+      "paint": 1.6000000014901161
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 109,
+      "medianMs": 7.699999999254942,
+      "build": 0,
+      "sort": 2.2999999970197678,
+      "paint": 5.199999999254942
+    }
+  ],
+  "summary": [
+    {
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "medianOfMedians": 3.899999998509884,
+      "runs": [
+        4.100000001490116,
+        3.899999998509884,
+        3.800000000745058
+      ],
+      "ticks": [
+        81,
+        89,
+        91
+      ]
+    },
+    {
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "medianOfMedians": 7.199999999254942,
+      "runs": [
+        7.199999999254942,
+        7.199999999254942,
+        6.900000002235174
+      ],
+      "ticks": [
+        109,
+        106,
+        108
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "medianOfMedians": 3.899999998509884,
+      "runs": [
+        3.899999998509884,
+        4.100000001490116,
+        3.7999999970197678
+      ],
+      "ticks": [
+        104,
+        101,
+        100
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "medianOfMedians": 7.199999999254942,
+      "runs": [
+        7.100000001490116,
+        7.199999999254942,
+        7.699999999254942
+      ],
+      "ticks": [
+        111,
+        110,
+        109
+      ]
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "cpu": 4,
+  "results": [
+    {
+      "run": 0,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 190,
+      "medianMs": 2.7999999970197678,
+      "build": 0.09999999776482582,
+      "sort": 1.3999999985098839,
+      "paint": 1.1000000014901161
+    },
+    {
+      "run": 0,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 160,
+      "medianMs": 5.899999998509884,
+      "build": 0,
+      "sort": 2,
+      "paint": 3.899999998509884
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 189,
+      "medianMs": 2.699999999254942,
+      "build": 0.09999999776482582,
+      "sort": 1.3999999985098839,
+      "paint": 1.199999999254942
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 149,
+      "medianMs": 6.399999998509884,
+      "build": 0,
+      "sort": 2,
+      "paint": 4.199999999254942
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 3.2000000029802322,
+      "build": 0.10000000149011612,
+      "sort": 1.5,
+      "paint": 1.300000000745058
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 155,
+      "medianMs": 6.699999999254942,
+      "build": 0,
+      "sort": 2.099999997764826,
+      "paint": 4.5
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 188,
+      "medianMs": 3.399999998509884,
+      "build": 0.10000000149011612,
+      "sort": 1.6000000014901161,
+      "paint": 1.3999999985098839
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 153,
+      "medianMs": 7,
+      "build": 0,
+      "sort": 2.100000001490116,
+      "paint": 4.699999999254942
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 3,
+      "build": 0.09999999776482582,
+      "sort": 1.5,
+      "paint": 1.199999999254942
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 162,
+      "medianMs": 6,
+      "build": 0,
+      "sort": 1.8999999985098839,
+      "paint": 4
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 190,
+      "medianMs": 2.800000000745058,
+      "build": 0.09999999776482582,
+      "sort": 1.3999999985098839,
+      "paint": 1.199999999254942
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 151,
+      "medianMs": 6.100000001490116,
+      "build": 0,
+      "sort": 1.8999999985098839,
+      "paint": 4
+    }
+  ],
+  "summary": [
+    {
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "medianOfMedians": 3,
+      "runs": [
+        2.7999999970197678,
+        3.2000000029802322,
+        3
+      ],
+      "ticks": [
+        190,
+        191,
+        192
+      ]
+    },
+    {
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "medianOfMedians": 6,
+      "runs": [
+        5.899999998509884,
+        6.699999999254942,
+        6
+      ],
+      "ticks": [
+        160,
+        155,
+        162
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "medianOfMedians": 2.800000000745058,
+      "runs": [
+        2.699999999254942,
+        3.399999998509884,
+        2.800000000745058
+      ],
+      "ticks": [
+        189,
+        188,
+        190
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "medianOfMedians": 6.399999998509884,
+      "runs": [
+        6.399999998509884,
+        7,
+        6.100000001490116
+      ],
+      "ticks": [
+        149,
+        153,
+        151
+      ]
+    }
+  ]
+}
