@@ -299,13 +299,13 @@ function assertUniqueCheckpoints(lessons) {
 // never displays all reject the build.
 
 export function validateFigureSpec(spec, label) {
+  spec = expandFigureTrace(spec, label);
   const scene = figureScenes[spec.scene];
   if (!scene) throw new Error(`${label}: Unbekannte Figurenszene ${spec.scene}`);
   const mode = spec.kind === 'hint' ? 'hint' : 'lesson';
   scene.validateParams(spec.params, { mode });
   const figureModel = scene.model(spec.params, { mode });
   assertFigureKind(spec, scene, label);
-  if (!Array.isArray(spec.beats)) return true;
   const beatIds = (spec.beats || []).map((beat) => beat.id);
   const expectedBeats = mode === 'hint' ? scene.hintBeatIds : scene.beatIds;
   const subset = ['inline', 'static', 'explore', 'compare'].includes(spec.kind);
@@ -315,6 +315,58 @@ export function validateFigureSpec(spec, label) {
   if (spec.predict) assertFigurePredict(spec.predict, scene, figureModel, label);
   assertFigureNumbers(spec, scene, figureModel, label);
   return true;
+}
+
+// Trace expansion is a compiler responsibility. Scenes supply checked state
+// records; the browser receives the same beat-array contract as other figures.
+export function expandFigureTrace(spec, label, projectRoot = defaultProjectRoot) {
+  if (spec.beats?.from !== 'trace') return spec;
+  const scene = figureScenes[spec.scene];
+  if (typeof scene?.trace !== 'function') throw new Error(`${label}: trace-Beats brauchen scene.trace`);
+  if (spec.kind !== 'beats') throw new Error(`${label}: Trace-Expansion ist nur für lesson beats freigegeben`);
+  scene.validateParams(spec.params, { mode: 'lesson' });
+  const states = scene.trace(scene.model(spec.params, { mode: 'lesson' }));
+  if (!Array.isArray(states) || !states.length) throw new Error(`${label}: leere Trace-Spur`);
+  const expanded = { ...spec, beats: states.map(traceBeat) };
+  validateSourceDocument('figure', expanded, projectRoot);
+  return expanded;
+}
+
+function traceBeat(state) {
+  if (!state || !Number.isInteger(state.line) || state.line < 0) throw new Error('Trace-Schritt ohne gültige Zeile');
+  assertTraceObjects(state.bindings, 'Bindungen');
+  assertTraceObjects(state.objects, 'Objekte');
+  assertTraceEvent(state);
+  assertTraceValues(state.objects);
+  assertTraceOutcome(state);
+  if (typeof state.output !== 'string') throw new Error('Trace-Schritt ohne Ausgabezustand');
+  for (const identity of Object.values(state.bindings)) {
+    if (typeof identity !== 'string' || !Object.hasOwn(state.objects, identity)) throw new Error('Trace-Bindung ohne Objektidentität');
+  }
+  return { id: state.id, caption: state.caption };
+}
+
+function assertTraceObjects(value, label) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`Trace-Schritt ohne ${label}`);
+}
+
+function assertTraceEvent(state) {
+  if (!['start', 'line', 'call', 'return', 'exception'].includes(state.event)) throw new Error('Unbekanntes Trace-Ereignis');
+  if (typeof state.scope !== 'string' || !state.scope) throw new Error('Trace-Schritt ohne Aufrufrahmen');
+  if ((state.event === 'start') !== (state.line === 0)) throw new Error('Trace-Anfang muss Zeile null verwenden');
+}
+
+function assertTraceValues(objects) {
+  for (const object of Object.values(objects)) {
+    if (!object || typeof object.type !== 'string' || typeof object.value !== 'string') throw new Error('Trace-Objekt ohne Typ oder Wert');
+  }
+}
+
+function assertTraceOutcome(state) {
+  if (state.event === 'return') {
+    if (typeof state.result !== 'string' || !Object.hasOwn(state.objects, state.result)) throw new Error('Trace-Rückgabe ohne Ergebnisobjekt');
+  }
+  if (state.event === 'exception' && typeof state.exception !== 'string') throw new Error('Trace-Ausnahme ohne Typ');
 }
 
 function assertFigureKind(spec, scene, label) {
@@ -447,8 +499,9 @@ function assertFigureNumbers(spec, scene, figureModel, label) {
 function compileFigureBlock(block, lesson, contentRoot, projectRoot, figureIds) {
   if (!block.contentRef.endsWith('.fig.json')) throw new Error(`${lesson.lessonId}: Figurenreferenz muss auf .fig.json zeigen`);
   const specPath = resolveContentPath(contentRoot, block.contentRef, ['.fig.json']);
-  const spec = readJson(specPath);
-  validateSourceDocument('figure', spec, projectRoot);
+  const sourceSpec = readJson(specPath);
+  validateSourceDocument('figure', sourceSpec, projectRoot);
+  const spec = expandFigureTrace(sourceSpec, `${lesson.lessonId}:${block.contentRef}`, projectRoot);
   const figureId = block.contentRef.split('/').pop().slice(0, -'.fig.json'.length);
   if (!/^[a-z0-9][a-z0-9-]*$/.test(figureId)) throw new Error(`${lesson.lessonId}: Ungültige Figuren-ID ${figureId}`);
   const previousFigure = figureIds.get(figureId);

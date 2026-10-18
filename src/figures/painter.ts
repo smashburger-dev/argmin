@@ -619,11 +619,13 @@ const LABEL_FONT = 'var(--sans)';
 
 /** Run font: math prims use the KaTeX faces (italic vs upright), labels sans. */
 function runFont(prim: Prim, run: any): string {
+  if (prim.font === 'code') return 'var(--mono, ui-monospace, monospace)';
   if (prim.font === 'math') return run.italic ? MATH_ITALIC : MATH_MAIN;
   return LABEL_FONT;
 }
 
 function updateText(e: SVGTextElement, prim: Prim, color: string, opacity: number): void {
+  e.style.whiteSpace = prim.font === 'code' ? 'pre' : '';
   e.setAttribute('x', String(prim.x));
   e.setAttribute('y', String(prim.y));
   e.setAttribute('font-size', String(prim.size));
