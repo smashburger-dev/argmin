@@ -26,8 +26,8 @@
     },
     {
       "blockId": "gradient-regression-secant-viz",
-      "type": "visualization",
-      "contentRef": "lessons/data-ml/secant-tangent.viz.json"
+      "type": "figure",
+      "contentRef": "lessons/data-ml/mse-section.fig.json"
     },
     {
       "blockId": "gradient-regression-rest",
@@ -36,8 +36,13 @@
     },
     {
       "blockId": "gradient-regression-viz",
-      "type": "visualization",
-      "contentRef": "lessons/data-ml/mse-bowl.viz.json"
+      "type": "figure",
+      "contentRef": "lessons/data-ml/mse-landscape.fig.json"
+    },
+    {
+      "blockId": "gradient-regression-checks",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/gradient-regression-checks.md"
     }
   ],
   "sourceRefs": [

@@ -25,8 +25,13 @@
     },
     {
       "blockId": "ml-linear-viz",
-      "type": "visualization",
-      "contentRef": "lessons/data-ml/residuals.viz.json"
+      "type": "figure",
+      "contentRef": "lessons/data-ml/residual-springs.fig.json"
+    },
+    {
+      "blockId": "ml-linear-details",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/ml-linear-details.md"
     }
   ],
   "sourceRefs": [

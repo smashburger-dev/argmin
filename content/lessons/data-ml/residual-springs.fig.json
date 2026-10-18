@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "residual-springs",
+  "title": "Residuen ziehen an der Geraden",
+  "caption": "Die vertikalen Federn stehen für die Residuen. Minimiert wird ihr mittleres Quadrat.",
+  "hint": "Die Lektüre erklärt das Beispiel und seine Grenzen.",
+  "params": {
+    "outlier": 2
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die Federn messen die senkrechten Residuen zur Geraden, nicht den kürzesten Abstand."
+    },
+    {
+      "id": "step-1",
+      "caption": "Der letzte Punkt wandert nach oben. Sein quadrierter Fehler zieht besonders stark an der Geraden."
+    },
+    {
+      "id": "step-2",
+      "caption": "Die Ausgleichsgerade gibt nach. Ihre Lage minimiert die Summe der quadrierten Federlängen."
+    }
+  ],
+  "predict": {
+    "beat": "step-0",
+    "prompt": "Setze m = 1 und b = 0. Welchen Wert hat das MSE der vier Punkte?",
+    "input": "numeric",
+    "expected": 1.125,
+    "tolerance": 0.000001,
+    "hints": [
+      "Residuen sind yᵢ − (m·xᵢ + b): 1; 0,5; 1; 1,5. Quadrieren und durch 4 teilen."
+    ],
+    "typicalErrors": [
+      {
+        "match": 4.5,
+        "feedback": "Das ist die Summe der quadrierten Residuen — das MSE teilt noch durch die Anzahl 4."
+      },
+      {
+        "match": 1.5,
+        "feedback": "Das ist das größte einzelne Residuum, nicht der Mittelwert der Quadrate."
+      }
+    ]
+  }
+}
