@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-19",
+  "base": "1e017b749f0269ae738c967602225764b28f2688",
+  "implementationCommit": "f88c9da",
+  "port": 4409,
+  "compile": {"exit": 0, "lessons": 50, "activities": 290},
+  "contentValidation": {"exit": 0},
+  "typecheckAndCoverage": {"exit": 0},
+  "releasePublicLeakLicense": {"exit": 0, "files": 976, "jsGzipKiB": 123.3, "cssGzipKiB": 13.2},
+  "node": {"exit": 0, "passed": 2240, "failed": 0},
+  "projectRunner": {"exit": 0, "passed": 20},
+  "chromiumDev": {"exit": 0, "passed": 96, "skipped": 26, "workers": 2},
+  "chromiumRelease": {"exit": 0, "passed": 95, "skipped": 27, "workers": 2},
+  "shrinkComplexity": {"exit": 0, "files": 11, "limit": 10},
+  "inheritedWarnings": [
+    "tools/build_public.mjs: thirdPartyNotices no-useless-assignment; body unchanged",
+    "Dev: vendor/pyodide/pyodide.mjs.map is absent in base"
+  ],
+  "newPermanentTestsOrSnapshots": false,
+  "portReleased": true
+}

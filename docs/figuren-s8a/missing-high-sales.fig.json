@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "missing-high-sales",
+  "title": "Fehlende Ziele verschieben den Mittelwert",
+  "caption": "Im vollständigen Lehrbeispiel liegen fünf Umsätze zwischen 90 und 900 Euro. Die großen Fälle ziehen den Mittelwert hoch.",
+  "hint": "Eigenständiges synthetisches Beispiel zum zielabhängigen Fehlen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Im vollständigen Lehrbeispiel liegen fünf Umsätze zwischen 90 und 900 Euro. Die großen Fälle ziehen den Mittelwert hoch."
+    },
+    {
+      "id": "step-1",
+      "caption": "Gerade die zwei größten Umsätze werden nicht freigegeben. Sichtbar bleiben nur die drei kleinen Fälle."
+    },
+    {
+      "id": "step-2",
+      "caption": "Nach dem Löschen der fehlenden Ziele sinkt der Mittelwert. Die verbleibenden Werte sind unverändert."
+    }
+  ]
+}
