@@ -1,0 +1,156 @@
+{
+  "viewport": [
+    375,
+    812
+  ],
+  "reducedMotion": true,
+  "forcedColors": true,
+  "results": [
+    {
+      "name": "backprop-network",
+      "reducedMotionStepMs": [
+        70,
+        50,
+        34
+      ],
+      "printDescriptions": 4,
+      "touchScrollDelta": 234,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "git-snapshots",
+      "reducedMotionStepMs": [
+        42,
+        41,
+        33,
+        42
+      ],
+      "printDescriptions": 5,
+      "touchScrollDelta": 241,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "freeze-order",
+      "reducedMotionStepMs": [
+        33,
+        33,
+        34,
+        32
+      ],
+      "printDescriptions": 5,
+      "touchScrollDelta": 246,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "bpe-letterpress",
+      "reducedMotionStepMs": [
+        41,
+        32,
+        43
+      ],
+      "printDescriptions": 4,
+      "touchScrollDelta": 233,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "chunk-windows",
+      "reducedMotionStepMs": [
+        31,
+        34,
+        41,
+        41
+      ],
+      "printDescriptions": 5,
+      "touchScrollDelta": 242,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": "Richtig."
+    },
+    {
+      "name": "retrieval-handoffs",
+      "reducedMotionStepMs": [],
+      "printDescriptions": 1,
+      "touchScrollDelta": 243,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "journal-card",
+      "reducedMotionStepMs": [],
+      "printDescriptions": 1,
+      "touchScrollDelta": 234,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "review-timeline",
+      "reducedMotionStepMs": [],
+      "printDescriptions": 1,
+      "touchScrollDelta": 240,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "claim-evidence-card",
+      "reducedMotionStepMs": [],
+      "printDescriptions": 1,
+      "touchScrollDelta": 234,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "preregistered-question",
+      "reducedMotionStepMs": [],
+      "printDescriptions": 1,
+      "touchScrollDelta": 238,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "consistent-cards",
+      "reducedMotionStepMs": [],
+      "printDescriptions": 1,
+      "touchScrollDelta": 241,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "acceptance-record",
+      "reducedMotionStepMs": [],
+      "printDescriptions": 1,
+      "touchScrollDelta": 232,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "regression-record",
+      "reducedMotionStepMs": [],
+      "printDescriptions": 1,
+      "touchScrollDelta": 242,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "reproduction-record",
+      "reducedMotionStepMs": [],
+      "printDescriptions": 1,
+      "touchScrollDelta": 235,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    },
+    {
+      "name": "sha256-seal",
+      "reducedMotionStepMs": [
+        42
+      ],
+      "printDescriptions": 2,
+      "touchScrollDelta": 240,
+      "flatAzimuthUnchanged": true,
+      "checkpoint": null
+    }
+  ],
+  "errors": []
+}
