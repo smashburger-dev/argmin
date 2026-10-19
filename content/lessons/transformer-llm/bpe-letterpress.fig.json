@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "bpe-letterpress",
+  "title": "BPE im Setzkasten",
+  "caption": "Der Korpus enthält low zweimal, lower und lowest. Jedes Wort hat einen eigenen Endmarker.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die drei Zeilen vertreten vier Wörter: low zählt doppelt. Der Wortendmarker bleibt ein eigenes Symbol."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die Paare (l, o) und (o, w) kommen gleich oft vor. Lexikographisch gewinnt (l, o); daraus wird lo."
+    },
+    {
+      "id": "step-2",
+      "caption": "Nach neuem Zählen gewinnt (lo, w). Ein neues Symbol low ersetzt beide Nachbarn."
+    },
+    {
+      "id": "step-3",
+      "caption": "Beim nächsten Gleichstand gewinnt der Wortendmarker vor e. Nur die beiden ganzen Wörter low verschmelzen weiter."
+    }
+  ]
+}

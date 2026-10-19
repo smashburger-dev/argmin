@@ -13,8 +13,21 @@
   "requires": ["c-dl-finetuning", "c-meta-learning"],
   "estimatedMinutes": 75,
   "blocks": [
-    { "blockId": "tf-papers-core", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-papers.md" },
-    { "blockId": "tf-papers-check", "type": "checkpoint", "contentRef": "lessons/transformer-llm/tf-papers-checkpoint.md" }
+    {
+      "blockId": "tf-papers-core",
+      "type": "worked-example",
+      "contentRef": "lessons/transformer-llm/tf-papers.md"
+    },
+    {
+      "blockId": "s8b-claim-evidence-card",
+      "type": "figure",
+      "contentRef": "lessons/transformer-llm/claim-evidence-card.fig.json"
+    },
+    {
+      "blockId": "tf-papers-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/transformer-llm/tf-papers-checkpoint.md"
+    }
   ],
   "sourceRefs": [
     { "sourceId": "arxiv-attention-2017", "role": "primary", "locator": "Abstract — BLEU-Zahlen EN-DE/EN-FR (nur Lektüre/Link)" },

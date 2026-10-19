@@ -10,7 +10,7 @@ function nodeById(graph, id) {
 function validateNode(n) {
   if (typeof n.id !== 'string' || !n.id || !Array.isArray(n.at) || n.at.length !== 2) throw new Error('Invalid graph node');
   if (!n.at.every(Number.isFinite)) throw new Error('Invalid graph position');
-  const dimensions = [n.width ?? 23, n.height ?? 14];
+  const dimensions = [n.width ?? 23, n.height ?? 20];
   if (!dimensions.every(x => Number.isFinite(x) && x > 0)) throw new Error('Invalid node size');
 }
 
@@ -34,7 +34,7 @@ function endpoints(graph, edge) {
   const a = nodeById(graph, edge.from), b = nodeById(graph, edge.to);
   const dx = b.at[0] - a.at[0], dy = b.at[1] - a.at[1];
   if (!dx && !dy) throw new Error('Coincident graph nodes');
-  const trim = n => Math.min((n.width ?? 23) / 2 / Math.abs(dx), (n.height ?? 14) / 2 / Math.abs(dy));
+  const trim = n => Math.min((n.width ?? 23) / 2 / Math.abs(dx), (n.height ?? 20) / 2 / Math.abs(dy));
   const ta = trim(a), tb = trim(b);
   if (ta + tb >= 1) throw new Error('Overlapping graph nodes');
   return [a.at.map((v, i) => v + [dx, dy][i] * ta), b.at.map((v, i) => v - [dx, dy][i] * tb)];
@@ -49,12 +49,12 @@ export function edgePoint(graph, edgeId, progress) {
 }
 
 function nodePrimitives(node, value, active) {
-  const [x, y] = node.at, w = node.width ?? 23, h = node.height ?? 14;
+  const [x, y] = node.at, w = node.width ?? 23, h = node.height ?? 20;
   const label = (key, yy, content) => ({ ...text(key, x, yy, content, 5.5, 'hi'), font: 'sans', anchor: 'middle' });
   return [
     { t: 'rect', key: `node-${node.id}`, from: [x - w / 2, y - h / 2], to: [x + w / 2, y + h / 2], tone: active ? 'lit' : 'hi', plate: true },
-    label(`label-${node.id}`, y - 0.6, node.label ?? node.id),
-    label(`value-${node.id}`, y + 5.3, value ?? ''),
+    label(`label-${node.id}`, y + (node.singleLine ? 2 : -2.5), node.label ?? node.id),
+    { ...label(`value-${node.id}`, y + 6, value ?? ''), visible: !node.singleLine },
   ];
 }
 

@@ -8,7 +8,28 @@
   "competencyIds": ["c-meta-learning"],
   "requires": [],
   "estimatedMinutes": 30,
-  "blocks": [{ "blockId": "learning-core", "type": "reflection", "contentRef": "lessons/foundations/learning.md" }],
+  "blocks": [
+    {
+      "blockId": "learning-core",
+      "type": "reflection",
+      "contentRef": "lessons/foundations/learning.md"
+    },
+    {
+      "blockId": "s8b-journal-card",
+      "type": "figure",
+      "contentRef": "lessons/foundations/journal-card.fig.json"
+    },
+    {
+      "blockId": "s8b-review-timeline",
+      "type": "reflection",
+      "contentRef": "lessons/foundations/learning-review-bridge.md"
+    },
+    {
+      "blockId": "s8b-review-time-axis",
+      "type": "figure",
+      "contentRef": "lessons/foundations/review-timeline.fig.json"
+    }
+  ],
   "sourceRefs": [
     { "sourceId": "murray-spacing-math-2025", "role": "reference", "locator": "Meta-Analyse zu verteilter Mathematikpraxis; keine optimalen Intervalle ableitbar" },
     { "sourceId": "bastani-ai-guardrails-2025", "role": "reference", "locator": "Feldexperiment zu ununterstützter Leistung und Tutor-Guardrails" },

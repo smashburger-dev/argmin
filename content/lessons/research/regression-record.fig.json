@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kind": "inline",
+  "engine": "argmin-figure",
+  "scene": "evidence-cards",
+  "title": "Zwei getrennte Fehlergrenzen",
+  "caption": "Ein fehlender Beleg und eine falsche Antwort trotz Beleg sind verschiedene Befunde.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {
+    "card": "regression"
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die festen Felder machen den dokumentierten Zusammenhang sichtbar."
+    }
+  ]
+}

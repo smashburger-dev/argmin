@@ -24,6 +24,11 @@
       "contentRef": "lessons/research/capstone-acceptance.md"
     },
     {
+      "blockId": "s8b-acceptance-record",
+      "type": "figure",
+      "contentRef": "lessons/research/acceptance-record.fig.json"
+    },
+    {
       "blockId": "capstone-acceptance-check",
       "type": "checkpoint",
       "contentRef": "lessons/research/capstone-acceptance-checkpoint.md"

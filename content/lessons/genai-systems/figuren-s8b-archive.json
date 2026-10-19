@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-figuren-s8b-archive",
+  "version": 1,
+  "locale": "de",
+  "title": "Archiv der ersetzten Chunk-Visualisierung S8b",
+  "objectives": ["Die bisherige Visualisierung bis zur ausdrücklichen Freigabe unverändert aufbewahren"],
+  "competencyIds": ["c-genai-rag"],
+  "requires": [],
+  "estimatedMinutes": 1,
+  "blocks": [{ "blockId": "archive-chunk-overlap", "type": "visualization", "contentRef": "lessons/genai-systems/chunk-overlap.viz.json" }],
+  "sourceRefs": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "local-only"
+}

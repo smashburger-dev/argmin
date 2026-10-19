@@ -343,6 +343,8 @@ test('transformer-llm lessons pair a worked example with a checkpoint block', as
     for (const block of doc.blocks) {
       if (block.type === 'visualization') {
         assert.ok(block.contentRef.endsWith('.viz.json'), `${lesson.file}: visualization contentRef must be .viz.json`);
+      } else if (block.type === 'figure') {
+        assert.ok(block.contentRef.endsWith('.fig.json'), `${lesson.file}: figure contentRef must be .fig.json`);
       } else {
         assert.ok(block.contentRef.endsWith('.md'), `${lesson.file}: contentRef must be markdown`);
       }

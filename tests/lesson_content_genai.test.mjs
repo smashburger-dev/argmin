@@ -53,7 +53,7 @@ test('w27-w30 lessons follow the canonical lesson contract with allowed readings
     assert.ok(types.includes('worked-example'), `${lesson.id}: worked-example block missing`);
     assert.ok(types.includes('checkpoint') || types.includes('explanation'), `${lesson.id}: checkpoint missing`);
     for (const block of doc.blocks) {
-      const expectedSuffix = block.type === 'visualization' ? '.viz.json' : '.md';
+      const expectedSuffix = block.type === 'visualization' ? '.viz.json' : block.type === 'figure' ? '.fig.json' : '.md';
       assert.ok(block.blockId && block.contentRef.endsWith(expectedSuffix), `${lesson.id}: invalid content reference`);
       assert.ok(existsSync(join(root, 'content', block.contentRef)), `${lesson.id}: ${block.contentRef} fehlt`);
     }

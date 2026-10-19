@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kind": "inline",
+  "engine": "argmin-figure",
+  "scene": "evidence-cards",
+  "title": "Vorab-Regel und Goal-Shift",
+  "caption": "Die feste Protokollkarte vergleicht die vorab gesetzte Schwelle mit einer nach dem Lauf gesenkten Schwelle.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {
+    "card": "protocol"
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die festen Felder machen den dokumentierten Zusammenhang sichtbar."
+    }
+  ]
+}

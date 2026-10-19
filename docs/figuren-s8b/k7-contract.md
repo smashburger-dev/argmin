@@ -22,7 +22,9 @@ const prims = graphPrimitives(graph, {
 });
 ```
 
-Knoten haben standardmäßig Breite 23 und Höhe 14. Werte sind kurze Strings.
+Knoten haben standardmäßig Breite 23 und Höhe 20. Werte sind kurze Strings.
+`singleLine: true` zentriert nur das Knotenlabel; der Wert-Key bleibt verborgen
+erhalten. Kompakte Knoten können dafür eine eigene `height` setzen.
 Jede Kante erzeugt dauerhaft einen Pfeil und eine Marke; fehlende Marken
 haben Deckkraft null. Pro Knoten bleiben Rechteck und zwei Text-Keys stabil.
 Die Szene bettet die Primitive in ihre eigene Lesefläche ein. Das Beispiel
