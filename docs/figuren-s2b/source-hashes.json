@@ -1,0 +1,18 @@
+{
+  "base": "1e017b749f0269ae738c967602225764b28f2688",
+  "apiCommit": "49c88cb85f7fcfcb9b3b30b0f8363d366218ed20",
+  "sourceHashes": {
+    "schemas/figure.schema.json": "bf58e8b047b1ada110a417adf09f5f778babe040c49cb4a102e939cec2fe9fd1",
+    "src/app/types.ts": "173c060757af9ac013b956894a5ee5f411a2dc35e426503f35321a87715bf03f",
+    "src/figures/FigureRuntime.tsx": "e406fde9add704b1d5f2509bbb2f14e056b9346cd1569b3551f69390ae9442be",
+    "src/figures/FigureInputs.tsx": "6255929d50f6d3dc8de768e19e3d2de51a77746f19f879cb57ab9b5d6960af2b",
+    "src/figures/FigureSelection.tsx": "7f26d33e14f8ee95f7837a4c904efc8ed98296e31158338e1e18ecda58f9fb28",
+    "src/figures/figures.css": "c259a2c58cad2571247724816e5b22531c8e99f96da2127362eb72930b71d500",
+    "src/figures/painter.ts": "29847682bca52673692427c13925b7cab1cf93b4e8f833638314178a2251200e",
+    "src/figures/engine.ts": "cbd48bc39813070d5f937b8950d2d10b58a9b9b132fc032f9e8a45b18bd2fbd0",
+    "src/ui/Button.tsx": "297120db91a3b7aa6fb7e313d5aa06fba2edf25f74a1d5692cf4d759338b7c51",
+    "src/ui/VisualizationBlock.tsx": "61a9d418785cd321cda1145e7533273205f7c20ea2826c769353481d7ae0d910",
+    "tools/compile_content.mjs": "c3c8377caf800266b1f7b026d6983e935a532d4aeec276a032f71f245355d90e",
+    "tools/new_figure_scene.mjs": "34d765ef9e1a4ca2eb63160b0708924a484aa9675b0ba0db2343b0dad4d27045"
+  }
+}

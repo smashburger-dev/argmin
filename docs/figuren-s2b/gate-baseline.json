@@ -1,0 +1,147 @@
+{
+  "port": 4411,
+  "sourceCommit": "1e017b749f0269ae738c967602225764b28f2688",
+  "sourceEvidence": "clean base checkout before edits",
+  "timing": "Durations recorded; original wall-clock timestamps not archived. Baseline browser worker override not archived; logs report five workers.",
+  "environment": {
+    "E2E_PORT": "4411",
+    "E2E_REUSE_SERVER": "0",
+    "FIGURE_PERF": "0"
+  },
+  "commands": [
+    {
+      "label": "compile",
+      "status": 0,
+      "seconds": 0.858,
+      "summary": [],
+      "argv": [
+        "node",
+        "tools/compile_content.mjs"
+      ]
+    },
+    {
+      "label": "content",
+      "status": 0,
+      "seconds": 0.744,
+      "summary": [],
+      "argv": [
+        "node",
+        "tools/validate_content.mjs"
+      ]
+    },
+    {
+      "label": "node",
+      "status": 0,
+      "seconds": 44.098,
+      "summary": [
+        "✔ anchor extras: ref oracle copy stays inside the pinned base tests (0.285292ms)",
+        "✔ mastery: revealed solution locks even when time has passed (edge case) (0.048916ms)",
+        "✔ misconception rules link into typicalErrorIds; texts and ids stay parallel (299.798917ms)",
+        "✔ seam fails closed on a bare-string typicalError (0.254833ms)",
+        "✔ unknown artifact kinds are violations, not silently skipped (0.038084ms)",
+        "✔ typicalErrors: numeric match gives targeted feedback within tolerance (0.053208ms)",
+        "✔ typicalErrors: vector match compares componentwise (0.055541ms)",
+        "✔ typicalErrors: string match runs a substring check on the raw input (0.034334ms)",
+        "✔ typicalErrors: first matching entry wins, unmatched falls back to generic (0.041084ms)",
+        "✔ contract validation flags dead typicalErrors rules (0.108083ms)",
+        "ℹ tests 2240",
+        "ℹ skipped 5"
+      ],
+      "argv": [
+        "npm",
+        "test"
+      ]
+    },
+    {
+      "label": "typecheck",
+      "status": 0,
+      "seconds": 2.963,
+      "summary": [],
+      "argv": [
+        "npm",
+        "run",
+        "typecheck"
+      ]
+    },
+    {
+      "label": "coverage",
+      "status": 0,
+      "seconds": 0.967,
+      "summary": [],
+      "argv": [
+        "npm",
+        "run",
+        "coverage:check"
+      ]
+    },
+    {
+      "label": "release",
+      "status": 0,
+      "seconds": 6.099,
+      "summary": [],
+      "argv": [
+        "npm",
+        "run",
+        "build:release"
+      ]
+    },
+    {
+      "label": "public",
+      "status": 0,
+      "seconds": 0.396,
+      "summary": [],
+      "argv": [
+        "node",
+        "tools/validate_content.mjs",
+        "--dir",
+        "build-next"
+      ]
+    },
+    {
+      "label": "project",
+      "status": 0,
+      "seconds": 0.36,
+      "summary": [
+        "Ran 20 tests in 0.073s",
+        "OK (skipped=1)"
+      ],
+      "argv": [
+        "npm",
+        "run",
+        "test:project-runner"
+      ]
+    },
+    {
+      "label": "dev",
+      "status": 0,
+      "seconds": 62.094,
+      "summary": [
+        "Running 122 tests using 5 workers",
+        "[14/122] [chromium] › tests/e2e/exercise-family.spec.ts:129:5 › S4D7 code family runs pyodide tests in the browser",
+        "  25 skipped",
+        "  97 passed (59.6s)",
+        "[WebServer] Error: An error occurred while trying to read the map file at pyodide.mjs.map",
+        "[WebServer] Error: ENOENT: no such file or directory, open '/Users/no8/Desktop/life/Lifemaxxing/argmin-figuren-s2b/vendor/pyodide/pyodide.mjs.map'"
+      ],
+      "argv": null
+    },
+    {
+      "label": "browser-release",
+      "status": 0,
+      "seconds": 41.52,
+      "summary": [
+        "Running 122 tests using 5 workers",
+        "[14/122] [chromium] › tests/e2e/exercise-family.spec.ts:129:5 › S4D7 code family runs pyodide tests in the browser",
+        "  27 skipped",
+        "  95 passed (34.8s)"
+      ],
+      "argv": null
+    }
+  ],
+  "nodeStats": {
+    "tests": 2240,
+    "pass": 2235,
+    "fail": 0,
+    "skipped": 5
+  }
+}
