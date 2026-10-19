@@ -29,6 +29,22 @@ if (out === root || !out.startsWith(root + sep)) throw new Error('Public-Ausgabe
 // --- allowlist (the only artifacts allowed to ship) ---------------------------
 // Exact files plus directory rules with extension filters.
 const ALLOWED_FILES = [
+  'assets/js/figures/objects/distribution-model.mjs',
+  'assets/js/figures/objects/seeded-examples.mjs',
+  'assets/js/figures/objects/tree-vote-model.mjs',
+  'assets/js/figures/scenes/distribution-points.mjs',
+  'assets/js/figures/scenes/missing-high-sales.mjs',
+  'assets/js/figures/scenes/seed-ribbon.mjs',
+  'assets/js/figures/scenes/subgroup-river.mjs',
+  'assets/js/figures/scenes/tree-vote-field.mjs',
+  'content/lessons/data-ml/distribution-points.fig.json',
+  'content/lessons/data-ml/eda-distributions-s8a-after.md',
+  'content/lessons/data-ml/ml-ensembles-s8a-after.md',
+  'content/lessons/data-ml/ml-error-analysis-s8a-after.md',
+  'content/lessons/data-ml/ml-repro-s8a-after.md',
+  'content/lessons/data-ml/seed-ribbon.fig.json',
+  'content/lessons/data-ml/subgroup-river.fig.json',
+  'content/lessons/data-ml/tree-vote-field.fig.json',
   'assets/js/figures/objects/trace-records.mjs',
   'assets/js/figures/objects/trace-stage.mjs',
   'assets/js/figures/scenes/bouncer.mjs',

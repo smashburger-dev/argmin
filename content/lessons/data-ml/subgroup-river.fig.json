@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "subgroup-river",
+  "title": "Die Gesamtquote verdeckt die Lücke",
+  "caption": "34 Fehler auf 340 Zeilen ergeben insgesamt 10 %. Diese Zahl verrät noch nicht, wer die Fehler trägt.",
+  "hint": "Die Lektüre erklärt das Beispiel und seine Grenzen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "34 Fehler auf 340 Zeilen ergeben insgesamt 10 %. Diese Zahl verrät noch nicht, wer die Fehler trägt."
+    },
+    {
+      "id": "step-1",
+      "caption": "In jung sind 12 von 240 Vorhersagen falsch, in alt 22 von 100. Die Nenner machen den Unterschied."
+    },
+    {
+      "id": "step-2",
+      "caption": "Die Fehlerraten 5 % und 22 % liegen 17 Prozentpunkte auseinander. Die Gesamtquote bleibt 10 %."
+    }
+  ]
+}

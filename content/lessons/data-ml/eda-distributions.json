@@ -13,8 +13,26 @@
   "requires": ["c-pandas-cleaning"],
   "estimatedMinutes": 60,
   "blocks": [
-    { "blockId": "eda-distributions-core", "type": "worked-example", "contentRef": "lessons/data-ml/eda-distributions.md" },
-    { "blockId": "eda-distributions-viz", "type": "visualization", "contentRef": "lessons/data-ml/normal-density.viz.json" }
+    {
+      "blockId": "eda-distributions-core",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/eda-distributions.md"
+    },
+    {
+      "blockId": "eda-distributions-s8a-figure",
+      "type": "figure",
+      "contentRef": "lessons/data-ml/distribution-points.fig.json"
+    },
+    {
+      "blockId": "eda-distributions-s8a-after",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/eda-distributions-s8a-after.md"
+    },
+    {
+      "blockId": "eda-distributions-viz",
+      "type": "visualization",
+      "contentRef": "lessons/data-ml/normal-density.viz.json"
+    }
   ],
   "sourceRefs": [
     { "sourceId": "openintro-statistics", "role": "primary", "locator": "Ch 2 Summarizing Data; Ch 3 Probability (bedingte Wahrscheinlichkeit); Ch 4 Distributions" },

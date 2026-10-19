@@ -12,7 +12,23 @@
   "competencyIds": ["c-ml-ensembles"],
   "requires": ["c-ml-cv"],
   "estimatedMinutes": 65,
-  "blocks": [{ "blockId": "ml-ensembles-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-ensembles.md" }],
+  "blocks": [
+    {
+      "blockId": "ml-ensembles-core",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/ml-ensembles.md"
+    },
+    {
+      "blockId": "ml-ensembles-s8a-figure",
+      "type": "figure",
+      "contentRef": "lessons/data-ml/tree-vote-field.fig.json"
+    },
+    {
+      "blockId": "ml-ensembles-s8a-after",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/ml-ensembles-s8a-after.md"
+    }
+  ],
   "sourceRefs": [
     { "sourceId": "sklearn-user-guide", "role": "primary", "locator": "Decision Trees + Ensembles (RandomForest, GradientBoosting) — nur Lektüre" },
     { "sourceId": "islr-book", "role": "practice", "locator": "Ch 8 Tree-Based Methods (nur Zitation)" }

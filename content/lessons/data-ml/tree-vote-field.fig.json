@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "tree-vote-field",
+  "title": "Zäune, Gini und Stimmen",
+  "caption": "Kreise sind Klasse 0, Ringe Klasse 1. Welche Trennfrage macht die Kinder möglichst rein?",
+  "hint": "Die Lektüre erklärt das Beispiel und seine Grenzen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Kreise sind Klasse 0, Ringe Klasse 1. Welche Trennfrage macht die Kinder möglichst rein?"
+    },
+    {
+      "id": "step-1",
+      "caption": "Die Zäune bei x = 2,5 und x = 6,5 sind gleich gut. Beide minimieren das gewichtete Gini."
+    },
+    {
+      "id": "step-2",
+      "caption": "Eine zweite Frage trennt den rechten Ast erneut. Die Tiefe zählt die Fragen pro Weg."
+    },
+    {
+      "id": "step-3",
+      "caption": "Drei aus Bootstrap-Stichproben gelernte Bäume stimmen für denselben Punkt x = 7 ab."
+    }
+  ],
+  "predict": {
+    "beat": "step-0",
+    "prompt": "Trenne nach x ≤ 2,5: Welches gewichtete Gini haben die beiden Kinder zusammen?",
+    "input": "numeric",
+    "expected": 0.3333333333333333,
+    "tolerance": 0.00001,
+    "hints": [
+      "Links liegen zwei Nullen. Rechts liegen zwei Nullen und vier Einsen. Gewichte beide Gini-Werte mit der Gruppengröße."
+    ],
+    "typicalErrors": [
+      {
+        "match": 0.4444444444444444,
+        "feedback": "Das ist nur das Gini des rechten Kindes. Gewichte mit 6/8; links ist das Gini 0."
+      }
+    ]
+  }
+}
