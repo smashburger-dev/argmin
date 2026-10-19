@@ -306,6 +306,7 @@ export function validateFigureSpec(spec, label) {
   scene.validateParams(spec.params, { mode });
   const figureModel = scene.model(spec.params, { mode });
   assertFigureKind(spec, scene, label);
+  assertFigureInputs(spec, scene, label);
   const beatIds = (spec.beats || []).map((beat) => beat.id);
   const expectedBeats = mode === 'hint' ? scene.hintBeatIds : scene.beatIds;
   const subset = ['inline', 'static', 'explore', 'compare'].includes(spec.kind);
@@ -313,8 +314,38 @@ export function validateFigureSpec(spec, label) {
     throw new Error(`${label}: Beats [${beatIds.join(', ')}] stimmen nicht mit der Szene [${scene.beatIds.join(', ')}] überein`);
   }
   if (spec.predict) assertFigurePredict(spec.predict, scene, figureModel, label);
+  if (mode === 'lesson') assertFigureSelections(scene, figureModel, label);
   assertFigureNumbers(spec, scene, figureModel, label);
   return true;
+}
+
+function assertFigureSelections(scene, model, label) {
+  if (!scene.selectionTargets) return;
+  for (const [beat, id] of scene.beatIds.entries()) {
+    const targets = scene.selectionTargets(model, beat);
+    if (!Array.isArray(targets)) throw new Error(`${label}: Auswahlziele müssen eine Liste sein`);
+    const items = scene.build(model, scene.pose(model, beat, scene.beatDuration(id), 'lesson'), 'lesson');
+    const ids = new Set();
+    for (const target of targets) {
+      assertFigureSelectionTarget(target, items, label);
+      if (ids.has(target.id)) throw new Error(`${label}: doppelte Auswahl-ID`);
+      ids.add(target.id);
+      const overlaps = targets.some(other => other !== target && other.itemId === target.itemId &&
+        (!other.primKey || !target.primKey || other.primKey === target.primKey));
+      if (overlaps) throw new Error(`${label}: mehrdeutiges Auswahlziel`);
+    }
+  }
+}
+
+function assertFigureSelectionTarget(target, items, label) {
+  if (!target || !['id', 'itemId', 'label', 'description'].every(key => typeof target[key] === 'string' && target[key].trim())) {
+    throw new Error(`${label}: Auswahlziel ohne ID, Beschriftung oder Rückmeldung`);
+  }
+  const item = items.find(item => item.id === target.itemId && item.visible !== false);
+  if (!item) throw new Error(`${label}: Auswahlziel ist kein sichtbares Item`);
+  if (target.primKey !== undefined && !item.prims?.some(p => p.key === target.primKey && p.visible !== false)) {
+    throw new Error(`${label}: Auswahlziel ist kein sichtbares Primitiv`);
+  }
 }
 
 // Trace expansion is a compiler responsibility. Scenes supply checked state
@@ -391,11 +422,72 @@ function assertExploreField(spec, fail) {
   const e = spec.explore;
   if (!e || e.min >= e.max || e.step <= 0 || typeof spec.params[e.parameter] !== 'number') fail('explore braucht gültiges Zahlenfeld');
   if (Array.isArray(spec.beats) && spec.beats.length > 3) fail('explore erlaubt höchstens drei Beats');
+  const steps = (spec.params[e.parameter] - e.min) / e.step;
+  if (Math.abs(steps - Math.round(steps)) > 1e-8) fail('explore-Ausgangswert liegt nicht im Schrittraster');
+}
+
+function assertExploreLabel(spec, label) {
+  if (spec.scene !== 'mse-landscape' && !spec.explore.label?.trim()) throw new Error(`${label}: explore braucht eine fachliche Beschriftung`);
+}
+
+function assertFigureInputs(spec, scene, label) {
+  if (spec.kind === 'explore') {
+    assertExploreLabel(spec, label);
+    const e = spec.explore;
+    if (![e.min, e.max, e.step, spec.params[e.parameter]].every(Number.isFinite)) throw new Error(`${label}: nicht endliches Zahlenfeld`);
+    if (spec.params[e.parameter] < e.min || spec.params[e.parameter] > e.max) throw new Error(`${label}: Parameter außerhalb des Zahlenfelds`);
+    for (const value of exploreGrid(e, label)) validateFigureInputModel(spec, scene, { ...spec.params, [e.parameter]: value }, label);
+  }
+  if (spec.kind === 'compare') assertFigureComparison(spec, scene, label);
+}
+
+function exploreGrid(field, label) {
+  const count = Math.floor((field.max - field.min) / field.step + 1e-8) + 1;
+  if (count > 1000) throw new Error(`${label}: explore erlaubt höchstens 1000 Rasterwerte`);
+  const grid = Array.from({ length: count }, (_, index) => Math.min(field.max, field.min + index * field.step));
+  return [...new Set([...grid, field.max])];
+}
+
+function validateFigureInputModel(spec, scene, params, label) {
+  scene.validateParams(params, { mode: 'lesson' });
+  const model = scene.model(params, { mode: 'lesson' });
+  if (spec.predict) assertFigurePredict(spec.predict, scene, model, label);
+  assertFigureSelections(scene, model, label);
+  assertFigureNumbers(spec, scene, model, label);
+  return model;
+}
+
+function assertComparisonLabels(spec, label) {
+  if (spec.scene !== 'rubber-band-coefficients' && !(spec.compare.labels?.a && spec.compare.labels?.b && spec.compare.beat)) {
+    throw new Error(`${label}: compare braucht benannte Varianten und einen Vergleichsschritt`);
+  }
+}
+
+function assertFigureComparison(spec, scene, label) {
+  assertComparisonLabels(spec, label);
+  const beat = scene.beatIds.indexOf(spec.compare.beat ?? spec.beats[1]?.id);
+  if (beat < 0 || !spec.beats.some(b => b.id === scene.beatIds[beat])) throw new Error(`${label}: compare braucht einen gemeinsamen Vergleichsschritt`);
+  const models = ['a', 'b'].map(side => validateFigureInputModel(spec, scene, { ...spec.params, ...spec.compare[side] }, label));
+  for (const vp of [{ width: 309, height: 309 }, { width: 343, height: 343 }, { width: 720, height: 540 }]) {
+    const cameras = models.map(m => comparisonCamera(scene.cameraFor(m, scene.pose(m, beat, scene.beatDuration(scene.beatIds[beat]), 'lesson'), vp), label));
+    if (JSON.stringify(cameras[0]) !== JSON.stringify(cameras[1])) throw new Error(`${label}: Compare-Kamera oder Maßstab unterscheiden sich`);
+  }
+}
+
+function comparisonCamera(camera, label) {
+  if (!Array.isArray(camera?.target) || camera.target.length !== 3) throw new Error(`${label}: Compare-Kamera ohne Zielpunkt`);
+  const values = [camera.azimuth, camera.elevation, camera.zoom, ...camera.target];
+  if (!values.every(Number.isFinite) || camera.zoom <= 0) throw new Error(`${label}: ungültige Compare-Kamera`);
+  return values;
 }
 
 function assertFigureBeatLimits(spec, scene, fail) {
+  let previous = -1;
   for (const beat of Array.isArray(spec.beats) ? spec.beats : []) {
-    if (!scene.beatIds.includes(beat.id)) fail(`Beats enthalten unbekannten Schritt ${beat.id}`);
+    const index = scene.beatIds.indexOf(beat.id);
+    if (index < 0) fail(`Beats enthalten unbekannten Schritt ${beat.id}`);
+    if (index <= previous) fail('Doppelte oder vertauschte Beat-ID');
+    previous = index;
     if (beat.caption.length > 140) fail('Beat-Beschriftung länger als 140 Zeichen');
     if (scene.beatDuration(beat.id) > 4) fail('Beat länger als vier Sekunden');
   }
@@ -487,6 +579,9 @@ function assertFigureNumbers(spec, scene, figureModel, label) {
   const allowed = scene.displayNumbers(figureModel);
   const texts = [spec.title, spec.caption, spec.hint, ...(spec.beats || []).map((beat) => beat.caption)];
   if (spec.predict) texts.push(spec.predict.prompt);
+  if (spec.kind !== 'hint' && scene.selectionTargets) {
+    texts.push(...scene.beatIds.flatMap((_, index) => scene.selectionTargets(figureModel, index).flatMap(target => [target.label, target.description])));
+  }
   for (const text of texts) {
     for (const value of extractDisplayNumbers(text)) {
       if (!allowed.some((candidate) => Math.abs(candidate - value) <= 1e-9)) {

@@ -57,7 +57,17 @@
 }
 .figure-step { color: var(--text-2); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
 .figure-beat-caption { margin: 0; font-size: inherit; line-height: inherit; }
-.figure-readout { font-family: var(--mono, ui-monospace, monospace); color: var(--text-2); font-size: 0.8125rem; margin: 12px 0 0; }
+.figure-readout { font-family: var(--mono, ui-monospace, monospace); color: var(--text-2); font-size: 0.875rem; margin: 12px 0 0; }
+.figure-inputs { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-top: 20px; font-size: 0.875rem; }
+.figure-inputs label { display: grid; gap: 6px; }
+.figure-inputs input { min-height: 44px; width: 12ch; font: inherit; }
+.figure-inputs .btn { min-height: 44px; font-size: inherit; }
+.figure-inputs p { flex-basis: 100%; margin: 0; }
+.figure-stage [data-selected] { outline: 2px solid var(--fig-a1-lit); outline-offset: 3px; }
+.figure-stage [data-prim][data-selected] { outline: none; stroke: var(--fig-a1-lit); stroke-width: 2px; vector-effect: non-scaling-stroke; }
+.figure-stage text[data-prim][data-selected] { stroke: none; font-weight: 650; text-decoration: underline; }
+.figure-inputs [aria-pressed="true"] { border: 2px solid currentColor; }
+.figure-selection p { font-size: 0.875rem; margin: 12px 0 0; }
 .figure-controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; margin-top: 24px; }
 .figure-controls .btn { width: auto; flex: 0 0 auto; min-height: 44px; padding: 8px 18px; }
 .figure-controls .btn:first-child { justify-self: start; }
@@ -87,11 +97,14 @@
 @media (max-width: 1099px) {
   .exercise-layout.has-figure-hint { grid-template-columns: minmax(0, 1fr); }
   .exercise-side-stack { position: static; }
-  .figure-hint-card { max-height: 70svh; padding: 12px; }
-  .figure-hint-card .figure-stage { width: min(100%, calc(70svh - 270px)); margin-inline: auto; }
-  .figure-hint-card .figure-beat-caption { font-size: 0.8rem; }
+  .figure-hint-card { max-height: none; padding: 12px; }
+  .figure-hint-card .figure-stage { width: 100%; margin-inline: auto; }
+  .figure-hint-card .figure-beat-caption { font-size: 0.875rem; }
 }
 @media (forced-colors: active) {
+  .figure-stage [data-selected] { outline-color: Highlight; }
+  .figure-stage [data-prim][data-selected] { stroke: Highlight !important; }
+  .figure-stage text[data-prim][data-selected] { stroke: none !important; }
   .figure-stage svg { forced-color-adjust: none; }
   .figure-stage svg [fill] { fill: none !important; }
   .figure-stage svg [stroke] { stroke: CanvasText !important; }
@@ -100,7 +113,7 @@
   .figure-stage svg [data-tone="lit"], .figure-stage svg [data-tone="ghost"] { stroke: Highlight !important; }
 }
 @media print {
-  .figure-controls, .figure-predict, .figure-hide { display: none !important; }
+  .figure-controls, .figure-predict, .figure-hide, .figure-inputs, .figure-selection { display: none !important; }
   .figure-print-description { display: block; }
   .figure-card { break-inside: avoid; max-height: none; }
   .figure-hint-card .figure-stage { width: 100%; }
