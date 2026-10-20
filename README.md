@@ -8,7 +8,7 @@ Von [Noa Katana](https://noakatana.com/work/argmin/), Creative Technologist aus 
 
 argmin ist eine offene Lernplattform für alle, die verstehen wollen, wie künstliche Intelligenz wirklich funktioniert: von den Mathe-Grundlagen über Lineare Algebra und Machine Learning bis zu Deep Learning, Transformern und GenAI. Kein Vorwissen nötig. Fang von dort an, wo du jetzt gerade stehst.
 
-Servus erstamoi! Ich bin **Noa**, auch bekannt als **no8** (keineacht auf TikTok, 8atana auf X). Ursprünglich als Privatprojekt begonnen, um als frischer Medien- & Kommunikationsbachelor und selbstständiger Creative Director einen Quereinstieg in die Welt der Künstlichen Intelligenz zu wagen. Nach etlichen Stunden an Recherche, wie man überhaupt optimal lernt, insbesondere in Bezug zur Mathematik und Coding, geschweige das Zusammenkratzen aller Ressourcen, ist mir eins aufgefallen.
+Servus erstamoi! Ich bin **Noa**, auch bekannt als **no8** (keineacht auf TikTok, @noaKATANA auf X). Ursprünglich als Privatprojekt begonnen, um als frischer Medien- & Kommunikationsbachelor und selbstständiger Creative Director einen Quereinstieg in die Welt der Künstlichen Intelligenz zu wagen. Nach etlichen Stunden an Recherche, wie man überhaupt optimal lernt, insbesondere in Bezug zur Mathematik und Coding, geschweige das Zusammenkratzen aller Ressourcen, ist mir eins aufgefallen.
 
 **Ein gutes Stück an reichen und wertvollen Ressourcen sind auf Englisch... Und wie soll ich dann eigentlich all das üben?**
 
