@@ -1,8 +1,8 @@
 {
   "producer": "lifemaxxing-graphify/v1",
   "repository": "smashburger-dev/argmin",
-  "source_sha": "9d546ef11a6b0be927d30a5ac1f87f9aca58b2b9",
+  "source_sha": "f00fee1dfc44e60255cf1dab008754faf603e170",
   "graphify_version": "0.9.76",
   "policy_sha256": "9e42bfb794b0bc6929a6cf47eaa1c65e92b6bd89d4296ef06a725f7057d11cad",
-  "graph_sha256": "3df3e07983458a1a4088192633f8317f58af7637c951251439ad163ac786e52a"
+  "graph_sha256": "43669fae107af398d8ce14654619e408518ff218077679b34c7586c748f0f522"
 }
