@@ -1,5 +1,7 @@
 # argmin
 
+Von [Noa Katana](https://noakatana.com/work/argmin/), Creative Technologist aus München.
+
 **KI verstehen, Schritt für Schritt. Auf Deutsch, direkt im Browser. Kostenlos.**
 
 [![Die Heute-Seite in argmin: Empfehlung, Milestone und Wochenplan, dunkles Theme](docs/media/heute-dark.png)](https://smashburger-dev.github.io/argmin/)
