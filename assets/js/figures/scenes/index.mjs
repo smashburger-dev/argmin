@@ -1,16 +1,22 @@
 // Pure scene registry for compile-time validation. .fig.json files reference
 // scenes by id; tools/compile_content.mjs uses this map to fail closed.
+import * as backpropNetwork from './backprop-network.mjs';
 import * as bagUnpack from './bag-unpack.mjs';
 import * as balanceIsolate from './balance-isolate.mjs';
 import * as balanceSolve from './balance-solve.mjs';
 import * as baselineSorter from './baseline-sorter.mjs';
 import * as bouncer from './bouncer.mjs';
+import * as bpeLetterpress from './bpe-letterpress.mjs';
+import * as chunkWindows from './chunk-windows.mjs';
 import * as cleaningLine from './cleaning-line.mjs';
 import * as distributionPoints from './distribution-points.mjs';
 import * as earlyStopping from './early-stopping-flag.mjs';
 import * as evaluationSorter from './evaluation-sorter.mjs';
+import * as evidenceCards from './evidence-cards.mjs';
 import * as foldRotation from './fold-rotation.mjs';
+import * as freezeOrder from './freeze-order.mjs';
 import * as frozenMatrixStrips from './frozen-matrix-strips.mjs';
+import * as gitSnapshots from './git-snapshots.mjs';
 import * as goodsIn from './goods-in.mjs';
 import * as houseAblation from './house-ablation.mjs';
 import * as ledger from './ledger.mjs';
@@ -29,8 +35,10 @@ import * as receiptEchelon from './receipt-echelon-3x3.mjs';
 import * as receiptElimination from './receipt-elimination.mjs';
 import * as residualSprings from './residual-springs.mjs';
 import * as responsibleSorter from './responsible-sorter.mjs';
+import * as retrievalHandoffs from './retrieval-handoffs.mjs';
 import * as rubberBand from './rubber-band-coefficients.mjs';
 import * as seedRibbon from './seed-ribbon.mjs';
+import * as sha256Seal from './sha256-seal.mjs';
 import * as smokeDetector from './smoke-detector.mjs';
 import * as smoothie from './smoothie.mjs';
 import * as smoothieRow from './smoothie-row-and-column.mjs';
@@ -48,17 +56,23 @@ import * as vendingFrame from './vending-frame.mjs';
 
 export const scenes = { [smoothie.id]: smoothie };
 Object.assign(scenes, {
+  [backpropNetwork.id]: backpropNetwork,
   [bagUnpack.id]: bagUnpack,
   [balanceIsolate.id]: balanceIsolate,
   [balanceSolve.id]: balanceSolve,
   [baselineSorter.id]: baselineSorter,
   [bouncer.id]: bouncer,
+  [bpeLetterpress.id]: bpeLetterpress,
+  [chunkWindows.id]: chunkWindows,
   [cleaningLine.id]: cleaningLine,
   [distributionPoints.id]: distributionPoints,
   [earlyStopping.id]: earlyStopping,
   [evaluationSorter.id]: evaluationSorter,
+  [evidenceCards.id]: evidenceCards,
   [foldRotation.id]: foldRotation,
+  [freezeOrder.id]: freezeOrder,
   [frozenMatrixStrips.id]: frozenMatrixStrips,
+  [gitSnapshots.id]: gitSnapshots,
   [goodsIn.id]: goodsIn,
   [houseAblation.id]: houseAblation,
   [ledger.id]: ledger,
@@ -77,8 +91,10 @@ Object.assign(scenes, {
   [receiptElimination.id]: receiptElimination,
   [residualSprings.id]: residualSprings,
   [responsibleSorter.id]: responsibleSorter,
+  [retrievalHandoffs.id]: retrievalHandoffs,
   [rubberBand.id]: rubberBand,
   [seedRibbon.id]: seedRibbon,
+  [sha256Seal.id]: sha256Seal,
   [smokeDetector.id]: smokeDetector,
   [smoothieRow.id]: smoothieRow,
   [solutionCases.id]: solutionCases,

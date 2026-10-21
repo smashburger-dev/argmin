@@ -25,6 +25,11 @@
       "contentRef": "lessons/transformer-llm/tf-tokenizer.md"
     },
     {
+      "blockId": "s8b-bpe-letterpress",
+      "type": "figure",
+      "contentRef": "lessons/transformer-llm/bpe-letterpress.fig.json"
+    },
+    {
       "blockId": "tf-tokenizer-check",
       "type": "checkpoint",
       "contentRef": "lessons/transformer-llm/tf-tokenizer-checkpoint.md"

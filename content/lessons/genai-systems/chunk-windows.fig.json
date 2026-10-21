@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "chunk-windows",
+  "title": "Chunking mit Überlappung",
+  "caption": "Fenster behalten ihre Positionen im Original. Auch das letzte Restfenster zählt.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {
+    "text": "abcdefghij",
+    "size": 4,
+    "overlap": 1
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Das feste Textband hat eine bekannte Länge. Fenstergröße und Überlappung bestimmen die Schrittweite."
+    },
+    {
+      "id": "step-1",
+      "caption": "Das erste Fenster beginnt bei null. Der nächste Start rückt um Größe minus Überlappung vor."
+    },
+    {
+      "id": "step-2",
+      "caption": "Der gemeinsame Buchstabe bleibt in beiden Fenstern. Überlappung fügt kein neues Zeichen in den Text ein."
+    },
+    {
+      "id": "step-3",
+      "caption": "Auch das dritte Fenster folgt derselben Schrittweite. Die Positionen beziehen sich immer auf das Original."
+    },
+    {
+      "id": "step-4",
+      "caption": "Der letzte Start liegt noch im Text. Deshalb zählt auch das verkürzte Restfenster."
+    }
+  ],
+  "predict": {
+    "beat": "step-4",
+    "prompt": "Setze s = 4 und o = 1. Wie viele Chunks ergeben sich aus einem Text der Länge 10?",
+    "input": "numeric",
+    "expected": 4,
+    "tolerance": 0.000001,
+    "hints": [
+      "Die Schrittweite zwischen Chunk-Starts ist s − o = 3. Startpositionen: 0, 3, 6, 9."
+    ],
+    "typicalErrors": [
+      {
+        "match": 3,
+        "feedback": "floor(10/(s−o)) = 3 vergisst den letzten Chunk — die Formel addiert +1 für den Start bei Position 0."
+      },
+      {
+        "match": 2,
+        "feedback": "Das ignoriert die Überlappung: Die effektive Schrittweite ist s − o = 3, nicht s = 4."
+      }
+    ]
+  }
+}

@@ -24,6 +24,11 @@
       "contentRef": "lessons/research/capstone-repro.md"
     },
     {
+      "blockId": "s8b-reproduction-record",
+      "type": "figure",
+      "contentRef": "lessons/research/reproduction-record.fig.json"
+    },
+    {
       "blockId": "capstone-repro-check",
       "type": "checkpoint",
       "contentRef": "lessons/research/capstone-repro-checkpoint.md"

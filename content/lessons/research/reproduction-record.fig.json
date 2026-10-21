@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kind": "inline",
+  "engine": "argmin-figure",
+  "scene": "evidence-cards",
+  "title": "Zwei Läufe in derselben Bauakte",
+  "caption": "Die Digest-Auszüge stammen aus demselben kanonischen Fixture-Beispiel. Arbeitsbeleg und Mastery bleiben getrennt.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {
+    "card": "repro"
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die festen Felder machen den dokumentierten Zusammenhang sichtbar."
+    }
+  ]
+}

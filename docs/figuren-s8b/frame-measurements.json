@@ -1,0 +1,500 @@
+{
+  "cpuThrottle": 4,
+  "method": "Three sequential runs; final transition for beats, fixed inline pose otherwise. Median of run medians; milliseconds.",
+  "results": [
+    {
+      "name": "backprop-network",
+      "width": 375,
+      "run": 1,
+      "kind": "beats",
+      "frames": 382,
+      "median": 0.6000000000931323,
+      "p95": 1,
+      "max": 1.5,
+      "buildMedian": 0,
+      "paintMedian": 0.10000000009313226
+    },
+    {
+      "name": "git-snapshots",
+      "width": 375,
+      "run": 1,
+      "kind": "beats",
+      "frames": 190,
+      "median": 0.10000000009313226,
+      "p95": 0.6999999997206032,
+      "max": 2.099999999627471,
+      "buildMedian": 0,
+      "paintMedian": 0
+    },
+    {
+      "name": "freeze-order",
+      "width": 375,
+      "run": 1,
+      "kind": "beats",
+      "frames": 190,
+      "median": 0.3000000002793968,
+      "p95": 0.8999999999068677,
+      "max": 1.1999999997206032,
+      "buildMedian": 0,
+      "paintMedian": 0.10000000009313226
+    },
+    {
+      "name": "bpe-letterpress",
+      "width": 375,
+      "run": 1,
+      "kind": "beats",
+      "frames": 189,
+      "median": 0.8999999999068677,
+      "p95": 1.400000000372529,
+      "max": 2.3999999999068677,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.6000000000931323
+    },
+    {
+      "name": "chunk-windows",
+      "width": 375,
+      "run": 1,
+      "kind": "beats",
+      "frames": 187,
+      "median": 0.6999999997206032,
+      "p95": 1.099999999627471,
+      "max": 1.5,
+      "buildMedian": 0,
+      "paintMedian": 0.20000000018626451
+    },
+    {
+      "name": "sha256-seal",
+      "width": 375,
+      "run": 1,
+      "kind": "beats",
+      "frames": 133,
+      "median": 0.7999999998137355,
+      "p95": 1.3999999999068677,
+      "max": 1.900000000372529,
+      "buildMedian": 0,
+      "paintMedian": 0.5
+    },
+    {
+      "name": "backprop-network",
+      "width": 375,
+      "run": 2,
+      "kind": "beats",
+      "frames": 382,
+      "median": 0.6000000000931323,
+      "p95": 1,
+      "max": 1.6000000000931323,
+      "buildMedian": 0,
+      "paintMedian": 0.10000000009313226
+    },
+    {
+      "name": "git-snapshots",
+      "width": 375,
+      "run": 2,
+      "kind": "beats",
+      "frames": 189,
+      "median": 0.19999999972060323,
+      "p95": 0.8999999999068677,
+      "max": 2.7000000001862645,
+      "buildMedian": 0,
+      "paintMedian": 0.10000000009313226
+    },
+    {
+      "name": "freeze-order",
+      "width": 375,
+      "run": 2,
+      "kind": "beats",
+      "frames": 190,
+      "median": 0.5,
+      "p95": 1.099999999627471,
+      "max": 1.5,
+      "buildMedian": 0,
+      "paintMedian": 0.10000000009313226
+    },
+    {
+      "name": "bpe-letterpress",
+      "width": 375,
+      "run": 2,
+      "kind": "beats",
+      "frames": 190,
+      "median": 0.8000000002793968,
+      "p95": 1.6000000000931323,
+      "max": 2,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.6000000000931323
+    },
+    {
+      "name": "chunk-windows",
+      "width": 375,
+      "run": 2,
+      "kind": "beats",
+      "frames": 188,
+      "median": 0.5,
+      "p95": 1,
+      "max": 1.2999999998137355,
+      "buildMedian": 0,
+      "paintMedian": 0.19999999972060323
+    },
+    {
+      "name": "sha256-seal",
+      "width": 375,
+      "run": 2,
+      "kind": "beats",
+      "frames": 192,
+      "median": 0.6999999997206032,
+      "p95": 1.3000000002793968,
+      "max": 1.5,
+      "buildMedian": 0,
+      "paintMedian": 0.2999999998137355
+    },
+    {
+      "name": "backprop-network",
+      "width": 375,
+      "run": 3,
+      "kind": "beats",
+      "frames": 382,
+      "median": 0.599999999627471,
+      "p95": 1,
+      "max": 2,
+      "buildMedian": 0,
+      "paintMedian": 0.10000000009313226
+    },
+    {
+      "name": "git-snapshots",
+      "width": 375,
+      "run": 3,
+      "kind": "beats",
+      "frames": 189,
+      "median": 0.10000000009313226,
+      "p95": 0.8999999999068677,
+      "max": 2.2999999998137355,
+      "buildMedian": 0,
+      "paintMedian": 0.09999999962747097
+    },
+    {
+      "name": "freeze-order",
+      "width": 375,
+      "run": 3,
+      "kind": "beats",
+      "frames": 189,
+      "median": 0.7000000001862645,
+      "p95": 1.2000000001862645,
+      "max": 1.5,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.20000000018626451
+    },
+    {
+      "name": "bpe-letterpress",
+      "width": 375,
+      "run": 3,
+      "kind": "beats",
+      "frames": 189,
+      "median": 1,
+      "p95": 1.6999999997206032,
+      "max": 2,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.6999999997206032
+    },
+    {
+      "name": "chunk-windows",
+      "width": 375,
+      "run": 3,
+      "kind": "beats",
+      "frames": 189,
+      "median": 0.7999999998137355,
+      "p95": 1.3000000002793968,
+      "max": 1.7000000001862645,
+      "buildMedian": 0,
+      "paintMedian": 0.39999999990686774
+    },
+    {
+      "name": "sha256-seal",
+      "width": 375,
+      "run": 3,
+      "kind": "beats",
+      "frames": 192,
+      "median": 0.8999999999068677,
+      "p95": 1.5,
+      "max": 1.8999999999068677,
+      "buildMedian": 0.09999999962747097,
+      "paintMedian": 0.5
+    },
+    {
+      "name": "backprop-network",
+      "width": 1440,
+      "run": 1,
+      "kind": "beats",
+      "frames": 382,
+      "median": 0.7000000001862645,
+      "p95": 1.1000000000931323,
+      "max": 2,
+      "buildMedian": 0.09999999962747097,
+      "paintMedian": 0.10000000009313226
+    },
+    {
+      "name": "git-snapshots",
+      "width": 1440,
+      "run": 1,
+      "kind": "beats",
+      "frames": 190,
+      "median": 0.6999999997206032,
+      "p95": 1,
+      "max": 2.099999999627471,
+      "buildMedian": 0.09999999962747097,
+      "paintMedian": 0.2999999998137355
+    },
+    {
+      "name": "freeze-order",
+      "width": 1440,
+      "run": 1,
+      "kind": "beats",
+      "frames": 190,
+      "median": 0.7999999998137355,
+      "p95": 1.2000000001862645,
+      "max": 1.6000000000931323,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.20000000018626451
+    },
+    {
+      "name": "bpe-letterpress",
+      "width": 1440,
+      "run": 1,
+      "kind": "beats",
+      "frames": 189,
+      "median": 1.1000000000931323,
+      "p95": 1.7000000001862645,
+      "max": 2.1999999997206032,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.7000000001862645
+    },
+    {
+      "name": "chunk-windows",
+      "width": 1440,
+      "run": 1,
+      "kind": "beats",
+      "frames": 187,
+      "median": 0.7000000001862645,
+      "p95": 1.1999999997206032,
+      "max": 1.6000000000931323,
+      "buildMedian": 0,
+      "paintMedian": 0.39999999990686774
+    },
+    {
+      "name": "sha256-seal",
+      "width": 1440,
+      "run": 1,
+      "kind": "beats",
+      "frames": 192,
+      "median": 0.8999999999068677,
+      "p95": 1.3999999999068677,
+      "max": 1.900000000372529,
+      "buildMedian": 0.09999999962747097,
+      "paintMedian": 0.5
+    },
+    {
+      "name": "backprop-network",
+      "width": 1440,
+      "run": 2,
+      "kind": "beats",
+      "frames": 380,
+      "median": 0.7000000001862645,
+      "p95": 1.2000000001862645,
+      "max": 2.6000000000931323,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.19999999972060323
+    },
+    {
+      "name": "git-snapshots",
+      "width": 1440,
+      "run": 2,
+      "kind": "beats",
+      "frames": 189,
+      "median": 0.5,
+      "p95": 1,
+      "max": 2.5,
+      "buildMedian": 0.09999999962747097,
+      "paintMedian": 0.10000000009313226
+    },
+    {
+      "name": "freeze-order",
+      "width": 1440,
+      "run": 2,
+      "kind": "beats",
+      "frames": 189,
+      "median": 0.7999999998137355,
+      "p95": 1.2000000001862645,
+      "max": 1.6000000000931323,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.20000000018626451
+    },
+    {
+      "name": "bpe-letterpress",
+      "width": 1440,
+      "run": 2,
+      "kind": "beats",
+      "frames": 189,
+      "median": 1.1000000000931323,
+      "p95": 1.7999999998137355,
+      "max": 2,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.7000000001862645
+    },
+    {
+      "name": "chunk-windows",
+      "width": 1440,
+      "run": 2,
+      "kind": "beats",
+      "frames": 188,
+      "median": 0.7000000001862645,
+      "p95": 1.2999999998137355,
+      "max": 1.5,
+      "buildMedian": 0,
+      "paintMedian": 0.20000000018626451
+    },
+    {
+      "name": "sha256-seal",
+      "width": 1440,
+      "run": 2,
+      "kind": "beats",
+      "frames": 191,
+      "median": 0.8999999999068677,
+      "p95": 1.2999999998137355,
+      "max": 1.6999999997206032,
+      "buildMedian": 0.09999999962747097,
+      "paintMedian": 0.5
+    },
+    {
+      "name": "backprop-network",
+      "width": 1440,
+      "run": 3,
+      "kind": "beats",
+      "frames": 382,
+      "median": 0.7000000001862645,
+      "p95": 1.1000000000931323,
+      "max": 1.7999999998137355,
+      "buildMedian": 0.09999999962747097,
+      "paintMedian": 0.20000000018626451
+    },
+    {
+      "name": "git-snapshots",
+      "width": 1440,
+      "run": 3,
+      "kind": "beats",
+      "frames": 189,
+      "median": 0.5,
+      "p95": 0.8000000002793968,
+      "max": 2.599999999627471,
+      "buildMedian": 0,
+      "paintMedian": 0.10000000009313226
+    },
+    {
+      "name": "freeze-order",
+      "width": 1440,
+      "run": 3,
+      "kind": "beats",
+      "frames": 189,
+      "median": 0.7000000001862645,
+      "p95": 1.2000000001862645,
+      "max": 1.6000000000931323,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.19999999972060323
+    },
+    {
+      "name": "bpe-letterpress",
+      "width": 1440,
+      "run": 3,
+      "kind": "beats",
+      "frames": 190,
+      "median": 1.2999999998137355,
+      "p95": 1.8999999999068677,
+      "max": 4.600000000093132,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.7999999998137355
+    },
+    {
+      "name": "chunk-windows",
+      "width": 1440,
+      "run": 3,
+      "kind": "beats",
+      "frames": 188,
+      "median": 0.7000000001862645,
+      "p95": 1.1000000000931323,
+      "max": 1.5,
+      "buildMedian": 0,
+      "paintMedian": 0.39999999990686774
+    },
+    {
+      "name": "sha256-seal",
+      "width": 1440,
+      "run": 3,
+      "kind": "beats",
+      "frames": 191,
+      "median": 0.8999999999068677,
+      "p95": 1.5,
+      "max": 1.900000000372529,
+      "buildMedian": 0.10000000009313226,
+      "paintMedian": 0.599999999627471
+    }
+  ],
+  "summary": [
+    {
+      "name": "backprop-network",
+      "width": 375,
+      "medianOfMedians": 0.6000000000931323
+    },
+    {
+      "name": "backprop-network",
+      "width": 1440,
+      "medianOfMedians": 0.7000000001862645
+    },
+    {
+      "name": "git-snapshots",
+      "width": 375,
+      "medianOfMedians": 0.10000000009313226
+    },
+    {
+      "name": "git-snapshots",
+      "width": 1440,
+      "medianOfMedians": 0.5
+    },
+    {
+      "name": "freeze-order",
+      "width": 375,
+      "medianOfMedians": 0.5
+    },
+    {
+      "name": "freeze-order",
+      "width": 1440,
+      "medianOfMedians": 0.7999999998137355
+    },
+    {
+      "name": "bpe-letterpress",
+      "width": 375,
+      "medianOfMedians": 0.8999999999068677
+    },
+    {
+      "name": "bpe-letterpress",
+      "width": 1440,
+      "medianOfMedians": 1.1000000000931323
+    },
+    {
+      "name": "chunk-windows",
+      "width": 375,
+      "medianOfMedians": 0.6999999997206032
+    },
+    {
+      "name": "chunk-windows",
+      "width": 1440,
+      "medianOfMedians": 0.7000000001862645
+    },
+    {
+      "name": "sha256-seal",
+      "width": 375,
+      "medianOfMedians": 0.7999999998137355
+    },
+    {
+      "name": "sha256-seal",
+      "width": 1440,
+      "medianOfMedians": 0.8999999999068677
+    }
+  ]
+}

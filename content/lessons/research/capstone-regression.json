@@ -24,6 +24,11 @@
       "contentRef": "lessons/research/capstone-regression.md"
     },
     {
+      "blockId": "s8b-regression-record",
+      "type": "figure",
+      "contentRef": "lessons/research/regression-record.fig.json"
+    },
+    {
       "blockId": "capstone-regression-check",
       "type": "checkpoint",
       "contentRef": "lessons/research/capstone-regression-checkpoint.md"

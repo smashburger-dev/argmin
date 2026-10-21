@@ -6,7 +6,7 @@ Die Forschungsphase läuft auf einen Abschluss zu: eine **Baseline**, die den ga
 
 Stell dir eine Nullmessung vor einem Trainingsplan vor: Gewicht, Waage und Uhrzeit werden festgehalten, damit spätere Werte vergleichbar sind. Der Hash ist in diesem Bild das Siegel auf einem Beweisbeutel.
 
-Wo der Vergleich hinkt: Ein Siegel zeigt nur, dass geöffnet wurde. Ein Hash zeigt, dass sich ein einziges Byte geändert hat, und er zeigt es ohne Ausnahme.
+Wo der Vergleich hinkt: Ein Siegel zeigt nur, dass geöffnet wurde. Ein Hash macht Änderungen am Inhalt mit sehr hoher Zuverlässigkeit erkennbar. Mathematische Kollisionsfreiheit garantiert SHA-256 nicht.
 
 ## Das Golden Set und sein Hash
 

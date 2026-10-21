@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "sha256-seal",
+  "title": "SHA‑256 als Siegelring",
+  "caption": "Ein Byte ändert sich von a zu b. Der Ring zeigt alle Hex-Zeichen; die Zahl geänderter Bits stammt aus den echten Hashes.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {
+    "before": "a",
+    "after": "b"
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Der Ring enthält alle Hex-Zeichen des echten SHA‑256 von a. Ein Zeichen steht für vier Bits."
+    },
+    {
+      "id": "step-1",
+      "caption": "Ein Byte wird geändert: a wird b. Der Ring wechselt zum neu berechneten Hash; die Bitänderungen werden gezählt."
+    }
+  ]
+}

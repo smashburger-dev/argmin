@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "kind": "inline",
+  "engine": "argmin-figure",
+  "scene": "retrieval-handoffs",
+  "title": "Informationsfluss im Retrieval",
+  "caption": "Index und Anfrage treffen im Ranking zusammen. Ausgewählte Belege gehen an den Kontextbau.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Index und Anfrage treffen im Ranking zusammen. Die Antwort entsteht erst aus ausgewählten Belegen."
+    }
+  ]
+}

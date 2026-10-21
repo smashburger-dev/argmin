@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "backprop-network",
+  "title": "Rechengraph: Werte und Gradienten",
+  "caption": "Vorwärtswerte und Rückwärtsgradienten entstehen aus denselben gerichteten Operationen.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {
+    "x": 2
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Ein Eingang speist zwei Zweige. Die Operationen gehören zu einem gemeinsamen gerichteten Graphen."
+    },
+    {
+      "id": "step-1",
+      "caption": "Vorwärts: Beide Zweige berechnen ihren Wert aus demselben Eingang."
+    },
+    {
+      "id": "step-2",
+      "caption": "Die Zweigwerte werden zur Ausgabe addiert. Das ist der Vorwärtswert, noch kein Gradient."
+    },
+    {
+      "id": "step-3",
+      "caption": "Rückwärts: lokal mal upstream auf jeder Kante; am gemeinsamen Eingang werden beide Beiträge addiert."
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "source": ".next-ui/assets, final release build",
+  "sceneBudget": 12000,
+  "runtimeBudget": 10000,
+  "notes": "Shared figure-kit and scene helpers listed separately. Runtime source unchanged; emitted import filenames vary. Welle-2 baseline 10027 B; final emitted runtime 10028 B.",
+  "chunks": [
+    {
+      "file": "backprop-network-CRhk3KNx.js",
+      "bytes": 2608,
+      "gzipBytes": 1388
+    },
+    {
+      "file": "bpe-letterpress-DQIkrkBl.js",
+      "bytes": 2963,
+      "gzipBytes": 1593
+    },
+    {
+      "file": "chunk-windows-CvuQKn1l.js",
+      "bytes": 2374,
+      "gzipBytes": 1285
+    },
+    {
+      "file": "evidence-cards-CT0yi2G-.js",
+      "bytes": 5129,
+      "gzipBytes": 2427
+    },
+    {
+      "file": "figure-kit-BpeHFFpC.js",
+      "bytes": 16714,
+      "gzipBytes": 6798
+    },
+    {
+      "file": "FigureRuntime-C64sRS9g.js",
+      "bytes": 27750,
+      "gzipBytes": 10028
+    },
+    {
+      "file": "freeze-order-QjtHJoaB.js",
+      "bytes": 2321,
+      "gzipBytes": 1265
+    },
+    {
+      "file": "git-snapshots-CC0Wv0Mw.js",
+      "bytes": 2525,
+      "gzipBytes": 1305
+    },
+    {
+      "file": "graph-model-CS_P7IiK.js",
+      "bytes": 2054,
+      "gzipBytes": 983
+    },
+    {
+      "file": "optimization-plot-Bo5RY3D7.js",
+      "bytes": 3304,
+      "gzipBytes": 1746
+    },
+    {
+      "file": "retrieval-handoffs-BtTlOsj2.js",
+      "bytes": 1725,
+      "gzipBytes": 930
+    },
+    {
+      "file": "s8b-diagram-DOKIaBhh.js",
+      "bytes": 809,
+      "gzipBytes": 510
+    },
+    {
+      "file": "sha256-B7bRhDWS.js",
+      "bytes": 1993,
+      "gzipBytes": 1190
+    },
+    {
+      "file": "sha256-seal-C49F6LRa.js",
+      "bytes": 2342,
+      "gzipBytes": 1287
+    },
+    {
+      "file": "token-model-CFa6GRRL.js",
+      "bytes": 1300,
+      "gzipBytes": 732
+    }
+  ]
+}

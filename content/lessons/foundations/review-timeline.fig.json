@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "kind": "inline",
+  "engine": "argmin-figure",
+  "scene": "evidence-cards",
+  "title": "Review nach Fälligkeit",
+  "caption": "Ein eigener Abruf wird später wieder geprüft. Die Zeitachse legt keine universell optimalen Intervalle fest.",
+  "hint": "Feste Zeitachse ohne Aufklappen oder Bewegung.",
+  "params": { "card": "review" },
+  "beats": [{ "id": "step-0", "caption": "Die festen Felder machen den dokumentierten Zusammenhang sichtbar." }]
+}

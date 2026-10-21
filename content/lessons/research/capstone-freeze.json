@@ -24,6 +24,21 @@
       "contentRef": "lessons/research/capstone-freeze.md"
     },
     {
+      "blockId": "freeze-s7-handoffs",
+      "type": "worked-example",
+      "contentRef": "lessons/research/capstone-freeze-s7-handoffs.md"
+    },
+    {
+      "blockId": "s8b-freeze-order",
+      "type": "figure",
+      "contentRef": "lessons/research/freeze-order.fig.json"
+    },
+    {
+      "blockId": "s8b-glossary-l-capstone-freeze",
+      "type": "worked-example",
+      "contentRef": "lessons/research/capstone-freeze-glossary.md"
+    },
+    {
       "blockId": "capstone-freeze-check",
       "type": "checkpoint",
       "contentRef": "lessons/research/capstone-freeze-checkpoint.md"

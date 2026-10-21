@@ -24,6 +24,11 @@
       "contentRef": "lessons/research/research-question.md"
     },
     {
+      "blockId": "s8b-preregistered-question",
+      "type": "figure",
+      "contentRef": "lessons/research/preregistered-question.fig.json"
+    },
+    {
       "blockId": "research-question-check",
       "type": "checkpoint",
       "contentRef": "lessons/research/research-question-checkpoint.md"

@@ -21,6 +21,11 @@
       "contentRef": "lessons/deep-learning/dl-autograd.md"
     },
     {
+      "blockId": "s8b-backprop-network",
+      "type": "figure",
+      "contentRef": "lessons/deep-learning/backprop-network.fig.json"
+    },
+    {
       "blockId": "dl-autograd-checkpoint",
       "type": "checkpoint",
       "contentRef": "lessons/deep-learning/dl-autograd-checkpoint.md"
