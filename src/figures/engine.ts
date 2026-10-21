@@ -363,8 +363,8 @@ export class FigureEngine {
     this.paintNow();
   }
 
-  printState(last: boolean): void {
-    if (last) { this.printBeat = this.beat; this.go(this.ids.length - 1, false); }
+  printState(last: boolean, target = this.ids.length - 1): void {
+    if (last) { this.printBeat = this.beat; this.go(target, false); }
     else this.go(this.printBeat, false);
     this.fadeUntil = 0;
     this.svg.style.opacity = '1';

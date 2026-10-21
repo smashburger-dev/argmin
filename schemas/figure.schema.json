@@ -13,6 +13,7 @@
       "required": ["parameter", "min", "max", "step", "input"],
       "properties": {
         "parameter": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
         "min": { "type": "number" }, "max": { "type": "number" },
         "step": { "type": "number", "exclusiveMinimum": 0 },
         "input": { "const": "number" }
@@ -20,7 +21,14 @@
     },
     "compare": {
       "type": "object", "additionalProperties": false, "required": ["a", "b"],
-      "properties": { "a": { "type": "object" }, "b": { "type": "object" } }
+      "properties": {
+        "a": { "type": "object" }, "b": { "type": "object" },
+        "beat": { "type": "string", "minLength": 1 },
+        "labels": {
+          "type": "object", "additionalProperties": false, "required": ["a", "b"],
+          "properties": { "a": { "type": "string", "minLength": 1 }, "b": { "type": "string", "minLength": 1 } }
+        }
+      }
     },
     "engine": { "const": "argmin-figure" },
     "scene": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },

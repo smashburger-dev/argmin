@@ -1,0 +1,45 @@
+{
+  "exitCode": 1,
+  "unchanged": [
+    {
+      "path": "tools/compile_content.mjs",
+      "name": "validateChallengeContracts",
+      "unchanged": true
+    },
+    {
+      "path": "tools/compile_content.mjs",
+      "name": "validateChoiceContract",
+      "unchanged": true
+    },
+    {
+      "path": "tools/compile_content.mjs",
+      "name": "validateVisualizationExpressions",
+      "unchanged": true
+    },
+    {
+      "path": "tools/compile_content.mjs",
+      "name": "mathDelimiterErrorIndex",
+      "unchanged": true
+    },
+    {
+      "path": "tools/compile_content.mjs",
+      "name": "stripLearnerMathSpans",
+      "unchanged": true
+    },
+    {
+      "path": "tools/compile_content.mjs",
+      "name": "learnerTextWalk",
+      "unchanged": true
+    },
+    {
+      "path": "tools/compile_content.mjs",
+      "name": "attachSourceModuleUsage",
+      "unchanged": true
+    },
+    {
+      "path": "src/ui/VisualizationBlock.tsx",
+      "name": "buildBoard",
+      "unchanged": true
+    }
+  ]
+}

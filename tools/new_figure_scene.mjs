@@ -28,8 +28,8 @@ function figureFiles(id, world, kind) {
     title: world, caption: 'Ein Modell zum Weiterbauen.', hint: 'Ansicht und Schritte lassen sich mit der Tastatur bedienen.',
     params: { value: 2 }, beats: ids.map((id) => ({ id, caption: caption(id) })),
     ...(['beats', 'task'].includes(kind) ? { predict: { beat: 'reading', prompt: 'Welcher Wert steht im Modell?', input: 'numeric', expected: 2 } } : {}),
-    ...(kind === 'explore' ? { explore: { parameter: 'value', min: 0, max: 10, step: 1, input: 'number' } } : {}),
-    ...(kind === 'compare' ? { compare: { a: { value: 2 }, b: { value: 3 } } } : {}),
+    ...(kind === 'explore' ? { explore: { parameter: 'value', label: 'Wert', min: 0, max: 10, step: 1, input: 'number' } } : {}),
+    ...(kind === 'compare' ? { compare: { a: { value: 2 }, b: { value: 3 }, labels: { a: 'Ausgangswert', b: 'Vergleichswert' }, beat: 'reading' } } : {}),
   };
   return {
     [`assets/js/figures/scenes/${id}.mjs`]: sceneSource(id, world, ids),
@@ -44,6 +44,7 @@ function caption(id) {
 function sceneSource(id, world, ids) {
   return `// Welt: ${JSON.stringify(world)}. Replace this reference model with the lesson mechanism.
 export const id = ${JSON.stringify(id)};
+export const viewMode = 'flat';
 export const beatIds = ${JSON.stringify(ids)};
 export const hintBeatIds = beatIds;
 export const validateParams = (p) => { if (!Number.isFinite(p?.value)) throw new Error('value must be finite'); };

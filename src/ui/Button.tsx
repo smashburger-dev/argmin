@@ -10,6 +10,7 @@ type Props = {
   class?: string;
   children: ComponentChildren;
   'aria-label'?: string;
+  'aria-pressed'?: boolean;
   download?: string;
   target?: string;
   rel?: string;
@@ -26,6 +27,7 @@ export function Button({
   class: className,
   children,
   'aria-label': ariaLabel,
+  'aria-pressed': ariaPressed,
   download,
   target,
   rel,
@@ -35,5 +37,5 @@ export function Button({
   if (href) {
     return <a class={classValue} href={href} aria-label={ariaLabel} download={download} target={target} rel={rel} hidden={hidden}>{children}</a>;
   }
-  return <button class={classValue} type={type} disabled={disabled} hidden={hidden} onClick={onClick as JSX.MouseEventHandler<HTMLButtonElement>} aria-label={ariaLabel}>{children}</button>;
+  return <button class={classValue} type={type} disabled={disabled} hidden={hidden} onClick={onClick as JSX.MouseEventHandler<HTMLButtonElement>} aria-label={ariaLabel} aria-pressed={ariaPressed}>{children}</button>;
 }

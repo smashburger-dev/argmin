@@ -1,0 +1,351 @@
+{
+  "reportedWave2": {
+    "runtime": 10027,
+    "kit": 5975
+  },
+  "note": "Same artifact bytes are measured with both compressors; no size reduction is inferred from changing compressor. Native Node values are used consistently for our comparison.",
+  "baseline": {
+    "node": {
+      "runtime": "v26.0.0",
+      "bun": null,
+      "zlib": "1.2.12",
+      "chunks": [
+        {
+          "name": "FigureRuntime-CTpcGSP-.js",
+          "bytes": 27750,
+          "gzipBytes": 9991,
+          "sha256": "dfd62d3ddec35d36977894a756a2e9e2e38458ed423f38b9665bf03ec4332246"
+        },
+        {
+          "name": "FigureRuntime-af-wuB6n.css",
+          "bytes": 4353,
+          "gzipBytes": 1370,
+          "sha256": "8d2a6e080d3f51e568a55dba38adf6d13ad7a30e25d6b95e72d282fb931f7957"
+        },
+        {
+          "name": "HintFigure-6hrk_AY2.js",
+          "bytes": 1088,
+          "gzipBytes": 624,
+          "sha256": "4d9f098a9536d55d107ae5a95490b85050c26ebaf06587f95063ac4b6ab01e7d"
+        },
+        {
+          "name": "SceneBuildControls-DLMdZL44.js",
+          "bytes": 4983,
+          "gzipBytes": 2147,
+          "sha256": "75e19191579190df427ebefe605d278c2476030937f0454d90c81c8ab552b6f3"
+        },
+        {
+          "name": "SceneBuildControls-Dv-jQrDV.css",
+          "bytes": 992,
+          "gzipBytes": 476,
+          "sha256": "d9dec34ce45d89e98a1f2be106521f61770e89b70175e69a04d770a59347c410"
+        },
+        {
+          "name": "figure-kit-DIuEQc-M.js",
+          "bytes": 14555,
+          "gzipBytes": 5948,
+          "sha256": "b56517aa8df65e9ef4b8364ed55dc54ed0e94bb60fbdebeb4a0a3398bfff687b"
+        },
+        {
+          "name": "index-Ch-LINii.js",
+          "bytes": 564928,
+          "gzipBytes": 119723,
+          "sha256": "892695539a88f0f5063872da192ffeca3b334a7c5f7bec1625edf061a15c5e05"
+        },
+        {
+          "name": "index-DdbhD3f_.css",
+          "bytes": 58507,
+          "gzipBytes": 11654,
+          "sha256": "4a7ebd33d0e438974621b09bc449c864cc4b9d9e27fff89d2ac0501c35f7431e"
+        },
+        {
+          "name": "linalg-stage-BJBaaYrO.js",
+          "bytes": 1831,
+          "gzipBytes": 1018,
+          "sha256": "06b60462274bf65e0514afd32ca2b932fe3ce3edabd92859fe178383e37dfd0b"
+        },
+        {
+          "name": "mse-landscape-DCecKWDM.js",
+          "bytes": 5350,
+          "gzipBytes": 2717,
+          "sha256": "4e67ac55223626e88b8077b346cd807ee6e15350a2c35bd33cc9c0d280c19dda"
+        },
+        {
+          "name": "optimization-plot-ZjFu1SzL.js",
+          "bytes": 3304,
+          "gzipBytes": 1743,
+          "sha256": "76ef07eb818bb36d86bf7fc4995d3fc3fd57a5886ed40acd6832d7a59049a132"
+        },
+        {
+          "name": "rubber-band-coefficients-BB-GTaoA.js",
+          "bytes": 2095,
+          "gzipBytes": 1217,
+          "sha256": "da27ae2bc1005c0d672602caa68f49237827d33be70cac5287013009a5fa6d64"
+        },
+        {
+          "name": "trace-stage-DYU-ef80.js",
+          "bytes": 11495,
+          "gzipBytes": 3104,
+          "sha256": "de9f2a26061a0d933a54343ee90c86f69569602cf274495783ef36579f3ea7ea"
+        }
+      ]
+    },
+    "bun": {
+      "runtime": "v26.3.0",
+      "bun": "1.4.4",
+      "zlib": "12731092979c6d07f42da27da673a9f6c7b13586",
+      "chunks": [
+        {
+          "name": "FigureRuntime-CTpcGSP-.js",
+          "bytes": 27750,
+          "gzipBytes": 10027,
+          "sha256": "dfd62d3ddec35d36977894a756a2e9e2e38458ed423f38b9665bf03ec4332246"
+        },
+        {
+          "name": "index-Ch-LINii.js",
+          "bytes": 564928,
+          "gzipBytes": 120053,
+          "sha256": "892695539a88f0f5063872da192ffeca3b334a7c5f7bec1625edf061a15c5e05"
+        },
+        {
+          "name": "trace-stage-DYU-ef80.js",
+          "bytes": 11495,
+          "gzipBytes": 3090,
+          "sha256": "de9f2a26061a0d933a54343ee90c86f69569602cf274495783ef36579f3ea7ea"
+        },
+        {
+          "name": "index-DdbhD3f_.css",
+          "bytes": 58507,
+          "gzipBytes": 11653,
+          "sha256": "4a7ebd33d0e438974621b09bc449c864cc4b9d9e27fff89d2ac0501c35f7431e"
+        },
+        {
+          "name": "SceneBuildControls-Dv-jQrDV.css",
+          "bytes": 992,
+          "gzipBytes": 475,
+          "sha256": "d9dec34ce45d89e98a1f2be106521f61770e89b70175e69a04d770a59347c410"
+        },
+        {
+          "name": "figure-kit-DIuEQc-M.js",
+          "bytes": 14555,
+          "gzipBytes": 5975,
+          "sha256": "b56517aa8df65e9ef4b8364ed55dc54ed0e94bb60fbdebeb4a0a3398bfff687b"
+        },
+        {
+          "name": "SceneBuildControls-DLMdZL44.js",
+          "bytes": 4983,
+          "gzipBytes": 2143,
+          "sha256": "75e19191579190df427ebefe605d278c2476030937f0454d90c81c8ab552b6f3"
+        },
+        {
+          "name": "linalg-stage-BJBaaYrO.js",
+          "bytes": 1831,
+          "gzipBytes": 1018,
+          "sha256": "06b60462274bf65e0514afd32ca2b932fe3ce3edabd92859fe178383e37dfd0b"
+        },
+        {
+          "name": "optimization-plot-ZjFu1SzL.js",
+          "bytes": 3304,
+          "gzipBytes": 1747,
+          "sha256": "76ef07eb818bb36d86bf7fc4995d3fc3fd57a5886ed40acd6832d7a59049a132"
+        },
+        {
+          "name": "HintFigure-6hrk_AY2.js",
+          "bytes": 1088,
+          "gzipBytes": 623,
+          "sha256": "4d9f098a9536d55d107ae5a95490b85050c26ebaf06587f95063ac4b6ab01e7d"
+        },
+        {
+          "name": "mse-landscape-DCecKWDM.js",
+          "bytes": 5350,
+          "gzipBytes": 2742,
+          "sha256": "4e67ac55223626e88b8077b346cd807ee6e15350a2c35bd33cc9c0d280c19dda"
+        },
+        {
+          "name": "rubber-band-coefficients-BB-GTaoA.js",
+          "bytes": 2095,
+          "gzipBytes": 1230,
+          "sha256": "da27ae2bc1005c0d672602caa68f49237827d33be70cac5287013009a5fa6d64"
+        },
+        {
+          "name": "FigureRuntime-af-wuB6n.css",
+          "bytes": 4353,
+          "gzipBytes": 1376,
+          "sha256": "8d2a6e080d3f51e568a55dba38adf6d13ad7a30e25d6b95e72d282fb931f7957"
+        }
+      ]
+    }
+  },
+  "final": {
+    "node": {
+      "runtime": "v26.0.0",
+      "bun": null,
+      "zlib": "1.2.12",
+      "chunks": [
+        {
+          "name": "FigureRuntime-BoXB0Ndj.js",
+          "bytes": 32175,
+          "gzipBytes": 11671,
+          "sha256": "560c5da01d5142c62aa686e101c4eda6924ef2ad308c79a41f0e51e746938421"
+        },
+        {
+          "name": "FigureRuntime-DasOMywR.css",
+          "bytes": 5276,
+          "gzipBytes": 1558,
+          "sha256": "03728e86a267fb1889e8dfed4d224a4b1bec4df3ad2f48c6f4698cc58e8e3eb1"
+        },
+        {
+          "name": "HintFigure-sKKsHd-_.js",
+          "bytes": 1088,
+          "gzipBytes": 626,
+          "sha256": "3e63519c84d62acb0743f56d76e26bfeeff37b0e04eec1f64c50936719728573"
+        },
+        {
+          "name": "SceneBuildControls-DKUjxlmE.js",
+          "bytes": 4983,
+          "gzipBytes": 2146,
+          "sha256": "13d418237bac45c8f435775145b3a02fb106f33d2b05e12bbf5858a7542e2234"
+        },
+        {
+          "name": "SceneBuildControls-Dv-jQrDV.css",
+          "bytes": 992,
+          "gzipBytes": 476,
+          "sha256": "d9dec34ce45d89e98a1f2be106521f61770e89b70175e69a04d770a59347c410"
+        },
+        {
+          "name": "figure-kit-DIuEQc-M.js",
+          "bytes": 14555,
+          "gzipBytes": 5948,
+          "sha256": "b56517aa8df65e9ef4b8364ed55dc54ed0e94bb60fbdebeb4a0a3398bfff687b"
+        },
+        {
+          "name": "index-CzPgY6HC.js",
+          "bytes": 565102,
+          "gzipBytes": 119812,
+          "sha256": "732d0558d10e259acc40f7eeb515c7f969f6513cdf510383d5fd84a4be1f83ac"
+        },
+        {
+          "name": "index-DdbhD3f_.css",
+          "bytes": 58507,
+          "gzipBytes": 11654,
+          "sha256": "4a7ebd33d0e438974621b09bc449c864cc4b9d9e27fff89d2ac0501c35f7431e"
+        },
+        {
+          "name": "linalg-stage-BJBaaYrO.js",
+          "bytes": 1831,
+          "gzipBytes": 1018,
+          "sha256": "06b60462274bf65e0514afd32ca2b932fe3ce3edabd92859fe178383e37dfd0b"
+        },
+        {
+          "name": "mse-landscape-DCecKWDM.js",
+          "bytes": 5350,
+          "gzipBytes": 2717,
+          "sha256": "4e67ac55223626e88b8077b346cd807ee6e15350a2c35bd33cc9c0d280c19dda"
+        },
+        {
+          "name": "optimization-plot-ZjFu1SzL.js",
+          "bytes": 3304,
+          "gzipBytes": 1743,
+          "sha256": "76ef07eb818bb36d86bf7fc4995d3fc3fd57a5886ed40acd6832d7a59049a132"
+        },
+        {
+          "name": "rubber-band-coefficients-BB-GTaoA.js",
+          "bytes": 2095,
+          "gzipBytes": 1217,
+          "sha256": "da27ae2bc1005c0d672602caa68f49237827d33be70cac5287013009a5fa6d64"
+        },
+        {
+          "name": "trace-stage-DYU-ef80.js",
+          "bytes": 11495,
+          "gzipBytes": 3104,
+          "sha256": "de9f2a26061a0d933a54343ee90c86f69569602cf274495783ef36579f3ea7ea"
+        }
+      ]
+    },
+    "bun": {
+      "runtime": "v26.3.0",
+      "bun": "1.4.4",
+      "zlib": "12731092979c6d07f42da27da673a9f6c7b13586",
+      "chunks": [
+        {
+          "name": "index-CzPgY6HC.js",
+          "bytes": 565102,
+          "gzipBytes": 120132,
+          "sha256": "732d0558d10e259acc40f7eeb515c7f969f6513cdf510383d5fd84a4be1f83ac"
+        },
+        {
+          "name": "SceneBuildControls-DKUjxlmE.js",
+          "bytes": 4983,
+          "gzipBytes": 2143,
+          "sha256": "13d418237bac45c8f435775145b3a02fb106f33d2b05e12bbf5858a7542e2234"
+        },
+        {
+          "name": "FigureRuntime-DasOMywR.css",
+          "bytes": 5276,
+          "gzipBytes": 1562,
+          "sha256": "03728e86a267fb1889e8dfed4d224a4b1bec4df3ad2f48c6f4698cc58e8e3eb1"
+        },
+        {
+          "name": "HintFigure-sKKsHd-_.js",
+          "bytes": 1088,
+          "gzipBytes": 625,
+          "sha256": "3e63519c84d62acb0743f56d76e26bfeeff37b0e04eec1f64c50936719728573"
+        },
+        {
+          "name": "trace-stage-DYU-ef80.js",
+          "bytes": 11495,
+          "gzipBytes": 3090,
+          "sha256": "de9f2a26061a0d933a54343ee90c86f69569602cf274495783ef36579f3ea7ea"
+        },
+        {
+          "name": "index-DdbhD3f_.css",
+          "bytes": 58507,
+          "gzipBytes": 11653,
+          "sha256": "4a7ebd33d0e438974621b09bc449c864cc4b9d9e27fff89d2ac0501c35f7431e"
+        },
+        {
+          "name": "SceneBuildControls-Dv-jQrDV.css",
+          "bytes": 992,
+          "gzipBytes": 475,
+          "sha256": "d9dec34ce45d89e98a1f2be106521f61770e89b70175e69a04d770a59347c410"
+        },
+        {
+          "name": "figure-kit-DIuEQc-M.js",
+          "bytes": 14555,
+          "gzipBytes": 5975,
+          "sha256": "b56517aa8df65e9ef4b8364ed55dc54ed0e94bb60fbdebeb4a0a3398bfff687b"
+        },
+        {
+          "name": "linalg-stage-BJBaaYrO.js",
+          "bytes": 1831,
+          "gzipBytes": 1018,
+          "sha256": "06b60462274bf65e0514afd32ca2b932fe3ce3edabd92859fe178383e37dfd0b"
+        },
+        {
+          "name": "optimization-plot-ZjFu1SzL.js",
+          "bytes": 3304,
+          "gzipBytes": 1747,
+          "sha256": "76ef07eb818bb36d86bf7fc4995d3fc3fd57a5886ed40acd6832d7a59049a132"
+        },
+        {
+          "name": "FigureRuntime-BoXB0Ndj.js",
+          "bytes": 32175,
+          "gzipBytes": 11734,
+          "sha256": "560c5da01d5142c62aa686e101c4eda6924ef2ad308c79a41f0e51e746938421"
+        },
+        {
+          "name": "mse-landscape-DCecKWDM.js",
+          "bytes": 5350,
+          "gzipBytes": 2742,
+          "sha256": "4e67ac55223626e88b8077b346cd807ee6e15350a2c35bd33cc9c0d280c19dda"
+        },
+        {
+          "name": "rubber-band-coefficients-BB-GTaoA.js",
+          "bytes": 2095,
+          "gzipBytes": 1230,
+          "sha256": "da27ae2bc1005c0d672602caa68f49237827d33be70cac5287013009a5fa6d64"
+        }
+      ]
+    }
+  }
+}

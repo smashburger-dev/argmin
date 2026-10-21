@@ -65,11 +65,17 @@ export function resolveTokens(style: FigureStyleId): Tokens {
 
 // --- color helpers ----------------------------------------------------------
 
+const hexCache = new Map<string, [number, number, number]>();
 const hexNum = (c: string): [number, number, number] => {
+  const cached = hexCache.get(c);
+  if (cached) return cached;
   const m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(c.trim());
   if (!m) return [128, 128, 128];
   const h = m[1]!.length === 3 ? m[1]!.split('').map((x) => x + x).join('') : m[1]!;
-  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  const channels: [number, number, number] = [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  if (hexCache.size >= 128) hexCache.clear();
+  hexCache.set(c, channels);
+  return channels;
 };
 
 export function mixHex(a: string, b: string, t: number): string {
@@ -258,6 +264,7 @@ export class Painter {
     b.planeG = g;
     for (const prim of item.prims) {
       const e = primElement(prim);
+      e.setAttribute('data-prim', prim.key);
       b.prims.set(prim.key, e);
       g.appendChild(e);
     }

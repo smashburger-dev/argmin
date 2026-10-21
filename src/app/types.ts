@@ -292,6 +292,8 @@ export interface FigureSpec {
   caption: string;
   hint: string;
   params: Record<string, unknown>;
+  explore?: { parameter: string; min: number; max: number; step: number; input: 'number'; label?: string };
+  compare?: { a: Record<string, unknown>; b: Record<string, unknown>; labels?: { a: string; b: string }; beat?: string };
   beats: FigureBeatSpec[];
   predict?: FigurePredict;
 }

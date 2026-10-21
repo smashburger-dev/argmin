@@ -1,0 +1,117 @@
+<error file="src/ui/VisualizationBlock.tsx" line="65" column="40" rule="complexity">
+Arrow function has a complexity of 18. Maximum allowed is 10.
+<source>
+63 |   const coord = (value: Expr) => { const f = compileValue(value, names); return () => f(scope()); };
+64 |   const pair = ([x, y]: Coord): [() => number, () => number] => [coord(x), coord(y)];
+65 |   spec.objects.forEach((object, index) => {
+                                            ^^
+66 |     const color = ('color' in object && object.color) || COLORS_BY_INDEX(index);
+</source>
+</error>
+<error file="tools/compile_content.mjs" line="145" column="1" rule="complexity">
+Function 'validateChallengeContracts' has a complexity of 59. Maximum allowed is 10.
+<source>
+143 | }
+144 |
+145 | function validateChallengeContracts(document) {
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+146 |   const flagged = (document.cases || []).filter((item) => item.challengeEligible === true);
+</source>
+</error>
+<warning file="tools/compile_content.mjs" line="181" column="9" rule="no-useless-assignment">
+The value assigned to 'instance' is not used in subsequent statements.
+<source>
+179 |     // challenge profile. For contract:null docs (procedural families) this
+180 |     // also proves the JS spec actually carries the case and the profile.
+181 |     let instance = null;
+              ^^^^^^^^
+182 |     try {
+</source>
+<help>It is overwritten on line 183 before it is read.</help>
+</warning>
+<warning file="tools/compile_content.mjs" line="185" column="7" rule="preserve-caught-error">
+There is no `cause` attached to the symptom error being thrown.
+<source>
+183 |       instance = EXERCISE_FAMILIES.instantiate(document.familyId, 0, 'challenge', item.caseId);
+184 |     } catch (error) {
+185 |       throw new Error(`${label}: E_CHALLENGE_CONTRACT instantiate-Smoke-Check fehlgeschlagen: ${error.message}`);
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+186 |     }
+</source>
+<help>Pass { cause: error } as the last argument, so that the caught error is not lost.</help>
+<suggestion>Include the original caught error as the `cause` of the symptom error.</suggestion>
+</warning>
+<error file="tools/compile_content.mjs" line="236" column="1" rule="complexity">
+Function 'validateChoiceContract' has a complexity of 11. Maximum allowed is 10.
+<source>
+234 | }
+235 |
+236 | function validateChoiceContract(label, item) {
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+237 |   if (item.expected?.kind === 'choice-indices') {
+</source>
+</error>
+<error file="tools/compile_content.mjs" line="680" column="1" rule="complexity">
+Function 'validateVisualizationExpressions' has a complexity of 15. Maximum allowed is 10.
+<source>
+678 | }
+679 |
+680 | function validateVisualizationExpressions(spec, lessonId, visualizationId) {
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+681 |   const names = (spec.sliders || []).map((slider) => slider.name);
+</source>
+</error>
+<error file="tools/compile_content.mjs" line="866" column="1" rule="complexity">
+Function 'mathDelimiterErrorIndex' has a complexity of 20. Maximum allowed is 10.
+<source>
+864 | // $$ is scanned before $, \[ \] and \( \) pair up, an escaped \$ is literal.
+865 | const MATH_SPAN_CLOSERS = { '$$': '$$', '$': '$', '\\[': '\\]', '\\(': '\\)' };
+866 | function mathDelimiterErrorIndex(text) {
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+867 |   const stack = [];
+</source>
+</error>
+<warning file="tools/compile_content.mjs" line="942" column="104" rule="no-useless-escape">
+Unnecessary escape character: \[.
+<source>
+940 | // a spaced ** never opens a pair, and a pair glued to word characters is
+941 | // treated as code, not markup.
+942 | const LEARNER_MARKDOWN_BOLD_PATTERN = /(?<![\w)\]])\*\*(?!\s)[^\s*](?:[^*\n]{0,198}?[^\s*])?\*\*(?![\w(\[])/;
+                                                                                                             ^
+</source>
+<help>"\[" is the same as "[". Remove the backslash, or write \\ for a real one.</help>
+<suggestion>Remove the `\`. This maintains the current functionality.</suggestion>
+<suggestion>Replace the `\` with `\\` to include the actual backslash character.</suggestion>
+</warning>
+<error file="tools/compile_content.mjs" line="961" column="1" rule="complexity">
+Function 'stripLearnerMathSpans' has a complexity of 19. Maximum allowed is 10.
+<source>
+959 | // stays literal, an unmatched closer/opener simply is not masked here —
+960 | // the delimiter-balance check reports it separately.
+961 | function stripLearnerMathSpans(text) {
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+962 |   const stack = [];
+</source>
+</error>
+<error file="tools/compile_content.mjs" line="1022" column="1" rule="complexity">
+Function 'learnerTextWalk' has a complexity of 16. Maximum allowed is 10.
+<source>
+1020 | // Readable path for diagnostics: id-bearing objects get their id appended,
+1021 | // e.g. families[3](trace-foo).cases[0](case-x).prompt.
+1022 | function learnerTextWalk(value, path, inLearnerText, report) {
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+1023 |   if (typeof value === 'string') {
+</source>
+</error>
+<error file="tools/compile_content.mjs" line="1253" column="1" rule="complexity">
+Function 'attachSourceModuleUsage' has a complexity of 20. Maximum allowed is 10.
+<source>
+1251 | // hand-maintained weeks arrays (retired with the week system); the Lektüren
+1252 | // view renders module links from this instead of week numbers.
+1253 | function attachSourceModuleUsage(entities) {
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1254 |   const citingLessonsBySource = new Map();
+</source>
+</error>
+
+Linted 10 files [35.34ms]
