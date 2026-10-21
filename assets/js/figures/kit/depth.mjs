@@ -350,17 +350,20 @@ function itemBox(item, ctx) {
   }
   if (item.kind !== 'solid' || !item.mesh) return null;
   const { min, max } = item.mesh;
-  const b = [Infinity, Infinity, -Infinity, -Infinity];
-  for (const x of [min[0], max[0]]) {
-    for (const y of [min[1], max[1]]) {
-      for (const z of [min[2], max[2]]) {
-        const [sx, sy] = ctx.proj([x, y, z]);
-        b[0] = Math.min(b[0], sx); b[1] = Math.min(b[1], sy);
-        b[2] = Math.max(b[2], sx); b[3] = Math.max(b[3], sy);
-      }
-    }
-  }
-  return b;
+  const { camera, viewport, right, up } = ctx;
+  const hx = (max[0] - min[0]) / 2;
+  const hy = (max[1] - min[1]) / 2;
+  const hz = (max[2] - min[2]) / 2;
+  const cx = (max[0] + min[0]) / 2 - camera.target[0];
+  const cy = (max[1] + min[1]) / 2 - camera.target[1];
+  const cz = (max[2] + min[2]) / 2 - camera.target[2];
+  const sx = viewport.width / 2 + camera.zoom * (cx * right[0] + cy * right[1] + cz * right[2]);
+  const sy = viewport.height / 2 - camera.zoom * (cx * up[0] + cy * up[1] + cz * up[2]);
+  const rx = camera.zoom * (Math.abs(right[0]) * hx + Math.abs(right[1]) * hy + Math.abs(right[2]) * hz);
+  const ry = camera.zoom * (Math.abs(up[0]) * hx + Math.abs(up[1]) * hy + Math.abs(up[2]) * hz);
+  // Expand by a few ulps so rounding cannot reject a true overlap.
+  const pad = Number.EPSILON * Math.max(1, Math.abs(sx), Math.abs(sy), rx, ry) * 16;
+  return [sx - rx - pad, sy - ry - pad, sx + rx + pad, sy + ry + pad];
 }
 
 const boxOverlap = (a, b) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3];
@@ -448,19 +451,16 @@ export function paintList(items, camera) {
       out.push({ item, face: null, faceIndex: -1 });
       continue;
     }
-    const drawnSet = new Set();
-    for (const f of item.mesh.faces) {
-      const d = dot(f.normal, ctx.toward);
-      if (item.side === 'back' ? d < -1e-6 : d > 1e-6) drawnSet.add(f);
-    }
     // face -> index map depends on the mesh alone: one per mesh, forever.
     let faceIndex = faceIndexCache.get(item.mesh);
     if (!faceIndex) {
       faceIndex = new Map(item.mesh.faces.map((f, i) => [f, i]));
       faceIndexCache.set(item.mesh, faceIndex);
     }
+    const back = item.side === 'back';
     for (const face of sortFaces(item.mesh, camera, ctx)) {
-      if (!drawnSet.has(face)) continue;
+      const facing = dot(face.normal, ctx.toward);
+      if (back ? facing >= -1e-6 : facing <= 1e-6) continue;
       out.push({ item, face, faceIndex: faceIndex.get(face) });
     }
   }

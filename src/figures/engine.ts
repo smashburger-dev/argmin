@@ -76,6 +76,7 @@ export class FigureEngine {
   private targetKey = '';
   private targetCam: Camera | null = null;
   private mode: 'lesson' | 'hint';
+  private currentCamera: Camera = { azimuth: 0, elevation: 0, zoom: 1, target: [0, 0, 0] };
   private slowFrames = 0;
   private adaptiveCalm = figureSession('calm') === '1';
   private onCalm: () => void;
@@ -146,12 +147,14 @@ export class FigureEngine {
   }
 
   private cameraNow(): Camera {
-    return {
-      azimuth: this.cam.az.x + (this.scene.viewMode === 'flat' ? 0 : this.off.az.x),
-      elevation: this.scene.viewMode === 'flat' ? this.cam.el.x : Math.min(EL_MAX, Math.max(EL_MIN, this.cam.el.x + this.off.el.x)),
-      zoom: this.cam.zoom.x,
-      target: [this.cam.tx.x, this.cam.ty.x, this.cam.tz.x],
-    };
+    const c = this.currentCamera;
+    c.azimuth = this.cam.az.x + (this.scene.viewMode === 'flat' ? 0 : this.off.az.x);
+    c.elevation = this.scene.viewMode === 'flat' ? this.cam.el.x : Math.min(EL_MAX, Math.max(EL_MIN, this.cam.el.x + this.off.el.x));
+    c.zoom = this.cam.zoom.x;
+    c.target[0] = this.cam.tx.x;
+    c.target[1] = this.cam.ty.x;
+    c.target[2] = this.cam.tz.x;
+    return c;
   }
 
   private snapCamera(): void {
@@ -159,20 +162,26 @@ export class FigureEngine {
     this.cam = { az: spring(c.azimuth), el: spring(c.elevation), zoom: spring(c.zoom), tx: spring(c.target[0]), ty: spring(c.target[1]), tz: spring(c.target[2]) };
   }
 
-  private paintNow(items?: any[], pose?: any): { build: number; sort: number; paint: number; faces: number } {
-    const t0 = performance.now();
+  private paintNow(items?: any[], pose?: any): { build: number; sort: number; paint: number; faces: number } | undefined {
+    const measure = Array.isArray(window.__argminFigurePerf);
+    const t0 = measure ? performance.now() : 0;
     const p = pose ?? this.pose();
     const list0 = items ?? this.buildItems(p)!;
-    const t1 = performance.now();
+    const t1 = measure ? performance.now() : 0;
+    return this.paintFrame(list0, p, measure, t0, t1);
+  }
+
+  private paintFrame(items: any[], pose: any, measure: boolean, t0: number, t1: number) {
     const cam = this.cameraNow();
-    const entries = paintList(list0, cam);
-    const t2 = performance.now();
+    const entries = paintList(items, cam);
+    const t2 = measure ? performance.now() : 0;
     this.painter.paint(entries, cam, this.vp);
     this.paintHalo(cam);
-    const text = this.scene.readout(this.model, p, this.mode);
+    const text = this.scene.readout(this.model, pose, this.mode);
     if (text !== this.lastReadout) { this.lastReadout = text; this.readout.textContent = text; }
-    const t3 = performance.now();
+    const t3 = measure ? performance.now() : 0;
     if (this.stage) this.stage.dataset.azimuth = ((cam.azimuth * 180) / Math.PI).toFixed(1);
+    if (!measure) return;
     let faces = 0;
     for (const e of entries) if (e.face) faces += 1;
     return { build: t1 - t0, sort: t2 - t1, paint: t3 - t2, faces };
@@ -231,7 +240,8 @@ export class FigureEngine {
 
   private tick(now: number): void {
     this.raf = 0;
-    const t0 = performance.now();
+    const measure = Array.isArray(window.__argminFigurePerf);
+    const t0 = measure ? performance.now() : 0;
     const dt = clampDt(now, this.last || now - 16);
     this.last = now;
     this.observeFrame(dt);
@@ -254,10 +264,10 @@ export class FigureEngine {
     settle(cam.tz, target.target[2], dt, 0.32, this.calm);
     this.off.az.x = follow(this.off.az.x, this.off.az.target, dt, 0.12, this.calm);
     this.off.el.x = follow(this.off.el.x, this.off.el.target, dt, 0.12, this.calm);
-    const phases = this.paintNow(undefined, pose);
-    if (Array.isArray(window.__argminFigurePerf)) {
-      window.__argminFigurePerf.push({ style: this.style, ms: performance.now() - t0, ...phases });
-    }
+    if (measure) {
+      const phases = this.paintNow(undefined, pose)!;
+      window.__argminFigurePerf!.push({ style: this.style, ms: performance.now() - t0, ...phases });
+    } else this.paintNow(undefined, pose);
     this.schedule();
   }
 

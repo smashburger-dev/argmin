@@ -84,11 +84,11 @@ function restoredBeat(key: string, count: number, explicit?: number) {
   return Number.isInteger(index) ? Math.min(count - 1, Math.max(0, index)) : 0;
 }
 
-function figureOptions(spec: FigureSpec) {
+function figureOptions(spec: FigureSpec, params = spec.params) {
   return {
     mode: spec.kind === 'hint' ? 'hint' as const : 'lesson' as const,
     still: spec.kind === 'static' || spec.kind === 'inline',
-    storageKey: `${spec.scene}:${spec.kind ?? 'beats'}:${JSON.stringify(spec.params)}`,
+    storageKey: `${spec.scene}:${spec.kind ?? 'beats'}:${JSON.stringify(params)}`,
     kind: spec.kind ?? 'beats',
   };
 }
@@ -181,7 +181,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
   const [inputState, setInputState] = useState(restored);
   const inputs = inputState.key === controlsKey ? inputState : restored;
   const params = activeParams(spec, inputs.params);
-  const { mode, still, storageKey, kind } = figureOptions({ ...spec, params });
+  const { mode, still, storageKey, kind } = figureOptions(spec, params);
   const runtimeScene = useMemo(() => sceneForSpec(scene, spec), [scene, spec]);
   const model = useMemo(() => scene.model(params, { mode }), [scene, params, mode]);
   const beatIds = sceneBeatIds(runtimeScene, mode);
@@ -340,7 +340,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
     scene.model(params, { mode });
     const state = { params, side, key: controlsKey, edited: true };
     figureSession(controlsKey, JSON.stringify(state));
-    figureSession(figureOptions({ ...spec, params }).storageKey, String(targetBeat));
+    figureSession(figureOptions(spec, params).storageKey, String(targetBeat));
     setInputState(state);
   };
 

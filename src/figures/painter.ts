@@ -289,44 +289,39 @@ export class Painter {
     const ctx: PaintCtx = { proj: pj, light: lightDir(pj) };
     const ver = `${this.camVer}s${this.styleVer}`;
     this.orderItems(entries);
-    // The repaint decision is per ITEM, and entries carry one row per drawn
-    // face: marking the item painted after its first entry would skip the
-    // rest of its faces (they keep display:none — the wireframe bug). Decide
-    // for all items first, then paint every entry of the dirty items.
-    const repaint = this.dirtyItems(entries, ver);
-    const drawn = new Map<string, { item: Item; order: number[] }>();
-    for (const entry of entries) {
-      const { item } = entry;
-      if (item.kind === 'solid') {
-        const rec = drawn.get(item.id) ?? { item, order: [] };
-        rec.order.push(entry.faceIndex);
-        drawn.set(item.id, rec);
-        continue;
-      }
-      // Same item object at the same camera/style writes identical output.
-      if (repaint.has(item)) this.paintEntry(entry, ctx);
-    }
-    for (const [id, rec] of drawn) {
-      const b = this.items.get(id);
-      // Unpainted this pass = unchanged at this version: faces, order and
-      // hulls are all still valid.
-      if (!b || !repaint.has(rec.item)) continue;
-      this.setAttr(b.g, 'display', rec.item.visible === false ? 'none' : null);
-      this.paintSolid(b, rec.item, rec.order, ctx);
+    this.paintEntries(entries, ctx, ver);
+  }
+
+  private paintEntries(entries: Array<{ item: Item; face: Face | null; faceIndex: number }>, ctx: PaintCtx, version: string): void {
+    for (let i = 0; i < entries.length;) {
+      const item = entries[i]!.item;
+      const end = this.itemEnd(entries, i, item);
+      const binding = this.items.get(item.id);
+      if (binding && (binding.lastItem !== item || binding.paintedVersion !== version))
+        this.paintItemRun(binding, item, entries, i, end, version, ctx);
+      i = end;
     }
   }
 
-  private dirtyItems(entries: Array<{ item: Item }>, version: string): Set<Item> {
-    const dirty = new Set<Item>();
-    for (const { item } of entries) {
-      const binding = this.items.get(item.id);
-      // A cached pose must repaint if another item last wrote this DOM binding.
-      if (!binding || (binding.lastItem === item && binding.paintedVersion === version)) continue;
-      binding.lastItem = item;
-      binding.paintedVersion = version;
-      dirty.add(item);
+  private itemEnd(entries: Array<{ item: Item }>, start: number, item: Item): number {
+    let end = start + 1;
+    while (end < entries.length && entries[end]!.item === item) end += 1;
+    return end;
+  }
+
+  private paintItemRun(binding: ItemBinding, item: Item, entries: Array<{ item: Item; face: Face | null; faceIndex: number }>, start: number, end: number, version: string, ctx: PaintCtx): void {
+    // Every item's faces are contiguous in paintList. Mark and paint the full
+    // run before considering the next item.
+    binding.lastItem = item;
+    binding.paintedVersion = version;
+    if (item.kind !== 'solid') {
+      this.paintEntry(entries[start]!, ctx);
+      return;
     }
-    return dirty;
+    const order = [];
+    for (let j = start; j < end; j += 1) order.push(entries[j]!.faceIndex);
+    this.setAttr(binding.g, 'display', item.visible === false ? 'none' : null);
+    this.paintSolid(binding, item, order, ctx);
   }
 
   private orderItems(entries: Array<{ item: Item }>): void {

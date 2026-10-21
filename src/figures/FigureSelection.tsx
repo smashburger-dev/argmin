@@ -31,7 +31,9 @@ export function FigureSelection({ scene, model, beat, mode, stageRef }: {
     const click = (event: MouseEvent) => {
       if (stage.dataset.dragged === 'true') return;
       const element = event.target as Element;
-      const target = targets.find(t => targetElement(stage, t)?.contains(element));
+      const itemId = element.closest('[data-item]')?.getAttribute('data-item');
+      const primKey = element.closest('[data-prim]')?.getAttribute('data-prim');
+      const target = targets.find(t => t.itemId === itemId && (!t.primKey || t.primKey === primKey));
       if (target) select(target.id);
     };
     stage.addEventListener('click', click);
