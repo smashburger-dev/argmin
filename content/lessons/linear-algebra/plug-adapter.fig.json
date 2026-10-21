@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "plug-adapter",
+  "title": "Formen passen, Operationen unterscheiden",
+  "caption": "Broadcasting wirkt entlang kompatibler Achsen. Eine passende Form allein prüft noch keine Werte.",
+  "hint": "Das feste Beispiel ergänzt die Rechnung in der Lektüre.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Der Bias hat keine Batch-Achse. Von rechts ausgerichtet passt er genau auf die beiden Spalten."
+    },
+    {
+      "id": "step-1",
+      "caption": "Dieselbe Bias-Zeile wirkt auf jede Zeile. Broadcasting kopiert hier gedanklich Werte, keine neuen Parameter."
+    },
+    {
+      "id": "step-2",
+      "caption": "Ein Bias mit drei Einträgen passt nicht auf die letzte Achse. Eine Formverletzung ist kein Null-Ergebnis."
+    },
+    {
+      "id": "step-3",
+      "caption": "Gleiche Formen garantieren keine gleiche Rechnung: Stern multipliziert passende Zellen miteinander."
+    },
+    {
+      "id": "step-4",
+      "caption": "Das Matrixprodukt summiert stattdessen Zeile mal Spalte. Oben rechts treffen unterschiedliche Zellen zusammen."
+    },
+    {
+      "id": "step-5",
+      "caption": "Übertragung aus der alten Transformationsfigur: a = d = 2, b = 0,5 und c = 0. Das Bild bleibt maßstabstreu."
+    },
+    {
+      "id": "step-6",
+      "caption": "Die Scherung verändert die Breite, nicht die Grundseite oder Höhe. Der Flächeninhalt folgt der Determinante."
+    }
+  ],
+  "predict": {
+    "beat": "step-5",
+    "prompt": "Setze a = 2 und d = 2. Welchen Wert hat det(A) — und damit den Flächeninhalt des Parallelogramms?",
+    "input": "numeric",
+    "expected": 4,
+    "tolerance": 0.000001,
+    "hints": [
+      "A = [[a, 0,5], [0, d]] ist eine obere Dreiecksmatrix: det(A) = a·d − b·c."
+    ],
+    "typicalErrors": [
+      {
+        "match": 3.5,
+        "feedback": "det(A) = a·d − b·c mit b = 0,5 und c = 0 — der Korrekturterm fällt weg, weil c = 0."
+      },
+      {
+        "match": 5,
+        "feedback": "(a + 0,5)·d misst die äußere Breite, nicht den Flächeninhalt — die Scherung ändert die Fläche nicht."
+      }
+    ]
+  }
+}

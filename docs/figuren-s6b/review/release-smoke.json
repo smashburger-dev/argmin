@@ -1,0 +1,47 @@
+{
+  "errors": [],
+  "results": [
+    {
+      "lesson": "l-linalg-matrices",
+      "id": "order-times-prices",
+      "steps": "8 / 8",
+      "mode": "flat",
+      "description": "Die gewichteten Spalten addieren sich komponentenweise. Das ist dieselbe Matrixmultiplikation. Spaltenweise addieren; 2; +; 2; =; 4; 1; +; 6; =; 7; b = (4, 7)."
+    },
+    {
+      "lesson": "l-numpy-shape-contracts",
+      "id": "plug-adapter",
+      "steps": "7 / 7",
+      "mode": "flat",
+      "description": "Die Scherung verändert die Breite, nicht die Grundseite oder Höhe. Der Flächeninhalt folgt der Determinante. Einheitsquadrat → A-Bild; 2; 2; det(A) = 4."
+    },
+    {
+      "lesson": "l-dl-tensors",
+      "id": "tensor-address",
+      "steps": "5 / 5",
+      "mode": "flat",
+      "description": "ReLU ändert die Form nicht. Der zweite Layer erhält die Hidden-Breite, die Batch-Achse bleibt erhalten. Layer 2: XW + b; Eingabe; (32, 16); W; (16, 3); Ausgabe; (32, 3); b: (3); Parameter: 51 · Gesamt: 195."
+    },
+    {
+      "lesson": "l-tf-attention",
+      "id": "library-attention",
+      "steps": "8 / 8",
+      "mode": "flat",
+      "description": "Die verbleibenden Anteile summieren sich wieder zu eins. Der gerundete Wert ist keine exakte Wahrscheinlichkeit. Top-k neu normiert; Key; Score; Anteil; 1; 2; ≈ 0,881; 2; 1; ≈ 0,119; 3; −∞; ≈ 0,000; q₁ = 1 / (1 + exp(−2))."
+    },
+    {
+      "lesson": "l-tf-finetuning",
+      "id": "frozen-matrix-strips",
+      "steps": "5 / 5",
+      "mode": "flat",
+      "description": "Das Update wird addiert. W bleibt als Ausgangsmatrix erhalten; W plus Delta ist die effektive Gewichtsmatrix. Mini-Beispiel: W + ΔW; ΔW; W + ΔW; 2; 4; 6; 12; 3; 4; 6; 13; W selbst bleibt unverändert."
+    },
+    {
+      "lesson": "l-dl-regularization",
+      "id": "team-mask",
+      "steps": "4 / 4",
+      "mode": "flat",
+      "description": "Bei Inferenz ist das ganze Team da. Keine Maske und keine zusätzliche Skalierung bei dieser Konvention. Inferenz: unverändertes a; 2; 4; 6; 8; Keine weitere Skalierung."
+    }
+  ]
+}

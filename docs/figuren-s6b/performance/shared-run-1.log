@@ -1,0 +1,28 @@
+
+Running 2 tests using 1 worker
+
+(node:87740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/2] [chromium] › tests/e2e/figures-perf.spec.ts:139:9 › figure frame budget (opt-in) › script time per frame at 1440 px under 4x CPU throttling
+[chromium] › tests/e2e/figures-perf.spec.ts:139:9 › figure frame budget (opt-in) › script time per frame at 1440 px under 4x CPU throttling
+┌─────────┬───────┬──────────┬──────────┬───────┬────────┬──────────────┬───────────┬───────────┬─────────────┬────────────┬─────────────┬───────┬─────────────┬──────────┬────────────┐
+│ (index) │ style │ viewport │ scenario │ ticks │ frames │ scriptMedian │ scriptP95 │ scriptMax │ buildMedian │ sortMedian │ paintMedian │ faces │ frameMedian │ frameP95 │ longFrames │
+├─────────┼───────┼──────────┼──────────┼───────┼────────┼──────────────┼───────────┼───────────┼─────────────┼────────────┼─────────────┼───────┼─────────────┼──────────┼────────────┤
+│ 0       │ 'a1'  │ '1440'   │ 'beat'   │ 196   │ 285    │ 6.4          │ 10.1      │ 17.7      │ 0.5         │ 2.6        │ 3.1         │ 234   │ 8.5         │ 17.5     │ 1          │
+│ 1       │ 'a1'  │ '1440'   │ 'drag'   │ 492   │ 541    │ 11.3         │ 16.7      │ 52.3      │ 0           │ 4.5        │ 6.8         │ 236   │ 33.3        │ 58.4     │ 29         │
+│ 2       │ 'a1'  │ '1440'   │ 'board'  │ 113   │ 118    │ 10.6         │ 14.3      │ 55.1      │ 0.1         │ 2.9        │ 6.9         │ 236   │ 25.9        │ 42.5     │ 4          │
+└─────────┴───────┴──────────┴──────────┴───────┴────────┴──────────────┴───────────┴───────────┴─────────────┴────────────┴─────────────┴───────┴─────────────┴──────────┴────────────┘
+
+[2/2] [chromium] › tests/e2e/figures-perf.spec.ts:139:9 › figure frame budget (opt-in) › script time per frame at 375 px under 4x CPU throttling
+[chromium] › tests/e2e/figures-perf.spec.ts:139:9 › figure frame budget (opt-in) › script time per frame at 375 px under 4x CPU throttling
+┌─────────┬───────┬──────────┬──────────┬───────┬────────┬──────────────┬───────────┬───────────┬─────────────┬────────────┬─────────────┬───────┬─────────────┬──────────┬────────────┐
+│ (index) │ style │ viewport │ scenario │ ticks │ frames │ scriptMedian │ scriptP95 │ scriptMax │ buildMedian │ sortMedian │ paintMedian │ faces │ frameMedian │ frameP95 │ longFrames │
+├─────────┼───────┼──────────┼──────────┼───────┼────────┼──────────────┼───────────┼───────────┼─────────────┼────────────┼─────────────┼───────┼─────────────┼──────────┼────────────┤
+│ 0       │ 'a1'  │ '375'    │ 'beat'   │ 253   │ 342    │ 5.6          │ 8.2       │ 16.1      │ 0.6         │ 2.4        │ 2.5         │ 234   │ 8.4         │ 16.7     │ 1          │
+│ 1       │ 'a1'  │ '375'    │ 'drag'   │ 516   │ 583    │ 9.4          │ 12.5      │ 32.5      │ 0           │ 3.8        │ 5.5         │ 236   │ 17.4        │ 33.3     │ 2          │
+│ 2       │ 'a1'  │ '375'    │ 'board'  │ 134   │ 139    │ 9.5          │ 13        │ 55.8      │ 0.2         │ 2.7        │ 6.2         │ 236   │ 25          │ 42.5     │ 1          │
+└─────────┴───────┴──────────┴──────────┴───────┴────────┴──────────────┴───────────┴───────────┴─────────────┴────────────┴─────────────┴───────┴─────────────┴──────────┴────────────┘
+
+  2 passed (55.3s)

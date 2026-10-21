@@ -21,6 +21,16 @@
       "contentRef": "lessons/deep-learning/dl-regularization.md"
     },
     {
+      "blockId": "dl-regularization-dropout",
+      "type": "figure",
+      "contentRef": "lessons/deep-learning/team-mask.fig.json"
+    },
+    {
+      "blockId": "dl-regularization-f2-after",
+      "type": "worked-example",
+      "contentRef": "lessons/deep-learning/dl-regularization-f2-after.md"
+    },
+    {
       "blockId": "dl-regularization-viz",
       "type": "figure",
       "contentRef": "lessons/deep-learning/early-stopping-flag.fig.json"

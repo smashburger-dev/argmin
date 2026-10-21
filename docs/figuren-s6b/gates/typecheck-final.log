@@ -1,0 +1,18 @@
+
+> argmin@0.9.2 pretypecheck
+> npm run content:compile && npm run coverage:check
+
+
+> argmin@0.9.2 content:compile
+> node tools/compile_content.mjs
+
+Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)
+Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)
+
+> argmin@0.9.2 coverage:check
+> node tools/build_coverage_matrix.mjs --check
+
+Kompetenz-Familien-Coverage aktuell
+
+> argmin@0.9.2 typecheck
+> tsc --noEmit

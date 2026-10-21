@@ -1,0 +1,51 @@
+{
+  "node": "v26.0.0",
+  "zlib": "1.2.12",
+  "level": "default",
+  "chunks": [
+    {
+      "file": "FigureRuntime-Cvc1Xorc.js",
+      "gzip": 9992
+    },
+    {
+      "file": "f2-models-DVgfJBB1.js",
+      "gzip": 2407
+    },
+    {
+      "file": "figure-kit-DIuEQc-M.js",
+      "gzip": 5948
+    },
+    {
+      "file": "frozen-matrix-strips-BjO8I_fR.js",
+      "gzip": 1328
+    },
+    {
+      "file": "library-attention-BzxfnBnp.js",
+      "gzip": 1821
+    },
+    {
+      "file": "linalg-stage-BJBaaYrO.js",
+      "gzip": 1018
+    },
+    {
+      "file": "order-times-prices-1A9dodrM.js",
+      "gzip": 1567
+    },
+    {
+      "file": "plug-adapter-BEFMsDsv.js",
+      "gzip": 1509
+    },
+    {
+      "file": "team-mask-BBe0VsJa.js",
+      "gzip": 999
+    },
+    {
+      "file": "tensor-address-DimAZt-P.js",
+      "gzip": 1198
+    }
+  ],
+  "alternateBunRuntime": {
+    "runtime": "1.4.4",
+    "gzip": 10028
+  }
+}

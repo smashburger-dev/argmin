@@ -1,0 +1,391 @@
+{
+  "throttle": 4,
+  "runs": [
+    {
+      "run": 1,
+      "width": 375,
+      "id": "order-times-prices",
+      "samples": 74,
+      "median": 2.600000001490116,
+      "maximum": 5.899999998509884,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "plug-adapter",
+      "samples": 99,
+      "median": 1.6000000014901161,
+      "maximum": 4.5,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "tensor-address",
+      "samples": 69,
+      "median": 1.6000000014901161,
+      "maximum": 2.3000000044703484,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "library-attention",
+      "samples": 92,
+      "median": 1.7999999970197678,
+      "maximum": 3.100000001490116,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "frozen-matrix-strips",
+      "samples": 68,
+      "median": 1.4000000059604645,
+      "maximum": 2.5,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "team-mask",
+      "samples": 53,
+      "median": 1.6000000014901161,
+      "maximum": 2.399999998509884,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "order-times-prices",
+      "samples": 73,
+      "median": 2.5,
+      "maximum": 9.100000001490116,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "plug-adapter",
+      "samples": 100,
+      "median": 1.9000000059604645,
+      "maximum": 3.3000000044703484,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "tensor-address",
+      "samples": 46,
+      "median": 2.5,
+      "maximum": 5.600000001490116,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "library-attention",
+      "samples": 73,
+      "median": 2.1999999955296516,
+      "maximum": 4,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "frozen-matrix-strips",
+      "samples": 66,
+      "median": 1.5,
+      "maximum": 3.0999999940395355,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "team-mask",
+      "samples": 42,
+      "median": 2,
+      "maximum": 4.299999997019768,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "order-times-prices",
+      "samples": 71,
+      "median": 2.8000000044703484,
+      "maximum": 6.100000001490116,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "plug-adapter",
+      "samples": 99,
+      "median": 1.8999999985098839,
+      "maximum": 3.899999998509884,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "tensor-address",
+      "samples": 63,
+      "median": 1.8000000044703484,
+      "maximum": 3.5,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "library-attention",
+      "samples": 93,
+      "median": 1.6999999955296516,
+      "maximum": 3.3000000044703484,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "frozen-matrix-strips",
+      "samples": 67,
+      "median": 1.3000000044703484,
+      "maximum": 2.2999999970197678,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "team-mask",
+      "samples": 52,
+      "median": 1.8999999985098839,
+      "maximum": 2.6999999955296516,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "order-times-prices",
+      "samples": 70,
+      "median": 2.899999998509884,
+      "maximum": 6.199999995529652,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "plug-adapter",
+      "samples": 96,
+      "median": 1.8999999985098839,
+      "maximum": 2.8000000044703484,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "tensor-address",
+      "samples": 51,
+      "median": 2.0999999940395355,
+      "maximum": 3.399999998509884,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "library-attention",
+      "samples": 64,
+      "median": 2.3000000044703484,
+      "maximum": 6.399999998509884,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "frozen-matrix-strips",
+      "samples": 65,
+      "median": 1.6000000014901161,
+      "maximum": 2.5,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "team-mask",
+      "samples": 40,
+      "median": 2,
+      "maximum": 4.5,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 375,
+      "id": "order-times-prices",
+      "samples": 73,
+      "median": 2.8000000044703484,
+      "maximum": 6.800000004470348,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 375,
+      "id": "plug-adapter",
+      "samples": 88,
+      "median": 2,
+      "maximum": 3.7999999970197678,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 375,
+      "id": "tensor-address",
+      "samples": 62,
+      "median": 1.8999999985098839,
+      "maximum": 2.899999998509884,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 375,
+      "id": "library-attention",
+      "samples": 88,
+      "median": 1.8000000044703484,
+      "maximum": 3.2000000029802322,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 375,
+      "id": "frozen-matrix-strips",
+      "samples": 54,
+      "median": 1.5999999940395355,
+      "maximum": 3.5,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 375,
+      "id": "team-mask",
+      "samples": 44,
+      "median": 2,
+      "maximum": 3,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 1440,
+      "id": "order-times-prices",
+      "samples": 74,
+      "median": 2.6999999955296516,
+      "maximum": 7.200000002980232,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 1440,
+      "id": "plug-adapter",
+      "samples": 101,
+      "median": 1.7999999970197678,
+      "maximum": 3.2999999970197678,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 1440,
+      "id": "tensor-address",
+      "samples": 63,
+      "median": 1.7999999970197678,
+      "maximum": 3,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 1440,
+      "id": "library-attention",
+      "samples": 84,
+      "median": 1.8999999985098839,
+      "maximum": 3.2999999970197678,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 1440,
+      "id": "frozen-matrix-strips",
+      "samples": 63,
+      "median": 1.5,
+      "maximum": 3.7999999970197678,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    },
+    {
+      "run": 3,
+      "width": 1440,
+      "id": "team-mask",
+      "samples": 43,
+      "median": 1.9000000059604645,
+      "maximum": 3,
+      "scenario": "150ms crossfade; flat, no camera/drag"
+    }
+  ],
+  "medians": [
+    {
+      "id": "order-times-prices",
+      "width": 375,
+      "medianOfMedians": 2.8000000044703484
+    },
+    {
+      "id": "order-times-prices",
+      "width": 1440,
+      "medianOfMedians": 2.6999999955296516
+    },
+    {
+      "id": "plug-adapter",
+      "width": 375,
+      "medianOfMedians": 1.8999999985098839
+    },
+    {
+      "id": "plug-adapter",
+      "width": 1440,
+      "medianOfMedians": 1.8999999985098839
+    },
+    {
+      "id": "tensor-address",
+      "width": 375,
+      "medianOfMedians": 1.8000000044703484
+    },
+    {
+      "id": "tensor-address",
+      "width": 1440,
+      "medianOfMedians": 2.0999999940395355
+    },
+    {
+      "id": "library-attention",
+      "width": 375,
+      "medianOfMedians": 1.7999999970197678
+    },
+    {
+      "id": "library-attention",
+      "width": 1440,
+      "medianOfMedians": 2.1999999955296516
+    },
+    {
+      "id": "frozen-matrix-strips",
+      "width": 375,
+      "medianOfMedians": 1.4000000059604645
+    },
+    {
+      "id": "frozen-matrix-strips",
+      "width": 1440,
+      "medianOfMedians": 1.5
+    },
+    {
+      "id": "team-mask",
+      "width": 375,
+      "medianOfMedians": 1.8999999985098839
+    },
+    {
+      "id": "team-mask",
+      "width": 1440,
+      "medianOfMedians": 2
+    }
+  ]
+}

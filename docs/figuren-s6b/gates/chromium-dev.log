@@ -1,0 +1,199 @@
+
+> argmin@0.9.2 pretest:e2e
+> npm run content:compile && node tools/pyodide_contract_matrix.mjs
+
+
+> argmin@0.9.2 content:compile
+> node tools/compile_content.mjs
+
+Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)
+Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)
+Pyodide-Vertragsmatrix: 93 Definitionen in 2 Verträgen -> /Users/no8/Desktop/life/Lifemaxxing/argmin-figuren-s6b/tests/e2e/pyodide-contract-matrix.json
+
+> argmin@0.9.2 test:e2e
+> playwright test --project=chromium --workers=4
+
+
+Running 122 tests using 4 workers
+
+(node:79017) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:79019) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:79020) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:79018) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/122] [chromium] › tests/e2e/challenge.spec.ts:48:5 › ?from=challenge keeps the exercise in challenge context
+[2/122] [chromium] › tests/e2e/challenge.spec.ts:39:5 › today teaser stays hidden while the pool is empty and no streak exists
+[3/122] [chromium] › tests/e2e/challenge.spec.ts:11:5 › challenge route renders its empty state deterministically across reload
+[4/122] [chromium] › tests/e2e/challenge.spec.ts:27:5 › challenge is reachable via secondary nav and the mobile-more link
+[5/122] [chromium] › tests/e2e/challenge.spec.ts:75:5 › challenge cards render once a module is touched
+[6/122] [chromium] › tests/e2e/challenge.spec.ts:96:5 › family route without ?from= keeps the default back target
+[7/122] [chromium] › tests/e2e/dialog-a11y.spec.ts:11:5 › onboarding dialog passes serious and critical axe checks
+[8/122] [chromium] › tests/e2e/dialog-a11y.spec.ts:19:5 › spotlight tour passes serious and critical axe checks
+[9/122] [chromium] › tests/e2e/dialog-a11y.spec.ts:35:5 › sponsor modal passes serious and critical axe checks
+[10/122] [chromium] › tests/e2e/exercise-family.spec.ts:3:5 › golden path 2: family placements instantiate two case types without a JSON copy
+[11/122] [chromium] › tests/e2e/exercise-family.spec.ts:50:5 › S4D0 family variant opens, grades, records and journals across reload
+[12/122] [chromium] › tests/e2e/exercise-family.spec.ts:90:5 › S4D1 trace table fills row by row and records the first deviating row
+[13/122] [chromium] › tests/e2e/exercise-family.spec.ts:117:5 › S4D2 foundations module links lessons, curated variants and practice spaces
+[14/122] [chromium] › tests/e2e/exercise-family.spec.ts:129:5 › S4D7 code family runs pyodide tests in the browser
+[15/122] [chromium] › tests/e2e/exercise-family.spec.ts:167:5 › ?from=challenge keeps trace-table attempts in challenge context
+[16/122] [chromium] › tests/e2e/exercise-family.spec.ts:182:5 › S4D2 numeric family grades typed answers and opens domain hints
+[17/122] [chromium] › tests/e2e/exercise-family.spec.ts:200:5 › next variant advances repeatedly with a concrete seed per click
+[18/122] [chromium] › tests/e2e/figures-perf.spec.ts:139:9 › figure frame budget (opt-in) › script time per frame at 1440 px under 4x CPU throttling
+[19/122] [chromium] › tests/e2e/figures-perf.spec.ts:139:9 › figure frame budget (opt-in) › script time per frame at 375 px under 4x CPU throttling
+[20/122] [chromium] › tests/e2e/figures-shots.spec.ts:64:11 › figure contact sheet (opt-in) › shots 1440x1500 light
+[21/122] [chromium] › tests/e2e/figures-shots.spec.ts:64:11 › figure contact sheet (opt-in) › shots 1440x1500 dark
+[22/122] [chromium] › tests/e2e/figures-shots.spec.ts:64:11 › figure contact sheet (opt-in) › shots 375x1700 light
+[23/122] [chromium] › tests/e2e/figures-shots.spec.ts:64:11 › figure contact sheet (opt-in) › shots 375x1700 dark
+[24/122] [chromium] › tests/e2e/figures-shots.spec.ts:96:7 › figure contact sheet (opt-in) › kontaktbogen.html
+[25/122] [chromium] › tests/e2e/figures.spec.ts:36:7 › figure block › lesson flow: predict gate, feedback, beats forward and back
+[26/122] [chromium] › tests/e2e/figures.spec.ts:79:7 › figure block › keyboard: arrows step beats, shift+arrow rotates, home resets view
+[27/122] [chromium] › tests/e2e/figures.spec.ts:95:7 › figure block › reduced motion jumps to the beat end and the loop stops
+[28/122] [chromium] › tests/e2e/figures.spec.ts:110:11 › figure block › axe: lesson passes serious/critical checks at 1440px light
+[29/122] [chromium] › tests/e2e/figures.spec.ts:110:11 › figure block › axe: lesson passes serious/critical checks at 375px light
+[30/122] [chromium] › tests/e2e/figures.spec.ts:110:11 › figure block › axe: lesson passes serious/critical checks at 1440px dark
+[31/122] [chromium] › tests/e2e/figures.spec.ts:110:11 › figure block › axe: lesson passes serious/critical checks at 375px dark
+[32/122] [chromium] › tests/e2e/figures.spec.ts:125:11 › figure block › painted fills (lab) › solid faces are filled — a1 light
+[33/122] [chromium] › tests/e2e/figures.spec.ts:125:11 › figure block › painted fills (lab) › solid faces are filled — a1 dark
+[34/122] [chromium] › tests/e2e/figures.spec.ts:332:11 › figure block › board text layout (lab) › no text overlaps and >=14px at 1440px
+[35/122] [chromium] › tests/e2e/figures.spec.ts:332:11 › figure block › board text layout (lab) › no text overlaps and >=14px at 375px
+[36/122] [chromium] › tests/e2e/figures.spec.ts:358:7 › figure block › controls: two step buttons and one step count at 375px
+[37/122] [chromium] › tests/e2e/figures.spec.ts:382:9 › figure block › Galaxy S5 touch › tap steps, horizontal drag rotates, vertical swipe scrolls
+[38/122] [chromium] › tests/e2e/figures.spec.ts:433:9 › figure block › iPhone SE touch › tap steps the figure
+[39/122] [chromium] › tests/e2e/figures.spec.ts:443:7 › figure block › preview build ships no figure lab
+[40/122] [chromium] › tests/e2e/glossary.spec.ts:4:5 › glossary lists terms and filters by term, english and definition
+[41/122] [chromium] › tests/e2e/glossary.spec.ts:16:5 › glossary term route highlights and focuses the entry
+[42/122] [chromium] › tests/e2e/glossary.spec.ts:23:5 › lesson glossary link opens a popover without navigating
+[43/122] [chromium] › tests/e2e/glossary.spec.ts:37:5 › glossary popover anchors to the link at 1440px without scrolling the page
+[44/122] [chromium] › tests/e2e/glossary.spec.ts:61:5 › glossary popover stays inside the viewport at 375px
+[45/122] [chromium] › tests/e2e/glossary.spec.ts:83:5 › search shows a Begriffe group linking into the glossary
+[46/122] [chromium] › tests/e2e/glossary.spec.ts:90:5 › glossary view and open popover have no serious accessibility violations
+[47/122] [chromium] › tests/e2e/learn-sections.spec.ts:3:5 › learn shows the active track, history and rest sections
+[48/122] [chromium] › tests/e2e/learn-sections.spec.ts:16:5 › rest pill filters the rest modules without touching the track
+[49/122] [chromium] › tests/e2e/learn-sections.spec.ts:32:5 › module card counts curated placements and credits a solved case
+[50/122] [chromium] › tests/e2e/learn-sections.spec.ts:57:5 › history collects opened lessons and modules
+[51/122] [chromium] › tests/e2e/learning-module.spec.ts:8:5 › golden path 1: git module is reachable without a week route
+[52/122] [chromium] › tests/e2e/learning-module.spec.ts:20:5 › module shows lessons and exercises together without toggling
+[53/122] [chromium] › tests/e2e/mobile-touch.spec.ts:91:7 › mobile touch emulation, small Android Chromium › tap navigation switches the primary routes
+[54/122] [chromium] › tests/e2e/learning-module.spec.ts:29:5 › learn path modules advance with side arrows
+[55/122] [chromium] › tests/e2e/mobile-touch.spec.ts:92:7 › mobile touch emulation, small Android Chromium › progress JSON import rejects invalid and accepts exported files
+[56/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /today without horizontal overflow
+[57/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /settings without horizontal overflow
+[58/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /project/p-foundations-data-checker without horizontal overflow
+[59/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /tools without horizontal overflow
+[60/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /visualization/column-picture without horizontal overflow
+[61/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /sources without horizontal overflow
+[62/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /lesson/l-linalg-systems without horizontal overflow
+[63/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /module/lm-linalg-matrices without horizontal overflow
+[64/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /family/formula-scalar-product/column-vector-authored/0/core without horizontal overflow
+[65/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /review without horizontal overflow
+[66/122] [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /diagnostic without horizontal overflow
+[67/122] [chromium] › tests/e2e/mobile-touch.spec.ts:103:7 › mobile touch emulation, small Android Chromium › mobile focus starts at the route heading and proceeds into main
+[68/122] [chromium] › tests/e2e/mobile-touch.spec.ts:113:7 › mobile touch emulation, small Android Chromium › mobile routes pass serious and critical axe checks
+[69/122] [chromium] › tests/e2e/mobile-touch.spec.ts:127:7 › mobile touch emulation, small iPhone WebKit › tap navigation switches the primary routes
+[70/122] [chromium] › tests/e2e/mobile-touch.spec.ts:128:7 › mobile touch emulation, small iPhone WebKit › progress JSON import rejects invalid and accepts exported files
+[71/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /today without horizontal overflow
+[72/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /settings without horizontal overflow
+[73/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /project/p-foundations-data-checker without horizontal overflow
+[74/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /tools without horizontal overflow
+[75/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /visualization/column-picture without horizontal overflow
+[76/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /sources without horizontal overflow
+[77/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /lesson/l-linalg-systems without horizontal overflow
+[78/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /module/lm-linalg-matrices without horizontal overflow
+[79/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /family/formula-scalar-product/column-vector-authored/0/core without horizontal overflow
+[80/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /review without horizontal overflow
+[81/122] [chromium] › tests/e2e/mobile-touch.spec.ts:131:9 › mobile touch emulation, small iPhone WebKit › 320px viewport reflows /diagnostic without horizontal overflow
+[82/122] [chromium] › tests/e2e/mobile-touch.spec.ts:139:7 › mobile touch emulation, small iPhone WebKit › mobile routes pass serious and critical axe checks
+[83/122] [chromium] › tests/e2e/next-shell.spec.ts:9:5 › removed week routes render the default view without console errors
+[84/122] [chromium] › tests/e2e/next-shell.spec.ts:20:5 › next shell exposes the primary learning flow without serious accessibility violations
+[85/122] [chromium] › tests/e2e/next-shell.spec.ts:34:5 › competency and lesson routes expose family activities
+[86/122] [chromium] › tests/e2e/next-shell.spec.ts:42:5 › lesson tasks link only the curated placements of that lesson
+[87/122] [chromium] › tests/e2e/next-shell.spec.ts:56:5 › algebra transformations lesson shows its own curated task
+[88/122] [chromium] › tests/e2e/next-shell.spec.ts:62:5 › lesson sections show their title and the outline tracks short sections
+[89/122] [chromium] › tests/e2e/next-shell.spec.ts:80:5 › module practice space draws only the module curated cases
+[90/122] [chromium] › tests/e2e/next-shell.spec.ts:97:5 › public sources and modern module route render
+[91/122] [chromium] › tests/e2e/offline.spec.ts:12:5 › app boots offline after the service worker cached the build
+[92/122] [chromium] › tests/e2e/offline.spec.ts:35:5 › a waiting worker surfaces the update banner and reloads on demand
+[93/122] [chromium] › tests/e2e/onboarding.spec.ts:3:5 › onboarding setup runs once and persists the flag
+[94/122] [chromium] › tests/e2e/onboarding.spec.ts:26:5 › onboarding skip keeps defaults and never returns
+[95/122] [chromium] › tests/e2e/page-wheel.spec.ts:16:5 › a trackpad gesture stays native as its pixel deltas grow and shrink
+[96/122] [chromium] › tests/e2e/page-wheel.spec.ts:26:5 › precision classification lasts for the whole gesture, then releases the mouse wheel
+[97/122] [chromium] › tests/e2e/page-wheel.spec.ts:46:5 › small native wheel movements land precisely without an extra tail
+[98/122] [chromium] › tests/e2e/page-wheel.spec.ts:59:5 › a notched mouse wheel still eases toward its exact target
+[99/122] [chromium] › tests/e2e/page-wheel.spec.ts:74:5 › reduced motion keeps mouse-wheel scrolling native
+[100/122] [chromium] › tests/e2e/page-wheel.spec.ts:85:5 › zoom, shift, diagonal and non-cancelable input stay native
+[101/122] [chromium] › tests/e2e/page-wheel.spec.ts:100:5 › fractional trackpad deltas stay native even above the old cutoff
+[102/122] [chromium] › tests/e2e/page-wheel.spec.ts:110:5 › precision input cancels an outstanding mouse-wheel glide
+[103/122] [chromium] › tests/e2e/page-wheel.spec.ts:126:5 › vertical trackpad gestures over the week plan are not redirected horizontally
+[104/122] [chromium] › tests/e2e/pyodide-contracts.spec.ts:46:5 › every pyodide exercise contract passes and rejects in the browser worker
+[105/122] [chromium] › tests/e2e/pyodide-cross-browser.spec.ts:37:5 › pyodide worker passes grading, restart and isolation contracts in every browser
+[106/122] [chromium] › tests/e2e/route-smoke.spec.ts:3:5 › modern family route renders without page errors
+[107/122] [chromium] › tests/e2e/route-smoke.spec.ts:12:5 › review route renders archived entries without crashing
+[108/122] [chromium] › tests/e2e/scene-build-data.spec.ts:7:5 › scene-build attempts survive IndexedDB and JSON replacement import with ordered steps
+[109/122] [chromium] › tests/e2e/search.spec.ts:3:5 › search is reachable via nav, filters the catalog and links to real routes
+[110/122] [chromium] › tests/e2e/search.spec.ts:21:5 › search reports an honest empty state
+[111/122] [chromium] › tests/e2e/sponsor.spec.ts:3:5 › sponsor slots open the modal with contact options
+[112/122] [chromium] › tests/e2e/today-resume.spec.ts:3:5 › today shows a resume link after an attempt
+[113/122] [chromium] › tests/e2e/tour.spec.ts:9:5 › spotlight tour walks all steps, navigates by hash and persists tourDone
+[114/122] [chromium] › tests/e2e/tour.spec.ts:59:5 › spotlight tour escape closes the tour and persists tourDone
+[115/122] [chromium] › tests/e2e/tour.spec.ts:73:5 › spotlight tour later button closes the intro and persists tourDone
+[116/122] [chromium] › tests/e2e/tour.spec.ts:85:5 › settings replay restarts the tour and webdriver suppresses auto-start
+[117/122] [chromium] › tests/e2e/week-plan-wheel.spec.ts:3:5 › week plan translates small mouse-wheel ticks into horizontal scroll
+  1) [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /visualization/column-picture without horizontal overflow
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('#viz-column-picture svg')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 15000ms
+      - waiting for locator('#viz-column-picture svg')
+
+
+       7 |   { hash: '/project/p-foundations-data-checker', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'CLI-Datenprüfer' })).toBeVisible(); } },
+       8 |   { hash: '/tools', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Werkzeuge' })).toBeVisible(); } },
+    >  9 |   { hash: '/visualization/column-picture', ready: async (page) => { await expect(page.locator('#viz-column-picture svg')).toBeVisible({ timeout: 15_000 }); } },
+         |                                                                                                                           ^
+      10 |   { hash: '/sources', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Lektüren' })).toBeVisible(); } },
+      11 |   { hash: '/lesson/l-linalg-systems', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Gleichungssysteme als Spaltenbild lesen' })).toBeVisible(); } },
+      12 |   { hash: '/module/lm-linalg-matrices', ready: async (page) => { await expect(page.getByRole('heading', { level: 1 })).toBeVisible(); } },
+        at Object.ready (/Users/no8/Desktop/life/Lifemaxxing/argmin-figuren-s6b/tests/e2e/mobile-touch.spec.ts:9:123)
+        at /Users/no8/Desktop/life/Lifemaxxing/argmin-figuren-s6b/tests/e2e/mobile-touch.spec.ts:98:19
+
+    Error Context: test-results/mobile-touch-mobile-touch--bac87-without-horizontal-overflow-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/mobile-touch-mobile-touch--bac87-without-horizontal-overflow-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/mobile-touch-mobile-touch--bac87-without-horizontal-overflow-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[118/122] [chromium] › tests/e2e/wip3-activity-variants.spec.ts:36:5 › WIP-3 code-trace variants grade two seeds
+[119/122] [chromium] › tests/e2e/wip3-activity-variants.spec.ts:60:5 › WIP-3 predict-output variants grade two seeds
+(node:79543) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[120/122] [chromium] › tests/e2e/week-plan-wheel.spec.ts:25:5 › week plan hands vertical scroll back to the page at its right edge
+[121/122] [chromium] › tests/e2e/wip3-activity-variants.spec.ts:82:5 › WIP-3 parsons variants grade two seeds
+[122/122] [chromium] › tests/e2e/wip3-activity-variants.spec.ts:104:5 › WIP-3 vector variants grade two seeds
+  1 failed
+    [chromium] › tests/e2e/mobile-touch.spec.ts:95:9 › mobile touch emulation, small Android Chromium › 320px viewport reflows /visualization/column-picture without horizontal overflow
+  25 skipped
+  96 passed (52.6s)

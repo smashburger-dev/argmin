@@ -20,6 +20,16 @@
       "contentRef": "lessons/deep-learning/dl-tensors.md"
     },
     {
+      "blockId": "dl-tensors-figure",
+      "type": "figure",
+      "contentRef": "lessons/deep-learning/tensor-address.fig.json"
+    },
+    {
+      "blockId": "dl-tensors-f2-after",
+      "type": "worked-example",
+      "contentRef": "lessons/deep-learning/dl-tensors-f2-after.md"
+    },
+    {
       "blockId": "dl-tensors-viz",
       "type": "visualization",
       "contentRef": "lessons/deep-learning/activations.viz.json"

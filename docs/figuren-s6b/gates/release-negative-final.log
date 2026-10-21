@@ -1,0 +1,20 @@
+✔ next build validator accepts the bounded static shell (4.357875ms)
+✔ next build validator accepts bundled image assets but rejects stray files (2.411125ms)
+✔ next build validator rejects private markers and external scripts (2.996833ms)
+✔ unified build accepts the exact manifest-derived project tree (8.651208ms)
+✔ unified build requires every project file declared by its manifest (5.862458ms)
+✔ unified build rejects undeclared project files (7.08075ms)
+✔ unified build rejects private markers in project text files (6.895459ms)
+✔ project release resolution rejects symlinked parent directories (5.91425ms)
+✔ validator accepts a public build with a valid compiled bundle (661.737667ms)
+✔ validator rejects a private marker embedded in a family document (549.023ms)
+✔ validator fails when the compiled content bundle is missing (416.923208ms)
+✔ validator rejects a malformed compiled bundle (432.402667ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2171.414584

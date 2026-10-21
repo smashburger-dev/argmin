@@ -1,0 +1,9 @@
+
+> argmin@0.9.2 test:project-runner
+> python3 -m unittest tests/test_learner_project_check.py tests/test_foundations_project_solution.py tests/test_rag_capstone_project_solution.py
+
+.................s..
+----------------------------------------------------------------------
+Ran 20 tests in 0.081s
+
+OK (skipped=1)
