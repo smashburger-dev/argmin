@@ -254,7 +254,6 @@ const ALLOWED_FILES = [
   'content/lessons/foundations/git.md',
   'content/lessons/linear-algebra/matrices.json',
   'content/lessons/linear-algebra/matrices.md',
-  'content/lessons/linear-algebra/column-picture.viz.json',
   'content/lessons/linear-algebra/systems.json',
   'content/lessons/linear-algebra/gauss-details.md',
   'content/lessons/linear-algebra/independence-details.md',
