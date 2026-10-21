@@ -152,3 +152,48 @@ F6, F9, F10, F11, statische Figuren, Siegel mit echtem SHA-256 (Test gegen `node
 ## S9 optional
 
 Erstes argmin-Video aus einer vorhandenen Szene mit ganglion (Szene ist eine reine Funktion von Parametern, Beat, Zeit und Kamera). JSXGraph entfernen, wenn keine `.viz.json` übrig ist (eigene Entscheidung, ADR).
+
+## Anfragen aus Welle 3 und nächste Zuständigkeit
+
+Stand 21.10.2026, Integrator 3. Diese Zuordnung ergänzt die offenen Punkte aus Welle 1 und 2. Die Familienlieferung ist keine Abnahme noch fehlender Bedienungen oder eine gestalterische Freigabe durch Noa. Es werden keine neuen Chats automatisch gestartet.
+
+Die gemeinsame Basis ist `8172c3e82599d5aad2ae1e5291905dd9c480451f`, nach S2b-Merge mit Compiler, allen 2240 bestehenden Node-Prüfungen und Typecheck geprüft. Explore-Zahlenfeld, benannter A/B-Vergleich am regularisierten Zustand und der reine Lektionsauswahlvertrag sind integriert. F7 benennt Lernrate und Vergleichsvarianten ausdrücklich; der Szenentitel unterscheidet Ridge und Lasso. Der Painter bindet seinen Cache an das zuletzt in dieselbe DOM-Gruppe gemalte Item. Die reale A-B-A-Probe stellt A wieder her. Familiennachläufe beginnen vom finalen geprüften Welle-3-Integrationsstand und übernehmen keinen privaten Nachbarzweig.
+
+### Nächste gemeinsame Engine-/Vertragssession, S2c
+
+- Die verbleibenden Runtime-/Framebudgets anhand der Welle-3-Messungen bearbeiten. Readout ist mit S2b 14 px; die kleine Schrittanzeige bleibt 13 px. Kein relativer Optimierungserfolg ersetzt die Budgetabnahme. Ein gemeinsamer Canvas-Layer bleibt ein eigener Auftrag mit DPR, Größenänderung, Kamera, Themes, Reduced Motion, Forced Colors, Druck und Viewport-Pause. S8as 1024-Punkte-Probe ist kein freigegebenes Unterrichtsbeispiel.
+- Versionierte Antwort-/Graderverträge für Topologie, Split-Grenze, optimale Schwelle, Baum-Split `{feature, threshold}`, `layer-chain`, Attention-Maske, `pick-learning-rate` und `tag-after-line` zuerst eindeutig zuweisen. S4as Hülle `{kind:'scene-build',schemaVersion:1,form,steps}` und vorhandene deterministische Löser bleiben maßgeblich. Gleichwertige gültige Antworten und numerische Toleranzen zentral festlegen. Direkte Lektionsauswahl ist keine bewertete Antwort.
+- `python-trace/v1` und `trace-hint-prefix/v1` sind dokumentierte Folgeanforderungen in `figuren-s2b/contracts.md`, keine implementierte Freigabe beliebiger Programme oder sicherer Hinweise. Neue dauerhafte CPython-Prüfungen benötigen weiterhin Noas konkreten Auftrag.
+- Zugänglichen Öffnen-/Schließen-/Fokus-/ARIA-Vertrag vor aufklappbaren statischen Belegkarten liefern. Labor-Szenenauswahl, Bestands-Komplexität und die gemeldeten Glossar-/Formelbefunde anhand des Integrationsgates weiterführen.
+
+### Nächster F2-Nachlauf, Besitzer S6b
+
+- `selectionTargets` auf dem geprüften gemeinsamen Vertrag an den eigenen Matrix-/Tensor-/Attention-Szenen ergänzen. Sichtbare eindeutige Ziele, modellbasierte Adressen/Werte und mindestens 44 px Trefferfläche prüfen; bei Bedarf Matrixblöcke statt zu kleiner Einzelzellen wählen. S2bs temporäre Adapter waren keine Familienimplementierung.
+- Temperatur, Top-k, kompatible Tensorformen und Rang erst nach Anpassung der eigenen Modellvalidierung an die angebotenen Bereiche als Explore-Verbraucher veröffentlichen. Reset, getrennte Antworten und sämtliche angebotenen Modelle prüfen. `layer-chain`, Maskenaufgabe und Hinweise bleiben bis zu den zugewiesenen gemeinsamen Verträgen offen.
+
+### Nächster Pipeline-/Schwellennachlauf, Besitzer S7
+
+- S8as Fragment für fehlende große Umsätze unter dem alleinigen Lektionsbesitz von S7 in `l-data-cleaning` übernehmen. Die zwei S7-Prosa-Fragmente für RAG und Freeze werden unter S8bs Lektionsbesitz zusammen mit dessen K7-Darstellungen eingebunden. Kein zweites konkurrierendes IO-Bild ergänzen.
+- Explore für Schwellen sowie Compare erst mit angepassten eigenen Parametersätzen, gleicher Datenprojektion und gemeinsamem Reset-/Antworterhalt abschließen. Topologie-, Split- und optimale Schwellenaufgaben bleiben bis zum deterministischen Vertrag offen. K7 ist durch S8b als reiner Graphvertrag verfügbar; eine Aufgabenbedienung folgt daraus nicht.
+
+### Nächster F6-/F9-Nachlauf, Besitzer S8a
+
+- `binWidth` als Explore-Verbraucher für die ganzzahligen Werte 1 bis 5, Startwert 2, anbinden. Punkt-IDs und Daten bleiben unverändert; Reset und getrennte Antworten prüfen. Das reine Zahlenfeld allein erfüllt diese Familienabnahme nicht.
+- Baum-Split erst nach zugewiesenem kanonischem Antwort-/Auswahlvertrag mit vorhandenem Gini-Löser veröffentlichen. Alle gleich guten Kandidaten akzeptieren. Große Punktmengen bleiben bis zum gemeinsamen Renderer-Nachweis offen.
+
+### Nächster Graph-/Token-/Belegnachlauf, Besitzer S8b
+
+- Topologische Auswahl und aufklappbare Belegkarten erst nach den oben zugewiesenen gemeinsamen Verträgen ergänzen. Bis dahin bleiben die vollständigen festen Darstellungen maßgeblich. Die integrierten RAG-/Freeze-Fragmente und K7 besitzen genau einen Schreiber, S8b.
+- Die Bestandsübersicht aus dem isolierten S8b-Zweig wird durch die tatsächliche Welle-3-Integrationsübersicht ergänzt. Eine Figur in einer Lektion bedeutet weder Ablösung sämtlicher JSXGraph-Bestände noch Abnahme aller Aufgaben und Hinweise.
+
+### S5b bleibt offen
+
+S5b besitzt weiterhin `pca-shadow`, `kmeans-pizza` und die sicheren F3-/F4-Hinweisadapter für Rang, Lösungsfall und Determinantenfall. Eine vorhandene Matrixfigur ist keine pauschale Freigabe dieser Nachläufe. Alte `.viz.json` erst nach ausdrücklicher Freigabe löschen.
+
+### F7-Nachlauf bleibt offen
+
+Die vorhandene Lernratenbedienung und der regularisierte Ridge-/Lasso-Vergleich sind gemeinsam integriert. Sichere Fall-/Nachbarhinweise, `pick-learning-rate`, mobile Familienabnahme und Noas gestalterische Freigabe bleiben beim nächsten F7-Lauf. Das numerisch oder geometrisch gesuchte Gewicht darf in Hinweisen nicht vorweggenommen werden. Die gemeinsamen Performancegrenzen bleiben separat offen.
+
+### F1-Nachlauf bleibt offen
+
+Die sechs festen Programme und die zentrale Compiler-Expansion bleiben erhalten. Direkte Namens-/Objektauswahl muss an den geprüften Auswahlvertrag angebunden werden; Aliasnamen behalten getrennte Ziele mit gemeinsamer Objektmarke. Sichere Hinweise, `tag-after-line`, freie Parameter und Kurzschluss-Familienfall bleiben offen. Der dokumentierte CPython-/Präfixvertrag ist vor diesen Erweiterungen umzusetzen und gegen echte Spuren zu prüfen.
