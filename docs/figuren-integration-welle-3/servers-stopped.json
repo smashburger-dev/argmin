@@ -1,0 +1,81 @@
+{
+  "measuredAt": "2026-10-21T12:03:10.773Z",
+  "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+  "checks": [
+    {
+      "port": 4400,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4401,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4402,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4403,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4404,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4405,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4406,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4407,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4408,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4409,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4410,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    },
+    {
+      "port": 4411,
+      "status": 1,
+      "listeners": "",
+      "stderr": ""
+    }
+  ],
+  "waveProcesses": [],
+  "allStopped": true,
+  "initialStopEvidence": "The initial no-listener observation is present only in the session tool output; this is the durable final observation."
+}

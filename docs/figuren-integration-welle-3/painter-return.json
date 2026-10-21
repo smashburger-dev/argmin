@@ -1,0 +1,17 @@
+{
+  "source": "Original one-off real-browser A-B-A probe around the painter change committed in 8172c3e82599d5aad2ae1e5291905dd9c480451f. Capture timestamps were not retained; current integrated behavior is additionally covered by review-dev.json and interactions.json.",
+  "before": {
+    "a": "Ohne Strafe → Ridgeλ = 0w₁ = 3w₂ = 1,5w₃ = -10+3",
+    "b": "Ridgeλ = 2w₁ = 1w₂ = 0,5w₃ = -0,3330+3",
+    "revisited": "Ridgeλ = 2w₁ = 1w₂ = 0,5w₃ = -0,3330+3",
+    "changed": true,
+    "restored": false
+  },
+  "after": {
+    "a": "Ohne Strafe → Ridgeλ = 0w₁ = 3w₂ = 1,5w₃ = -10+3",
+    "b": "Ridgeλ = 2w₁ = 1w₂ = 0,5w₃ = -0,3330+3",
+    "revisited": "Ohne Strafe → Ridgeλ = 0w₁ = 3w₂ = 1,5w₃ = -10+3",
+    "changed": true,
+    "restored": true
+  }
+}

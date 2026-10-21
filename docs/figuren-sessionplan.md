@@ -164,7 +164,7 @@ Die gemeinsame Basis ist `8172c3e82599d5aad2ae1e5291905dd9c480451f`, nach S2b-Me
 - Die verbleibenden Runtime-/Framebudgets anhand der Welle-3-Messungen bearbeiten. Readout ist mit S2b 14 px; die kleine Schrittanzeige bleibt 13 px. Kein relativer Optimierungserfolg ersetzt die Budgetabnahme. Ein gemeinsamer Canvas-Layer bleibt ein eigener Auftrag mit DPR, Größenänderung, Kamera, Themes, Reduced Motion, Forced Colors, Druck und Viewport-Pause. S8as 1024-Punkte-Probe ist kein freigegebenes Unterrichtsbeispiel.
 - Versionierte Antwort-/Graderverträge für Topologie, Split-Grenze, optimale Schwelle, Baum-Split `{feature, threshold}`, `layer-chain`, Attention-Maske, `pick-learning-rate` und `tag-after-line` zuerst eindeutig zuweisen. S4as Hülle `{kind:'scene-build',schemaVersion:1,form,steps}` und vorhandene deterministische Löser bleiben maßgeblich. Gleichwertige gültige Antworten und numerische Toleranzen zentral festlegen. Direkte Lektionsauswahl ist keine bewertete Antwort.
 - `python-trace/v1` und `trace-hint-prefix/v1` sind dokumentierte Folgeanforderungen in `figuren-s2b/contracts.md`, keine implementierte Freigabe beliebiger Programme oder sicherer Hinweise. Neue dauerhafte CPython-Prüfungen benötigen weiterhin Noas konkreten Auftrag.
-- Zugänglichen Öffnen-/Schließen-/Fokus-/ARIA-Vertrag vor aufklappbaren statischen Belegkarten liefern. Labor-Szenenauswahl, Bestands-Komplexität und die gemeldeten Glossar-/Formelbefunde anhand des Integrationsgates weiterführen.
+- Zugänglichen Öffnen-/Schließen-/Fokus-/ARIA-Vertrag vor aufklappbaren statischen Belegkarten liefern. Labor-Szenenauswahl, Bestands-Komplexität und Formelüberläufe anhand des Integrationsgates weiterführen. Der dort reproduzierte Glossar-/Tourkontrast beim Einblenden ist zentral behoben; die vorhandenen Dialogprüfungen sind grün.
 
 ### Nächster F2-Nachlauf, Besitzer S6b
 
@@ -173,7 +173,7 @@ Die gemeinsame Basis ist `8172c3e82599d5aad2ae1e5291905dd9c480451f`, nach S2b-Me
 
 ### Nächster Pipeline-/Schwellennachlauf, Besitzer S7
 
-- S8as Fragment für fehlende große Umsätze unter dem alleinigen Lektionsbesitz von S7 in `l-data-cleaning` übernehmen. Die zwei S7-Prosa-Fragmente für RAG und Freeze werden unter S8bs Lektionsbesitz zusammen mit dessen K7-Darstellungen eingebunden. Kein zweites konkurrierendes IO-Bild ergänzen.
+- In Welle 3 erledigt: S8as Fragment für fehlende große Umsätze ist unter S7s alleiniger Lektionszuständigkeit in `l-data-cleaning` integriert. Die zwei S7-Prosa-Fragmente für RAG und Freeze sind unter S8bs Lektionszuständigkeit zusammen mit dessen K7-Darstellungen eingebunden. Die drei Übergaben behalten diesen eindeutigen Besitzer.
 - Explore für Schwellen sowie Compare erst mit angepassten eigenen Parametersätzen, gleicher Datenprojektion und gemeinsamem Reset-/Antworterhalt abschließen. Topologie-, Split- und optimale Schwellenaufgaben bleiben bis zum deterministischen Vertrag offen. K7 ist durch S8b als reiner Graphvertrag verfügbar; eine Aufgabenbedienung folgt daraus nicht.
 
 ### Nächster F6-/F9-Nachlauf, Besitzer S8a

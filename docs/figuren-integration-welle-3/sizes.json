@@ -1,0 +1,1299 @@
+{
+  "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+  "measuredAt": "2026-10-21T11:55:45.655Z",
+  "runtime": "v26.0.0",
+  "zlib": "1.2.12",
+  "compression": "node:zlib.gzipSync default options",
+  "entries": [
+    {
+      "file": "FigureRuntime-CuWCOdQO.js",
+      "bytes": 32201,
+      "gzipBytes": 11682,
+      "sha256": "7e383d1f00fe75ff716c281fe13bbb29ab4d713df76057f8cd3a73aaa9feb972",
+      "imports": [
+        "jsxRuntime.module-CiWe4dQY.js",
+        "index-B2RrSF35.js",
+        "figure-kit-BpeHFFpC.js"
+      ]
+    },
+    {
+      "file": "FigureRuntime-DasOMywR.css",
+      "bytes": 5276,
+      "gzipBytes": 1558,
+      "sha256": "03728e86a267fb1889e8dfed4d224a4b1bec4df3ad2f48c6f4698cc58e8e3eb1",
+      "imports": []
+    },
+    {
+      "file": "SceneBuildControls-Dv-jQrDV.css",
+      "bytes": 992,
+      "gzipBytes": 476,
+      "sha256": "d9dec34ce45d89e98a1f2be106521f61770e89b70175e69a04d770a59347c410",
+      "imports": []
+    },
+    {
+      "file": "SceneBuildControls-rX-LWn3Q.js",
+      "bytes": 4983,
+      "gzipBytes": 2146,
+      "sha256": "d0ece8904b90fc99f062f4aedf512f71f1569a9c0dfa9dbc39f667e3e07f19e2",
+      "imports": [
+        "jsxRuntime.module-CiWe4dQY.js",
+        "index-B2RrSF35.js",
+        "f12-diagram-CgupwZWu.js",
+        "FamilyExerciseView-CL_zz4QL.js",
+        "scene-build-state-CpigKCmN.js"
+      ]
+    },
+    {
+      "file": "backprop-network-CRhk3KNx.js",
+      "bytes": 2608,
+      "gzipBytes": 1379,
+      "sha256": "d05bc40b65d316942ca292cbd6558368d3e63bc927677ea607dc2a547d15260b",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "graph-model-CS_P7IiK.js",
+        "optimization-plot-Bo5RY3D7.js",
+        "s8b-diagram-DOKIaBhh.js"
+      ]
+    },
+    {
+      "file": "bag-unpack-C8mGF-c_.js",
+      "bytes": 2601,
+      "gzipBytes": 1322,
+      "sha256": "cf4ab2974394c39c45aef8f2cd43978bab0b44eaac4e9d26098d3706b30f3e8a",
+      "imports": [
+        "f12-diagram-CgupwZWu.js"
+      ]
+    },
+    {
+      "file": "balance-isolate-iizcobLN.js",
+      "bytes": 2181,
+      "gzipBytes": 1189,
+      "sha256": "29ce098b5485644af5624f7382c8f83f7091f6fb4b66eb0cf04334ce0d9a6e08",
+      "imports": [
+        "f12-diagram-CgupwZWu.js",
+        "balance_model-_Hk2bGpC.js"
+      ]
+    },
+    {
+      "file": "balance-solve-BGiYAvU8.js",
+      "bytes": 324,
+      "gzipBytes": 242,
+      "sha256": "670f426ad9a75b534336c65b2b33cf73097b6ce55ba2c66ff46a7b4c72194bcb",
+      "imports": []
+    },
+    {
+      "file": "balance-solve-cOHX-gZj.js",
+      "bytes": 1105,
+      "gzipBytes": 689,
+      "sha256": "760d7febb7c8e0b2eb87c46c061c7f6c3736725d18cd215cd078e7de2a26a1d8",
+      "imports": [
+        "index-B2RrSF35.js",
+        "linalg-stage-TglVcHss.js",
+        "f12-diagram-CgupwZWu.js",
+        "balance_model-_Hk2bGpC.js"
+      ]
+    },
+    {
+      "file": "baseline-sorter-BkkIk-OH.js",
+      "bytes": 849,
+      "gzipBytes": 532,
+      "sha256": "b626a613a8da043e3e29247c08d01fb7429860b8af599d2d0d17e0bdd6d4717d",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "threshold-stage-C8r8An3d.js",
+        "pipeline-model-CO3ClH1I.js"
+      ]
+    },
+    {
+      "file": "bouncer-DpIEHLmm.js",
+      "bytes": 680,
+      "gzipBytes": 424,
+      "sha256": "7700aaaf35d2ccd708b76276b091649aca078dc94e7406c381903b30a85414bb",
+      "imports": [
+        "trace-stage-frqUHTRz.js"
+      ]
+    },
+    {
+      "file": "bpe-letterpress-DQIkrkBl.js",
+      "bytes": 2963,
+      "gzipBytes": 1583,
+      "sha256": "241a3a67322e2ed402c57dcc3b4bc18637b316ab9cac1a6dc3720e4adf589fc1",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "s8b-diagram-DOKIaBhh.js",
+        "token-model-CFa6GRRL.js"
+      ]
+    },
+    {
+      "file": "chunk-windows-CvuQKn1l.js",
+      "bytes": 2374,
+      "gzipBytes": 1282,
+      "sha256": "54601abba0b4dbd0001479ccb9fe69708d7aeadcce823b1a2b2b8673b346963f",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "s8b-diagram-DOKIaBhh.js",
+        "token-model-CFa6GRRL.js"
+      ]
+    },
+    {
+      "file": "cleaning-line-C_9UTD3h.js",
+      "bytes": 960,
+      "gzipBytes": 586,
+      "sha256": "e160144c49a5d98800917d459b71361008b2ca2a0500c293896ec12fdeaff844",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "pipeline-model-CO3ClH1I.js",
+        "pipeline-stage-COGTLMEP.js"
+      ]
+    },
+    {
+      "file": "distribution-points-DkcIHAxU.js",
+      "bytes": 3016,
+      "gzipBytes": 1574,
+      "sha256": "c18b9cd180c86fa2f95333cd1a98aaecab0979be458d59196e7097916e430cb0",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "distribution-model-C3lsuA4Q.js"
+      ]
+    },
+    {
+      "file": "early-stopping-flag-DYHejREa.js",
+      "bytes": 2583,
+      "gzipBytes": 1314,
+      "sha256": "e41e7e0527cface6d01c5b8af6b011685aeb24ab481809db7ff9dbbc82bbc104",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js"
+      ]
+    },
+    {
+      "file": "evaluation-sorter-B14gAE72.js",
+      "bytes": 1091,
+      "gzipBytes": 648,
+      "sha256": "1d94e0e31f920bda06a569cc10586b89a41e6163d826c52833126c26f695bab1",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "threshold-stage-C8r8An3d.js"
+      ]
+    },
+    {
+      "file": "evidence-cards-CT0yi2G-.js",
+      "bytes": 5129,
+      "gzipBytes": 2410,
+      "sha256": "7c74a893fa49283a1ae6c825237ae5c5b1e1d37243e9b86786a903268a21e697",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "s8b-diagram-DOKIaBhh.js",
+        "sha256-B7bRhDWS.js"
+      ]
+    },
+    {
+      "file": "figure-kit-BpeHFFpC.js",
+      "bytes": 16714,
+      "gzipBytes": 6761,
+      "sha256": "bf27eabda6c470b9dd0ca29e6bf241a0aea29d2d1a1550b9abdc9e2eead6f1ca",
+      "imports": [
+        "linalg-stage-TglVcHss.js"
+      ]
+    },
+    {
+      "file": "fold-rotation-tPU1TBC5.js",
+      "bytes": 1118,
+      "gzipBytes": 657,
+      "sha256": "199cf2e5aec8b8a9d684536bdbd7861383363e73e03a7b62f24ccf1936f8d857",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "pipeline-model-CO3ClH1I.js",
+        "pipeline-stage-COGTLMEP.js"
+      ]
+    },
+    {
+      "file": "freeze-order-QjtHJoaB.js",
+      "bytes": 2321,
+      "gzipBytes": 1265,
+      "sha256": "77daa008b6b1a036e3b624e1c607f5eab96f5fd3ecb09dee4fce9480a2903605",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "graph-model-CS_P7IiK.js",
+        "optimization-plot-Bo5RY3D7.js",
+        "s8b-diagram-DOKIaBhh.js"
+      ]
+    },
+    {
+      "file": "frozen-matrix-strips-NnWJaK77.js",
+      "bytes": 2389,
+      "gzipBytes": 1329,
+      "sha256": "e8a1cbacce04a06cedc16bf2766f572a3cf1af832b1b0a501f2d89f025d68264",
+      "imports": [
+        "f2-models-CcvxZJQe.js"
+      ]
+    },
+    {
+      "file": "git-snapshots-CC0Wv0Mw.js",
+      "bytes": 2525,
+      "gzipBytes": 1303,
+      "sha256": "7cd1081979584b6d8edbcbe6444a4c4422199c149ad7de95742b4d589b15a045",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "graph-model-CS_P7IiK.js",
+        "optimization-plot-Bo5RY3D7.js",
+        "s8b-diagram-DOKIaBhh.js"
+      ]
+    },
+    {
+      "file": "goods-in-CGGqy7S8.js",
+      "bytes": 908,
+      "gzipBytes": 564,
+      "sha256": "420d95f363787beb5e954e2c89ca956d7f16fee38343bd27fc447858c65e28f6",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "pipeline-model-CO3ClH1I.js",
+        "pipeline-stage-COGTLMEP.js"
+      ]
+    },
+    {
+      "file": "house-ablation-CDnz-b51.js",
+      "bytes": 855,
+      "gzipBytes": 517,
+      "sha256": "3ce154ddf6dd962612bc34337df1a45c075341ec83781dfa31f743260a20c1a7",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "pipeline-model-CO3ClH1I.js",
+        "pipeline-stage-COGTLMEP.js"
+      ]
+    },
+    {
+      "file": "index-B2RrSF35.js",
+      "bytes": 569863,
+      "gzipBytes": 121457,
+      "sha256": "017106b04054d5bee1daeb8d526af0975bbbc610395808541f889f64561fbabc",
+      "imports": [
+        "backprop-network-CRhk3KNx.js",
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js",
+        "graph-model-CS_P7IiK.js",
+        "optimization-plot-Bo5RY3D7.js",
+        "s8b-diagram-DOKIaBhh.js",
+        "bag-unpack-C8mGF-c_.js",
+        "f12-diagram-CgupwZWu.js",
+        "balance-isolate-iizcobLN.js",
+        "balance_model-_Hk2bGpC.js",
+        "balance-solve-cOHX-gZj.js",
+        "baseline-sorter-BkkIk-OH.js",
+        "threshold-stage-C8r8An3d.js",
+        "pipeline-model-CO3ClH1I.js",
+        "bouncer-DpIEHLmm.js",
+        "trace-stage-frqUHTRz.js",
+        "bpe-letterpress-DQIkrkBl.js",
+        "token-model-CFa6GRRL.js",
+        "chunk-windows-CvuQKn1l.js",
+        "cleaning-line-C_9UTD3h.js",
+        "pipeline-stage-COGTLMEP.js",
+        "distribution-points-DkcIHAxU.js",
+        "distribution-model-C3lsuA4Q.js",
+        "early-stopping-flag-DYHejREa.js",
+        "evaluation-sorter-B14gAE72.js",
+        "evidence-cards-CT0yi2G-.js",
+        "sha256-B7bRhDWS.js",
+        "fold-rotation-tPU1TBC5.js",
+        "freeze-order-QjtHJoaB.js",
+        "frozen-matrix-strips-NnWJaK77.js",
+        "f2-models-CcvxZJQe.js",
+        "git-snapshots-CC0Wv0Mw.js",
+        "goods-in-CGGqy7S8.js",
+        "house-ablation-CDnz-b51.js",
+        "ledger-BvdZqpKn.js",
+        "library-attention-DpBNWMa3.js",
+        "logistic-sorter-C4Es1wsh.js",
+        "mail-sorter-92_mA_dX.js",
+        "missing-high-sales-CfMCAPkO.js",
+        "mix-to-target-DnqDxKAK.js",
+        "mse-landscape-B5Y1PaVt.js",
+        "mse-section-BvVKn8vC.js",
+        "name-tags-B_Gasqhn.js",
+        "order-times-prices-DsBeirqu.js",
+        "plug-adapter-BXO4i_-G.js",
+        "power-stack-D3Vs7U_p.js",
+        "receipt-echelon-3x3-DEOYIK-D.js",
+        "receipt-stage-CH8IbLW8.js",
+        "receipt-elimination-_1PJkoNv.js",
+        "residual-springs-O__DwU7E.js",
+        "responsible-sorter-CM1ldbGF.js",
+        "retrieval-handoffs-BtTlOsj2.js",
+        "rubber-band-coefficients-BAGQvMKs.js",
+        "seed-ribbon-C-UsGXnq.js",
+        "seeded-examples-BOHOHv4f.js",
+        "sha256-seal-C49F6LRa.js",
+        "smoke-detector-BSuInz3I.js",
+        "smoothie-fyxcMhGw.js",
+        "smoothie-row-and-column-Bx9oIhzn.js",
+        "solution-cases-3d-DmBhX0nw.js",
+        "span-carpet-D8yhkO6U.js",
+        "subgroup-river-_mL7lU1t.js",
+        "team-mask-CHotFjno.js",
+        "tensor-address-CebqEk4A.js",
+        "token-conveyor-Swbxju-p.js",
+        "trades-stopwatch-D5bKFmWD.js",
+        "training-book-DAH2ziC9.js",
+        "tree-vote-field-DaQLJray.js",
+        "two-tags-one-list-Y0hFS2HA.js",
+        "vending-frame-CsflIpl-.js",
+        "FigureRuntime-CuWCOdQO.js",
+        "jsxRuntime.module-CiWe4dQY.js",
+        "FigureRuntime-DasOMywR.css",
+        "ChallengeView-B2Vwg3Tr.js",
+        "ModuleView-Di5GjWVr.js",
+        "FamilyExerciseView-CL_zz4QL.js",
+        "preload-helper-HclGiUj8.js",
+        "family-core-BznwKKP9.js",
+        "procedural-classify-CWsecG8-.js",
+        "procedural-transform-XOijixfe.js",
+        "family-core-ClJM2XID.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-construct-CTsKU_v9.js",
+        "procedural-aggregate-D-NvOl4G.js",
+        "procedural-aggregate-BDT2-7st.js",
+        "procedural-balance-CkGECWdV.js",
+        "procedural-classify-BYkg-l34.js",
+        "procedural-classify-CjyXaqzQ.js",
+        "procedural-compose-BXmtbsm6.js",
+        "procedural-compose-SakblQvI.js",
+        "procedural-construct-CXbQ20VE.js",
+        "procedural-construct-BNsXNcm0.js",
+        "procedural-fit-MwoNmnd3.js",
+        "procedural-fit-CS8pqJ0p.js",
+        "procedural-formula-eIPs3_sk.js",
+        "procedural-formula-DVmMSSEk.js",
+        "procedural-mix-Dfq5bhX3.js",
+        "procedural-optimize-CerGT-1H.js",
+        "procedural-optimize-CAebIA9Y.js",
+        "procedural-rank-BiqAfctD.js",
+        "procedural-rank-472ldzc5.js",
+        "procedural-reproduce-JJoAZ7S3.js",
+        "procedural-reproduce-C9oQSTCw.js",
+        "procedural-trace-BrrrKm82.js",
+        "procedural-trace-8TQg7Gy5.js",
+        "procedural-transform-DFg7qamu.js",
+        "procedural-transform-BUPyWCVe.js",
+        "procedural-validate-BeJMj1cK.js",
+        "procedural-validate-B5oE6RtY.js",
+        "procedural-worked-TYjnS3aB.js",
+        "jsxRuntime.module-CiWe4dQY.js",
+        "preload-helper-HclGiUj8.js"
+      ]
+    },
+    {
+      "file": "index-CvyytOVy.css",
+      "bytes": 58487,
+      "gzipBytes": 11650,
+      "sha256": "f428779711814298e257bb803263508ee0f8bc1824243943bcc17ec7f4bdfd89",
+      "imports": []
+    },
+    {
+      "file": "ledger-BvdZqpKn.js",
+      "bytes": 516,
+      "gzipBytes": 319,
+      "sha256": "a2614ec276929de823c0e0499be03f169b9aac8aa153daa197849a3e28cff8f4",
+      "imports": [
+        "trace-stage-frqUHTRz.js"
+      ]
+    },
+    {
+      "file": "library-attention-DpBNWMa3.js",
+      "bytes": 3430,
+      "gzipBytes": 1821,
+      "sha256": "5aca39e64932c5466b4b732119ab5424bc87c4a47ae89c94f41c4dee145e4183",
+      "imports": [
+        "f2-models-CcvxZJQe.js"
+      ]
+    },
+    {
+      "file": "logistic-sorter-C4Es1wsh.js",
+      "bytes": 1022,
+      "gzipBytes": 608,
+      "sha256": "09b3e06bfd3fb1691f2ce9a1e9da417975b04de6a0b87342949dad726e6a7f2c",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "threshold-stage-C8r8An3d.js"
+      ]
+    },
+    {
+      "file": "mail-sorter-92_mA_dX.js",
+      "bytes": 875,
+      "gzipBytes": 546,
+      "sha256": "a4cc49d1f4e8ce70a6335ba407f0a12434200d497f1bd5975e67b1197c0e4fa7",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "pipeline-model-CO3ClH1I.js",
+        "pipeline-stage-COGTLMEP.js"
+      ]
+    },
+    {
+      "file": "missing-high-sales-CfMCAPkO.js",
+      "bytes": 1951,
+      "gzipBytes": 1124,
+      "sha256": "0670224be7573f93809bf08c3f4b9f6c6d21a26161bb976d5feef4ea21786985",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "distribution-model-C3lsuA4Q.js"
+      ]
+    },
+    {
+      "file": "mix-to-target-BDqmU4wG.js",
+      "bytes": 651,
+      "gzipBytes": 314,
+      "sha256": "28291d6d33e85be7d0ba72cc41eba89b73b894fc84ac9882a64b8c4ae68f80e2",
+      "imports": []
+    },
+    {
+      "file": "mix-to-target-DnqDxKAK.js",
+      "bytes": 2047,
+      "gzipBytes": 1109,
+      "sha256": "41a4546c6ddeceda0d5d970f26a4d699f1f8eb3b07b18da97089cadb944e1e69",
+      "imports": [
+        "index-B2RrSF35.js",
+        "linalg-stage-TglVcHss.js",
+        "f12-diagram-CgupwZWu.js"
+      ]
+    },
+    {
+      "file": "mse-landscape-B5Y1PaVt.js",
+      "bytes": 5350,
+      "gzipBytes": 2717,
+      "sha256": "0154752972e5238f07d226bdd4502bf5851e3a1b6cac63087eca2d98b0436a90",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js",
+        "optimization-plot-Bo5RY3D7.js"
+      ]
+    },
+    {
+      "file": "mse-section-BvVKn8vC.js",
+      "bytes": 1861,
+      "gzipBytes": 1092,
+      "sha256": "9dffc0cca3010847263c11d3d723ff641cdc336dcc5442d60c39fb00612daaea",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js"
+      ]
+    },
+    {
+      "file": "name-tags-B_Gasqhn.js",
+      "bytes": 712,
+      "gzipBytes": 440,
+      "sha256": "7b211cf75897e00cbd2c3d17fe4217e0d6b6383b861b6bb9208b8ca476e39b59",
+      "imports": [
+        "trace-stage-frqUHTRz.js"
+      ]
+    },
+    {
+      "file": "order-times-prices-DsBeirqu.js",
+      "bytes": 2941,
+      "gzipBytes": 1567,
+      "sha256": "9bb0b6f89923976b7f29200aa4c42a465647046a9706092fef1973727f809641",
+      "imports": [
+        "f2-models-CcvxZJQe.js"
+      ]
+    },
+    {
+      "file": "plug-adapter-BXO4i_-G.js",
+      "bytes": 2741,
+      "gzipBytes": 1510,
+      "sha256": "eb4195cbefe9e57405fec994b1305b1cd0b17826f06653f454be6fd4b10b9818",
+      "imports": [
+        "f2-models-CcvxZJQe.js"
+      ]
+    },
+    {
+      "file": "power-stack-D3Vs7U_p.js",
+      "bytes": 1658,
+      "gzipBytes": 956,
+      "sha256": "cc3b1d25c1a5c4e4c83fa9b77955901f904fb733dc5ccccc708b9b69f0e64e06",
+      "imports": [
+        "f12-diagram-CgupwZWu.js"
+      ]
+    },
+    {
+      "file": "receipt-echelon-3x3-DEOYIK-D.js",
+      "bytes": 2515,
+      "gzipBytes": 1358,
+      "sha256": "acd046e6c6696c11bc8e5ca8b8bb179467d728c7a12dbed59797e47a84b7d5c2",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js",
+        "receipt-stage-CH8IbLW8.js"
+      ]
+    },
+    {
+      "file": "receipt-elimination-_1PJkoNv.js",
+      "bytes": 2436,
+      "gzipBytes": 1358,
+      "sha256": "5b67d1bb69280ecb5cd3151bb03388e8b812df6afc663646cfcca1c24e14af27",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js",
+        "receipt-stage-CH8IbLW8.js"
+      ]
+    },
+    {
+      "file": "residual-springs-O__DwU7E.js",
+      "bytes": 1975,
+      "gzipBytes": 1154,
+      "sha256": "32f7d7d19e1df787ee73cfdec811628a8699f2851e0396ca5b37f9298d47bb10",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js"
+      ]
+    },
+    {
+      "file": "responsible-sorter-CM1ldbGF.js",
+      "bytes": 952,
+      "gzipBytes": 578,
+      "sha256": "aacc24da9fba6ab528b2e8c8dca6d8b06b27c235d450c0724e1d8185091ff057",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "threshold-stage-C8r8An3d.js"
+      ]
+    },
+    {
+      "file": "retrieval-handoffs-BtTlOsj2.js",
+      "bytes": 1725,
+      "gzipBytes": 938,
+      "sha256": "6724c5af9e3ad82dce56c86e73e191a4f3086e51ff6327a007e9cb8627929dff",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "optimization-plot-Bo5RY3D7.js",
+        "s8b-diagram-DOKIaBhh.js"
+      ]
+    },
+    {
+      "file": "rubber-band-coefficients-BAGQvMKs.js",
+      "bytes": 2072,
+      "gzipBytes": 1209,
+      "sha256": "a7e32506eee88c44221282566baff967593aa8202b4bb2fec54d5d3b18f49d5e",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js"
+      ]
+    },
+    {
+      "file": "seed-ribbon-C-UsGXnq.js",
+      "bytes": 2993,
+      "gzipBytes": 1576,
+      "sha256": "42f63a29433414bc245ddba1375b8d5a89a14e97e649bd0e69912a4ea522438c",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "distribution-model-C3lsuA4Q.js",
+        "seeded-examples-BOHOHv4f.js"
+      ]
+    },
+    {
+      "file": "sha256-seal-C49F6LRa.js",
+      "bytes": 2342,
+      "gzipBytes": 1284,
+      "sha256": "3e425b4f5858f852934f7e0c8084128f854927713aba9eac7461de5bbc8e41a3",
+      "imports": [
+        "linalg-stage-TglVcHss.js",
+        "optimization-plot-Bo5RY3D7.js",
+        "s8b-diagram-DOKIaBhh.js",
+        "sha256-B7bRhDWS.js"
+      ]
+    },
+    {
+      "file": "smoke-detector-BSuInz3I.js",
+      "bytes": 491,
+      "gzipBytes": 301,
+      "sha256": "3c581431116422c8755fb30187000bbf89c1a215789718a280fc6e7b9cf62295",
+      "imports": [
+        "trace-stage-frqUHTRz.js"
+      ]
+    },
+    {
+      "file": "smoothie-fyxcMhGw.js",
+      "bytes": 24754,
+      "gzipBytes": 9481,
+      "sha256": "949b5c3d02bd51372278830146a051f7a70f8864d93ff4bf4438529068c91063",
+      "imports": [
+        "figure-kit-BpeHFFpC.js"
+      ]
+    },
+    {
+      "file": "smoothie-row-and-column-Bx9oIhzn.js",
+      "bytes": 4063,
+      "gzipBytes": 2155,
+      "sha256": "552ec64068c8bdc7b67c63093be146cc7199b8f333d90c2d00d9c221d374ae5a",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js"
+      ]
+    },
+    {
+      "file": "solution-cases-3d-DmBhX0nw.js",
+      "bytes": 3435,
+      "gzipBytes": 1722,
+      "sha256": "d7dc6a2fcac607dbc4ed65dab758c8c62c1f30d1919e38a504db4a2382db239b",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js"
+      ]
+    },
+    {
+      "file": "span-carpet-D8yhkO6U.js",
+      "bytes": 2581,
+      "gzipBytes": 1435,
+      "sha256": "32c9554dbb1b4af1b9ac1951a4998a6cc4cd0886f3c531f6dfc674f7acef6aea",
+      "imports": [
+        "linalg-stage-TglVcHss.js"
+      ]
+    },
+    {
+      "file": "subgroup-river-_mL7lU1t.js",
+      "bytes": 2227,
+      "gzipBytes": 1214,
+      "sha256": "6f09793059d1660f53daccd3120d57e0c436539ca29577578e5718532163e334",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "distribution-model-C3lsuA4Q.js"
+      ]
+    },
+    {
+      "file": "team-mask-CHotFjno.js",
+      "bytes": 1760,
+      "gzipBytes": 999,
+      "sha256": "b96dead31c505306a91670d514671c0b3f7ca748ad6b4a51ac58044568f97939",
+      "imports": [
+        "f2-models-CcvxZJQe.js"
+      ]
+    },
+    {
+      "file": "tensor-address-CebqEk4A.js",
+      "bytes": 2094,
+      "gzipBytes": 1198,
+      "sha256": "335a9e45a3e9a391073417896dbe2cc62b51a7eba9d8b9ff5a9d8400133e26f1",
+      "imports": [
+        "f2-models-CcvxZJQe.js"
+      ]
+    },
+    {
+      "file": "token-conveyor-Swbxju-p.js",
+      "bytes": 880,
+      "gzipBytes": 532,
+      "sha256": "18dc27099cf9402938e79de9f3830b8fdb38ddd64a01eff398b79289ef6416ca",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "pipeline-model-CO3ClH1I.js",
+        "pipeline-stage-COGTLMEP.js"
+      ]
+    },
+    {
+      "file": "trades-stopwatch-D5bKFmWD.js",
+      "bytes": 927,
+      "gzipBytes": 576,
+      "sha256": "a4ac74fe1b05e98c5e888d4333a9d39a731263202c0793b5e2637b71899855a2",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "pipeline-model-CO3ClH1I.js",
+        "pipeline-stage-COGTLMEP.js"
+      ]
+    },
+    {
+      "file": "training-book-DAH2ziC9.js",
+      "bytes": 2113,
+      "gzipBytes": 1187,
+      "sha256": "84ed77ffe6e5d1a2801c42ec0ed93bf0323fded9c7708b0ec896ffa08d2008da",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js"
+      ]
+    },
+    {
+      "file": "tree-vote-field-DaQLJray.js",
+      "bytes": 4672,
+      "gzipBytes": 2253,
+      "sha256": "a3b136b2e5c0161447055bc38b5a2d4d7bbfa7cc74923596921d2f4e19da29d5",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "distribution-model-C3lsuA4Q.js",
+        "seeded-examples-BOHOHv4f.js"
+      ]
+    },
+    {
+      "file": "two-tags-one-list-Y0hFS2HA.js",
+      "bytes": 795,
+      "gzipBytes": 502,
+      "sha256": "113b97bdf7df83afc888d6b987d5311ed3affad50b66b09b609b509005c91ac3",
+      "imports": [
+        "trace-stage-frqUHTRz.js"
+      ]
+    },
+    {
+      "file": "vending-frame-CsflIpl-.js",
+      "bytes": 604,
+      "gzipBytes": 393,
+      "sha256": "8d984f52646c5db6e239c0e231bdbb09b3301db16c92a8e45e5b442c7d7b2d7e",
+      "imports": [
+        "trace-stage-frqUHTRz.js"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "file": "ChallengeView-B2Vwg3Tr.js",
+      "bytes": 6405,
+      "gzipBytes": 2589,
+      "sha256": "764b006f8440100c9dbd3e36753a1ad1c21fa631065ff2e8498b9832c9da1607",
+      "imports": [
+        "jsxRuntime.module-CiWe4dQY.js",
+        "index-B2RrSF35.js"
+      ]
+    },
+    {
+      "file": "FamilyExerciseView-CL_zz4QL.js",
+      "bytes": 36829,
+      "gzipBytes": 12461,
+      "sha256": "2c0f678ccc80581a411e48893c144db6cab61f150e31250c915ae51e42926aab",
+      "imports": [
+        "HintFigure-merjrYgI.js",
+        "jsxRuntime.module-CiWe4dQY.js",
+        "index-B2RrSF35.js",
+        "preload-helper-HclGiUj8.js",
+        "index-CvyytOVy.css",
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js",
+        "FigureRuntime-CuWCOdQO.js",
+        "FigureRuntime-DasOMywR.css",
+        "SceneBuildControls-rX-LWn3Q.js",
+        "f12-diagram-CgupwZWu.js",
+        "scene-build-state-CpigKCmN.js",
+        "balance_model-_Hk2bGpC.js",
+        "SceneBuildControls-Dv-jQrDV.css",
+        "CodeEditor-CVZQB9-f.js",
+        "smoothie-fyxcMhGw.js",
+        "jsxRuntime.module-CiWe4dQY.js",
+        "preload-helper-HclGiUj8.js",
+        "index-B2RrSF35.js",
+        "figure-kit-BpeHFFpC.js",
+        "balance_model-_Hk2bGpC.js",
+        "family-core-BznwKKP9.js",
+        "procedural-aggregate-D-NvOl4G.js",
+        "procedural-balance-CkGECWdV.js",
+        "procedural-classify-BYkg-l34.js",
+        "procedural-compose-BXmtbsm6.js",
+        "procedural-construct-CXbQ20VE.js",
+        "procedural-fit-MwoNmnd3.js",
+        "procedural-formula-eIPs3_sk.js",
+        "procedural-mix-Dfq5bhX3.js",
+        "procedural-optimize-CerGT-1H.js",
+        "procedural-rank-BiqAfctD.js",
+        "procedural-reproduce-JJoAZ7S3.js",
+        "procedural-trace-BrrrKm82.js",
+        "procedural-transform-DFg7qamu.js",
+        "procedural-validate-BeJMj1cK.js",
+        "procedural-worked-TYjnS3aB.js"
+      ]
+    },
+    {
+      "file": "ModuleView-Di5GjWVr.js",
+      "bytes": 4138,
+      "gzipBytes": 1544,
+      "sha256": "318e0d1b73a3163490cd2dfd052f3e16c246ebdd4366555f711724679856d72e",
+      "imports": [
+        "jsxRuntime.module-CiWe4dQY.js",
+        "index-B2RrSF35.js"
+      ]
+    },
+    {
+      "file": "balance_model-_Hk2bGpC.js",
+      "bytes": 1979,
+      "gzipBytes": 925,
+      "sha256": "6ba09afe83ada5ab3ea7806162e42ab79bf3a46b8d4fa5e8f7463f5c9b8be22f",
+      "imports": []
+    },
+    {
+      "file": "distribution-model-C3lsuA4Q.js",
+      "bytes": 2201,
+      "gzipBytes": 1091,
+      "sha256": "c8e0597e9ac47e849b82f288476464d071e53adc40c689df3d60d11682fa5e4b",
+      "imports": []
+    },
+    {
+      "file": "f12-diagram-CgupwZWu.js",
+      "bytes": 2016,
+      "gzipBytes": 1103,
+      "sha256": "3da65cb91d71fd5f2cca678e7142e45bcd62e88a02217559f25d751436c8f3a0",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js"
+      ]
+    },
+    {
+      "file": "f2-models-CcvxZJQe.js",
+      "bytes": 5268,
+      "gzipBytes": 2405,
+      "sha256": "be96aa29c5a0406be015581a305e30d9979628695c48b59232a66e51f0b33e3d",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js"
+      ]
+    },
+    {
+      "file": "family-core-BznwKKP9.js",
+      "bytes": 318528,
+      "gzipBytes": 100901,
+      "sha256": "da3451cd652240a3766b265628391e9ff3f2fb40c4fc36eb5e552355da0f4540",
+      "imports": [
+        "pyodide_runner-D9o7scDU.js",
+        "FamilyExerciseView-CL_zz4QL.js",
+        "smoothie-fyxcMhGw.js",
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js",
+        "jsxRuntime.module-CiWe4dQY.js",
+        "preload-helper-HclGiUj8.js",
+        "index-B2RrSF35.js",
+        "index-CvyytOVy.css",
+        "balance_model-_Hk2bGpC.js",
+        "procedural-aggregate-D-NvOl4G.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-aggregate-BDT2-7st.js",
+        "procedural-balance-CkGECWdV.js",
+        "f12-diagram-CgupwZWu.js",
+        "procedural-classify-BYkg-l34.js",
+        "procedural-classify-CjyXaqzQ.js",
+        "procedural-compose-BXmtbsm6.js",
+        "procedural-compose-SakblQvI.js",
+        "procedural-construct-CXbQ20VE.js",
+        "procedural-construct-BNsXNcm0.js",
+        "procedural-fit-MwoNmnd3.js",
+        "procedural-fit-CS8pqJ0p.js",
+        "procedural-formula-eIPs3_sk.js",
+        "procedural-formula-DVmMSSEk.js",
+        "procedural-mix-Dfq5bhX3.js",
+        "procedural-optimize-CerGT-1H.js",
+        "procedural-optimize-CAebIA9Y.js",
+        "procedural-rank-BiqAfctD.js",
+        "procedural-rank-472ldzc5.js",
+        "procedural-reproduce-JJoAZ7S3.js",
+        "procedural-reproduce-C9oQSTCw.js",
+        "procedural-trace-BrrrKm82.js",
+        "procedural-trace-8TQg7Gy5.js",
+        "procedural-transform-DFg7qamu.js",
+        "procedural-transform-BUPyWCVe.js",
+        "procedural-validate-BeJMj1cK.js",
+        "procedural-validate-B5oE6RtY.js",
+        "procedural-worked-TYjnS3aB.js",
+        "preload-helper-HclGiUj8.js",
+        "index-B2RrSF35.js",
+        "procedural-classify-CWsecG8-.js",
+        "procedural-transform-XOijixfe.js",
+        "family-core-ClJM2XID.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-construct-CTsKU_v9.js",
+        "FamilyExerciseView-CL_zz4QL.js"
+      ]
+    },
+    {
+      "file": "family-core-CYL_-pKz.js",
+      "bytes": 3955,
+      "gzipBytes": 1783,
+      "sha256": "c2f44231593d90b332349db9bdd6f1ae8900713b732ebc578ac7fd0cda7e6221",
+      "imports": [
+        "family-core-BznwKKP9.js"
+      ]
+    },
+    {
+      "file": "family-core-ClJM2XID.js",
+      "bytes": 241770,
+      "gzipBytes": 58639,
+      "sha256": "5cfc7b28bd7fe5fb9cdcd1368aea4db2f77e66134bd17780ffbee4ff9dfcdbab",
+      "imports": []
+    },
+    {
+      "file": "graph-model-CS_P7IiK.js",
+      "bytes": 2054,
+      "gzipBytes": 980,
+      "sha256": "c7260045394422d8edf740ff16bcaf3834ba3007df5d3a8acefbb1204c4acfe0",
+      "imports": []
+    },
+    {
+      "file": "jsxRuntime.module-CiWe4dQY.js",
+      "bytes": 13604,
+      "gzipBytes": 5530,
+      "sha256": "b9d40db1649fbdb17b33f84d5d05746bf96009fdea985ef9bd33a52f9fceaace",
+      "imports": []
+    },
+    {
+      "file": "linalg-stage-TglVcHss.js",
+      "bytes": 1831,
+      "gzipBytes": 1018,
+      "sha256": "efbabc7761a8980efa0a9e174f460dad55d032db0305c42d71751646ef1fe0fa",
+      "imports": [
+        "figure-kit-BpeHFFpC.js"
+      ]
+    },
+    {
+      "file": "optimization-plot-Bo5RY3D7.js",
+      "bytes": 3304,
+      "gzipBytes": 1743,
+      "sha256": "91d002d1dc151ea842573bb977ddcfb574e3d2ef31c804f406ea97468cb41d79",
+      "imports": [
+        "linalg-stage-TglVcHss.js"
+      ]
+    },
+    {
+      "file": "pipeline-model-CO3ClH1I.js",
+      "bytes": 3210,
+      "gzipBytes": 1463,
+      "sha256": "2b5170e528a476eb995bf7be7acef390938d920e0930279c9f808cd6f26632bc",
+      "imports": []
+    },
+    {
+      "file": "pipeline-stage-COGTLMEP.js",
+      "bytes": 6142,
+      "gzipBytes": 2778,
+      "sha256": "03c257fd39f512b8a029b4b3d93c4562ae954de47b62b3d9b3c08ee59467f874",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "f12-diagram-CgupwZWu.js"
+      ]
+    },
+    {
+      "file": "preload-helper-HclGiUj8.js",
+      "bytes": 1211,
+      "gzipBytes": 675,
+      "sha256": "bba5840eec0028b00854bcd58fba80694d02d41e98417656424c05b26db7120c",
+      "imports": []
+    },
+    {
+      "file": "procedural-aggregate-BDT2-7st.js",
+      "bytes": 69196,
+      "gzipBytes": 16956,
+      "sha256": "c3bb7349e451dafc75669ab5959ff8c442b5aec0795e22f4a86fd153ab5969a8",
+      "imports": []
+    },
+    {
+      "file": "procedural-aggregate-D-NvOl4G.js",
+      "bytes": 26852,
+      "gzipBytes": 9244,
+      "sha256": "ea4173869bf16088155361d68c5e157bedf5517ad1782b1fd33925da2dc57b72",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-aggregate-BDT2-7st.js"
+      ]
+    },
+    {
+      "file": "procedural-balance-CkGECWdV.js",
+      "bytes": 1766,
+      "gzipBytes": 1072,
+      "sha256": "05427f4a015520b20b7cee3ccb5202363c6aa10a5c2b6ea1dfa71f5176967254",
+      "imports": [
+        "f12-diagram-CgupwZWu.js",
+        "balance_model-_Hk2bGpC.js",
+        "family-core-BznwKKP9.js"
+      ]
+    },
+    {
+      "file": "procedural-classify-BYkg-l34.js",
+      "bytes": 4162,
+      "gzipBytes": 1934,
+      "sha256": "26d078a368bac5335a14c68757509374d2933e051a1a086bf9ddca7fc6ebded4",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-classify-CjyXaqzQ.js"
+      ]
+    },
+    {
+      "file": "procedural-classify-CWsecG8-.js",
+      "bytes": 418391,
+      "gzipBytes": 108883,
+      "sha256": "e4fe80ae501be819e8ed8cefa56cde17372a5d9aaffe24a671b1da1e84f75bcf",
+      "imports": []
+    },
+    {
+      "file": "procedural-classify-CjyXaqzQ.js",
+      "bytes": 13374,
+      "gzipBytes": 3684,
+      "sha256": "acc9eadf31483c9499bf8ce68196ad0b0d2f1cf45350a134dfa9bce0e241af6a",
+      "imports": []
+    },
+    {
+      "file": "procedural-compose-BXmtbsm6.js",
+      "bytes": 1746,
+      "gzipBytes": 970,
+      "sha256": "bd468e2ae0860bcc8f32bbdb17ced62c252f770a3d79cea8459c3efd075df561",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-compose-SakblQvI.js"
+      ]
+    },
+    {
+      "file": "procedural-compose-SakblQvI.js",
+      "bytes": 9038,
+      "gzipBytes": 2877,
+      "sha256": "9714d0ea923c87ce2dfec5d908ab6d4056039829e1e14643bf1d8c39696ddbcc",
+      "imports": []
+    },
+    {
+      "file": "procedural-construct-BNsXNcm0.js",
+      "bytes": 62003,
+      "gzipBytes": 14217,
+      "sha256": "2b8bd801c87ffc7ac0b3ae7f0212723783190acd125a6017e3129de6ff132bca",
+      "imports": []
+    },
+    {
+      "file": "procedural-construct-CTsKU_v9.js",
+      "bytes": 26622,
+      "gzipBytes": 9286,
+      "sha256": "b55425db4c369142e751fd710034b92936ac4f8612e90f75ae9557086a42dc5d",
+      "imports": []
+    },
+    {
+      "file": "procedural-construct-CXbQ20VE.js",
+      "bytes": 34206,
+      "gzipBytes": 10621,
+      "sha256": "0f8398f2e853b619882a080e244e64fe41b4ff8c8fe065203867cdcea6906ce9",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-construct-BNsXNcm0.js"
+      ]
+    },
+    {
+      "file": "procedural-fit-CS8pqJ0p.js",
+      "bytes": 77082,
+      "gzipBytes": 19032,
+      "sha256": "8494bbeae267f6330b4a52da34b0ac2460f95465153b249d78a5e8933a901788",
+      "imports": []
+    },
+    {
+      "file": "procedural-fit-MwoNmnd3.js",
+      "bytes": 28857,
+      "gzipBytes": 7418,
+      "sha256": "47b2b318ed67109e4ad6cf096efd4578f9c01e8aae716dafca5e9ee848c7dfd9",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-fit-CS8pqJ0p.js"
+      ]
+    },
+    {
+      "file": "procedural-formula-DVmMSSEk.js",
+      "bytes": 21386,
+      "gzipBytes": 5749,
+      "sha256": "338bfa83f26ea88aa34943cd40b07cb10e7ec9cf4a349d21b8ce30c4865a7280",
+      "imports": []
+    },
+    {
+      "file": "procedural-formula-eIPs3_sk.js",
+      "bytes": 6983,
+      "gzipBytes": 2367,
+      "sha256": "7928fbad67d95f2068c7694569903bf6103764d4cc39311310db488bb3de4ec2",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-formula-DVmMSSEk.js"
+      ]
+    },
+    {
+      "file": "procedural-mix-Dfq5bhX3.js",
+      "bytes": 1767,
+      "gzipBytes": 1061,
+      "sha256": "d7f821aff174865217dded3f2bb501ba0eba0abd590219bab46ed2ac33d85d6e",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "FamilyExerciseView-CL_zz4QL.js"
+      ]
+    },
+    {
+      "file": "procedural-optimize-CAebIA9Y.js",
+      "bytes": 89808,
+      "gzipBytes": 23078,
+      "sha256": "2ee36d09e0b026968bbef81e38479d395f14508188b83162ee088e0c47ecbc20",
+      "imports": []
+    },
+    {
+      "file": "procedural-optimize-CerGT-1H.js",
+      "bytes": 38115,
+      "gzipBytes": 11437,
+      "sha256": "8443482eaaf8d66749949517269f48d844cffa3979e121d2c38f080bb91cead0",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-optimize-CAebIA9Y.js"
+      ]
+    },
+    {
+      "file": "procedural-rank-472ldzc5.js",
+      "bytes": 7619,
+      "gzipBytes": 2430,
+      "sha256": "373e2f5ecf564abbd885fef7815221f3c3b58fba6e35354180ad7c8e5a78b296",
+      "imports": []
+    },
+    {
+      "file": "procedural-rank-BiqAfctD.js",
+      "bytes": 2702,
+      "gzipBytes": 1362,
+      "sha256": "d7cabb53667d932346a47a0c0a6637ec2988f1dc8a528e9f34cd82125f4412b4",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-rank-472ldzc5.js"
+      ]
+    },
+    {
+      "file": "procedural-reproduce-C9oQSTCw.js",
+      "bytes": 77436,
+      "gzipBytes": 18435,
+      "sha256": "d19e33675c2ad22d334df4715249786cf83e4a6e7d104a8dd107d42139a1d21a",
+      "imports": []
+    },
+    {
+      "file": "procedural-reproduce-JJoAZ7S3.js",
+      "bytes": 21987,
+      "gzipBytes": 7096,
+      "sha256": "657c20aa843a81c44d785c76bf13f6a398dea3cf8cb9f9d15fd6a4ed5b11efe2",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-reproduce-C9oQSTCw.js"
+      ]
+    },
+    {
+      "file": "procedural-trace-8TQg7Gy5.js",
+      "bytes": 17977,
+      "gzipBytes": 6412,
+      "sha256": "ba10fc734bab9de3d3ce8d418e88f560203a69bad4bc24160f369115a79c0565",
+      "imports": []
+    },
+    {
+      "file": "procedural-trace-BrrrKm82.js",
+      "bytes": 26551,
+      "gzipBytes": 9495,
+      "sha256": "55d6648ec49631228599228e89041f722bf254b9232c4dfbb18d055c3de4ac01",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-trace-8TQg7Gy5.js"
+      ]
+    },
+    {
+      "file": "procedural-transform-BUPyWCVe.js",
+      "bytes": 14283,
+      "gzipBytes": 4145,
+      "sha256": "847b9731da956ae7794317097e212fe8ba4176c5ebe85dc1449c41e286de25c0",
+      "imports": []
+    },
+    {
+      "file": "procedural-transform-DFg7qamu.js",
+      "bytes": 4568,
+      "gzipBytes": 1701,
+      "sha256": "a1892aa6273b0e8b536b3af9b1f13075db61c9923451ef80b82ecf4ea32db032",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-transform-BUPyWCVe.js"
+      ]
+    },
+    {
+      "file": "procedural-transform-XOijixfe.js",
+      "bytes": 313,
+      "gzipBytes": 182,
+      "sha256": "2631899e732f1f159263922c21a606ab90fe25c5465ed06041aeb38f65a5fe32",
+      "imports": []
+    },
+    {
+      "file": "procedural-validate-B5oE6RtY.js",
+      "bytes": 57453,
+      "gzipBytes": 14130,
+      "sha256": "f2cd2646fb48f808fba19a1e0eece671952079b64667e4e15a94e91ba6f87892",
+      "imports": []
+    },
+    {
+      "file": "procedural-validate-BeJMj1cK.js",
+      "bytes": 18670,
+      "gzipBytes": 6336,
+      "sha256": "1ddd8142a75eb61bbaa2f92320b236a41d8fd775c0d6292b9754e1b4f1ec708e",
+      "imports": [
+        "family-core-BznwKKP9.js",
+        "family-core-CYL_-pKz.js",
+        "procedural-validate-B5oE6RtY.js"
+      ]
+    },
+    {
+      "file": "procedural-worked-TYjnS3aB.js",
+      "bytes": 11576,
+      "gzipBytes": 3574,
+      "sha256": "73c543a821ff4674b9f74efece0fba3a249cd43f483b32ab32f1239ad7bb1813",
+      "imports": [
+        "family-core-BznwKKP9.js"
+      ]
+    },
+    {
+      "file": "receipt-stage-CH8IbLW8.js",
+      "bytes": 784,
+      "gzipBytes": 511,
+      "sha256": "623e5e0f3bad71833fe3bc66721b3096371c441166831f3e032daf1023967755",
+      "imports": [
+        "figure-kit-BpeHFFpC.js",
+        "linalg-stage-TglVcHss.js"
+      ]
+    },
+    {
+      "file": "s8b-diagram-DOKIaBhh.js",
+      "bytes": 809,
+      "gzipBytes": 507,
+      "sha256": "38b714d6b69764116d179eec47d3c7b823934576cc37e2a78b895c1d74d52283",
+      "imports": [
+        "linalg-stage-TglVcHss.js",
+        "optimization-plot-Bo5RY3D7.js"
+      ]
+    },
+    {
+      "file": "scene-build-state-CpigKCmN.js",
+      "bytes": 1139,
+      "gzipBytes": 647,
+      "sha256": "c83c10aca082a81dfb9f893b2bdd9a82aaa9514dfa77fc8403d13ed9f25afbc8",
+      "imports": [
+        "index-B2RrSF35.js",
+        "balance_model-_Hk2bGpC.js"
+      ]
+    },
+    {
+      "file": "seeded-examples-BOHOHv4f.js",
+      "bytes": 527,
+      "gzipBytes": 268,
+      "sha256": "a0294070b9773fe12702e144de9a8b9024f52a45cba65066d21c47f7f3f349d3",
+      "imports": []
+    },
+    {
+      "file": "sha256-B7bRhDWS.js",
+      "bytes": 1993,
+      "gzipBytes": 1190,
+      "sha256": "930cc06b90c01d4770a7eb87fb107f748dd9dfdb80de071eca1b8278f28c3acd",
+      "imports": []
+    },
+    {
+      "file": "threshold-stage-C8r8An3d.js",
+      "bytes": 5720,
+      "gzipBytes": 2679,
+      "sha256": "e8e680dcbef2dca74d9e76dd0fde9af879dffb3527d30aecc87f16548f1f359a",
+      "imports": [
+        "optimization-plot-Bo5RY3D7.js",
+        "f12-diagram-CgupwZWu.js"
+      ]
+    },
+    {
+      "file": "token-model-CFa6GRRL.js",
+      "bytes": 1300,
+      "gzipBytes": 730,
+      "sha256": "a548cc10928bc305192000c3429931ca88bfd74a7923b0641a45694beeda816e",
+      "imports": []
+    },
+    {
+      "file": "trace-stage-frqUHTRz.js",
+      "bytes": 11495,
+      "gzipBytes": 3105,
+      "sha256": "848082cb4fe9eb5a35749faa7608f7bd2a420f23099b94ab68e05a466731bb41",
+      "imports": [
+        "figure-kit-BpeHFFpC.js"
+      ]
+    }
+  ]
+}

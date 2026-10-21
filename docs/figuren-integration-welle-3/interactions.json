@@ -1,0 +1,87 @@
+{
+  "explore": {
+    "newParametersHaveSeparateAnswer": true,
+    "previousAnswerAndVerdictRestored": true,
+    "invalidValueKeepsPicture": true,
+    "invalidFeedback": "Bitte einen Wert von 0,005 bis 0,3 in Schritten von 0,005 eingeben.",
+    "appliedValueRestoredAfterReload": true
+  },
+  "compare": {
+    "b": {
+      "text": "Lassoλ = 2w₁ = 1w₂ = 0w₃ = 00+3",
+      "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+      "azimuth": "0.0"
+    },
+    "a": {
+      "text": "Ridgeλ = 2w₁ = 1w₂ = 0,5w₃ = -0,3330+3",
+      "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+      "azimuth": "0.0"
+    },
+    "sameAzimuth": true
+  },
+  "glossary": [
+    {
+      "width": 375,
+      "theme": "light",
+      "overflow": [
+        {
+          "tabIndex": 0,
+          "scrollWidth": 393,
+          "clientWidth": 301
+        },
+        {
+          "tabIndex": 0,
+          "scrollWidth": 665,
+          "clientWidth": 301
+        },
+        {
+          "tabIndex": 0,
+          "scrollWidth": 503,
+          "clientWidth": 301
+        },
+        {
+          "tabIndex": -1,
+          "scrollWidth": 320,
+          "clientWidth": 301
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "theme": "dark",
+      "overflow": [
+        {
+          "tabIndex": 0,
+          "scrollWidth": 393,
+          "clientWidth": 301
+        },
+        {
+          "tabIndex": 0,
+          "scrollWidth": 665,
+          "clientWidth": 301
+        },
+        {
+          "tabIndex": 0,
+          "scrollWidth": 503,
+          "clientWidth": 301
+        },
+        {
+          "tabIndex": -1,
+          "scrollWidth": 320,
+          "clientWidth": 301
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "overflow": []
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "overflow": []
+    }
+  ],
+  "errors": []
+}
