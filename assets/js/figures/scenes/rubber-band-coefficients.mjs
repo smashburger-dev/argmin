@@ -18,7 +18,7 @@ function values(m, phase) {
 }
 const methodName = (m, phase) => phase === 0 ? 'Ohne Strafe' : m.method || phase === 2 ? 'Lasso' : phase > 1 ? 'Übergang Ridge → Lasso' : 'Ridge';
 function items(m, phase) {
-  const v = values(m, phase), title = phase < 1 ? 'Ohne Strafe → ' + (m.method ? 'Lasso' : 'Ridge') : phase < 2 ? 'Ridge → Lasso' : 'Lasso';
+  const v = values(m, phase), title = phase < 1 ? 'Ohne Strafe → ' + (m.method ? 'Lasso' : 'Ridge') : methodName(m, phase);
   return [panel([
     label('title', 8, 8, title), label('lambda', 8, 24, 'λ = ' + format(m.lambda * clamp(phase))),
     ...m.c.flatMap((_, i) => {

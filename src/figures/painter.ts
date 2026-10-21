@@ -186,6 +186,8 @@ interface ItemBinding {
   planeG: SVGGElement | null;
   strokeEl: SVGPathElement | null;
   lastSigs: Map<string, string>;
+  lastItem?: Item;
+  paintedVersion?: string;
 }
 
 export class Painter {
@@ -200,8 +202,6 @@ export class Painter {
   private styleVer = 0;
   /** (mesh, camVer) -> projected points + ready `d` strings, one array per face. */
   private dCache = new WeakMap<object, Map<number, { pts: [number, number][][]; d: string[] }>>();
-  /** item identity -> last painted version; unchanged items skip repaint. */
-  private paintedVer = new WeakMap<Item, string>();
 
   constructor(svg: SVGSVGElement, style: FigureStyleId) {
     this.svg = svg;
@@ -319,8 +319,11 @@ export class Painter {
   private dirtyItems(entries: Array<{ item: Item }>, version: string): Set<Item> {
     const dirty = new Set<Item>();
     for (const { item } of entries) {
-      if (this.paintedVer.get(item) === version) continue;
-      this.paintedVer.set(item, version);
+      const binding = this.items.get(item.id);
+      // A cached pose must repaint if another item last wrote this DOM binding.
+      if (!binding || (binding.lastItem === item && binding.paintedVersion === version)) continue;
+      binding.lastItem = item;
+      binding.paintedVersion = version;
       dirty.add(item);
     }
     return dirty;

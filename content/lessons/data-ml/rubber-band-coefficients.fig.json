@@ -11,6 +11,8 @@
     "method": 0
   },
   "compare": {
+    "labels": { "a": "Ridge", "b": "Lasso" },
+    "beat": "step-1",
     "a": {
       "lambda": 2,
       "method": 0
