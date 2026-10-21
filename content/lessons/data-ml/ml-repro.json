@@ -12,7 +12,23 @@
   "competencyIds": ["c-ml-repro"],
   "requires": ["c-ml-erroranalysis", "c-ml-regularization", "c-ml-ensembles", "c-ml-svm-pca", "c-git-basics", "c-testing-debugging"],
   "estimatedMinutes": 65,
-  "blocks": [{ "blockId": "ml-repro-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-repro.md" }],
+  "blocks": [
+    {
+      "blockId": "ml-repro-core",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/ml-repro.md"
+    },
+    {
+      "blockId": "ml-repro-s8a-figure",
+      "type": "figure",
+      "contentRef": "lessons/data-ml/seed-ribbon.fig.json"
+    },
+    {
+      "blockId": "ml-repro-s8a-after",
+      "type": "worked-example",
+      "contentRef": "lessons/data-ml/ml-repro-s8a-after.md"
+    }
+  ],
   "sourceRefs": [
     { "sourceId": "sklearn-user-guide", "role": "primary", "locator": "Common pitfalls: Controlling randomness — nur Lektüre" },
     { "sourceId": "model-cards-paper", "role": "practice", "locator": "Model Cards, FAT* 2019 (arXiv:1810.03993)" }

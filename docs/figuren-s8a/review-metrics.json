@@ -1,0 +1,1238 @@
+[
+  {
+    "scene": "distribution-points",
+    "width": 375,
+    "theme": "light",
+    "step": 0,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 375,
+    "theme": "light",
+    "step": 1,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 375,
+    "theme": "light",
+    "step": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 375,
+    "theme": "light",
+    "step": 3,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 375,
+    "theme": "light",
+    "step": 0,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 5.635952163279221,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 375,
+    "theme": "light",
+    "step": 1,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 5.635952163279221,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 375,
+    "theme": "light",
+    "step": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 375,
+    "theme": "dark",
+    "step": 0,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 375,
+    "theme": "dark",
+    "step": 1,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 375,
+    "theme": "dark",
+    "step": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 375,
+    "theme": "dark",
+    "step": 3,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 375,
+    "theme": "dark",
+    "step": 0,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 375,
+    "theme": "dark",
+    "step": 1,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 375,
+    "theme": "dark",
+    "step": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 1440,
+    "theme": "light",
+    "step": 0,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 1440,
+    "theme": "light",
+    "step": 1,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 1440,
+    "theme": "light",
+    "step": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 1440,
+    "theme": "light",
+    "step": 3,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 1440,
+    "theme": "light",
+    "step": 0,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 5.635952163279221,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 1440,
+    "theme": "light",
+    "step": 1,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 5.635952163279221,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 1440,
+    "theme": "light",
+    "step": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 1440,
+    "theme": "dark",
+    "step": 0,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 1440,
+    "theme": "dark",
+    "step": 1,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 1440,
+    "theme": "dark",
+    "step": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "distribution-points",
+    "width": 1440,
+    "theme": "dark",
+    "step": 3,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 1440,
+    "theme": "dark",
+    "step": 0,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 1440,
+    "theme": "dark",
+    "step": 1,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "seed-ribbon",
+    "width": 1440,
+    "theme": "dark",
+    "step": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 375,
+    "theme": "light",
+    "step": 0,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 375,
+    "theme": "light",
+    "step": 1,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 375,
+    "theme": "light",
+    "step": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 375,
+    "theme": "light",
+    "step": 3,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 375,
+    "theme": "dark",
+    "step": 0,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 375,
+    "theme": "dark",
+    "step": 1,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 375,
+    "theme": "dark",
+    "step": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 375,
+    "theme": "dark",
+    "step": 3,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 1440,
+    "theme": "light",
+    "step": 0,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 1440,
+    "theme": "light",
+    "step": 1,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 1440,
+    "theme": "light",
+    "step": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 1440,
+    "theme": "light",
+    "step": 3,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 1440,
+    "theme": "dark",
+    "step": 0,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 1440,
+    "theme": "dark",
+    "step": 1,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 1440,
+    "theme": "dark",
+    "step": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "tree-vote-field",
+    "width": 1440,
+    "theme": "dark",
+    "step": 3,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 375,
+    "theme": "light",
+    "step": 0,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 375,
+    "theme": "light",
+    "step": 1,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 375,
+    "theme": "light",
+    "step": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 375,
+    "theme": "dark",
+    "step": 0,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 375,
+    "theme": "dark",
+    "step": 1,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 375,
+    "theme": "dark",
+    "step": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 1440,
+    "theme": "light",
+    "step": 0,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 1440,
+    "theme": "light",
+    "step": 1,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 1440,
+    "theme": "light",
+    "step": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 1440,
+    "theme": "dark",
+    "step": 0,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 1440,
+    "theme": "dark",
+    "step": 1,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "missing-high-sales",
+    "width": 1440,
+    "theme": "dark",
+    "step": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 375,
+    "theme": "light",
+    "step": 0,
+    "dots": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 375,
+    "theme": "light",
+    "step": 1,
+    "dots": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 375,
+    "theme": "light",
+    "step": 2,
+    "dots": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 375,
+    "theme": "dark",
+    "step": 0,
+    "dots": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 375,
+    "theme": "dark",
+    "step": 1,
+    "dots": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 375,
+    "theme": "dark",
+    "step": 2,
+    "dots": 2,
+    "stage": [
+      309,
+      309
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 14.045500755310059,
+    "minMargin": 16.70819091796875,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 1440,
+    "theme": "light",
+    "step": 0,
+    "dots": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 1440,
+    "theme": "light",
+    "step": 1,
+    "dots": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 1440,
+    "theme": "light",
+    "step": 2,
+    "dots": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.432056174360287,
+    "background": "rgb(246, 241, 232)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 1440,
+    "theme": "dark",
+    "step": 0,
+    "dots": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 1440,
+    "theme": "dark",
+    "step": 1,
+    "dots": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  },
+  {
+    "scene": "subgroup-river",
+    "width": 1440,
+    "theme": "dark",
+    "step": 2,
+    "dots": 2,
+    "stage": [
+      794,
+      595.5
+    ],
+    "svgOpacity": "1",
+    "viewMode": "flat",
+    "minFont": 27.067999839782715,
+    "minMargin": 31.86724853515625,
+    "minContrast": 6.383103508064552,
+    "background": "rgb(32, 29, 35)",
+    "minButtonHeight": 44,
+    "lastButtonInset": 17
+  }
+]

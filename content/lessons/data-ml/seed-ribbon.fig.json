@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "seed-ribbon",
+  "title": "Gleicher Start, gleiche Folge",
+  "caption": "Zwei Generatoren mit Seed 7 beginnen mit derselben Folge. Die Aufzeichnung stammt vom Plattform-PRNG Mulberry32.",
+  "hint": "Die Lektüre erklärt das Beispiel und seine Grenzen.",
+  "params": {
+    "seed": 7
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Zwei Generatoren mit Seed 7 beginnen mit derselben Folge. Die Aufzeichnung stammt vom Plattform-PRNG Mulberry32."
+    },
+    {
+      "id": "step-1",
+      "caption": "Ohne Neustart folgt die nächste Ziehung. Ein neuer Generator beginnt wieder am Anfang."
+    },
+    {
+      "id": "step-2",
+      "caption": "Andere Seeds ändern den Split derselben zehn Zeilen. Gemessen wird eine auf Train gelernte Mehrheitsbaseline."
+    }
+  ]
+}

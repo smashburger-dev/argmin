@@ -6,6 +6,7 @@ import * as balanceSolve from './balance-solve.mjs';
 import * as baselineSorter from './baseline-sorter.mjs';
 import * as bouncer from './bouncer.mjs';
 import * as cleaningLine from './cleaning-line.mjs';
+import * as distributionPoints from './distribution-points.mjs';
 import * as earlyStopping from './early-stopping-flag.mjs';
 import * as evaluationSorter from './evaluation-sorter.mjs';
 import * as foldRotation from './fold-rotation.mjs';
@@ -16,6 +17,7 @@ import * as ledger from './ledger.mjs';
 import * as libraryAttention from './library-attention.mjs';
 import * as logisticSorter from './logistic-sorter.mjs';
 import * as mailSorter from './mail-sorter.mjs';
+import * as missingHighSales from './missing-high-sales.mjs';
 import * as mixToTarget from './mix-to-target.mjs';
 import * as mseLandscape from './mse-landscape.mjs';
 import * as mseSection from './mse-section.mjs';
@@ -28,16 +30,19 @@ import * as receiptElimination from './receipt-elimination.mjs';
 import * as residualSprings from './residual-springs.mjs';
 import * as responsibleSorter from './responsible-sorter.mjs';
 import * as rubberBand from './rubber-band-coefficients.mjs';
+import * as seedRibbon from './seed-ribbon.mjs';
 import * as smokeDetector from './smoke-detector.mjs';
 import * as smoothie from './smoothie.mjs';
 import * as smoothieRow from './smoothie-row-and-column.mjs';
 import * as solutionCases from './solution-cases-3d.mjs';
 import * as spanCarpet from './span-carpet.mjs';
+import * as subgroupRiver from './subgroup-river.mjs';
 import * as teamMask from './team-mask.mjs';
 import * as tensorAddress from './tensor-address.mjs';
 import * as tokenConveyor from './token-conveyor.mjs';
 import * as tradesStopwatch from './trades-stopwatch.mjs';
 import * as trainingBook from './training-book.mjs';
+import * as treeVoteField from './tree-vote-field.mjs';
 import * as twoTagsOneList from './two-tags-one-list.mjs';
 import * as vendingFrame from './vending-frame.mjs';
 
@@ -49,6 +54,7 @@ Object.assign(scenes, {
   [baselineSorter.id]: baselineSorter,
   [bouncer.id]: bouncer,
   [cleaningLine.id]: cleaningLine,
+  [distributionPoints.id]: distributionPoints,
   [earlyStopping.id]: earlyStopping,
   [evaluationSorter.id]: evaluationSorter,
   [foldRotation.id]: foldRotation,
@@ -59,6 +65,7 @@ Object.assign(scenes, {
   [libraryAttention.id]: libraryAttention,
   [logisticSorter.id]: logisticSorter,
   [mailSorter.id]: mailSorter,
+  [missingHighSales.id]: missingHighSales,
   [mixToTarget.id]: mixToTarget,
   [mseLandscape.id]: mseLandscape,
   [mseSection.id]: mseSection,
@@ -71,15 +78,18 @@ Object.assign(scenes, {
   [residualSprings.id]: residualSprings,
   [responsibleSorter.id]: responsibleSorter,
   [rubberBand.id]: rubberBand,
+  [seedRibbon.id]: seedRibbon,
   [smokeDetector.id]: smokeDetector,
   [smoothieRow.id]: smoothieRow,
   [solutionCases.id]: solutionCases,
   [spanCarpet.id]: spanCarpet,
+  [subgroupRiver.id]: subgroupRiver,
   [teamMask.id]: teamMask,
   [tensorAddress.id]: tensorAddress,
   [tokenConveyor.id]: tokenConveyor,
   [tradesStopwatch.id]: tradesStopwatch,
   [trainingBook.id]: trainingBook,
+  [treeVoteField.id]: treeVoteField,
   [twoTagsOneList.id]: twoTagsOneList,
   [vendingFrame.id]: vendingFrame,
 });

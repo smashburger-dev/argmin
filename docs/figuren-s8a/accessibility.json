@@ -1,0 +1,82 @@
+[
+  {
+    "lesson": "eda-distributions",
+    "afterKeyboard": "1",
+    "verticalScroll": 198,
+    "styles": {
+      "touchAction": "pan-y",
+      "userSelect": "none",
+      "outside": "auto",
+      "azimuth": "0.0"
+    },
+    "print": {
+      "description": "block",
+      "controls": "none"
+    },
+    "zoom": {
+      "client": 606,
+      "scroll": 606
+    },
+    "errors": []
+  },
+  {
+    "lesson": "ml-repro",
+    "afterKeyboard": "1",
+    "verticalScroll": 198,
+    "styles": {
+      "touchAction": "pan-y",
+      "userSelect": "none",
+      "outside": "auto",
+      "azimuth": "0.0"
+    },
+    "print": {
+      "description": "block",
+      "controls": "none"
+    },
+    "zoom": {
+      "client": 606,
+      "scroll": 606
+    },
+    "errors": []
+  },
+  {
+    "lesson": "ml-error-analysis",
+    "afterKeyboard": "1",
+    "verticalScroll": 200,
+    "styles": {
+      "touchAction": "pan-y",
+      "userSelect": "none",
+      "outside": "auto",
+      "azimuth": "0.0"
+    },
+    "print": {
+      "description": "block",
+      "controls": "none"
+    },
+    "zoom": {
+      "client": 606,
+      "scroll": 606
+    },
+    "errors": []
+  },
+  {
+    "lesson": "ml-ensembles",
+    "afterKeyboard": "1",
+    "verticalScroll": 199,
+    "styles": {
+      "touchAction": "pan-y",
+      "userSelect": "none",
+      "outside": "auto",
+      "azimuth": "0.0"
+    },
+    "print": {
+      "description": "block",
+      "controls": "none"
+    },
+    "zoom": {
+      "client": 606,
+      "scroll": 606
+    },
+    "errors": []
+  }
+]

@@ -1,0 +1,223 @@
+{
+  "stats": {
+    "stats": {
+      "n": 8,
+      "mean": 5,
+      "median": 4.5,
+      "std": 2
+    },
+    "fine": [
+      0,
+      1,
+      5,
+      1,
+      1
+    ],
+    "coarse": [
+      1,
+      7
+    ],
+    "quartiles": [
+      4,
+      4.5,
+      5.5
+    ]
+  },
+  "optimum": [
+    2.5,
+    0.3333333333333333
+  ],
+  "allOptima": [
+    2.5,
+    6.5
+  ],
+  "candidates": [
+    [
+      1.5,
+      0.42857142857142866
+    ],
+    [
+      2.5,
+      0.3333333333333333
+    ],
+    [
+      3.5,
+      0.4666666666666667
+    ],
+    [
+      4.5,
+      0.5
+    ],
+    [
+      5.5,
+      0.4666666666666667
+    ],
+    [
+      6.5,
+      0.3333333333333333
+    ],
+    [
+      7.5,
+      0.42857142857142866
+    ]
+  ],
+  "votes": [
+    0,
+    0,
+    1
+  ],
+  "bootstrap": [
+    [
+      5,
+      0,
+      3,
+      0,
+      6,
+      3,
+      3,
+      1
+    ],
+    [
+      0,
+      0,
+      7,
+      5,
+      4,
+      3,
+      3,
+      1
+    ],
+    [
+      4,
+      4,
+      4,
+      4,
+      6,
+      4,
+      0,
+      4
+    ]
+  ],
+  "numpySplit": {
+    "train": [
+      3,
+      6,
+      2,
+      4,
+      5,
+      9
+    ],
+    "test": [
+      8,
+      0,
+      7,
+      1
+    ],
+    "same": true
+  },
+  "platformSplit": {
+    "seed": 7,
+    "train": [
+      2,
+      3,
+      4,
+      7,
+      9,
+      0
+    ],
+    "test": [
+      6,
+      5,
+      8,
+      1
+    ],
+    "prediction": 0,
+    "correct": 1,
+    "n": 4,
+    "accuracy": 25
+  },
+  "refinedOracle": [
+    4.5,
+    0.3333333333333333
+  ],
+  "refinedWeighted": 0.25,
+  "spreadOracle": {
+    "value": 25
+  },
+  "batchOracle": {
+    "value": 90
+  },
+  "voteOracle": [
+    0,
+    0,
+    1
+  ],
+  "prng": "Existing canonical Mulberry32; explicitly distinct from NumPy PCG64",
+  "groups": [
+    {
+      "name": "jung",
+      "n": 240,
+      "errors": 12,
+      "rate": 5
+    },
+    {
+      "name": "alt",
+      "n": 100,
+      "errors": 22,
+      "rate": 22
+    }
+  ],
+  "cleaning": {
+    "rows": [
+      {
+        "id": 0,
+        "value": 90,
+        "observed": true
+      },
+      {
+        "id": 1,
+        "value": 120,
+        "observed": true
+      },
+      {
+        "id": 2,
+        "value": 200,
+        "observed": true
+      },
+      {
+        "id": 3,
+        "value": 600,
+        "observed": false
+      },
+      {
+        "id": 4,
+        "value": 900,
+        "observed": false
+      }
+    ],
+    "before": {
+      "n": 5,
+      "mean": 382,
+      "median": 200,
+      "q1": 120,
+      "q3": 600,
+      "std": 317.13719428663677,
+      "min": 90,
+      "max": 900,
+      "range": 810
+    },
+    "after": {
+      "n": 3,
+      "mean": 136.66666666666666,
+      "median": 120,
+      "q1": 105,
+      "q3": 160,
+      "std": 46.42796092394706,
+      "min": 90,
+      "max": 200,
+      "range": 110
+    },
+    "shift": -245.33333333333334
+  },
+  "checks": "Existing reference solvers executed once in vendored Pyodide; no permanent test suite"
+}

@@ -1,0 +1,12 @@
+{
+  "port": 4409,
+  "build": "release",
+  "date": "2026-10-19",
+  "checkpoint": "tree first split: 0,3333333333 — Richtig.",
+  "results": [
+    {"lesson":"eda-distributions","scene":"distribution-points","beat":"1","opacity":"1","errors":[]},
+    {"lesson":"ml-repro","scene":"seed-ribbon","beat":"1","opacity":"1","errors":[]},
+    {"lesson":"ml-error-analysis","scene":"subgroup-river","beat":"1","opacity":"1","errors":[]},
+    {"lesson":"ml-ensembles","scene":"tree-vote-field","beat":"1","opacity":"1","errors":[]}
+  ]
+}
