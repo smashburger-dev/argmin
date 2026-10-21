@@ -686,7 +686,7 @@ main:focus { outline: none; }
 .glossary-popover h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2); margin: 0 var(--s6) var(--s2) 0; font-size: 16px; }
 .glossary-popover p, .glossary-popover .glossary-definition { margin: 0 0 var(--s3); }
 .glossary-popover-close { position: absolute; top: var(--s2); right: var(--s2); width: auto; left: auto; }
-@keyframes glossary-popover-in { from { opacity: 0; transform: translateY(4px); } }
+@keyframes glossary-popover-in { from { transform: translateY(4px); } }
 @media (max-width: 640px) {
   .glossary-popover { position: fixed; top: auto !important; right: 0; bottom: 0; left: 0 !important; width: auto; max-height: 55vh; overflow-y: auto; border-radius: var(--radius) var(--radius) 0 0; padding-bottom: calc(var(--s4) + env(safe-area-inset-bottom)); }
 }
