@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "trades-stopwatch",
+  "title": "Übergabe nur innerhalb des Stage-Vertrags",
+  "caption": "Die erste Stage liefert docs innerhalb ihres Budgets.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die erste Stage liefert docs innerhalb ihres Budgets."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die virtuelle Uhr überschreitet das Retrieval-Budget. Es entsteht ein Timeout statt rankings."
+    },
+    {
+      "id": "step-2",
+      "caption": "Ohne gültige Übergabe bleibt der Bericht stehen. Ein Ersatzwert würde den Abbruch verschleiern."
+    }
+  ]
+}
+

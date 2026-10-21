@@ -1,0 +1,18 @@
+# S7: Pipeline- und Schwellenbausteine
+
+Stand 18.10.2026. Status: selbst visuell geprüft, keine gestalterische Freigabe durch Noa. Die Fragmente für S8b sind nicht integriert.
+
+| Teil | Zweck und Eingaben | Bereich und Grenzen | Nachweis |
+|---|---|---|---|
+| `objects/pipeline-model.mjs` | Reine Zustände für Alterstext, Kundenzeilen, Fold-IDs, Toy-Logits, Werkzeug-Allowlist, Ablation und virtuelle Stage-Zeit | Feste Lektionsfixtures, kein allgemeiner Parser, Interpreter oder Grader. Die Fold-ID-Reihenfolge ist zur Sichtbarkeit sortiert, keine behauptete NumPy-Seed-Permutation. | Vorhandene Familienlöser und CPython-Referenzen; Details im Session-Digest. |
+| `objects/pipeline-stage.mjs`, K9 `station()` | Beschriftete Ein-/Ausgabe und Verarbeitung mit vorhandenen Ebenenprimitiven | Frontal; nur kurze Vertragsnamen und kleine Beispiele. Keine Gesamtbühne wird importiert. Das ist kein K7-Graphersatz. | Alle angebotenen Schritte bei 375/1440 px hell/dunkel; Kontaktbögen in `review/`. |
+| `objects/threshold-model.mjs` | Einzelfälle mit ID, Score, Goldlabel und Gruppe erzeugen Entscheidung, Matrix, Metriken und Teilgruppenraten | `p >= threshold`, endliche Schwelle in 0…1, Nullnenner liefern 0. Eval/Responsible teilen acht identische Fälle; Baseline verwendet hundert konkrete Fälle. Kein zweiter Optimierungsgrader. | Precision/Recall/F1 gegen `aggregate-confusion-metric`, Sigmoid gegen `sigmoidValue`, Paritätsauswahl durch den vorhandenen Python-Referenzlöser. |
+| `objects/threshold-stage.mjs` | Wahrscheinlichkeitsschiene, vier Matrixfächer, Baseline-Punktfeld und Teilgruppenraten | Höchstens acht einzeln sichtbare Scores; für die Baseline hundert Punkte ohne kleine Einzelnummern. Für mehr Fälle braucht es Aggregation und einen neuen Entwurf. | Matrixbeschriftungen zentriert; notwendige mobile Einzelbilder und Messungen in `review/` und `visual-measurements.json`. |
+
+Alle Szenen setzen `viewMode = flat`: keine Orbit-Geste, kein Bodenhalo und keine dekorative Kamerafahrt. Die gemeinsame Figurenhülle übernimmt Navigation, Vorhersage, Urteil, Druck und Zustandsbeschreibung. Zugriff auf DOM oder Eingabeereignisse liegt ausschließlich in der vorhandenen Runtime.
+
+Text steht mit voller Deckkraft auf der ungeschatteten Bühne bzw. auf ungeschatteten `plate`-Flächen. Die getrennte Messung gegen die tatsächlichen Trägerfarben ergibt mindestens 5,1013:1, kleinste Schrift 14,0455 px bei 309 px tatsächlicher Bühnenbreite. Helle Karten tragen `#ebe6dd`, dunkle `#2a262b`; diese ruhigen Flächen unterscheiden sich leicht vom Bühnenpapier. Akzenttinte und normale Tinte wurden gegen beide Träger gemessen (`carrier-contrast.json`). Die nur gegen Bühnenpapier gemessenen Werte in `visual-measurements.json` sind separat ausgewiesen. Matrixglyphen liegen horizontal innerhalb 0,00001 px und vertikal innerhalb 0,119 px vom Fachmittelpunkt. Dünne Linien oder Punktumrisse sind keine normalen Textlabels.
+
+136 Ansichten wurden erst bei `data-settled=true` und SVG-Deckkraft 1 aufgenommen. Alle elf Kontaktbögen wurden geöffnet, zusätzlich mobile Einzelbilder für Frage, Ergebnis, Leakage und Werkzeuggrenze. Alte, zunächst von der festen Kopfzeile verdeckte Aufnahmen wurden durch freie Ausschnitte ersetzt. Die Reviewbilder sind keine Snapshot-Assertions.
+
+Die Werkzeuge zur einmaligen Browserbedienung und Gegenprüfung lagen unter `/private/tmp/`; es wurden keine neuen permanenten Tests oder Snapshot-Sammlungen angelegt. Kontrast, Forced Colors, Textauswahl, Touch, Tastatur und der Karteninnenrand wurden separat im Browser geprüft. Gemeinsame offene Gate-Befunde werden im Session-Digest ausgewiesen.

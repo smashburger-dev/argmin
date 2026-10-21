@@ -1,0 +1,21 @@
+{
+  "owner": "S8b",
+  "integrated": false,
+  "fragments": [
+    {
+      "lessonId": "l-genai-rag",
+      "source": "docs/figuren-s7/s7-l-genai-rag-fragment.md",
+      "proposedContentRef": "lessons/genai-systems/rag-retrieval-s7-handoffs.md",
+      "insertion": "Nach dem Index-/Ranking-Abschnitt, vor der Abgrenzung der Antwortbildung; mit S8bs eigenem Token-/Graphbeispiel abstimmen.",
+      "block": { "blockId": "rag-s7-handoffs", "type": "worked-example", "contentRef": "lessons/genai-systems/rag-retrieval-s7-handoffs.md" }
+    },
+    {
+      "lessonId": "l-capstone-freeze",
+      "source": "docs/figuren-s7/s7-l-capstone-freeze-fragment.md",
+      "proposedContentRef": "lessons/research/capstone-freeze-s7-handoffs.md",
+      "insertion": "Nach Pipeline-Stages mit IO-Verträgen; vorhandene Erklärung auf Dopplungen prüfen und mit S8bs K7-Graph verbinden.",
+      "block": { "blockId": "freeze-s7-handoffs", "type": "worked-example", "contentRef": "lessons/research/capstone-freeze-s7-handoffs.md" }
+    }
+  ],
+  "openContracts": ["K7 gerichteter Informationsfluss mit Stage-IDs und benannten IO-Schlüsseln", "gemeinsame Bedien-/Antwortverträge für topologische Ordnung und Split-Grenze"]
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "baseline-sorter",
+  "title": "Hohe Trefferquote, kein Betrug erkannt",
+  "caption": "Jeder Punkt ist ein Fall. Die Majority-Baseline sagt immer „kein Betrug“.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Jeder Punkt ist ein Fall. Die Majority-Baseline sagt immer „kein Betrug“."
+    },
+    {
+      "id": "step-1",
+      "caption": "Der einzige Betrugsfall landet ebenfalls bei negativ. Die hohe Accuracy verdeckt Recall null."
+    }
+  ]
+}
+

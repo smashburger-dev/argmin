@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "cleaning-line",
+  "title": "Acht Zeilen durch die Qualitätskontrolle",
+  "caption": "Alle Kundenzeilen gehen mit ihrem Befund in die Kontrolle.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Alle Kundenzeilen gehen mit ihrem Befund in die Kontrolle."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die ungültige Altersangabe wird dokumentiert und ausgesondert."
+    },
+    {
+      "id": "step-2",
+      "caption": "Die zweite identische Zeile trägt keine neue Information."
+    },
+    {
+      "id": "step-3",
+      "caption": "None und Sentinel zählen als fehlender Zielwert. Nur vollständige Zeilen gehen in die Auswertung."
+    }
+  ]
+}
+

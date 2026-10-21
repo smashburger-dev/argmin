@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "logistic-sorter",
+  "title": "Vom Logit zur Entscheidung",
+  "caption": "Dieselben Eingabewerte werden durch den linearen Term und Sigmoid in Wahrscheinlichkeiten überführt.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {
+    "threshold": 0.5
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Dieselben Eingabewerte werden durch den linearen Term und Sigmoid in Wahrscheinlichkeiten überführt."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die Schranke trennt die Wahrscheinlichkeiten. Zähle vor dem Aufdecken die positiven Entscheidungen."
+    },
+    {
+      "id": "step-2",
+      "caption": "Ab der Schranke gehört die Wahrscheinlichkeit zur Klasse positiv. Die Labels zeigen die getroffene Entscheidung."
+    }
+  ],
+  "predict": {
+    "beat": "step-1",
+    "prompt": "Setze w = 2 und b = −1. Wie viele der x-Werte −2, −1, 0, 1, 2 liegen rechts der Entscheidungsgrenze (Klasse 1)?",
+    "input": "numeric",
+    "expected": 2,
+    "tolerance": 0.000001,
+    "hints": [
+      "Die Grenze liegt bei σ = 0,5, also wo wx + b = 0 gilt: x = −b/w. Zähle dann die x-Werte größer als diese Grenze."
+    ],
+    "typicalErrors": [
+      {
+        "match": 3,
+        "feedback": "Die Grenze liegt bei x = −b/w = 0,5 — rechts davon liegen nur x = 1 und x = 2."
+      },
+      {
+        "match": 0.5,
+        "feedback": "0,5 ist die Position der Grenze — gefragt ist die Anzahl der klassifizierten x-Werte."
+      }
+    ]
+  }
+}
+

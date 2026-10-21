@@ -23,6 +23,8 @@
       "type": "worked-example",
       "contentRef": "lessons/genai-systems/genai-security.md"
     },
+    { "blockId": "mail-sorter-figure", "type": "figure", "contentRef": "lessons/genai-systems/mail-sorter.fig.json" },
+    { "blockId": "genai-security-s7-after", "type": "worked-example", "contentRef": "lessons/genai-systems/genai-security-s7-after.md" },
     {
       "blockId": "genai-security-check",
       "type": "checkpoint",
