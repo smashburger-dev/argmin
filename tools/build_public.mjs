@@ -167,6 +167,7 @@ const ALLOWED_FILES = [
   'assets/js/core/progress_notify.mjs',
   'assets/js/core/graders.js',
   'assets/js/core/balance_model.mjs',
+  'assets/js/core/figure_answer_graders.mjs',
   'assets/js/core/scene_build_grader.mjs',
   'assets/js/figures/kit/camera.mjs',
   'assets/js/figures/kit/motion.mjs',

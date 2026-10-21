@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import Ajv2020 from 'ajv/dist/2020.js';
 import { graders, assertFamilyActivityContracts } from '../assets/js/core/graders.js';
 import { gradeSceneBuild, solveMixer } from '../assets/js/core/scene_build_grader.mjs';
+import { gradePickLearningRate, gradeTagAfterLine } from '../assets/js/core/figure_answer_graders.mjs';
 import { solveBalance } from '../assets/js/core/balance_model.mjs';
 import { evaluate } from '../assets/js/figures/scenes/smoothie.mjs';
 import { isSceneBuildAnswer } from '../assets/js/domain/scene_answer.mjs';
@@ -18,6 +20,11 @@ import { assertCaseTitle, validateSourceDocument } from '../tools/compile_conten
 import { coverageForBundle } from '../tools/build_coverage_matrix.mjs';
 
 const golden = JSON.parse(readFileSync(new URL('./fixtures/scene-build-golden-corpus.json', import.meta.url), 'utf8'));
+const answerSchema = JSON.parse(readFileSync(new URL('../schemas/scene-build-answer.schema.json', import.meta.url), 'utf8'));
+const answerAjv = new Ajv2020({ allErrors: true, strict: true });
+const validateAnswerSchema = answerAjv.compile(answerSchema);
+const validatePickFormV1 = answerAjv.compile({ $ref: `${answerSchema.$id}#/$defs/pickLearningRateFormV1` });
+const validateTagFormV1 = answerAjv.compile({ $ref: `${answerSchema.$id}#/$defs/tagAfterLineFormV1` });
 const fixture = (id) => structuredClone(golden.cases.find((entry) => entry.id === id));
 const exercise = (entry) => ({ activityType: 'scene-build', graderId: 'deterministic', parameters: entry.parameters,
   expectedAnswer: { kind: 'scene-properties', model: entry.model } });
@@ -133,6 +140,73 @@ test('attempt v3 JSON roundtrip preserves form and step order without a schema u
     assert.throws(() => normalizeAttemptV3(bad.data.attempts[0], context), /scene-build/);
   }
   assert.doesNotThrow(() => event({ eventType: 'hint-used', answer: null }));
+});
+
+test('versioned figure task answers roundtrip through attempt v3 and reject unknown answer versions', () => {
+  const answers = [
+    envelope({ eta: 0.05 }),
+    envelope({ tags: [{ lineId: 'line:1', bindings: [{ name: 'left', objectId: 'object:1' },
+      { name: 'alias', objectId: 'object:1' }] }] }),
+  ];
+  for (const answer of answers) {
+    const built = event({ answer });
+    const exported = JSON.parse(JSON.stringify(payload(built)));
+    assert.deepEqual(validateImportPayload(exported), { ok: true, errors: [] });
+    assert.deepEqual(migratePayloadToV3(exported, context).data.attempts[0].answer, answer);
+  }
+  const invalid = payload(event({ answer: answers[0] }));
+  invalid.data.attempts[0].answer.schemaVersion = 2;
+  assert.equal(validateImportPayload(invalid).ok, false);
+  assert.throws(() => normalizeAttemptV3(invalid.data.attempts[0], context), /scene-build/);
+  assert.equal(validateAnswerSchema(answers[0]), true);
+  assert.equal(validateAnswerSchema(invalid.data.attempts[0].answer), false);
+  assert.equal(validatePickFormV1(answers[0].form), true);
+  assert.equal(validatePickFormV1({ eta: 0.05, camera: 1 }), false);
+  assert.equal(validateTagFormV1(answers[1].form), true);
+  assert.equal(validateTagFormV1({ tags: [{ lineId: 'line:1', bindings: [{ name: 'x' }] }] }), false);
+});
+
+test('pick-learning-rate/v1 accepts every solver-qualified eta and returns deterministic run feedback', async () => {
+  const exercise = { parameters: { maxSteps: 3, etaValues: [0.05, 0.1, 0.2], initial: { w: 0, b: 0 }, data: [[1, 3], [3, 7]] }, expectedAnswer: { kind: 'pick-learning-rate', schemaVersion: 1,
+    lossIncreaseTolerance: 1e-9, distanceTolerance: 0.01 } };
+  const simulate = (_parameters, eta) => eta !== 0.2
+    ? { steps: [{ loss: 1, distance: 1 }, { loss: 0.2, distance: 0.1 }, { loss: 0.01, distance: 0.001 }] }
+    : { steps: [{ loss: 1, distance: 1 }, { loss: 1.5, distance: 0.5 }, { loss: 0.1, distance: 0.001 }] };
+  const answer = envelope({ eta: 0.1 });
+  assert.equal(gradePickLearningRate(exercise, answer, simulate).correct, true);
+  assert.equal(gradePickLearningRate(exercise, envelope({ eta: 0.05 }), simulate).correct, true);
+  assert.equal(gradePickLearningRate(exercise, envelope({ eta: 0.2 }), simulate).fields[0].correct, false);
+  assert.equal(gradePickLearningRate({ ...exercise, expectedAnswer: { ...exercise.expectedAnswer, schemaVersion: 2 } },
+    answer, simulate).errorType, 'grader-error');
+  const solverExercise = { activityType: 'scene-build', graderId: 'deterministic', ...exercise,
+    parameters: { ...exercise.parameters, data: [[1, 3], [3, 7]], initial: { w: 0, b: 0 }, maxSteps: 12,
+      etaValues: [0.005, 0.05, 0.1] },
+    expectedAnswer: { ...exercise.expectedAnswer, distanceTolerance: 3 } };
+  for (const eta of solverExercise.parameters.etaValues) {
+    const graded = await graders.deterministic.grade(solverExercise, envelope({ eta }));
+    assert.equal(graded.correct, true, `η=${eta}`);
+    assert.equal(graded.simulation.steps.length, 13);
+  }
+});
+
+test('tag-after-line/v1 grades full binding maps and preserves alias identity', async () => {
+  const exercise = { expectedAnswer: { kind: 'tag-after-line', schemaVersion: 1, states: [
+    { lineId: 'line:1', bindings: [{ name: 'left', objectId: 'object:1' }, { name: 'alias', objectId: 'object:1' }] },
+  ] } };
+  const correct = envelope({ tags: [{ lineId: 'line:1', bindings: [
+    { name: 'alias', objectId: 'object:1' }, { name: 'left', objectId: 'object:1' },
+  ] }] });
+  assert.equal(gradeTagAfterLine(exercise, correct).correct, true);
+  assert.equal(gradeTagAfterLine(exercise, envelope({ tags: [{ lineId: 'line:1', bindings: [
+    { name: 'alias', objectId: 'object:2' }, { name: 'left', objectId: 'object:1' },
+  ] }] })).errorType, 'binding-mismatch');
+  assert.equal(gradeTagAfterLine({ expectedAnswer: { kind: 'tag-after-line', schemaVersion: 1, states: [
+    { lineId: 'line:empty', bindings: [] },
+  ] } }, envelope({ tags: [{ lineId: 'line:empty', bindings: [{ name: 'spoiler', objectId: 'object:1' }] }] })).errorType, 'binding-mismatch');
+  assert.equal(gradeTagAfterLine({ expectedAnswer: { ...exercise.expectedAnswer, schemaVersion: 2 } }, correct).errorType, 'grader-error');
+  const graded = await graders.deterministic.grade({ activityType: 'scene-build', graderId: 'deterministic',
+    parameters: {}, expectedAnswer: exercise.expectedAnswer }, correct);
+  assert.equal(graded.correct, true);
 });
 
 test('scene mastery follows hint cap, reveals and independent seed policy', () => {
