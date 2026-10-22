@@ -42,16 +42,11 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
-      # --with-deps runs apt-get, which can stall on a slow runner mirror.
-      # Cap each attempt at four minutes and retry instead of hanging.
+      # No --with-deps: ubuntu-latest already ships Chromium's shared libraries,
+      # and the extra apt fonts/upgrades stalled for minutes on slow runner mirrors.
       - name: Install Playwright Chromium
-        timeout-minutes: 13
-        run: |
-          for attempt in 1 2 3; do
-            timeout 240 npx playwright install --with-deps chromium && exit 0
-            echo "Playwright install attempt $attempt failed or timed out, retrying"
-          done
-          exit 1
+        timeout-minutes: 5
+        run: npx playwright install chromium
       # Frischer Vertragsbeleg ueberspringt den Pyodide-Browser-Run; der
       # Cache-Key deckt alle Eingaben ab, die den runtimeHash beeinflussen.
       - uses: actions/cache@v4
