@@ -39,7 +39,7 @@ Eine **Reproduktion** ist eine Eingabe, die den Fehler zuverlässig auslöst; di
 5. Den kleinsten Fix schreiben.
 6. Den einzelnen Test und danach die ganze Suite ausführen.
 
-Meldet eine Duplikatsuche etwa nichts, obwohl `["a", "a"]` offensichtlich ein Duplikat enthält, sind zwei Hypothesen plausibel: Der Vergleich startet erst am zweiten Element, oder das `return` steht eine Einrückung zu tief und bricht beim ersten Paar ab. Ein Fall wie `["x", "y", "y"]` unterscheidet beide. Die Testfunktionen eines Projekts laufen gemeinsam und heißen **Testsuite**; ein Test, der einen alten Fehler festhält, heißt **Regressionstest**.
+Meldet eine Duplikatsuche etwa nichts, obwohl `["a", "a"]` offensichtlich ein Duplikat enthält, sind zwei Hypothesen plausibel: Der Vergleich startet erst am zweiten Element, oder das `return` steht eine Einrückung zu tief und bricht beim ersten Paar ab. Ein Fall wie `["x", "y", "y"]` unterscheidet beide. Startet der Vergleich zu spät, findet er das `y`-Paar trotzdem, denn es liegt hinten. Bricht das `return` dagegen nach dem ersten Paar ab, vergleicht der Code nur `x` mit `y` und meldet wieder nichts. Die Testfunktionen eines Projekts laufen gemeinsam und heißen **Testsuite**; ein Test, der einen alten Fehler festhält, heißt **Regressionstest**.
 
 ## Falsche Abkürzungen
 

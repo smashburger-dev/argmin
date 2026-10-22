@@ -10,7 +10,7 @@ Wo der Vergleich hinkt: Noten sind diskret und auf wenige Werte beschränkt. Mes
 
 ## Histogramm und Bins
 
-Ein **Histogramm** zählt, wie viele Werte in jede Kante fallen. Die Kanten definieren halboffene Intervalle $[e_0, e_1)$, $[e_1, e_2)$ und so weiter; nur das letzte Intervall schließt die rechte Kante ein: $[e_{k-1}, e_k]$. Jeder solche Behälter heißt **Bin**.
+Ein **Histogramm** zählt, wie viele Werte zwischen je zwei benachbarte Kanten fallen. Die Kanten definieren halboffene Intervalle $[e_0, e_1)$, $[e_1, e_2)$ und so weiter; nur das letzte Intervall schließt die rechte Kante ein: $[e_{k-1}, e_k]$. Jeder solche Behälter heißt **Bin**.
 
 Durchgerechnet mit `np.histogram` für die Kanten $[0, 4, 9]$ und die Messwerte:
 
@@ -31,7 +31,7 @@ $$
 \frac{4 + 5}{2} = 4{,}5.
 $$
 
-Die **Quartile** teilen die sortierte Liste in Viertel; die Spannweite zwischen oberem und unterem Quartil (IQR) beschreibt die Streuung robuster als die Standardabweichung. Die **Schiefe** erkennst du am Verhältnis von Mittelwert und Median: Mittelwert größer als Median heißt rechtsschief (wenige große Werte ziehen den Mittelwert nach rechts), Mittelwert kleiner als Median heißt linksschief. Manche Bücher nennen rechtsschief auch linkssteil; gemeint ist dasselbe. Für $x$ ist der Mittelwert $40/8 = 5 > 4{,}5$, also leicht rechtsschief.
+Die **Quartile** teilen die sortierte Liste in Viertel. Für $x$ liefert `np.percentile(x, [25, 75])` die Werte 4 und 5,5: Ein Viertel der Werte liegt bis 4, drei Viertel liegen bis 5,5. Der Abstand $5{,}5 - 4 = 1{,}5$ heißt IQR (englisch *interquartile range*). Er beschreibt die Streuung robuster als die Standardabweichung, weil ein einzelner Extremwert wie 90 statt 9 ihn nicht verändert. Die **Schiefe** erkennst du am Verhältnis von Mittelwert und Median: Mittelwert größer als Median heißt rechtsschief (wenige große Werte ziehen den Mittelwert nach rechts), Mittelwert kleiner als Median heißt linksschief. Manche Bücher nennen rechtsschief auch linkssteil; gemeint ist dasselbe. Für $x$ ist der Mittelwert $40/8 = 5 > 4{,}5$, also leicht rechtsschief.
 
 ## Diagrammwahl nach Fragestellung
 

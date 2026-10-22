@@ -17,7 +17,7 @@ $$A = \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V.$$
 In drei Schritten:
 
 1. **Scores**: $S = QK^\top$ (sprich: Q mal K transponiert); jedes Skalarprodukt misst, wie gut Query $i$ zu Key $j$ passt. Für $Q \in \mathbb{R}^{n\times d_k}$ (sprich: Q Element der reellen n-mal-d-k-Matrizen) und $K \in \mathbb{R}^{m\times d_k}$ ($m$ Keys) ist die Score-Matrix $n \times m$.
-2. **Skalierung**: Teile durch $\sqrt{d_k}$ (Wurzel der Spaltenzahl von $Q$). Skalarprodukte zufälliger Vektoren streuen umso stärker, je mehr Summanden sie haben; ihre Standardabweichung wächst wie $\sqrt{d_k}$. Das Teilen hält die Scores in einem Bereich, in dem Softmax nicht einspitzt und die Gradienten nicht verschwinden.
+2. **Skalierung**: Teile durch $\sqrt{d_k}$ (Wurzel der Spaltenzahl von $Q$). Skalarprodukte zufälliger Vektoren streuen umso stärker, je mehr Summanden sie haben; ihre Standardabweichung wächst wie $\sqrt{d_k}$. Das Teilen hält die Scores klein. Warum das zählt: Die Scores $(1, 0)$ werden durch Softmax zu $(0{,}73;\ 0{,}27)$, beide Keys tragen bei. Die Scores $(10, 0)$ werden zu $(0{,}99995;\ 0{,}00005)$, fast alles Gewicht landet auf einem Key. Dann ändert ein kleiner Schritt an den Gewichten kaum noch etwas, und die Gradienten werden winzig.
 3. **Gewichte und Mischung**: Zeilenweises Softmax macht aus Scores Gewichte (Summe 1); die Ausgabe ist die gewichtete Summe der Values.
 
 ## Stabiles Softmax: Zeile für Zeile
@@ -51,7 +51,7 @@ Der [Vertrag](#/glossary/vertrag) $Q$-Spalten $= K$-Spalten ist hart; die Value-
 
 ## Multi-Head: Aufteilen statt vergrößern
 
-Statt eines breiten Attention-Kopfs werden $h$ Köpfe parallel gerechnet, jeder mit $d_{\text{model}}/h$ Zahlen pro Token: $X$ wird einmal projiziert, dann zu $(h, n, d_{\text{model}}/h)$ **reshaped**, nur eine andere Sicht auf dieselben Zahlen. Jeder Kopf rechnet eigene Scores; die Ausgaben werden konkateniert und linear kombiniert. So speichern Köpfe verschiedene Beziehungstypen.
+Statt eines breiten Attention-Kopfs werden $h$ Köpfe parallel gerechnet, jeder mit $d_{\text{model}}/h$ Zahlen pro Token. Bei $d_{\text{model}} = 8$ und $h = 2$ bekommt Kopf 1 die Zahlen 1 bis 4 jedes Tokens und Kopf 2 die Zahlen 5 bis 8. Technisch wird $X$ einmal projiziert und dann zu $(h, n, d_{\text{model}}/h)$ **reshaped**, also nur anders angeordnet, ohne neue Zahlen. Jeder Kopf rechnet eigene Scores und damit eigene Gewichte. Danach werden die Ausgaben aneinandergehängt (konkateniert) und linear kombiniert. Weil jeder Kopf eigene Gewichte hat, kann ein Kopf etwa lernen, auf das vorige Token zu achten, während ein anderer weiter entfernte Bezüge herstellt.
 
 ## Handrechnung: eine komplette 2×2-Attention
 

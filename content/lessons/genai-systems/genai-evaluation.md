@@ -47,6 +47,8 @@ $$
 \mathrm{common} = \sum_t \min(c_a(t), c_g(t)), \quad P = \frac{\mathrm{common}}{|a|}, \quad R = \frac{\mathrm{common}}{|g|}, \quad F_1 = \frac{2PR}{P+R}.
 $$
 
+Dabei zählt $c_a(t)$, wie oft das Wort $t$ in der Antwort vorkommt, und $c_g(t)$ dasselbe in der Gold-Antwort. Ein Beispiel: Antwort „die frist beträgt 30 tage“, Gold „frist 30 tage“. Gemeinsam sind „frist“, „30“ und „tage“, also $\mathrm{common} = 3$. Damit ist $P = 3/5$, $R = 3/3 = 1$ und $F_1 = 2 \cdot 0{,}6 \cdot 1 / 1{,}6 = 0{,}75$.
+
 - **Konfusionsmatrix**: pro Fehlerklasse (z. B. Injektion erkannt ja/nein) zählst du TP, FP, FN, TN und leitest ab
 
 $$

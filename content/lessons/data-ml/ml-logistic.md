@@ -1,6 +1,6 @@
 # Logistische Regression und Klassifikationsmetriken
 
-Ob Spam im Postfach, Betrug an der Kasse oder ein positiver Test: KI-Systeme treffen ständig Ja/Nein-Entscheidungen. Diese Lektion zeigt dir, wie aus einer Wahrscheinlichkeit eine Entscheidung wird und wie du ihre Güte misst. Im Detail geht es darum, wie aus einem Zahlenwert eine Ja/Nein-Entscheidung wird, wie die Zahlen TP, FP, FN und TN zusammenwirken und warum es eine Frage der Kosten ist, wie wählerisch ein Modell sein soll.
+Ob Spam im Postfach, Betrug an der Kasse oder ein positiver Test: KI-Systeme treffen ständig Ja/Nein-Entscheidungen. Diese Lektion zeigt dir, wie aus einer Wahrscheinlichkeit eine Entscheidung wird, wie du ihre Güte misst und warum die Kosten der Fehler bestimmen, wie wählerisch ein Modell sein soll.
 
 ## Das Bild dahinter: Spamfilter
 
@@ -16,7 +16,9 @@ $$
 \sigma(z) = \frac{1}{1 + e^{-z}}.
 $$
 
-Dabei ist $e \approx 2{,}718$ die eulersche Zahl ist. Ausgewertet: $\sigma(0) = 0{,}5$, $\sigma(2) \approx 0{,}881$, $\sigma(-2) \approx 0{,}119$. Die [Funktion](#/glossary/funktion) ist symmetrisch: $\sigma(-z) = 1 - \sigma(z)$. Ein $z$ von $0$ bedeutet „unentschieden“: Die Sigmoid gibt $0{,}5$ aus, und erst der Schwellenwert entscheidet. Die Ausgabe wird als Wahrscheinlichkeit für Klasse 1 gelesen, ob sie stimmt, also kalibriert ist, musst du separat prüfen.
+Dabei ist $e \approx 2{,}718$ die eulersche Zahl. Ein Beispiel von Anfang bis Ende: Mit den Gewichten $w = (2, -1)$ und den Merkmalen $x = (1, 1)$ ist der Score $z = 2 \cdot 1 + (-1) \cdot 1 = 1$, und die Sigmoid macht daraus $\sigma(1) \approx 0{,}731$. Weitere Werte: $\sigma(0) = 0{,}5$, $\sigma(2) \approx 0{,}881$, $\sigma(-2) \approx 0{,}119$.
+
+Die [Funktion](#/glossary/funktion) ist symmetrisch: $\sigma(-z) = 1 - \sigma(z)$, zu sehen an $0{,}881 + 0{,}119 = 1$. Ein $z$ von $0$ bedeutet „unentschieden“: Die Sigmoid gibt $0{,}5$ aus, und erst der Schwellenwert entscheidet. Die Ausgabe wird als Wahrscheinlichkeit für Klasse 1 gelesen. Ob sie stimmt, prüfst du separat: Von allen Mails mit Ausgabe um 0,7 sollten auch etwa 70 % Spam sein. Diese Eigenschaft heißt kalibriert.
 
 ## Verlust ohne geschlossene Form
 
@@ -34,10 +36,10 @@ scikit-learns `LogisticRegression` und `predict_proba` liest du als API-Kompeten
 
 Mit einem **Schwellenwert** $t$ werden Wahrscheinlichkeiten zu Labels: vorhergesagte Klasse 1 genau dann, wenn $p \geq t$. Daraus entsteht die Konfusionsmatrix mit den vier Zählern:
 
-- **TP** (true positive, richtig positiv): Fisch gemeldet und es war einer.
-- **FP** (false positive, falsch positiv): Fisch gemeldet, aber es war ein Stiefel.
-- **FN** (false negative, falsch negativ): Fisch übersehen.
-- **TN** (true negative, richtig negativ): kein Fisch und kein Alarm.
+- **TP** (true positive, richtig positiv): als Spam einsortiert, und es war Spam.
+- **FP** (false positive, falsch positiv): als Spam einsortiert, aber es war eine echte Mail.
+- **FN** (false negative, falsch negativ): Spam, der im Postfach gelandet ist.
+- **TN** (true negative, richtig negativ): echte Mail im Postfach.
 
 Durchgerechnetes Beispiel: TP $= 40$, FP $= 10$, FN $= 20$, TN $= 30$.
 
@@ -63,7 +65,7 @@ $$
 \text{Kosten} = FP \cdot K_{FP} + FN \cdot K_{FN}.
 $$
 
-Beispiel Spamfilter: Eine gelöschte wichtige E-Mail (FP) schadet 50 €, zugestellter Spam (FN) 0,50 €. Bei $FP = 4$, $FN = 2$ kosten die Fehler $4 \cdot 50\,\text{€} = 200\,\text{€}$ und $2 \cdot 0{,}50\,\text{€} = 1\,\text{€}$, zusammen 201 €, der hohe FP-Anteil dominiert, also lohnt sich ein höherer Schwellenwert, auch wenn der Recall sinkt.
+Beispiel Spamfilter: Eine gelöschte wichtige E-Mail (FP) schadet 50 €, zugestellter Spam (FN) 0,50 €. Bei $FP = 4$, $FN = 2$ kosten die Fehler $4 \cdot 50\,\text{€} = 200\,\text{€}$ und $2 \cdot 0{,}50\,\text{€} = 1\,\text{€}$, zusammen 201 €. Fast die ganze Summe stammt aus den FP. Ein höherer Schwellenwert sortiert weniger echte Mails in den Spam und lohnt sich deshalb, auch wenn dafür mehr Spam durchkommt und der Recall sinkt.
 
 ## Wo dir das in der KI begegnet
 

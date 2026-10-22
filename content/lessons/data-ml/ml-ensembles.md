@@ -29,11 +29,13 @@ Für einen Split wird $G$ pro Kind berechnet und nach Zeilenzahl gewichtet; der 
 
 ## Tiefe steuern
 
-Die **Tiefe** ist die Zahl der Fragen auf dem Weg von der Wurzel zum Blatt. Tiefe 1 ist ein Baumstumpf mit einem Split; Tiefe 2 erlaubt eine zweite Frage pro Seite. Mit jeder weiteren Ebene steigt die Komplexität: Bäume, die zu tief wachsen, merken sich Ausreißer und verlieren die Verallgemeinerung auf neue Daten. Das ist genau der Bias-Varianz-Tradeoff: Ein flacher Baum hat hohe Verzerrung und kleine Varianz, ein tiefer Baum umgekehrt.
+Die **Tiefe** ist die Zahl der Fragen auf dem Weg von der Wurzel zum Blatt. Tiefe 1 ist ein Baumstumpf mit einem Split; Tiefe 2 erlaubt eine zweite Frage pro Seite. Mit jeder weiteren Ebene steigt die Komplexität: Bäume, die zu tief wachsen, merken sich Ausreißer und verlieren die Verallgemeinerung auf neue Daten. Das ist genau der Bias-Varianz-Tradeoff. Ein Baumstumpf liegt auf fast jeder Stichprobe ähnlich daneben: hohe Verzerrung, kleine Varianz. Ein sehr tiefer Baum trifft die Trainingsdaten perfekt, sieht aber nach einer anderen Stichprobe derselben Daten ganz anders aus: kleine Verzerrung, hohe Varianz.
 
 ## Ensemble: mehrere Bäume abstimmen
 
-Ein **Ensemble** kombiniert viele schwache Vorhersagen zu einer stärkeren. **Bagging** (englisch *bootstrap aggregating*) trainiert Bäume auf Bootstrap-Stichproben, die mit Zurücklegen in voller Größe gezogen werden, und bildet über ihre Stimmen eine Mehrheit; dadurch sinkt die Varianz. Der **Random Forest** geht einen Schritt weiter: An jedem Split sieht jeder Baum nur eine zufällige Teilmenge der Merkmale, die Bäume werden noch unabhängiger und die Fehler heben sich stärker auf. Mehrheitsentscheidung bei vier Bäumen, die $1, 0, 1, 1$ sagen: 3 Stimmen Klasse 1, also Vorhersage 1. Die Einzelbäume können falsch liegen; die Mehrheit korrigiert unabhängige Fehler.
+Ein **Ensemble** kombiniert viele schwache Vorhersagen zu einer stärkeren. **Bagging** (englisch *bootstrap aggregating*) trainiert jeden Baum auf einer eigenen Bootstrap-Stichprobe. Aus den Zeilen $(A, B, C, D)$ ziehst du dafür viermal mit Zurücklegen, etwa $(A, A, C, D)$: Manche Zeilen kommen doppelt vor, andere fehlen. Jeder Baum sieht so etwas andere Daten, und die Bäume stimmen am Ende per Mehrheit ab. Dadurch sinkt die Varianz. Der **Random Forest** geht einen Schritt weiter: An jedem Split sieht jeder Baum nur eine zufällige Teilmenge der Merkmale. Die Bäume werden noch unabhängiger, und ihre Fehler heben sich stärker auf.
+
+Mehrheitsentscheidung bei vier Bäumen, die $1, 0, 1, 1$ sagen: 3 Stimmen Klasse 1, also Vorhersage 1. Warum die Mehrheit besser ist als ein einzelner Baum, zeigt eine Rechnung. Liegt jeder von drei Bäumen unabhängig in 30 % der Fälle falsch, irrt die Mehrheit nur, wenn mindestens zwei falsch liegen. Das passiert mit $3 \cdot 0{,}3^2 \cdot 0{,}7 + 0{,}3^3 = 0{,}216$, also in 21,6 % statt 30 % der Fälle. Die Rechnung gilt nur für unabhängige Fehler, deshalb der Aufwand mit Stichproben und Merkmalsauswahl.
 
 ## Ensemble oder Baseline?
 

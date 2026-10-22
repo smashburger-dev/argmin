@@ -24,7 +24,7 @@ Zwei Fehlerquellen musst du unterscheiden. **Label-Rauschen** sind falsche Zielw
 
 ## Drift
 
-**Drift** (englisch *data drift*) heißt: Die Verteilung der Eingabedaten wandert nach dem Training weg. Sensoren altern, Märkte ändern sich, neue Geräte kommen hinzu. Drift erkennst du am Vergleich von Verteilungen (Histogramme, Kennzahlen) zwischen Trainings- und Live-Daten; bevor du das Modell beschuldigst, prüfe, ob die Daten noch dieselbe Welt beschreiben.
+**Drift** (englisch *data drift*) heißt: Die Verteilung der Eingabedaten wandert nach dem Training weg. Sensoren altern, Märkte ändern sich, neue Geräte kommen hinzu. Ein Beispiel: Im Training lag das mittlere Kundenalter bei 35 Jahren, in den Live-Daten ein Jahr später bei 52. Das Modell hat ältere Kunden kaum gesehen, und seine Fehlerrate steigt, obwohl sich am Code nichts geändert hat. Drift erkennst du am Vergleich von Verteilungen (Histogramme, Kennzahlen) zwischen Trainings- und Live-Daten; bevor du das Modell beschuldigst, prüfe, ob die Daten noch dieselbe Welt beschreiben.
 
 ## Die Modellkarte
 

@@ -28,6 +28,7 @@ Stand: Batch 1 + R14-Umsetzung abgeschlossen (siehe „Umgesetzt").
 | P1 | `fit-weight-decay-ablation` | Docstring-Objective, `final_loss_*`-Semantik, `import numpy` in Tests; `.mjs`-Anchor synchronisiert |
 | P1 | `validate-report-guard-compose` | `baseline-report` validiert `digest` in `ergebnis` (sha256 kanonische Serialisierung); `.mjs` + Seeded-Emission synchronisiert (echter Digest + 4. brokenArm) |
 | P1 | `dl-training.md` LR-Schedules | Abschnitt Step/Cosine/Plateau ergänzt |
+| P1 | Verständlichkeits-Pass alle 50 Lektionen | Symptomliste in `authoring-guide.md` §9; Pivot/Rang neu (`systems-solution-cases.md`); Lesebrücken, Einsetzbeispiele und Warum-Sätze in den Lektionen von Mathematical Foundations und den übrigen Pfaden (Ensembles, RAG, Evaluation, Inferenz, LoRA, Responsible AI, Capstone); Rechenfehler Kassenzettel (`gauss.md`), kaputter Kernel-Satz (`ml-svm-pca.md`), vertauschtes „Richtig/Falsch“ (`capstone-freeze.md`, `capstone-regression.md`) und kaputte Fehlvorstellungs-Sätze (`capstone-baseline.md`, `responsible-ai.md`) behoben |
 | P1 | `estimatedMinutes` restliche Module | `lm-dl-*` practice-space 0→8; `lm-capstone/genai/research-*` auf 25/30/32/45 kalibriert |
 | P1 | Worked Example ≠ Exercise | 4 Research-Lessons: Exercise-`contentRef` auf neue `*-exercise.md` |
 | P1 | Track-Reihenfolge | `common-core`, `research-evaluation`: `c-meta-learning` vor `c-git-basics`; `applied-ai`: `c-meta-learning` ergänzt (dangling require) |

@@ -52,7 +52,9 @@ def matvec(A, x):
 
 Der Vertrag prüft zuerst die Anzahl der Achsen und danach die innere Länge. Ein `ValueError` ist die rote Karte der Programmiersprache: Er bricht mit einer erklärbaren Meldung ab, statt ein falsches Ergebnis weiterzureichen. Derselbe Aufbau trägt Verträge für andere Funktionen: Bei `solve(A, b)` prüfst du quadratische Form und passende Seitenlänge, bei `matmul(A, B)` die inneren Dimensionen.
 
-Quadratisch allein garantiert noch keine eindeutige Lösung: Eine Matrix mit abhängigen Zeilen heißt **singulär**, ihre Determinante ist 0, und `np.linalg.solve` wirft einen `LinAlgError`. Ihr Rang, die Zahl unabhängiger Zeilen, ist dann kleiner als die Zeilenzahl; ein Vertrag, der Eindeutigkeit braucht, prüft das selbst, statt den Bibliotheksfehler durchzureichen. Die Pivot-Elimination dahinter sucht pro Spalte den ersten von null verschiedenen Eintrag, tauscht ihn nach oben und eliminiert darunter; Determinante, Rang und das Pivot-Verfahren rechnen die Lektionen zu Gauß-Elimination und Unabhängigkeit genau.
+Quadratisch allein garantiert noch keine eindeutige Lösung. Nimm $\begin{pmatrix}1&2\\2&4\end{pmatrix}$: Die zweite Zeile ist das Doppelte der ersten, sie bringt keine neue Gleichung. Eine solche Matrix heißt **singulär**. Ihre Determinante ist $1 \cdot 4 - 2 \cdot 2 = 0$, und `np.linalg.solve` bricht mit einem `LinAlgError` ab.
+
+Ein Vertrag, der eine eindeutige Lösung braucht, prüft das selbst und meldet einen verständlichen Fehler, statt den Bibliotheksfehler durchzureichen. Wie Determinante und Rang genau gerechnet werden, zeigen die Lektionen zu Gauß-Elimination und Unabhängigkeit.
 
 ## `*` ist nicht `@`
 
@@ -68,7 +70,7 @@ bias = np.array([10, 20])
 A + bias
 ```
 
-NumPy stempelt `bias` mit Form `(2,)` auf jede der drei Zeilen von `A`. Wolltest du dagegen einen Wert pro Zeile addieren, bräuchte `bias` die Form `(3, 1)`, eine Spalte mit drei Einträgen. Ein [Bias](#/glossary/bias-schicht) der Form `(3,)` lehnt NumPy ab, weil 3 nicht zur letzten Achse der Länge 2 passt. Tückisch ist die Form `(2,)`: Sie passt, egal ob du sie so gemeint hast.
+NumPy stempelt `bias` mit Form `(2,)` auf jede der drei Zeilen von `A`, und jede Zeile wird zu `[11, 21]`. Wolltest du dagegen einen Wert pro Zeile addieren, bräuchte `bias` die Form `(3, 1)`, eine Spalte mit drei Einträgen. Ein [Bias](#/glossary/bias-schicht) der Form `(3,)` lehnt NumPy ab, weil 3 nicht zur letzten Achse der Länge 2 passt. Tückisch ist die Form `(2,)`: Sie passt, egal ob du sie so gemeint hast.
 
 ## Wo dir das in der KI begegnet
 
@@ -82,7 +84,7 @@ y = np.array([1.0, 2.5, 2.0])              # Form (3,)
 mse = np.mean((y_pred - y) ** 2)           # still falsch!
 ```
 
-NumPy broadcastet `(3, 1)` minus `(3,)` zu einer `(3, 3)`-Matrix aller Paardifferenzen und mittelt über neun statt drei Werte. Kein Fehler, trotzdem falsch. Die Reparatur ist `y_pred.ravel()` oder `y_pred[:, 0]`, damit beide Seiten die Form `(3,)` haben.
+NumPy broadcastet `(3, 1)` minus `(3,)` zu einer `(3, 3)`-Matrix: Jede Vorhersage wird von jedem Zielwert abgezogen, und der Mittelwert läuft über neun statt drei Differenzen. Das Ergebnis ist rund 1,08. Richtig wären die drei Differenzen $0$, $-0{,}5$ und $1$ mit dem MSE $1{,}25 / 3 \approx 0{,}42$. Kein Fehler, trotzdem falsch. Die Reparatur ist `y_pred.ravel()` oder `y_pred[:, 0]`, damit beide Seiten die Form `(3,)` haben.
 
 ## Prüfstrategie
 

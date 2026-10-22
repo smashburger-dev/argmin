@@ -62,14 +62,14 @@ Halbierst du $h$, viertelt sich der Fehler der Näherung. Ein $h$ um $10^{-5}$ i
 
 ## Referenz: Kleinste-Quadrate über lstsq
 
-Für kleine Datenmengen hat die lineare Regression eine **geschlossene Lösung**: eine Formel, die das beste $(w, b)$ direkt liefert, ohne Schritte. Geometrisch ist das die Projektion der $y$-Werte auf den Raum, den die Spalte $x$ und der Einsvektor aufspannen. In NumPy liefert `np.linalg.lstsq` diese Referenz:
+Für kleine Datenmengen hat die lineare Regression eine **geschlossene Lösung**: eine Formel, die das $(w, b)$ mit dem kleinsten MSE direkt liefert, ohne Schritte. In NumPy liefert `np.linalg.lstsq` diese Referenz:
 
 ```python
 A = np.vstack([x, np.ones_like(x)]).T
 coef, _, _, _ = np.linalg.lstsq(A, y, rcond=None)
 ```
 
-Weil der MSE eine konvexe quadratische Funktion ist, konvergiert sorgfältiger Gradientenabstieg gegen genau diese Lösung; der Abgleich mit `lstsq` ist dein Korrektheitscheck, nicht die Definition des Lernens.
+Die MSE-Landschaft der linearen Regression ist eine Schüssel mit genau einem Tiefpunkt. Gradientenabstieg mit passender Lernrate landet deshalb bei derselben Lösung wie `lstsq`. Der Abgleich mit `lstsq` ist dein Korrektheitscheck: Weichen beide ab, steckt ein Fehler in deinem Gradienten oder deiner Schleife.
 
 ## Wo dir das in der KI begegnet
 

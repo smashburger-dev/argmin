@@ -6,7 +6,7 @@ Ein Gleichungssystem per Einsetzen zu lösen funktioniert, ist aber schnell unü
 
 Zwei Kassenzettel aus demselben Café: „2 Kaffee + 1 Croissant = 7 €“ und „1 Kaffee + 1 Croissant = 4,50 €“. Ziehst du den zweiten Zettel vom ersten ab, fällt das Croissant weg: 1 Kaffee kostet 2,50 €. Dann kostet das Croissant $4{,}50 - 2{,}50 = 2$ €.
 
-Genau das ist eine Zeilenoperation. Kaufst du dieselbe Tüte zweimal, steht auf dem Zettel überall das Doppelte: „2 Kaffee + 2 Croissants = 9 €“. Auch diesen verdoppelten Zettel darfst du abziehen, dann fällt das Croissant aus dem ersten Zettel vollständig weg. Die Zuordnung:
+Genau das ist eine Zeilenoperation. Kaufst du dieselbe Tüte zweimal, steht auf dem Zettel überall das Doppelte: „2 Kaffee + 2 Croissants = 9 €“. Ziehst du den ersten Zettel von diesem verdoppelten ab, fällt der Kaffee weg: 1 Croissant kostet $9 - 7 = 2$ €. Das ist derselbe Preis wie oben, nur auf anderem Weg. Die Zuordnung:
 
 - ein Kassenzettel: eine Zeile, also eine Gleichung
 - ein Posten auf dem Zettel: ein [Koeffizient](#/glossary/koeffizient)
@@ -36,7 +36,14 @@ Jede dieser Operationen verändert die Schreibweise, aber nicht die Lösungsmeng
 
 ## Ziel: Zeilenstufenform und Pivot
 
-Die Zielbegriffe kennst du aus der Lektion [Gleichungssysteme als Spaltenbild lesen](#/lesson/l-linalg-systems): Ein **Pivot** ist der erste von null verschiedene [Eintrag](#/glossary/eintrag) einer Zeile in Zeilenstufenform, die Pivots stehen von oben nach unten immer weiter rechts, ihre Zahl ist der **Rang**, und eine [Unbekannte](#/glossary/variable) ohne Pivot ist eine **freie Variable**. Dort hast du daraus die drei Lösungsfälle gelesen; hier lernst du die Umformungen, die ein System überhaupt in diese Form bringen.
+Die Zielform kennst du aus der Lektion [Gleichungssysteme als Spaltenbild lesen](#/lesson/l-linalg-systems). Zur Erinnerung:
+
+- Ein **Pivot** ist der erste [Eintrag](#/glossary/eintrag) einer Zeile, der nicht 0 ist.
+- In Zeilenstufenform steht jedes Pivot weiter rechts als das Pivot der Zeile darüber. Die Matrix sieht dann aus wie eine Treppe.
+- Die Zahl der Pivots ist der **Rang**.
+- Eine [Unbekannte](#/glossary/variable), in deren Spalte kein Pivot steht, ist eine **freie Variable**.
+
+Die Treppe ist das Ziel, weil die unterste Gleichung dann nur noch eine Unbekannte enthält. Diese Lektion zeigt die Umformungen, die ein System in diese Form bringen.
 
 ## Durchgerechnetes Beispiel
 
@@ -71,7 +78,9 @@ Entsteht beim Eliminieren diese Zeile:
 
 $$0x + 0y = 4.$$
 
-Sie verlangt das Unmögliche und ist ein Widerspruch: Das System hat keine Lösung, im Smoothie-Bild aus der Lektion [Gleichungssysteme als Spaltenbild lesen](#/lesson/l-linalg-systems) ist das Ziel nicht mischbar. Eine Zeile $0 = 0$ enthält dagegen keine neue Bedingung. Fehlt dadurch ein Pivot, bleibt eine Variable frei, und es gibt unendlich viele Lösungen.
+Links steht für jede Wahl von $x$ und $y$ eine 0, rechts eine 4. Die Zeile verlangt also $0 = 4$ und ist ein Widerspruch: Das System hat keine Lösung, im Smoothie-Bild aus der Lektion [Gleichungssysteme als Spaltenbild lesen](#/lesson/l-linalg-systems) ist das Ziel nicht mischbar.
+
+Eine Zeile $0 = 0$ stimmt dagegen immer und schränkt nichts ein. Ein Beispiel: Aus $x + y = 3$ und $2x + 2y = 6$ macht $Z_2 \leftarrow Z_2 - 2Z_1$ die Zeile $0 = 0$. Übrig bleibt nur $x + y = 3$ mit einem Pivot in der Spalte von $x$. Die Spalte von $y$ hat keins, also ist $y$ frei. Mit $y = 0$ ist $x = 3$, mit $y = 1$ ist $x = 2$, und jeder weitere Wert für $y$ liefert eine weitere Lösung.
 
 ## Wo dir das in der KI begegnet
 

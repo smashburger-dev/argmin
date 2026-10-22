@@ -10,7 +10,9 @@ Bei **Lasso** kostet jede Einheit Abstand von null eine feste Gebühr. Lohnt sic
 
 Wo der Vergleich hinkt: Das Gummiband zieht proportional zur Auslenkung, die Lasso-Gebühr ist pro Einheit konstant. Beide wirken nur auf die Koeffizienten, nicht auf die Daten, und beide brauchen einen Stellregler $\lambda$ (sprich: lambda), der die Strafhöhe setzt.
 
-**Regularisierung** heißt genau dieses Einengen der Freiheitsgrade: Ein **Hyperparameter** wie $\lambda$ wird nicht aus den Daten gelernt, sondern von dir vorgegeben. Im Austausch für etwas **Bias** (eine leichte Verzerrung der Vorhersage im Mittel) sinkt die [**Varianz**](#/glossary/varianz), die Wackeligkeit der Vorhersage. Der Trainingsfehler steigt mit $\lambda$ dabei typischerweise an; gesenkt wird der erwartete Testfehler. „Bias“ meint hier die statistische Verzerrung, nicht den Bias-Term einer Schicht.
+**Regularisierung** heißt: Das Modell zahlt eine Strafe für große Koeffizienten und kann sich deshalb nicht jedem Zufallsdetail der Trainingsdaten anpassen. Die Strafhöhe $\lambda$ ist ein **Hyperparameter**: Das Modell lernt sie nicht aus den Daten, du gibst sie vor.
+
+Der Preis dafür ist etwas **Bias**, eine Verzerrung: Im Mittel liegen die Vorhersagen ein Stück neben dem wahren Wert. Dafür sinkt die [**Varianz**](#/glossary/varianz). Trainierst du auf einer anderen Stichprobe derselben Wohnungen, springen die Koeffizienten weniger. Der Trainingsfehler steigt mit $\lambda$ typischerweise an, der Fehler auf neuen Daten sinkt bis zu einem gewissen $\lambda$. „Bias“ meint hier die statistische Verzerrung, nicht den Bias-Term einer Schicht.
 
 ## Ridge: die geschlossene Form
 
@@ -18,7 +20,7 @@ Die **Ridge-Regression (L2)** minimiert die quadrierten Fehler plus $\lambda\sum
 
 $$w_{\text{ridge}} = (X^{T}X + \lambda I)^{-1}X^{T}y.$$
 
-Dabei ist $X^{T}$ (sprich: X transponiert) die gespiegelte Design-Matrix, $I$ die **Einheitsmatrix** (Einsen auf der Diagonale, sonst Nullen) und $(\cdot)^{-1}$ die Matrixinversion. Der Summand $\lambda I$ hebt die Klammer für jedes $\lambda > 0$ über die Schwelle der Invertierbarkeit, auch wenn $X^{T}X$ allein nicht invertierbar wäre. $\lambda = 0$ liefert die OLS-Lösung (englisch *ordinary least squares*, Methode der kleinsten Quadrate). Wächst $\lambda$, schrumpfen alle Koeffizienten Richtung null.
+Dabei ist $X^{T}$ (sprich: X transponiert) die gespiegelte Design-Matrix, $I$ die **Einheitsmatrix** (Einsen auf der Diagonale, sonst Nullen) und $(\cdot)^{-1}$ die Matrixinversion. Der Summand $\lambda I$ addiert $\lambda$ auf jede Zahl der Diagonale. Dadurch ist die Klammer für jedes $\lambda > 0$ invertierbar, auch wenn $X^{T}X$ allein es nicht wäre, etwa bei zwei Spalten mit derselben Information. $\lambda = 0$ liefert die OLS-Lösung (englisch *ordinary least squares*, Methode der kleinsten Quadrate). Wächst $\lambda$, schrumpfen alle Koeffizienten Richtung null.
 
 ### Durchgerechnet: ein Merkmal
 
@@ -32,7 +34,7 @@ Zahlen: $\sum x_i^2 = 8$, $\sum x_i y_i = 16$.
 - Ridge mit $\lambda = 2$: $w = 16/(8+2) = 1{,}6$
 - Schrumpfung: $1 - 1{,}6/2 = 0{,}2$, also **20 %**
 
-Allgemein gilt $w_{\text{ridge}}/w_{\text{OLS}} = \sum x_i^2 / (\sum x_i^2 + \lambda)$, der Schrumpfungsfaktor hängt nur von $\lambda$ und der Skala der Daten ab. Deshalb muss vor Ridge standardisiert werden.
+Allgemein gilt $w_{\text{ridge}}/w_{\text{OLS}} = \sum x_i^2 / (\sum x_i^2 + \lambda)$, der Schrumpfungsfaktor hängt nur von $\lambda$ und der Skala der Daten ab. Misst du dasselbe Merkmal in Zentimetern statt Metern, wird jedes $x_i$ hundertmal größer und $\sum x_i^2$ zehntausendmal größer. Dieselbe Strafe $\lambda = 2$ schrumpft dann fast nichts mehr. Deshalb muss vor Ridge standardisiert werden.
 
 ### Durchgerechnet: zwei Merkmale
 

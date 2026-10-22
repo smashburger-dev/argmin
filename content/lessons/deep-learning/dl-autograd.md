@@ -6,7 +6,7 @@ Backpropagation ist kein Zauber, sondern die Kettenregel, organisiert als Durchl
 
 Gilt $1\ \text{€} = 1{,}10\ \text{\$}$ und $1\ \text{\$} = 150\ \text{¥}$, dann ist $1\ \text{€} = 165\ \text{¥}$: Die Kurse multiplizieren sich entlang des Wegs. Genau so arbeitet die **Kettenregel**: Der Anteil eines frühen Gewichts am Verlust ist das Produkt der lokalen Kurse entlang des Pfades.
 
-Gabelt sich der Weg (stell dir zwei Einkommensquellen vor, die beide von deinen Arbeitsstunden abhängen), addieren sich die Beiträge. Der **Upstream-Gradient** ist dabei „was ein Dollar am Ende in Yen wert ist“: der [Gradient](#/glossary/gradient), der von der Ausgabe her ankommt.
+Gabelt sich der Weg, addieren sich die Beiträge. Arbeitest du eine Stunde mehr, bringt dir das 10 € Lohn und 3 € Trinkgeld, zusammen 13 € mehr Einkommen. Der **Upstream-Gradient** ist der Kurs vom Ende des Wegs zurück bis zur aktuellen Stelle: der [Gradient](#/glossary/gradient), der von der Ausgabe her ankommt. Im Wechselkursbild steht an der Stelle Dollar der Kurs 150, denn so viele Yen bringt ein Dollar am Ende.
 
 Wo der Vergleich hinkt: Wechselkurse sind fest; Ableitungen gelten nur am aktuellen Punkt und ändern sich mit den Werten.
 
@@ -15,6 +15,8 @@ Wo der Vergleich hinkt: Wechselkurse sind fest; Ableitungen gelten nur am aktuel
 Schreibe jede Operation als Knoten des Rechengraphen. Für $z = x \cdot w$ gilt lokal $\partial z / \partial x = w$ und $\partial z / \partial w = x$. Kommt von oben der Upstream-Gradient $\partial L / \partial z$, dann ist
 
 $$\frac{\partial L}{\partial x} = \frac{\partial L}{\partial z} \cdot \frac{\partial z}{\partial x}.$$
+
+Mit Zahlen: $x = 3$, $w = 2$, also $z = 6$, und der Verlust sei $L = z^2 = 36$. Der Upstream-Gradient ist $\partial L / \partial z = 2z = 12$, der lokale ist $\partial z / \partial x = w = 2$. Also gilt $\partial L / \partial x = 12 \cdot 2 = 24$. Zur Probe direkt abgeleitet: $L = (xw)^2$ ergibt $2xw^2 = 2 \cdot 3 \cdot 4 = 24$.
 
 Das ist die ganze Mechanik: **lokal mal upstream**. Über einen Pfad mit Kanten $g_1, g_2, \dots, g_k$ multiplizieren sich die Beiträge zum Produkt $g_1 \cdot g_2 \cdots g_k$. Gabelt sich ein Pfad, etwa geht $x$ in zwei Zweige, die beide in $L$ münden, werden die Beiträge **addiert**.
 

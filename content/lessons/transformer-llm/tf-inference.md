@@ -26,7 +26,7 @@ Der [Forward-Pass](#/glossary/forward-pass) ist der Vorwärtsdurchlauf von Einga
 
 ## Station 3: Logits lesen
 
-Logits sind unnormalisierte Punktzahlen. Die [Softmax](#/glossary/softmax) würde sie zu Wahrscheinlichkeiten machen; für die nächste Entscheidung reicht aber der **argmax**, die Position der höchsten Punktzahl (sprich: argmax, das Argument des Maximums). Diese Position ist ein Token-Index. Der Abstand zum zweithöchsten Logit misst, wie sicher sich das Modell (hier: die Fixtur) ist.
+Logits sind unnormalisierte Punktzahlen. Die [Softmax](#/glossary/softmax) würde sie zu Wahrscheinlichkeiten machen; für die nächste Entscheidung reicht aber der **argmax**, die Position der höchsten Punktzahl (sprich: argmax, das Argument des Maximums). Diese Position ist ein Token-Index. Ein Beispiel mit drei Vokabulareinträgen: Die Logits $(1{,}2;\ 3{,}5;\ 0{,}4)$ haben ihr Maximum an Position 1, also ist das nächste Token das mit Index 1. Der Abstand zum zweithöchsten Logit misst, wie sicher sich das Modell (hier: die Fixtur) ist.
 
 ## Station 4: Greedy Decoding
 
@@ -65,7 +65,7 @@ Warum trotzdem kein echtes Modell? Ein reales LLM hat Milliarden trainierter Gew
 
 ## Wo dir das in der KI begegnet
 
-Jede Chat-Antwort entsteht in genau dieser Schleife. Statt Greedy wird oft mit Temperatur gesampelt: Die Logits werden vor dem Softmax durch eine Temperatur $T$ geteilt. Bei $T > 1$ wird die Verteilung flacher, bei $T \to 0$ nähert sie sich argmax an.
+Jede Chat-Antwort entsteht in genau dieser Schleife. Statt Greedy wird oft mit Temperatur gesampelt: Die Logits werden vor dem Softmax durch eine Temperatur $T$ geteilt. Bei $T > 1$ wird die Verteilung flacher, bei $T \to 0$ nähert sie sich argmax an. Mit den Logits $(2, 1)$ liefert Softmax bei $T = 1$ etwa $(0{,}73;\ 0{,}27)$. Bei $T = 2$ werden daraus die Logits $(1;\ 0{,}5)$ und die Wahrscheinlichkeiten etwa $(0{,}62;\ 0{,}38)$: Das schwächere Token kommt öfter zum Zug.
 
 ## Direkter Check
 

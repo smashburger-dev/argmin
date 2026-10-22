@@ -38,7 +38,7 @@ Hyperparameter dürfen nicht auf dem finalen Testset gewählt werden, sonst miss
 
 ## Die Pipelinegrenze
 
-Die Regel, die alle drei Quellen deckt: Die **Pipeline** (die Kette aus Vorverarbeitung und Modell) passt ihre Statistiken nur auf Train-Folds an. Ein Schritt, der Statistiken schätzt (Skalierer, Imputer, Modell), sieht nur die Trainingsdaten; die Anwendung darf auf Test laufen. Kontrolliere jede beschriebene Pipeline Schritt für Schritt an dieser Grenze. Gruppierte oder zeitlich geordnete Daten verlangen zusätzlich getrennte Folds, etwa pro Person oder nach Zeit.
+Die Regel, die alle drei Quellen deckt: Die **Pipeline** (die Kette aus Vorverarbeitung und Modell) passt ihre Statistiken nur auf Train-Folds an. Ein Schritt, der Statistiken schätzt (Skalierer, Imputer, Modell), sieht nur die Trainingsdaten; die Anwendung darf auf Test laufen. Ein Beispiel: Der Skalierer berechnet Mittelwert 50 und Standardabweichung 10 nur aus den Train-Zeilen. Eine Testzeile mit dem Wert 62 wird dann mit genau diesen Zahlen zu $(62 - 50)/10 = 1{,}2$, und ihr eigener Wert ist nie in die 50 eingeflossen. Kontrolliere jede beschriebene Pipeline Schritt für Schritt an dieser Grenze. Gruppierte oder zeitlich geordnete Daten verlangen zusätzlich getrennte Folds, etwa pro Person oder nach Zeit.
 
 ## Typische Fehler
 

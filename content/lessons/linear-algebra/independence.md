@@ -18,11 +18,13 @@ Wo der Vergleich hinkt: Ab drei Dimensionen kann ein Vektor aus mehreren anderen
 
 ## Unabhängigkeit prüfen
 
-Wir arbeiten in $\mathbb{R}^2$, gesprochen „R zwei“, der Ebene aller Zahlenpaare. Vektoren $v_1, \dots, v_k$ heißen **linear unabhängig**, wenn ihre Linearkombination nur auf eine Art den Nullvektor ergibt:
+Wir arbeiten in $\mathbb{R}^2$, gesprochen „R zwei“, der Ebene aller Zahlenpaare. Die Frage lautet: Mit welchen Zahlen $c_1, \dots, c_k$ ergibt die Mischung den Nullvektor?
 
 $$c_1v_1 + \dots + c_kv_k = 0.$$
 
-Die **triviale Lösung** ist $c_1 = \dots = c_k = 0$, alle Beiträge auf null gedreht. Gibt es eine zweite Kombination mit einem $c_i \neq 0$, sind die Vektoren abhängig: Du kannst die Gleichung nach diesem $v_i$ auflösen und es durch die anderen ausdrücken.
+Eine Antwort klappt immer: alle $c_i = 0$. Nimmst du von keinem Vektor etwas, landest du bei null. Diese Antwort heißt **triviale Lösung**. Vektoren $v_1, \dots, v_k$ heißen **linear unabhängig**, wenn die triviale Lösung die einzige ist.
+
+Gibt es eine zweite Kombination mit einem $c_i \neq 0$, sind die Vektoren abhängig. Du kannst die Gleichung dann nach diesem $v_i$ auflösen und es durch die anderen ausdrücken. Beispiel: Aus $2v_1 - v_2 = 0$ folgt $v_2 = 2v_1$.
 
 Gegeben seien zwei Vektoren in der Ebene:
 
@@ -56,9 +58,9 @@ A=\begin{pmatrix}
 \end{pmatrix}.
 $$
 
-Ihre dritte Zeile ist zweimal die erste plus die zweite: $2 \cdot (1,2,0) + (0,1,1) = (2,5,1)$. Sie bringt keine neue [Bedingung](#/glossary/bedingung). Nach Gauß-Elimination bleiben zwei Pivotzeilen, der Rang ist 2.
+Ihre dritte Zeile ist zweimal die erste plus die zweite: $2 \cdot (1,2,0) + (0,1,1) = (2,5,1)$. Sie bringt keine neue [Bedingung](#/glossary/bedingung). Die Elimination zeigt das in zwei Schritten. $Z_3 \leftarrow Z_3 - 2Z_1$ macht aus $(2,5,1)$ die Zeile $(0,1,1)$. Danach macht $Z_3 \leftarrow Z_3 - Z_2$ daraus $(0,0,0)$. Es bleiben zwei Zeilen mit Pivot, der Rang ist 2.
 
-Zwei Faustregeln helfen beim Einordnen: Mehr als $n$ Vektoren in $\mathbb{R}^n$ sind immer abhängig, weil du nicht mehr verschiedene Richtungen finden kannst, als der Raum Koordinaten hat. Hier meint „Dimension“ die Anzahl der Koordinaten pro Vektor. Und die **Nullität**, die Zahl der freien [Variablen](#/glossary/variable) von $Ax=0$, ergänzt den Rang zur Spaltenzahl: Rang plus Nullität gleich Anzahl der Spalten.
+Zwei Faustregeln helfen beim Einordnen. Erstens sind mehr als $n$ Vektoren mit je $n$ Koordinaten immer abhängig: Drei Vektoren in der Ebene haben nur zwei Richtungen zur Verfügung. Zweitens ergänzen sich Rang und Nullität. Die **Nullität** ist die Zahl der freien [Variablen](#/glossary/variable) von $Ax=0$, und es gilt Rang plus Nullität gleich Anzahl der Spalten. Für $A$ oben heißt das $2 + 1 = 3$: Eine der drei Spalten trägt kein Pivot, also bleibt eine Variable frei.
 
 ## Durchgerechnete Prüfstrategie
 

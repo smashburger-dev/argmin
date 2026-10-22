@@ -18,7 +18,7 @@ rng.integers(0, 10, size=3)   # [9, 6, 6]
 rng.integers(0, 10, size=3)   # [8, 5, 7]  (nächste Ziehung)
 ```
 
-Ein neuer Generator mit Seed 7 startet exakt dieselbe Folge. Wer den globalen `np.random.seed` setzt, macht das Ergebnis von der Aufrufreihenfolge anderer Code abhängig; das ist der häufigste Repro-Fehler.
+Ein neuer Generator mit Seed 7 startet exakt dieselbe Folge. Wer den globalen `np.random.seed` setzt, teilt einen einzigen Zufallsstrom mit allem anderen Code. Zieht eine Hilfsfunktion vor deinem Split eine Zufallszahl mehr, verschiebt sich die ganze Folge, und der Split sieht anders aus. Das ist der häufigste Repro-Fehler.
 
 ## Der Reproduzierbarkeitsvertrag
 

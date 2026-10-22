@@ -16,7 +16,7 @@ $$w \leftarrow w - \mathrm{lr} \cdot (g + \lambda w).$$
 
 ($\mathrm{lr}$ ist die [Lernrate](#/glossary/lernrate), in anderen Texten oft $\eta$ geschrieben.)
 
-Diese Form, Weight Decay, zieht die Gewichte in jedem Schritt proportional zu ihrem Betrag Richtung null, unabhängig vom Datengradienten. Der Bias wird üblicherweise **nicht** regularisiert: Er verschiebt nur, er skaliert nicht. Wähle $\lambda$ klein (etwa $10^{-4}$ bis $10^{-2}$). Zu große Werte ziehen das Modell so stark Richtung null, dass es fast nur noch den Bias vorhersagt.
+Diese Form, Weight Decay, zieht die Gewichte in jedem Schritt proportional zu ihrem Betrag Richtung null, unabhängig vom Datengradienten. Mit $\mathrm{lr} = 0{,}1$ und $\lambda = 0{,}01$ verliert jedes Gewicht pro Schritt zusätzlich $0{,}1 \cdot 0{,}01 = 0{,}1\,\%$ seines Werts. Der Bias wird üblicherweise **nicht** regularisiert: Er verschiebt nur, er skaliert nicht. Wähle $\lambda$ klein (etwa $10^{-4}$ bis $10^{-2}$). Zu große Werte ziehen das Modell so stark Richtung null, dass es fast nur noch den Bias vorhersagt.
 
 ## Dropout mit fester Maske
 
@@ -26,7 +26,7 @@ Invertierte Skalierung heißt: Erhaltene Aktivierungen werden mit $1/p$ multipli
 
 $$\tilde{a}_i = M_i \cdot \frac{a_i}{p}.$$
 
-So bleibt der Erwartungswert über die [Masken](#/glossary/maske) unverändert. Im Inference-Pass braucht es dann **keine** Maske und keine Skalierung mehr. In dieser Plattform ist Dropout ein kontrolliertes Konzept: Maske einmal ziehen (Seed), Weiterrechnen exakt nachvollziehen.
+Ein Beispiel mit $p = 0{,}5$: Aus den Aktivierungen $(2, 4, 6, 8)$ und der Maske $(1, 0, 0, 1)$ wird $(4, 0, 0, 16)$. Im Mittel überlebt jede Aktivierung mit Wahrscheinlichkeit $0{,}5$ und wird dann verdoppelt, also kommt im Mittel $0{,}5 \cdot 2a = a$ heraus. So bleibt der Erwartungswert über die [Masken](#/glossary/maske) unverändert. Im Inference-Pass braucht es dann **keine** Maske und keine Skalierung mehr. In dieser Plattform ist Dropout ein kontrolliertes Konzept: Maske einmal ziehen (Seed), Weiterrechnen exakt nachvollziehen.
 
 ## Faire Ablation
 
