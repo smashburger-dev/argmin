@@ -31,7 +31,7 @@ Die Ausgabe ist `3`. Der häufigste Lesefehler ist, nur die Zeilen im wahren Zwe
 
 ## Bausteine, die du tracest
 
-Drei Ausdrucksformen tauchen in den Aufgaben häufig auf.
+Vier Ausdrucksformen tauchen in den Aufgaben häufig auf.
 
 Ein Slice `wort[a:b]` schneidet Zeichen von Position `a` bis vor `b`, Start inklusive, Ende exklusive: `"python"[1:4]` ergibt `"yth"`.
 

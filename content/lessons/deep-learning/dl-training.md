@@ -34,15 +34,15 @@ Momentum führt eine Geschwindigkeit $v$ ein, die frühere [Gradienten](#/glossa
 
 $$v \leftarrow \mu \, v + g, \qquad w \leftarrow w - \mathrm{lr} \cdot v.$$
 
-$\mu$ (sprich: mü) ist der Schwungfaktor. Bei konstantem Gradienten wächst $v$ geometrisch gegen $g / (1 - \mu)$, bei $\mu = 0{,}5$ auf das Doppelte von $g$. Das glättet Zickzack und beschleunigt konsistente Richtungen.
+$\mu$ (sprich: mü) ist der Schwungfaktor. Bei konstantem Gradienten wächst $v$ gegen $g / (1 - \mu)$. Mit $g = 4$, $\mu = 0{,}5$ und Start $v = 0$ ergibt sich $v = 4$, dann $0{,}5 \cdot 4 + 4 = 6$, dann $7$, und die Folge nähert sich $4 / 0{,}5 = 8$, dem Doppelten von $g$. Das glättet Zickzack und beschleunigt konsistente Richtungen.
 
 ## Lernraten-Schedules
 
 Ein konstantes $\mathrm{lr}$ ist die Ausnahme, nicht die Regel. Ein Schedule legt fest, wie sich die Schrittweite über die Epochen verändert; Loss und Gradienten bleiben unverändert, nur der Faktor im Update $w \leftarrow w - \mathrm{lr}_e \cdot g$ wandert. Drei Standardformen:
 
-- **Step Decay:** $\mathrm{lr}_e = \mathrm{lr}_0 \cdot \gamma^{\lfloor e / S \rfloor}$ ($\lfloor\cdot\rfloor$ sprich: abgerundet, $\gamma$ sprich: gamma), alle $S$ Epochen wird die Lernrate mit $\gamma$ multipliziert, typisch $0{,}5$ oder $0{,}1$; das heißt: am Anfang grob lernen, am Ende fein. Die Stufen sind feste Kalenderdaten und kennen die Kurve nicht.
+- **Step Decay:** Alle $S$ Epochen wird die Lernrate mit einem Faktor $\gamma$ (sprich: gamma) multipliziert, typisch $0{,}5$ oder $0{,}1$. Mit $\mathrm{lr}_0 = 0{,}1$, $\gamma = 0{,}5$ und $S = 100$ gilt $0{,}1$ in den Epochen 0 bis 99, $0{,}05$ in den Epochen 100 bis 199 und $0{,}025$ ab Epoche 200. Als Formel: $\mathrm{lr}_e = \mathrm{lr}_0 \cdot \gamma^{\lfloor e / S \rfloor}$, wobei $\lfloor\cdot\rfloor$ abrundet. Am Anfang lernt das Modell also grob, am Ende fein. Die Stufen stehen fest und reagieren nicht auf die Lernkurve.
 - **Cosine:** $\mathrm{lr}_e = \mathrm{lr}_{\min} + \tfrac{1}{2}\,(\mathrm{lr}_0 - \mathrm{lr}_{\min})\bigl(1 + \cos(\pi e / E)\bigr)$ ($\cos$ sprich: Kosinus), glatter Abfall von $\mathrm{lr}_0$ auf $\mathrm{lr}_{\min}$ über die geplanten $E$ Epochen, ohne harte Stufe. Braucht die Gesamtepochenzahl im Voraus.
-- **Reduce on Plateau:** kein Kalender, sondern ein Signal, sinkt der überwachte Verlust (meist der Validierungs-[MSE](#/glossary/mse)) für $P$ Epochen nicht mehr, wird $\mathrm{lr}$ halbiert. Reagiert auf die Kurve statt auf die Uhr, hängt aber an einer sauberen Messung: Mit verrauschtem oder unpassendem Monitor springt der Schedule zu früh oder nie.
+- **Reduce on Plateau:** kein Kalender, sondern ein Signal. Sinkt der überwachte Verlust (meist der Validierungs-[MSE](#/glossary/mse)) für $P$ Epochen nicht mehr, wird $\mathrm{lr}$ halbiert. Reagiert auf die Kurve statt auf die Uhr, hängt aber an einer sauberen Messung: Mit verrauschtem oder unpassendem Monitor springt der Schedule zu früh oder nie.
 
 Oft kommt ein vierter Baustein davor: **Warmup** fährt $\mathrm{lr}$ in den ersten Epochen linear von $0$ auf $\mathrm{lr}_0$ hoch. Das stabilisiert große Lernraten und ist bei Transformern Standard; auf Spielzeug-SGD ist es optional.
 

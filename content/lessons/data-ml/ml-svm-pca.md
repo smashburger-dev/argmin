@@ -10,11 +10,15 @@ Formal sucht die Hard-Margin-SVM die kleinste Norm $\|w\|$ (sprich: Norm von w, 
 
 $$\text{Margin} = \frac{2}{\|w\|}.$$
 
-Kleines $\|w\|$ heißt großer Margin. Konzeptbeispiel: Punkte $(1,1)$ mit Klasse $+1$ und $(-1,-1)$ mit Klasse $-1$. Die Gerade $x_1 + x_2 = 0$ trennt beide. Der Abstand jedes Punkts zur Geraden ist $2/\sqrt{2} = \sqrt{2}$, der Korridor zwischen den Klassen ist also doppelt so breit: Margin $= 2\sqrt{2} \approx 2{,}83$. Zur Kontrolle über die kanonische Skalierung: Beide Punkte erfüllen $y\,(w^\top x) = 2$; teilt man durch 2, gilt $\min_i y\,(\hat{w}^\top x_i) = 1$ mit $\hat{w} = (0{,}5,\,0{,}5)$, $\|\hat{w}\| = 1/\sqrt{2}$, und der Margin ist $2/\|\hat{w}\| = 2\sqrt{2}$. Kein Vektor mit kleinerer Norm, der bei dieser Skalierung noch trennt, existiert; das ist die Hard-Margin-Lösung.
+Kleines $\|w\|$ heißt großer Margin. Konzeptbeispiel: Punkte $(1,1)$ mit Klasse $+1$ und $(-1,-1)$ mit Klasse $-1$. Die Gerade $x_1 + x_2 = 0$ trennt beide. Der Abstand jedes Punkts zur Geraden ist $2/\sqrt{2} = \sqrt{2}$, der Korridor zwischen den Klassen ist also doppelt so breit: Margin $= 2\sqrt{2} \approx 2{,}83$.
+
+Dieselbe Zahl kommt aus der Formel. Die Gerade $x_1 + x_2 = 0$ gehört zu $w = (1, 1)$ und $b = 0$. Für den Punkt $(1,1)$ mit $y = +1$ ergibt $y\,(w^\top x) = 1 \cdot (1 + 1) = 2$, für $(-1,-1)$ mit $y = -1$ ebenfalls $2$. Die Bedingung verlangt nur $\ge 1$, also darf $w$ noch halb so lang werden. Mit $w = (0{,}5,\,0{,}5)$ erreichen beide Punkte genau 1. Dann ist $\|w\| = \sqrt{0{,}25 + 0{,}25} = 1/\sqrt{2}$ und der Margin $2/\|w\| = 2\sqrt{2}$. Ein noch kürzeres $w$ würde die Bedingung verletzen, deshalb ist das die Hard-Margin-Lösung.
 
 ### Kernel-Trick (Konzept)
 
-Nicht linear trennbare Punkte können nach einer Abbildung $\phi$ (sprich: phi) in einen höherdimensionalen Raum linear trennbar werden. Der **Kernel-Trick** rechnet die dafür nötigen Skalarprodukte $\phi(x_i)^{T}\phi(x_j)$ direkt als Kernel-Funktion, ohne die Koordinaten; der RBF-Kernel (radiale Basisfunktion) misst dabei eine Ähnlichkeit, die mit dem Abstand der Punkte abfällt jemals auszuweisen. `SVC(kernel='rbf')` in sklearn heißt genau das.
+Manche Punkte trennt keine Gerade. Ein Beispiel auf der Zahlengeraden: $-1$ und $1$ gehören zu Klasse A, $-2$ und $2$ zu Klasse B. Kein einzelner Schnittpunkt trennt innen von außen. Schreibe jeden Punkt $x$ als Paar $(x, x^2)$. Dann liegen A bei Höhe 1 und B bei Höhe 4, und die waagerechte Linie auf Höhe 2,5 trennt beide. Diese Umrechnung heißt Abbildung $\phi$ (sprich: phi), hier $\phi(x) = (x, x^2)$.
+
+Die SVM braucht von den neuen Punkten nur Skalarprodukte $\phi(x_i)^{T}\phi(x_j)$. Der **Kernel-Trick** rechnet diese Skalarprodukte mit einer Formel direkt aus den ursprünglichen Punkten, ohne die neuen Koordinaten je aufzuschreiben. Der häufigste Kernel, RBF (radiale Basisfunktion), liefert eine Ähnlichkeit: nahe 1 für benachbarte Punkte, nahe 0 für weit entfernte. `SVC(kernel='rbf')` in sklearn heißt genau das.
 
 ## Eigenvektoren: Richtungen, die eine Matrix nur streckt
 

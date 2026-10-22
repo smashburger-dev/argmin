@@ -17,7 +17,9 @@ der gepinnte Kern des GenAI-Prototyps. Das `check-manifest.json` hält für jede
 den sha256 fest; Lernenden-Dateien stehen dort mit `sha256: null` und werden
 nur auf Anwesenheit geprüft: Du darfst an `src/pipeline.py` arbeiten, an
 `golden/` nicht. `assert_frozen()` rechnet die Hashes bei jedem Lauf nach und
-scheitert hörbar, wenn jemand „nur schnell“ eine Erwartung angepasst hat.
+scheitert hörbar, wenn jemand „nur schnell“ eine Erwartung angepasst hat:
+Ändert sich in `golden/` ein einziges Zeichen, passt der sha256 nicht mehr
+zum Manifest, und der Lauf bricht mit dem Dateinamen ab.
 Dazu gehören **versionierte Seeds und Konfiguration**: `seeds.pipeline` und
 Konsorten stehen in `config/experiment.json`, nicht verstreut im Code. Ein
 Wechsel eines Seeds ist ein Experimentwechsel; er gehört in eine neue

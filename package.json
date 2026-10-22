@@ -12,6 +12,8 @@
     "test:project-runner": "python3 -m unittest tests/test_learner_project_check.py tests/test_foundations_project_solution.py tests/test_rag_capstone_project_solution.py",
     "coverage:build": "node tools/build_coverage_matrix.mjs",
     "coverage:check": "node tools/build_coverage_matrix.mjs --check",
+    "sync:derived": "node tools/sync_derived.mjs",
+    "check:derived": "node tools/sync_derived.mjs --check",
     "pretypecheck": "npm run content:compile && npm run coverage:check",
     "typecheck": "tsc --noEmit",
     "predev:next": "npm run content:compile && npm run coverage:check",

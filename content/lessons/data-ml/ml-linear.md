@@ -18,7 +18,15 @@ Wo der Vergleich hinkt: Echte Preise wachsen nicht linear, eine Wohnung im Zentr
 
 ## Design-Matrix und geschlossene Lösung
 
-Um den Achsenabschnitt $w_0$ mitzurechnen, wird aus der Datentabelle die **Design-Matrix**: Eine [Matrix](#/glossary/matrix) $A$, deren erste Spalte nur Einsen enthält und deren übrige Spalten die Merkmale sind. Die beste Gerade im Sinne der kleinsten Quadrate liefert `np.linalg.lstsq` direkt, ohne Iteration. Hinter ihr steht die **Normalgleichung** $X^{T}X\hat{w} = X^{T}y$, formal gelöst als $\hat{w} = (X^{T}X)^{-1}X^{T}y$; die Inverse existiert nur, wenn $X^{T}X$ nicht singulär ist, zum Beispiel nicht bei mehr Merkmalen als Beobachtungen.
+Um den Achsenabschnitt $w_0$ mitzurechnen, wird aus der Datentabelle die **Design-Matrix**: Eine [Matrix](#/glossary/matrix) $A$, deren erste Spalte nur Einsen enthält und deren übrige Spalten die Merkmale sind. Für vier Wohnungen mit 40, 60, 80 und 100 m² sieht sie so aus:
+
+$$
+A = \begin{pmatrix}1 & 40\\ 1 & 60\\ 1 & 80\\ 1 & 100\end{pmatrix}.
+$$
+
+Zeile $i$ mal $(w_0, w_1)$ ergibt $w_0 \cdot 1 + w_1 \cdot x_i$, also genau die Vorhersage für Wohnung $i$. Die Einsen-Spalte sorgt dafür, dass der Grundpreis in jeder Zeile einmal dazukommt.
+
+Die beste Gerade im Sinne der kleinsten Quadrate liefert `np.linalg.lstsq` direkt, ohne Iteration. Hinter ihr steht die **Normalgleichung** $X^{T}X\hat{w} = X^{T}y$, wobei $X$ hier die Design-Matrix ist. Formal gelöst heißt sie $\hat{w} = (X^{T}X)^{-1}X^{T}y$. Die Inverse $(X^{T}X)^{-1}$ existiert nur, wenn die Spalten von $X$ unabhängig sind. Zwei Spalten wie „Fläche in m²“ und „Fläche in cm²“ verletzen das, ebenso mehr Merkmale als Wohnungen.
 
 ## Fehlermaße von Hand
 
@@ -40,7 +48,7 @@ $$
 Der **RMSE** ist die Quadratwurzel des MSE und liegt damit wieder in der Einheit des Ziels: $\mathit{RMSE} = \sqrt{1} = 1$ Euro, Sekunde, was auch immer das Ziel misst. Für das **Bestimmtheitsmaß** $R^2$ brauchst du den Mittelwert $\bar{y} = 5$ (sprich: y quer):
 
 $$
-\mathit{SS}_{\text{tot}} = (2-5)^2 + (4-5)^2 + (6-5)^2 + (8-5)^2 = 9+1+1+9 = 20,
+\mathit{SS}_{\text{tot}} = (2-5)^2 + (4-5)^2 + (6-5)^2 + (8-5)^2 = 9+1+1+9 = 20.
 $$
 
 Dabei ist $\mathit{SS}_{\text{tot}}$ die Streuung der wahren Werte um ihren Mittelwert und $\mathit{SS}_{\text{res}}$ die Summe der quadrierten Residuen:
@@ -53,7 +61,9 @@ Damit gilt:
 
 $$
 R^2 = 1 - \frac{\mathit{SS}_{\text{res}}}{\mathit{SS}_{\text{tot}}} = 1 - \frac{4}{20} = 0{,}8.
-$$ $R^2 = 0{,}8$ heißt: Von der Streuung, die ein Modell lässt, das immer den Mittelwert rät, erklärt dieses Modell 80 %. Gerechnet wird das auf dem Testset, nicht auf den Trainingsdaten.
+$$
+
+So liest du die 0,8: Ein Modell, das für jede Wohnung den Mittelwert 5 rät, hätte die Fehlerquadratsumme 20. Dieses Modell kommt auf 4. Es beseitigt also 16 von 20 Einheiten Fehler, das sind 80 %. Gerechnet wird das auf dem Testset, nicht auf den Trainingsdaten.
 
 ## Fit mit lstsq
 

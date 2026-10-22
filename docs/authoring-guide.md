@@ -250,6 +250,18 @@ Projekt- und Reflexionslektionen (`project-step`, `reflection`) folgen denselben
 - „Dimension“ ist doppeldeutig (Anzahl der Achsen oder Länge einer Achse). Die Lektion sagt jedes Mal, welche Bedeutung gemeint ist.
 - Jedes Symbol über Klasse-10-Niveau wird beim ersten Auftreten in der Lektion in Worten vorgelesen und mit einem Mini-Beispiel ausgeschrieben, auch wenn eine frühere Lektion es schon erklärt hat. Betroffen sind unter anderem $\sum$, $\prod$, $\in$, $\mathbb{R}^{m\times n}$, $^\top$, $\partial$, $\nabla$, $\|w\|$, $\lceil\cdot\rceil$, $\lfloor\cdot\rfloor$, $\leftarrow$, $\hat{y}$, $\bar{y}$, $\log$, $e^x$, griechische Buchstaben und Doppelindizes wie $a_{ij}$.
 
+### Verständlichkeits-Symptome
+
+Ein Satz kann korrekt sein und trotzdem nicht ankommen. Die folgenden Symptome stammen aus einem Leserbericht zu „Pivot und Rang“ (`systems-solution-cases.md`, Oktober 2026). Jede Lektion wird dagegen geprüft; der Testleser ist jemand mit Klasse-10-Mathe, der jeden Satz in eine Rechnung oder ein Beispiel übersetzen können muss.
+
+1. **Schachteldefinition**: Ein Satz stapelt mehrere Bedingungen, bevor der Leser weiß, worum es geht („unter jedem ersten von null verschiedenen Eintrag einer Zeile nur Nullen“). Lösung: als nummerierte Prüfschritte schreiben, ein Schritt pro Bedingung, den Namen am Ende vergeben.
+2. **Fehlende Lesebrücke**: Eine neue Darstellung (Matrix, Indizes, Tabelle, Code) erscheint, ohne dass ein Beispiel in die bekannte Form zurückgelesen wird. Der Leser zählt dann das Falsche, etwa Nullen statt Spalten. Lösung: beim ersten Beispiel jeder Darstellung Zeile für Zeile zurückübersetzen und sagen, woran man was abzählt.
+3. **Fehlendes Wozu**: Eine Form oder ein Verfahren wird definiert, ohne zu sagen, was es ermöglicht. Lösung: ein Satz zum Zweck, und das Beispiel nutzt ihn einmal sichtbar (Zeilenstufenform → von unten nach oben einsetzen).
+4. **Schlusskette ohne Rechenschritt**: Mehrere Folgerungen stehen hintereinander, der Umform- oder Einsetzschritt fehlt („Rang 1, $x_2$ frei, zu jedem $x_2$ gehört $x_1 = 2 - x_2$“). Lösung: ein Schluss pro Satz, jede Umformung ausgeschrieben.
+5. **Allaussage ohne Einsetzen**: „jeden Wert“, „unendlich viele“, „für alle“ steht ohne konkreten Fall. Lösung: mindestens zwei Werte einsetzen und die Probe zeigen.
+6. **Deutungswort statt Rechenhandlung**: Wörter wie „inhaltsleer“, „bindet“, „Freiheitsgrad“ deuten, ohne zu sagen, was passiert. Lösung: durch die Handlung ersetzen („schränkt keine Wahl ein“, „legt $x_3$ fest“) oder den Begriff vorher definieren.
+7. **Unbeantwortete Warum-Frage**: Eine Grenze oder Zahl steht ohne Grund da („es gibt nur ein Pivot“). Lösung: den Grund in einem Satz nennen („jede Zeile hat höchstens einen ersten Eintrag“).
+
 ### Analogien
 
 - Die Analogie muss die Struktur erhalten: Was in ihr passiert, passiert auch mathematisch (Bestellmenge mal Preis summiert über Produkte = Skalarprodukt). Rein atmosphärische Vergleiche sind verboten.

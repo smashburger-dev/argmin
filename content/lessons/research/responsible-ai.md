@@ -17,7 +17,7 @@ Aus der Konfusionsmatrix einer Gruppe lassen sich zwei Raten direkt ablesen:
 
 Beide werden **pro Gruppe** berechnet und dann verglichen. Der Vergleich ist Differenz oder Verhältnis, nie nur eine Zahl für alle. Ein Rechenbeispiel mit exakt darstellbaren Dezimalen: Gruppe eins liefert FP = 10, TN = 30, also FPR = 10/40 = 0,25. Gruppe zwei liefert FP = 4, TN = 36, also FPR = 4/40 = 0,10. Die FPR-Differenz beträgt 0,25 − 0,10 = **0,15**: harmlose Fälle der Gruppe eins werden mehr als doppelt so oft fälschlich blockiert. Bei Auswahlraten von 30/50 = 0,60 und 21/50 = 0,42 beträgt die Differenz 0,18; das Verhältnis 0,42/0,60 = 0,70 liegt deutlich unter 1, ein Hinweis, dass die Gruppen ungleich behandelt werden. Solche Zahlen sind deterministisch nachrechenbar; kein Sprachmodell richtet sie.
 
-Wichtig ist die Größenordnung in Tausendsteln: In der Praxis berichtet man Differenzen oft als 150 Tausendstel statt 0,15, weil kleine Unterschiede leichter vergleichbar werden. Was zählt, ist die Trennung nach Gruppen: der Gesamt-FPR über alle Fälle kann eine Differenz von 0,15 vollständig verstecken.
+Die Aufgaben fragen solche Differenzen in Tausendsteln ab: 0,15 entspricht 150 Tausendsteln, so bleibt die Antwort eine ganze Zahl. Was zählt, ist die Trennung nach Gruppen. Rechnest du beide Gruppen zusammen, ergibt sich FPR = 14/80 = 0,175, und von der Differenz 0,15 ist nichts mehr zu sehen.
 
 ## Schwellenwerte: Paritätsband zuerst, dann F1
 
@@ -26,7 +26,7 @@ Ein Detektor hat einen Schwellenwert, und jeder Schwellenwert verschiebt FPR, Au
 1. **Paritätsband zuerst**: Wähle den kleinsten Schwellenwert, bei dem die Auswahlraten der Gruppen um höchstens das Band voneinander abweichen (z. B. 0,05).
 2. **Dann Qualität**: Unter den Kandidaten im Band wähle den mit dem besten F1; bei Gleichstand den kleineren Schwellenwert.
 
-Umgekehrt wäre Overclaiming: Erst das F1-Optimum suchen und dann prüfen, ob es zufällig paritätskonform ist, verwandelt Fairness in ein Nachprasen. Ein Kandidat mit F1 = 0,81 außerhalb des Bands verliert gegen F1 = 0,78 innerhalb des Bands. Die Differenz ist der Preis der Gleichbehandlung, und er wird offen ausgewiesen, nicht wegoptimiert. Was kein Kandidat erfüllt, ist ein Befund, kein Grund, das Band still zu erweitern.
+Umgekehrt wäre Overclaiming: Erst das F1-Optimum suchen und dann prüfen, ob es zufällig paritätskonform ist, macht Fairness zu einer nachträglichen Kontrolle, die das Ergebnis nicht mehr ändert. Ein Kandidat mit F1 = 0,81 außerhalb des Bands verliert gegen F1 = 0,78 innerhalb des Bands. Die Differenz ist der Preis der Gleichbehandlung, und er wird offen ausgewiesen, nicht wegoptimiert. Was kein Kandidat erfüllt, ist ein Befund, kein Grund, das Band still zu erweitern.
 
 ## Betriebskosten deterministisch rechnen
 
@@ -49,10 +49,10 @@ Der RAG-Prototyp läuft mit deterministischem Stub-Generator über eingefrorene 
 
 ## Typische Fehlvorstellungen
 
-- „Der Gesamt-F1 ist gut, also ist das System fair.“, denn Gesamtmetriken können Subgruppenungleichheit komplett verstecken; Ausweis pro Gruppe ist Pflicht.
-- „Ich wähle den Schwellenwert mit dem besten F1.“, denn ohne Paritätsband zuerst ist das eine Qualitätsentscheidung mit vertauschter Reihenfolge; Fairness ist kein Filter danach.
+- „Der Gesamt-F1 ist gut, also ist das System fair.“ Falsch, denn Gesamtmetriken können Subgruppenungleichheit komplett verstecken; Ausweis pro Gruppe ist Pflicht.
+- „Ich wähle den Schwellenwert mit dem besten F1.“ Falsch, denn ohne Paritätsband zuerst ist das eine Qualitätsentscheidung mit vertauschter Reihenfolge; Fairness ist kein Filter danach.
 - „Kosten sind ein Business-Thema.“ Aber Kosten entscheiden, ob Kontrollen im Betrieb bleiben oder bei Budgetdruck still fallen gelassen werden; deshalb gehören sie in denselben Bericht.
-- „Das Risikoregister ist abgehakt.“ Das Register ist gelebter Arbeitsnachweis und bleibt vorläufig; er zählt bewusst nicht als Kompetenznachweis.
+- „Das Risikoregister ist abgehakt.“ Das Register ist gelebter Arbeitsnachweis und bleibt vorläufig; es zählt bewusst nicht als Kompetenznachweis.
 
 ## Wo dir das in der KI begegnet
 

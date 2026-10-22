@@ -17,7 +17,9 @@ der gepinnte Kern des GenAI-Prototyps. Das `check-manifest.json` hält für jede
 den sha256 fest; Lernenden-Dateien stehen dort mit `sha256: null` und werden
 nur auf Anwesenheit geprüft: Du darfst an `src/pipeline.py` arbeiten, an
 `golden/` nicht. `assert_frozen()` rechnet die Hashes bei jedem Lauf nach und
-scheitert hörbar, wenn jemand „nur schnell“ eine Erwartung angepasst hat.
+scheitert hörbar, wenn jemand „nur schnell“ eine Erwartung angepasst hat:
+Ändert sich in `golden/` ein einziges Zeichen, passt der sha256 nicht mehr
+zum Manifest, und der Lauf bricht mit dem Dateinamen ab.
 Dazu gehören **versionierte Seeds und Konfiguration**: `seeds.pipeline` und
 Konsorten stehen in `config/experiment.json`, nicht verstreut im Code. Ein
 Wechsel eines Seeds ist ein Experimentwechsel; er gehört in eine neue
@@ -29,8 +31,11 @@ Regel so: Jede Zahl im Bericht muss aus Code und Daten wieder ableitbar sein.
 Die Pipeline ist ein gerichteter Graph aus Stages. Jede Stage deklariert,
 welche **Ausgaben anderer Stages** sie konsumiert und welche Schlüssel sie
 selbst erzeugt; Schlüssel ohne erzeugende Stage sind externe Dateien. Daraus
-lässt sich die Reihenfolge topologisch sortieren; ein Zyklus ist ein
-Designfehler, der beim Sortieren sichtbar wird statt zur Laufzeit. Der
+lässt sich die Reihenfolge topologisch sortieren. Ein Beispiel: `retrieve`
+braucht den `index`, `index` braucht die `chunks`, also laufen die Stages in der
+Reihenfolge `chunks`, `index`, `retrieve`. Bräuchte `chunks` umgekehrt etwas
+aus `retrieve`, entstünde ein Zyklus. Ein Zyklus ist ein Designfehler, der
+beim Sortieren sichtbar wird statt zur Laufzeit. Der
 Integrationsvertrag steckt in den IO-Schlüsseln: Wer `rankings` verbraucht,
 weiß, welche Form zu erwarten ist. Fehlerzustände sind Teil des Vertrags:
 Eine Stage antwortet immer mit einem Sentinel-Status (`ok`, `fehler`,
@@ -41,7 +46,7 @@ kein `sleep`, und die Tests steuern die Zeit von Hand.
 
 ## Typische Fehlvorstellungen
 
-- *„Freeze bremst nur.“* Richtig: Freeze macht Messwerte vergleichbar; ohne
+- *„Freeze bremst nur.“* Falsch: Freeze macht Messwerte vergleichbar; ohne
   Freeze optimierst du gegen ein bewegliches Ziel und nennst es Fortschritt.
 - *„Stiller Fallback ist Robustheit.“* Das Gegenteil: Ein Ersatzwert
   versteckt den Fehler; der Sentinel zeigt ihn.
