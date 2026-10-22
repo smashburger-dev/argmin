@@ -16,6 +16,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Fails within seconds when a derived artifact was not regenerated,
+      # and names the command that fixes it.
+      - run: npm run check:derived
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

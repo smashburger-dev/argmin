@@ -46,6 +46,7 @@ bun lint -f agent --rule 'complexity: [error, 10]' <files>
 - Browser behavior, IndexedDB migrations, review scheduling, and pilot flows require Playwright (`npm run test:e2e` / `npm run test:e2e:build`) or a manual browser check.
 - Playwright starts its own server and fails if the port is taken. Use `E2E_PORT=<n>` for parallel worktrees; `E2E_REUSE_SERVER=1` reuses a running server from this checkout.
 - `tests/family_golden_corpus.test.mjs` pins every instance field, the solver output, and the contract of every family. Rewrite the fixture (`--write-family-golden`) only for an intended behavior change.
+- Before committing a change to `content/`, `assets/js/`, or `tools/`, run `npm run sync:derived` and commit what it rewrites (coverage matrix, benchmark pin). It never rewrites the golden corpus. When it reports changed families, decide per family: an intended change gets `npm run sync:derived -- --accept-golden`, an unintended one gets a code fix. CI runs `npm run check:derived` first.
 
 ## Engineering
 
