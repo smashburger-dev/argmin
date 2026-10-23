@@ -151,7 +151,10 @@ function taskSpec(exercise: SceneExercise, answer: SceneAnswer, preview: SceneFe
     const losses = (preview.simulation as { steps?: { loss: number }[] } | null)?.steps?.map((step) => step.loss) ?? [0, 0];
     return { schemaVersion: 1, kind: 'task', engine: 'argmin-figure', scene: 'learning-rate-run',
       title: 'Verlustverlauf des Trainings', caption: 'Prüfe den vollständigen Lauf für die gewählte Lernrate.', hint: 'Vergleiche Verlust und Endabstand.',
-      params: { losses }, beats: [{ id: 'state', caption: 'Jeder Punkt zeigt den nach einem Update neu berechneten Verlust.' }] };
+      params: { losses }, beats: [
+        { id: 'step-0', caption: 'Der Verlauf zeigt den Verlust nach jedem Update.' },
+        { id: 'step-1', caption: 'Prüfe, ob der Verlust am Ende des vollständigen Laufs gesunken ist.' },
+      ] };
   }
   const tagTask = exercise.parameters.tagTask as TagTask | undefined;
   if (tagTask) return { schemaVersion: 1, kind: 'task', engine: 'argmin-figure', scene: 'python-trace-tag',

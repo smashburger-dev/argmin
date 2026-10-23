@@ -317,37 +317,30 @@ async function openLesson(page, baseUrl, lessonId) {
   return cards;
 }
 
-async function capture(page, state, mode, viewport, theme, motion, evidence) {
+async function capture(page, state, mode, viewport, theme, motion, evidence, targetCard = null) {
   const file = `${safeName(mode)}-${viewport.width}-${theme}-${motion}-${safeName(state)}.png`;
   const path = join(RAW_OUT, mode, file);
   await mkdir(join(RAW_OUT, mode), { recursive: true });
-  const cards = page.locator('.figure-card');
-  const cardIndex = await cards.evaluateAll((items, stageSelector) => {
-    let nearest = -1;
-    let distance = Infinity;
-    items.forEach((item, index) => {
-      const stage = item.querySelector(stageSelector);
-      if (!stage) return;
-      const box = stage.getBoundingClientRect();
-      const nextDistance = Math.abs(box.top + box.height / 2 - window.innerHeight / 2);
-      if (nextDistance < distance) { nearest = index; distance = nextDistance; }
+  let cardTitle = null;
+  if (targetCard) {
+    await targetCard.waitFor({ state: 'visible', timeout: 20_000 });
+    cardTitle = (await targetCard.locator('.figure-head strong').first().textContent().catch(() => null))?.trim() ?? null;
+    if (!cardTitle) throw new Error(`${state}: Zielkarte ohne sichtbaren Figurentitel`);
+    const clip = await targetCard.evaluate((item) => {
+      const box = item.getBoundingClientRect();
+      const headers = [...document.querySelectorAll('header, [role="banner"]')]
+        .map((node) => ({ rect: node.getBoundingClientRect(), position: getComputedStyle(node).position }))
+        .filter(({ rect, position }) => rect.height > 0 && rect.top <= 0 && ['fixed', 'sticky'].includes(position));
+      const stickyBottom = headers.reduce((bottom, { rect }) => Math.max(bottom, rect.bottom), 0);
+      window.scrollTo({ top: Math.max(0, window.scrollY + box.top - stickyBottom - 12), behavior: 'instant' });
+      const current = item.getBoundingClientRect();
+      return { x: current.left + window.scrollX, y: current.top + window.scrollY, width: current.width, height: current.height };
     });
-    return nearest;
-  }, STAGE);
-  if (cardIndex < 0) throw new Error(`${state}: keine Figurenkarte für Screenshot`);
-  const card = cards.nth(cardIndex);
-  const clip = await card.evaluate((item) => {
-    const box = item.getBoundingClientRect();
-    const header = [...document.querySelectorAll('header, [role="banner"]')]
-      .map((node) => ({ rect: node.getBoundingClientRect(), position: getComputedStyle(node).position }))
-      .filter(({ rect, position }) => rect.height > 0 && rect.top <= 0 && ['fixed', 'sticky'].includes(position));
-    const stickyBottom = header.reduce((bottom, { rect }) => Math.max(bottom, rect.bottom), 0);
-    window.scrollTo({ top: Math.max(0, window.scrollY + box.top - stickyBottom - 12), behavior: 'instant' });
-    const current = item.getBoundingClientRect();
-    return { x: current.left + window.scrollX, y: current.top + window.scrollY, width: current.width, height: current.height };
-  });
-  await page.screenshot({ path, fullPage: true, clip, animations: 'disabled' });
-  evidence.screenshots.push({ state, mode, viewport: viewport.width, theme, motion, rawPath: path, sha256: await hashFile(path) });
+    await page.screenshot({ path, fullPage: true, clip, animations: 'disabled' });
+  } else {
+    await page.screenshot({ path, fullPage: true, animations: 'disabled' });
+  }
+  evidence.screenshots.push({ state, mode, viewport: viewport.width, theme, motion, cardTitle, rawPath: path, sha256: await hashFile(path) });
 }
 
 async function captureHintDom(page, mode, label, evidence) {
@@ -414,7 +407,8 @@ async function checkSpatialKeyboard(page, stage, label, errors, states) {
 async function advanceLessonBeats(page, card, stage, label, mode, title, viewport, theme, motion, evidence, errors, states) {
   const beatLabel = await card.locator('.figure-step').getAttribute('aria-label');
   const beatCount = Number(beatLabel?.match(/von (\d+)/i)?.[1] ?? 1);
-  for (let beat = 1; beat < beatCount; beat += 1) {
+  for (let beat = 0; beat < beatCount - 1; beat += 1) {
+    await expect(stage).toHaveAttribute('data-beat', String(beat));
     const skip = card.getByRole('button', { name: 'Überspringen', exact: true });
     const next = card.getByRole('button', { name: 'Weiter', exact: true });
     if (await skip.isVisible().catch(() => false)) {
@@ -433,7 +427,7 @@ async function advanceLessonBeats(page, card, stage, label, mode, title, viewpor
     }
     await expect(stage).toHaveAttribute('data-beat', String(beat + 1), { timeout: 25_000 });
     await waitSettled(stage);
-    await capture(page, `${label}-${title}-beat-${beat + 1}`, mode, viewport, theme, motion, evidence);
+    await capture(page, `${label}-${title}-beat-${beat + 2}`, mode, viewport, theme, motion, evidence, card);
   }
 }
 
@@ -451,7 +445,7 @@ async function runLessonCard(page, card, index, mode, label, viewport, theme, mo
   const title = safeName((await card.locator('.figure-head strong').innerText()).trim());
   const stage = card.locator(STAGE);
   await stage.scrollIntoViewIfNeeded();
-  await capture(page, `${label}-${title}-start`, mode, viewport, theme, motion, evidence);
+  await capture(page, `${label}-${title}-start`, mode, viewport, theme, motion, evidence, card);
   if (index === 0) await checkSpatialKeyboard(page, stage, label, errors, states);
   await advanceLessonBeats(page, card, stage, label, mode, title, viewport, theme, motion, evidence, errors, states);
   await restartLessonCard(card, stage, label, errors, states);
@@ -475,7 +469,7 @@ async function exploreFlow(page, baseUrl, route, mode, label, viewport, theme, m
   await field.fill('0.004');
   await card.getByRole('button', { name: 'Übernehmen' }).click();
   if (!await card.getByRole('alert').count()) saveFailure(errors, `${label}: ungültiger Explore-Wert ohne Fehlermeldung`);
-  await capture(page, `${label}-explore-invalid`, mode, viewport, theme, motion, evidence);
+  await capture(page, `${label}-explore-invalid`, mode, viewport, theme, motion, evidence, card);
   await field.fill('0.1');
   await card.getByRole('button', { name: 'Übernehmen' }).click();
   await card.locator('[aria-invalid="true"]').count().then((count) => { if (count) saveFailure(errors, `${label}: gültiger Explore-Wert bleibt ungültig`); });
@@ -486,7 +480,7 @@ async function exploreFlow(page, baseUrl, route, mode, label, viewport, theme, m
   const restored = await card.locator('input[name="parameter"]').inputValue();
   if (Math.abs(Number(restored) - 0.1) > 1e-8) saveFailure(errors, `${label}: Explore-Wert nach Reload nicht wiederhergestellt`);
   states.push(`${label}: ungültige Eingabe, gültige Eingabe und Reload`);
-  await capture(page, `${label}-explore-restored`, mode, viewport, theme, motion, evidence);
+  await capture(page, `${label}-explore-restored`, mode, viewport, theme, motion, evidence, card);
   const stage = card.locator(STAGE);
   await stage.focus();
   await page.keyboard.press('ArrowRight');
@@ -508,13 +502,13 @@ async function compareFlow(page, baseUrl, route, mode, label, viewport, theme, m
   await expect(card.locator('.figure-readout')).toContainText(/Ridge/);
   await stage.scrollIntoViewIfNeeded();
   const ridgeCamera = Number(await stage.getAttribute('data-azimuth'));
-  await capture(page, `${label}-ridge`, mode, viewport, theme, motion, evidence);
+  await capture(page, `${label}-ridge`, mode, viewport, theme, motion, evidence, card);
   await card.getByRole('button', { name: /B: Lasso/ }).click();
   await waitSettled(stage);
   await expect(card.locator('.figure-readout')).toContainText(/Lasso/);
   const lassoCamera = Number(await stage.getAttribute('data-azimuth'));
   if (Math.abs(ridgeCamera - lassoCamera) > 0.5) saveFailure(errors, `${label}: Ridge/Lasso-Kamera unterscheidet sich`);
-  await capture(page, `${label}-lasso`, mode, viewport, theme, motion, evidence);
+  await capture(page, `${label}-lasso`, mode, viewport, theme, motion, evidence, card);
   states.push(`${label}: Ridge/Lasso-Kameravergleich`);
 }
 
@@ -528,7 +522,9 @@ async function openTask(page, baseUrl, route, mode, label, viewport, theme, moti
   await waitSettled(stage);
   await checkPage(page, label, errors);
   await stage.scrollIntoViewIfNeeded();
-  await capture(page, `${label}-initial`, mode, viewport, theme, motion, evidence);
+  const card = page.locator('.figure-card').filter({ has: stage }).first();
+  await capture(page, `${label}-initial`, mode, viewport, theme, motion, evidence, card);
+  return card;
 }
 
 async function configureRateTask(page, label, errors, states) {
@@ -642,7 +638,7 @@ async function checkLegacyTraceLessons(page, baseUrl, content, mode, variant, ev
       await waitSettled(stage);
       const label = `${mode}-${variant.viewport.width}-${variant.theme}-${variant.motion}-${lesson.label}-beat-${beat + 1}`;
       targetsFound += await checkLegacyTraceScene(page, card, label, variant.viewport, errors, states, evidence);
-      await capture(page, `${lesson.label}-trace-selection-beat-${beat + 1}`, mode, variant.viewport, variant.theme, variant.motion, evidence);
+      await capture(page, `${lesson.label}-trace-selection-beat-${beat + 1}`, mode, variant.viewport, variant.theme, variant.motion, evidence, card);
       if (beat + 1 < beatCount) {
         const skip = card.getByRole('button', { name: 'Überspringen', exact: true });
         if (await skip.isVisible().catch(() => false)) await skip.click();
@@ -719,24 +715,26 @@ function validateTraceOptions(optionSets, label, errors) {
       || names.some((id) => objects.includes(id))) saveFailure(errors, `${label}: Aliase/Namen und Objekt-IDs sind nicht unabhängig auswählbar`);
 }
 
-async function showTaskHint(page, mode, label, taskKind, viewport, theme, motion, evidence, errors) {
+async function showTaskHint(page, mode, label, taskKind, viewport, theme, motion, evidence, errors, taskCard) {
   await page.getByRole('button', { name: 'Hinweis 1/', exact: false }).click();
   const hintText = (await page.locator('.hint-stack').innerText().catch(() => '')).trim();
   if (!hintText) saveFailure(errors, `${label}: Hint wurde nicht angezeigt`);
   if (await page.locator('[data-correct], [data-answer], [data-solution]').count()) saveFailure(errors, `${label}: Antwortmarker vor Abgabe sichtbar`);
   const figureHintButton = page.getByRole('button', { name: 'Hinweis als Figur' });
+  let captureCard = taskCard;
   if (await figureHintButton.isVisible().catch(() => false)) {
     await figureHintButton.click();
-    await page.locator('.figure-hint-card').waitFor({ state: 'visible', timeout: 20_000 });
+    captureCard = page.locator('.figure-hint-card').first();
+    await captureCard.waitFor({ state: 'visible', timeout: 20_000 });
   }
   await captureHintDom(page, mode, label, evidence);
-  await capture(page, `${label}-hint`, mode, viewport, theme, motion, evidence);
+  await capture(page, `${label}-hint`, mode, viewport, theme, motion, evidence, captureCard);
 }
 
 async function hintCaseFlow(page, baseUrl, route, mode, variant, evidence, errors, states) {
   const label = `${variant.viewport.width}-${variant.theme}-${variant.motion}-hint-${route.familyId}-${route.caseId}`;
-  await openTask(page, baseUrl, route, mode, label, variant.viewport, variant.theme, variant.motion, evidence, errors);
-  await showTaskHint(page, mode, label, 'family', variant.viewport, variant.theme, variant.motion, evidence, errors);
+  const taskCard = await openTask(page, baseUrl, route, mode, label, variant.viewport, variant.theme, variant.motion, evidence, errors);
+  await showTaskHint(page, mode, label, 'family', variant.viewport, variant.theme, variant.motion, evidence, errors, taskCard);
   states.push(`${label}: echter Registry-Fall und gerenderter Hinweis`);
 }
 
@@ -755,7 +753,7 @@ async function checkRateAnswers(page, label, candidates, errors) {
   if (accepted.length < 2) saveFailure(errors, `${label}: weniger als zwei Lernraten werden akzeptiert`);
 }
 
-async function showTaskFeedback(page, label, taskKind, candidates, errors, mode, viewport, theme, motion, evidence) {
+async function showTaskFeedback(page, label, taskKind, candidates, errors, mode, viewport, theme, motion, evidence, taskCard) {
   if (taskKind === 'rate') await checkRateAnswers(page, label, candidates, errors);
   else {
     const route = evidence.contentByMode[mode].traceRoute;
@@ -789,13 +787,13 @@ async function showTaskFeedback(page, label, taskKind, candidates, errors, mode,
       await firstObject.selectOption(wrongObject);
       await page.getByRole('button', { name: 'Antwort prüfen' }).click();
       await page.locator('.feedback-box.incorrect').waitFor({ state: 'visible', timeout: 20_000 });
-      await capture(page, `${label}-incorrect-feedback`, mode, viewport, theme, motion, evidence);
+      await capture(page, `${label}-incorrect-feedback`, mode, viewport, theme, motion, evidence, taskCard);
       await firstObject.selectOption(firstCorrect.objectId);
     }
     await page.getByRole('button', { name: 'Antwort prüfen' }).click();
     await page.locator('.feedback-box.correct').waitFor({ state: 'visible', timeout: 20_000 });
   }
-  await capture(page, `${label}-feedback`, mode, viewport, theme, motion, evidence);
+  await capture(page, `${label}-feedback`, mode, viewport, theme, motion, evidence, taskCard);
 }
 
 async function returnFromTask(page, label, states) {
@@ -815,12 +813,12 @@ async function returnFromTask(page, label, states) {
 }
 
 async function taskFlow(page, baseUrl, route, mode, label, viewport, theme, motion, evidence, errors, states, taskKind) {
-  await openTask(page, baseUrl, route, mode, label, viewport, theme, motion, evidence, errors);
+  const taskCard = await openTask(page, baseUrl, route, mode, label, viewport, theme, motion, evidence, errors);
   let rateCandidates = [];
   if (taskKind === 'rate') rateCandidates = await configureRateTask(page, label, errors, states);
   else await configureTraceTask(page, label, viewport, errors, states);
-  await showTaskHint(page, mode, label, taskKind, viewport, theme, motion, evidence, errors);
-  await showTaskFeedback(page, label, taskKind, rateCandidates, errors, mode, viewport, theme, motion, evidence);
+  await showTaskHint(page, mode, label, taskKind, viewport, theme, motion, evidence, errors, taskCard);
+  await showTaskFeedback(page, label, taskKind, rateCandidates, errors, mode, viewport, theme, motion, evidence, taskCard);
   await returnFromTask(page, label, states);
 }
 
@@ -836,7 +834,7 @@ async function baselineSmoothieHintFlow(page, baseUrl, mode, label, viewport, th
   for (const expected of ['mixer-liquid', 'oats-bin', 'berries-jar']) {
     if (!itemIds.includes(expected)) saveFailure(errors, `${label}: Smoothie-Hinweis enthält Szeneelement ${expected} nicht`);
   }
-  await capture(page, `${label}-baseline-smoothie-hint`, mode, viewport, theme, motion, evidence);
+  await capture(page, `${label}-baseline-smoothie-hint`, mode, viewport, theme, motion, evidence, card);
   states.push(`${label}: Baseline-Smoothie-Familienhinweis rendert seine echte Szene`);
 }
 

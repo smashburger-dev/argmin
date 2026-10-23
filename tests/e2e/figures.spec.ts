@@ -51,16 +51,17 @@ test.describe('figure block', () => {
     // Unparseable input shows the typo hint and keeps Weiter disabled.
     await answer.fill('abc');
     await pruefen.click();
-    await expect(card.getByRole('status')).toContainText('Zahl eingeben');
+    const feedback = card.locator('[data-tour="exercise-feedback"]');
+    await expect(feedback).toContainText('Zahl eingeben');
     await expect(weiter).toBeDisabled();
     // A wrong but parseable answer unlocks — the verdict stays visible.
     await answer.fill('5');
     await pruefen.click();
-    await expect(card.getByRole('status')).toContainText('Zuckerwert');
+    await expect(feedback).toContainText('Zuckerwert');
     await expect(weiter).toBeEnabled();
     await answer.fill('2');
     await pruefen.click();
-    await expect(card.getByRole('status')).toContainText('Richtig.');
+    await expect(feedback).toContainText('Richtig.');
     await expect(weiter).toBeEnabled();
 
     await weiter.click();
@@ -113,7 +114,12 @@ test.describe('figure block', () => {
         await openLesson(page);
         const accessibility = await new AxeBuilder({ page }).analyze();
         const bad = accessibility.violations.filter((v) => ['serious', 'critical'].includes(v.impact || ''));
-        expect(bad.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+        const diagnostics = bad.map(({ id, impact, nodes }) => ({
+          id,
+          impact,
+          nodes: nodes.map(({ target, html, failureSummary }) => ({ target, html, failureSummary })),
+        }));
+        expect(bad.map((v) => `${v.id}: ${v.nodes.length}`), JSON.stringify(diagnostics, null, 2)).toEqual([]);
       });
     }
   }
@@ -404,16 +410,20 @@ test.describe('figure block', () => {
       // Vertical swipe on the stage must scroll the page, not rotate.
       const az1 = await azimuthOf(stage);
       const sy0 = await page.evaluate(() => window.scrollY);
+      const canScrollDown = await page.evaluate(() =>
+        document.documentElement.scrollHeight - (window.scrollY + window.innerHeight) >= window.scrollY,
+      );
+      const distance = canScrollDown ? -400 : 400;
       try {
         await cdp.send('Input.synthesizeScrollGesture', {
           x: Math.round(box.x + box.width / 2), y: Math.round(y),
-          yDistance: -400, gestureSourceType: 'touch', speed: 800,
+          yDistance: distance, gestureSourceType: 'touch', speed: 800,
         });
       } catch {
         // Older CDP lacks synthesizeScrollGesture: raw touch events instead.
         await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: tp(box.x + box.width / 2, y) });
         for (let i = 1; i <= 10; i += 1) {
-          await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: tp(box.x + box.width / 2, y - i * 30) });
+          await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: tp(box.x + box.width / 2, y + i * Math.sign(distance) * 30) });
         }
         await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
       }

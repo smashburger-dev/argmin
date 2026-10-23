@@ -18,6 +18,18 @@ function sha256(buffer) { return createHash('sha256').update(buffer).digest('hex
 function insideBuild(path) { return path === BUILD || path.startsWith(BUILD + sep); }
 function rel(path) { return relative(BUILD, path).split(sep).join('/'); }
 
+function resolveHtmlAsset(url) {
+  if (typeof url !== 'string' || /^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(url)) return null;
+  const pathname = url.split(/[?#]/, 1)[0];
+  const path = resolve(BUILD, pathname.startsWith('/') ? `.${pathname}` : pathname);
+  return insideBuild(path) ? path : null;
+}
+
+function htmlAttribute(tag, name) {
+  const match = tag.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, 'i'));
+  return match?.slice(1).find((value) => value !== undefined) ?? null;
+}
+
 function filesUnder(root) {
   const files = [];
   if (!existsSync(root)) return files;
@@ -31,13 +43,12 @@ function filesUnder(root) {
 
 function importsFrom(source) {
   const imports = [];
-  const patterns = [
-    { kind: 'static', pattern: /\b(?:import|export)\s*(?:[^'";]*?\s+from\s*)?['"]([^'"]+)['"]/gm },
-    { kind: 'dynamic', pattern: /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/gm },
-  ];
-  for (const { kind, pattern } of patterns) {
-    for (const match of source.matchAll(pattern)) imports.push({ kind, specifier: match[1] });
-  }
+  const addMatches = (kind, pattern, capture = 1) => {
+    for (const match of source.matchAll(pattern)) imports.push({ kind, specifier: match[capture] });
+  };
+  addMatches('static', /\b(?:import|export)\s*(?:[^'";()]*?\bfrom\s*)?(['"])([^'"]+)\1/gm, 2);
+  addMatches('dynamic', /\bimport\s*\(\s*(['"])([^'"]+)\1\s*\)/gm, 2);
+  addMatches('dynamic', /\bimport\s*\(\s*`([^`$]*)`\s*\)/gm);
   return imports;
 }
 
@@ -71,10 +82,12 @@ function measure(paths) {
 function collectJavascript() {
   const html = readFileSync(join(BUILD, 'index.html'), 'utf8');
   const rootPaths = [...html.matchAll(/<script\b[^>]*>/gi)].flatMap(([tag]) => {
-    if (!/\btype=["']module["']/i.test(tag)) return [];
-    const src = tag.match(/\bsrc=["']([^"']+\.js)["']/i)?.[1];
-    return src ? [resolve(BUILD, '.' + src)] : [];
-  }).filter(insideBuild);
+    if (htmlAttribute(tag, 'type')?.toLowerCase() !== 'module') return [];
+    const src = htmlAttribute(tag, 'src');
+    if (!src || !/\.js(?:[?#]|$)/i.test(src)) return [];
+    const path = resolveHtmlAsset(src);
+    return path ? [path] : [];
+  });
   if (!rootPaths.length) throw new Error('Kein Modul-Entry in build-next/index.html gefunden.');
   const graph = new Map();
   const queue = [...rootPaths];
@@ -99,12 +112,17 @@ function main() {
   const staticPaths = closure(rootPaths, graph, ['static']);
   const allPaths = closure(rootPaths, graph, ['static', 'dynamic']);
   const lazyPaths = new Set([...allPaths].filter((path) => !staticPaths.has(path)));
+  const figureRuntimeRoots = [...allPaths].filter((path) => /(?:^|\/)FigureRuntime[^/]*\.js$/i.test(path));
+  const figureRuntimeStatic = closure(figureRuntimeRoots, graph, ['static']);
+  const figureRuntimeClosure = closure(figureRuntimeRoots, graph, ['static', 'dynamic']);
   const cssPaths = new Set([
     ...[...html.matchAll(/<link\b[^>]*>/gi)].flatMap(([tag]) => {
-      if (!/\brel=["']stylesheet["']/i.test(tag)) return [];
-      const href = tag.match(/\bhref=["']([^"']+\.css)["']/i)?.[1];
-      return href ? [resolve(BUILD, '.' + href)] : [];
-    }).filter((path) => insideBuild(path) && existsSync(path)),
+      if (htmlAttribute(tag, 'rel')?.toLowerCase() !== 'stylesheet') return [];
+      const href = htmlAttribute(tag, 'href');
+      if (!href || !/\.css(?:[?#]|$)/i.test(href)) return [];
+      const path = resolveHtmlAsset(href);
+      return path && existsSync(path) ? [path] : [];
+    }),
     ...filesUnder(join(BUILD, 'assets')).filter((path) => extname(path) === '.css'),
   ]);
   const runtimeExtensions = new Set(['.wasm', '.data', '.py', '.zip', '.bin', '.whl']);
@@ -124,6 +142,13 @@ function main() {
       entryAndStaticTransitiveImports: measure(staticPaths),
       dynamicallyImportedTransitiveChunks: measure(lazyPaths),
       completeTransitiveClosure: bundleBytes,
+      figureRuntime: {
+        entrypoints: figureRuntimeRoots.map(rel),
+        entryAndStaticTransitiveImports: measure(figureRuntimeStatic),
+        dynamicallyImportedTransitiveChunks: measure(new Set([...figureRuntimeClosure].filter((path) => !figureRuntimeStatic.has(path)))),
+        completeTransitiveClosure: measure(figureRuntimeClosure),
+        note: 'FigureRuntime entry and reachable imports, independently summed per file with the same gzip method. The shared main chunk may expand this closure to the full application graph.'
+      },
       importEdges: [...graph.entries()].flatMap(([from, edges]) => edges.map((edge) => ({ from: rel(from), to: rel(edge.path), kind: edge.kind }))),
       parserNote: 'Counts only relative/public local .js static and literal dynamic imports reachable from the HTML module entry. URL/data/blob/external imports are omitted.'
     },
