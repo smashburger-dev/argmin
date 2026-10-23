@@ -51,7 +51,7 @@ test.describe('figure block', () => {
     // Unparseable input shows the typo hint and keeps Weiter disabled.
     await answer.fill('abc');
     await pruefen.click();
-    const feedback = card.locator('[data-tour="exercise-feedback"]');
+    const feedback = card.locator('.viz-checkpoint-feedback');
     await expect(feedback).toContainText('Zahl eingeben');
     await expect(weiter).toBeDisabled();
     // A wrong but parseable answer unlocks — the verdict stays visible.
