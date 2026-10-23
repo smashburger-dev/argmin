@@ -186,14 +186,8 @@ Die gemeinsame Basis ist `8172c3e82599d5aad2ae1e5291905dd9c480451f`, nach S2b-Me
 - Topologische Auswahl und aufklappbare Belegkarten erst nach den oben zugewiesenen gemeinsamen Verträgen ergänzen. Bis dahin bleiben die vollständigen festen Darstellungen maßgeblich. Die integrierten RAG-/Freeze-Fragmente und K7 besitzen genau einen Schreiber, S8b.
 - Die Bestandsübersicht aus dem isolierten S8b-Zweig wird durch die tatsächliche Welle-3-Integrationsübersicht ergänzt. Eine Figur in einer Lektion bedeutet weder Ablösung sämtlicher JSXGraph-Bestände noch Abnahme aller Aufgaben und Hinweise.
 
-### S5b bleibt offen
+### S5b, F7 und F1 – Status am 23.10.2026
 
-S5b besitzt weiterhin `pca-shadow`, `kmeans-pizza` und die sicheren F3-/F4-Hinweisadapter für Rang, Lösungsfall und Determinantenfall. Eine vorhandene Matrixfigur ist keine pauschale Freigabe dieser Nachläufe. Alte `.viz.json` erst nach ausdrücklicher Freigabe löschen.
+Diese datierte Fortschreibung ersetzt die drei direkt darüberstehenden offenen Implementierungsnachläufe und ist in Release 0.10.0 auf Commit `7939152c63c37389b8cc4daa414de8431f495f68` integriert: S5b liefert `pca-shadow`, `kmeans-pizza` und die Rang-/Lösungsfall-/Determinanten-Hinweise; F7 liefert feste Gradient-, SGD- und Kurvenhinweise sowie die versionierte `pick-learning-rate`-Aufgabe; F1 liefert `trace-tag-after-line` aus sieben versionierten CPython-Aufzeichnungen mit Präfix-Hinweis und getrennten Namens-/Objektzielen. F7 nutzt `step-0`/`step-1`, F1 den nativen Szenen-Beat `step-0`.
 
-### F7-Nachlauf bleibt offen
-
-Die vorhandene Lernratenbedienung und der regularisierte Ridge-/Lasso-Vergleich sind gemeinsam integriert. Sichere Fall-/Nachbarhinweise, `pick-learning-rate`, mobile Familienabnahme und Noas gestalterische Freigabe bleiben beim nächsten F7-Lauf. Das numerisch oder geometrisch gesuchte Gewicht darf in Hinweisen nicht vorweggenommen werden. Die gemeinsamen Performancegrenzen bleiben separat offen.
-
-### F1-Nachlauf bleibt offen
-
-Die sechs festen Programme und die zentrale Compiler-Expansion bleiben erhalten. Direkte Namens-/Objektauswahl muss an den geprüften Auswahlvertrag angebunden werden; Aliasnamen behalten getrennte Ziele mit gemeinsamer Objektmarke. Sichere Hinweise, `tag-after-line`, freie Parameter und Kurzschluss-Familienfall bleiben offen. Der dokumentierte CPython-/Präfixvertrag ist vor diesen Erweiterungen umzusetzen und gegen echte Spuren zu prüfen.
+Der vollständige CI-Lauf 422c ist grün; der Koordinator prüft noch den Status des aktuellen HEAD. Die vollständige Source-/Release-Matrix und der lokale finale 11-Gate-Lauf auf exakt diesem HEAD sind nicht erfolgt. Teilmessung: 117 Desktop-SVG-Ziele, darunter fünf erfolgreiche Ausgabe- und zwei Rückgabeziele. Die native Auswahl-Tastatursteuerung lässt bei `Home`/`ArrowDown` ein Feld leer und bleibt ungelöst. Drei Performance-Läufe wurden nicht ausgeführt. Die gzip- und Laufzeitbudgets bleiben gemäß Nutzerfreigabe offen und nicht blockierend. Noas Sichtprüfung des Kontaktbogens steht aus. Die App-Größenmessung ist in `docs/figuren-completion/performance-evidence.md` dokumentiert und ersetzt keine dieser Abnahmen.

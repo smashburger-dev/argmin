@@ -1,0 +1,8 @@
+ts	phase	decision	why	evidence	result
+2026-10-23T19:01:45Z	integration	Merged the user-approved S5b/F7/F1 completion work	The coordinated family work was ready to integrate together.	47524a0; PRs #112 and #113	Merged in release 0.10.0
+2026-10-23T19:01:45Z	release	Recorded the integrated version as 0.10.0	Reviewers need the shipped release identifier and exact integration commit.	47524a0	Version and commit recorded
+2026-10-23T19:01:45Z	budgets	Kept gzip and latency targets open under the user waiver	The user explicitly said these targets may remain open and must not block shipping.	docs/figuren-completion/ui-acceptance/evidence.json:4	Open; not claimed as passing
+2026-10-23T19:01:46Z	runtime	Kept the shared painter path free of duplicate projections and scans	Those repeated passes were unnecessary work in the rendering path.	1746b64	Rendering-path fix integrated
+2026-10-23T19:01:46Z	content	Archived duplicate lesson continuation files while keeping their bytes	Their lesson references duplicated paragraphs already present in canonical lessons.	docs/figuren-completion/archive/README.md	References removed; source files retained with hashes
+2026-10-23T19:01:46Z	styles	Resolved invalid style choices to the single registered default	The renderer must use one valid registered style even when an input is absent or invalid.	src/figures/styles.ts:28	Effective style always resolves to a known id
+2026-10-23T19:11:27Z	performance	Recorded final-build JavaScript and runtime-payload gzip measurements	Reviewers need reproducible per-file and reachable-closure sizes for the integrated commit.	822d019; docs/figuren-completion/size-evidence.json	Size evidence recorded; gzip and latency budget acceptance remains open under the user waiver

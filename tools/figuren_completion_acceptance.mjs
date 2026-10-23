@@ -305,27 +305,28 @@ async function waitSettled(stage) {
 }
 
 async function openLesson(page, baseUrl, lessonId) {
-  await page.goto(`${baseUrl}/index.html#/lesson/${typeof lessonId === 'string' ? lessonId : lessonId.id}`);
+  const url = `${baseUrl}/index.html#/lesson/${typeof lessonId === 'string' ? lessonId : lessonId.id}`;
+  await page.goto(url);
+  await page.reload();
   const cards = page.locator('.figure-card');
   await cards.first().waitFor({ state: 'visible', timeout: 25_000 });
   for (let index = 0; index < await cards.count(); index += 1) {
     const stage = cards.nth(index).locator(STAGE);
-    await stage.scrollIntoViewIfNeeded();
     await stage.waitFor({ state: 'visible', timeout: 25_000 });
     await waitSettled(stage);
   }
   return cards;
 }
 
-async function capture(page, state, mode, viewport, theme, motion, evidence, targetCard = null) {
+async function capture(page, state, mode, viewport, theme, motion, evidence, targetCard = null, titleSelector = '.figure-head strong') {
   const file = `${safeName(mode)}-${viewport.width}-${theme}-${motion}-${safeName(state)}.png`;
   const path = join(RAW_OUT, mode, file);
   await mkdir(join(RAW_OUT, mode), { recursive: true });
   let cardTitle = null;
   if (targetCard) {
     await targetCard.waitFor({ state: 'visible', timeout: 20_000 });
-    cardTitle = (await targetCard.locator('.figure-head strong').first().textContent().catch(() => null))?.trim() ?? null;
-    if (!cardTitle) throw new Error(`${state}: Zielkarte ohne sichtbaren Figurentitel`);
+    cardTitle = (await targetCard.locator(titleSelector).first().textContent().catch(() => null))?.trim() ?? null;
+    if (!cardTitle) throw new Error(`${state}: Zielkarte ohne sichtbaren Titel (${titleSelector})`);
     const clip = await targetCard.evaluate((item) => {
       const box = item.getBoundingClientRect();
       const headers = [...document.querySelectorAll('header, [role="banner"]')]
@@ -512,18 +513,24 @@ async function compareFlow(page, baseUrl, route, mode, label, viewport, theme, m
   states.push(`${label}: Ridge/Lasso-Kameravergleich`);
 }
 
-async function openTask(page, baseUrl, route, mode, label, viewport, theme, motion, evidence, errors) {
+async function openTask(page, baseUrl, route, mode, label, viewport, theme, motion, evidence, errors, requireInitialFigure = true) {
   const moduleQuery = route.module ? `?module=${encodeURIComponent(route.module)}` : '';
   const url = `${baseUrl}/index.html#/family/${route.familyId}/${route.caseId}/${route.seed ?? 0}/${route.difficulty ?? 'core'}${moduleQuery}`;
   await page.goto(url);
+  await page.reload();
   await page.getByRole('heading', { name: /Variante wird geladen/ }).waitFor({ state: 'hidden', timeout: 25_000 }).catch(() => {});
+  await page.locator('#exercise-title').waitFor({ state: 'visible', timeout: 25_000 });
   const stage = page.locator(STAGE).first();
-  await stage.waitFor({ state: 'visible', timeout: 25_000 });
-  await waitSettled(stage);
+  if (requireInitialFigure) {
+    await stage.waitFor({ state: 'visible', timeout: 25_000 });
+    await waitSettled(stage);
+  }
   await checkPage(page, label, errors);
-  await stage.scrollIntoViewIfNeeded();
-  const card = page.locator('.figure-card').filter({ has: stage }).first();
-  await capture(page, `${label}-initial`, mode, viewport, theme, motion, evidence, card);
+  const card = requireInitialFigure
+    ? page.locator('.figure-card').filter({ has: stage }).first()
+    : page.locator('section.view').filter({ has: page.locator('#exercise-title') }).first();
+  await capture(page, `${label}-initial`, mode, viewport, theme, motion, evidence, card,
+    requireInitialFigure ? '.figure-head strong' : '#exercise-title');
   return card;
 }
 
@@ -602,10 +609,11 @@ async function measureAndUseLegacyTarget(page, stage, selection, index, label, v
   const prim = await selected.getAttribute('data-prim').catch(() => null);
   const itemId = await selected.evaluate((node) => node.closest('[data-item]')?.getAttribute('data-item')).catch(() => null);
   recordLegacyTargetBox({ target, label, itemId, prim, box, viewport, errors, evidence });
+  const targetPrimitive = prim ? stage.locator(`[data-prim=${JSON.stringify(prim)}]`).first() : null;
   const alternate = selection.nth(index === 0 ? 1 : 0);
   await alternate.click();
   await expect(button).toHaveAttribute('aria-pressed', 'false');
-  await clickLegacyTarget(page, button, target, box, label, viewport);
+  if (targetPrimitive) await clickLegacyTarget(page, button, target, targetPrimitive, label, viewport);
 }
 
 function recordLegacyTargetBox({ target, label, itemId, prim, box, viewport, errors, evidence }) {
@@ -616,11 +624,26 @@ function recordLegacyTargetBox({ target, label, itemId, prim, box, viewport, err
     width: box?.width ?? 0, height: box?.height ?? 0, viewport: viewport.width });
 }
 
-async function clickLegacyTarget(page, button, target, box, label, viewport) {
-  if (!box) return;
-  if (viewport.width <= 500) await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
-  else await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-  await expect(button, `${label}: SVG-Trefferfläche „${target}“ wählt das Ziel nicht aus`).toHaveAttribute('aria-pressed', 'true');
+async function clickLegacyTarget(page, button, target, primitive, label, viewport) {
+  await primitive.evaluate((node) => node.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' }));
+  const box = await primitive.boundingBox();
+  if (!box) throw new Error(`${label}: SVG-Primitiv für „${target}“ wurde nach dem Scrollen unsichtbar`);
+  const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  const targetInfo = await primitive.evaluate((node) => ({
+    item: node.closest('[data-item]')?.getAttribute('data-item') ?? null,
+    prim: node.getAttribute('data-prim'),
+    beat: node.closest('.figure-stage')?.getAttribute('data-beat') ?? null,
+  }));
+  const hit = await page.evaluate(({ x, y }) => {
+    const element = document.elementFromPoint(x, y);
+    return { tag: element?.tagName ?? null,
+      item: element?.closest('[data-item]')?.getAttribute('data-item') ?? null,
+      prim: element?.closest('[data-prim]')?.getAttribute('data-prim') ?? null };
+  }, point);
+  await (viewport.width <= 500 ? page.touchscreen.tap(point.x, point.y) : page.mouse.click(point.x, point.y));
+  const matched = hit.item === targetInfo.item && hit.prim === targetInfo.prim;
+  const hitSummary = `Ziel=${targetInfo.item ?? 'none'}/${targetInfo.prim ?? 'none'}@${targetInfo.beat ?? 'none'} ${box.width.toFixed(1)}×${box.height.toFixed(1)}px (${point.x.toFixed(1)},${point.y.toFixed(1)}); Treffer=${hit.tag ?? 'none'}/${hit.item ?? 'none'}/${hit.prim ?? 'none'}; Gleich=${matched}`;
+  await expect(button, `${label}: SVG-Trefferfläche „${target}“ wählt das Ziel nicht aus (${hitSummary})`).toHaveAttribute('aria-pressed', 'true');
 }
 
 function checkVendingMeasurements(mode, variant, evidence, errors) {
@@ -696,8 +719,6 @@ async function configureTraceTask(page, label, viewport, errors, states) {
   })));
   validateTraceOptions(optionSets, label, errors);
   if (await selectors.count() < 2) return;
-  await chooseSelectFirstOption(selectors.first());
-  await chooseSelectFirstOption(selectors.nth(1));
   await checkTraceFormInteraction(page, selectors, label, viewport, errors);
   states.push(`${label}: getrennte Name-/Objekt-Auswahl mit Tastatur${viewport.width <= 500 ? ' und Touch' : ''}`);
   await resetTraceTask(page, label, errors, states);
@@ -708,10 +729,7 @@ async function checkTraceFormInteraction(page, selectors, label, viewport, error
     const select = selectors.nth(index);
     const box = await select.boundingBox();
     if (!box || box.height < 44) saveFailure(errors, `${label}: Name/Objekt-Auswahl ist kleiner als 44 px`);
-    await select.focus();
-    await select.press('ArrowDown');
-    await select.press('Enter');
-    if (!await select.inputValue()) saveFailure(errors, `${label}: Tastatur-Auswahl blieb leer`);
+    await selectByKeyboard(select, label, errors);
     if (viewport.width <= 500 && box) {
       await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
       const values = await select.locator('option').evaluateAll((options) => options.map((option) => option.value).filter(Boolean));
@@ -719,6 +737,20 @@ async function checkTraceFormInteraction(page, selectors, label, viewport, error
       if (!await select.inputValue()) saveFailure(errors, `${label}: Touch-Auswahl blieb leer`);
     }
   }
+}
+
+async function selectByKeyboard(select, label, errors) {
+  await select.focus();
+  await select.press('Home');
+  await expect(select).toHaveValue('');
+  await select.press('ArrowDown');
+  await expect.poll(() => select.inputValue(), { message: `${label}: ArrowDown muss eine gültige native Auswahl setzen` }).not.toBe('');
+  const afterArrowDown = await select.inputValue();
+  await select.press('Tab');
+  await expect(select).toHaveValue(afterArrowDown);
+  const afterBlur = await select.inputValue();
+  if (!afterArrowDown) saveFailure(errors, `${label}: ArrowDown-Auswahl blieb leer nach Home`);
+  if (afterBlur !== afterArrowDown) saveFailure(errors, `${label}: Auswahl ging beim Tab-Blur verloren (${afterArrowDown || 'leer'} → ${afterBlur || 'leer'})`);
 }
 
 function validateTraceOptions(optionSets, label, errors) {
@@ -740,6 +772,9 @@ async function showTaskHint(page, mode, label, taskKind, viewport, theme, motion
     await figureHintButton.click();
     captureCard = page.locator('.figure-hint-card').first();
     await captureCard.waitFor({ state: 'visible', timeout: 20_000 });
+    const figureStage = captureCard.locator(STAGE).first();
+    await figureStage.waitFor({ state: 'visible', timeout: 20_000 });
+    await waitSettled(figureStage);
   }
   await captureHintDom(page, mode, label, evidence);
   await capture(page, `${label}-hint`, mode, viewport, theme, motion, evidence, captureCard);
@@ -747,7 +782,7 @@ async function showTaskHint(page, mode, label, taskKind, viewport, theme, motion
 
 async function hintCaseFlow(page, baseUrl, route, mode, variant, evidence, errors, states) {
   const label = `${variant.viewport.width}-${variant.theme}-${variant.motion}-hint-${route.familyId}-${route.caseId}`;
-  const taskCard = await openTask(page, baseUrl, route, mode, label, variant.viewport, variant.theme, variant.motion, evidence, errors);
+  const taskCard = await openTask(page, baseUrl, route, mode, label, variant.viewport, variant.theme, variant.motion, evidence, errors, false);
   await showTaskHint(page, mode, label, 'family', variant.viewport, variant.theme, variant.motion, evidence, errors, taskCard);
   states.push(`${label}: echter Registry-Fall und gerenderter Hinweis`);
 }
@@ -864,7 +899,7 @@ async function runVariant(browser, mode, baseUrl, variant, content, evidence) {
   const page = await context.newPage();
   const errors = [];
   const states = [];
-  page.on('pageerror', (error) => saveFailure(errors, `pageerror: ${error.message}`));
+  page.on('pageerror', (error) => saveFailure(errors, `pageerror at ${page.url()}: ${error.stack ?? error.message}`));
   page.on('console', (message) => { if (message.type() === 'error') saveFailure(errors, `console: ${message.text()}`); });
   page.on('requestfailed', (request) => {
     if (request.url().startsWith(baseUrl)) saveFailure(errors, `request failed: ${request.url()} ${request.failure()?.errorText}`);
