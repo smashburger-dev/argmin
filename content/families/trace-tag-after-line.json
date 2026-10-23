@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-tag-after-line",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "name-tags-assignments",
+      "title": "Namen nach Zuweisungen",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": ["agent-generated"],
+      "competencyIds": ["c-python-control-flow"],
+      "parameters": {"programId": "name-tags", "normalization": "s6a-visible-events/v1"},
+      "prompt": "Ordne nach jedem angezeigten Schritt alle sichtbaren Namen den Objektmarken zu. Ein neuer Wert kann ein neues Objekt erzeugen; zwei Namen können auch dieselbe Marke teilen.",
+      "fullSolution": "Verfolge jede Zuweisung und Mutation in Quellreihenfolge. Ein Name zeigt nach einer Neuzuweisung auf das neue Objekt; andere Namen behalten ihre bisherigen Referenzen.",
+      "hints": ["Folge den Zuweisungen Zeile für Zeile.", "Eine Mutation verändert das Objekt; eine Neuzuweisung ändert nur, worauf dieser Name zeigt."]
+    },
+    {
+      "caseId": "bouncer-short-circuit",
+      "title": "Kurzschluss am Türsteher",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": ["agent-generated"],
+      "competencyIds": ["c-python-control-flow"],
+      "parameters": {"programId": "bouncer", "age": {"type": "int", "values": [16, 18]}},
+      "prompt": "Ordne nach jedem angezeigten Schritt alle Namen den Objektmarken zu. Achte genau darauf, welcher Teil eines and-Ausdrucks tatsächlich ausgewertet wird.",
+      "fullSolution": "Bei and wird der rechte Ausdruck nur ausgewertet, wenn der linke Ausdruck wahr ist. Folge dem Kontrollfluss und notiere nur die Namen, die bis zum jeweiligen Schritt gebunden wurden.",
+      "hints": ["Prüfe den linken Operanden von and zuerst.", "Wenn der linke Operand falsch ist, wird der rechte Operand übersprungen."]
+    },
+    {
+      "caseId": "vending-nested-frames",
+      "title": "Verschachtelte Funktionsrahmen",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": ["agent-generated"],
+      "competencyIds": ["c-python-control-flow"],
+      "parameters": {"programId": "vending-frame", "normalization": "s6a-visible-events/v1"},
+      "prompt": "Ordne in jedem ausgeführten Schritt die lokalen Namen den Objektmarken zu. Gleich benannte lokale Variablen in verschiedenen Funktionsrahmen bleiben getrennte Namen.",
+      "fullSolution": "Verfolge die Aufrufe in ihrer Reihenfolge. Ein Funktionsparameter gehört zu seinem eigenen Rahmen; der Rückgabewert wird erst beim Aufrufer neu gebunden.",
+      "hints": ["Verwechsle gleich benannte Parameter in verschiedenen Aufrufen nicht.", "Beim Return gelangt der Ergebniswert zurück zum Ausdruck im aufrufenden Rahmen."]
+    },
+    {
+      "caseId": "ledger-loop-aliases",
+      "title": "Akkumulator in einer Schleife",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": ["agent-generated"],
+      "competencyIds": ["c-python-control-flow"],
+      "parameters": {"programId": "ledger", "n0": {"type": "int", "minimum": 1, "maximum": 4}},
+      "prompt": "Ordne nach jeder ausgeführten Schleifenzeile die Namen ihren Objektmarken zu. Eine erneut ausgeführte Quellzeile hat einen eigenen Zustand.",
+      "fullSolution": "Lies die Schleifenbedingung und verfolge danach jede Addition und Verringerung in tatsächlicher Ausführungsreihenfolge. Wiederholte Quellzeilen erhalten verschiedene Trace-Zustände.",
+      "hints": ["Folge der tatsächlichen Ausführungsreihenfolge statt nur der einmaligen Quelltextreihenfolge.", "Bei jeder Wiederholung wird der aktuelle Zustand weitergeführt."]
+    },
+    {
+      "caseId": "two-tags-one-list",
+      "title": "Zwei Namen für eine Liste",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": ["agent-generated"],
+      "competencyIds": ["c-python-collections"],
+      "parameters": {"programId": "two-tags-one-list", "normalization": "s6a-visible-events/v1"},
+      "prompt": "Ordne nach jedem Schritt die Namen den Objektmarken zu. Behalte im Blick, ob eine Zeile ein Objekt mutiert oder einen Namen neu bindet.",
+      "fullSolution": "Eine Zuweisung von einem Namen an einen anderen kopiert die Liste nicht. Eine Mutation bleibt über beide Referenzen sichtbar; eine spätere Neuzuweisung trennt nur den neu gebundenen Namen.",
+      "hints": ["y = x kopiert die Liste nicht.", "Unterscheide die Mutation der gemeinsamen Liste von einer späteren Neuzuweisung."]
+    },
+    {
+      "caseId": "dictionary-updates",
+      "title": "Dictionary-Einträge überschreiben",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": ["agent-generated"],
+      "competencyIds": ["c-python-collections"],
+      "parameters": {"programId": "dictionary", "normalization": "s6a-visible-events/v1"},
+      "prompt": "Ordne die Namen nach jedem Schritt den Objektmarken zu. Trenne die Bindung des Variablennamens von Änderungen am Dictionary-Inhalt.",
+      "fullSolution": "Ein Schlüssel kann überschrieben oder gelöscht werden, ohne die Bindung des Variablennamens zu verändern. Verfolge den Dictionary-Wert als Objektzustand.",
+      "hints": ["Eine Schlüsselzuweisung verändert den Inhalt des Dictionary-Objekts.", "del entfernt einen Eintrag; der Variablenname bleibt gebunden."]
+    },
+    {
+      "caseId": "smoke-detector-index-error",
+      "title": "Indexfehler beim Zugriff auf die Liste",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": ["agent-generated"],
+      "competencyIds": ["c-python-control-flow", "c-python-collections"],
+      "parameters": {"programId": "smoke-detector", "normalization": "s6a-visible-events/v1"},
+      "prompt": "Ordne bis zum Abbruch alle Namen ihren Objektmarken zu. Folge der Auswertungsreihenfolge des and-Ausdrucks.",
+      "fullSolution": "Der linke Operand ist wahr, daher wird der rechte Ausdruck ausgewertet. Der Zugriff verwendet einen Index außerhalb der Liste; bis zum Fehler entstand kein neuer Zielname.",
+      "hints": ["Lies die Zuweisungen der Reihe nach.", "Prüfe den verwendeten Index gegen die Länge der Liste."]
+    }
+  ]
+}

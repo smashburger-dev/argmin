@@ -13,6 +13,7 @@ import { validateCompetencyGraph } from '../assets/js/domain/competency_graph.mj
 import { assertVizCheckpointContract } from '../assets/js/core/viz_checkpoint_grader.mjs';
 import { scenes as figureScenes } from '../assets/js/figures/scenes/index.mjs';
 import { hintSpec, hintTexts, answerNumbers, assertNoHintLeak } from '../assets/js/figures/kit/hints.mjs';
+import traceSnapshots from '../assets/js/figures/objects/python-traces-v1.json' with { type: 'json' };
 import { assertFamilyPlacement, configureExerciseFamilies, EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import {
@@ -43,7 +44,7 @@ export { validateCompetencyGraph };
 const defaultProjectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
-  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization', 'figure', 'figure-hints',
+  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization', 'figure', 'figure-hint-parameters', 'trace-hint-prefix', 'python-trace', 'figure-hints',
   'capsule-bank',
 ];
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
@@ -116,6 +117,63 @@ export function validateSourceDocument(schemaName, value, projectRoot = defaultP
     validateTypicalErrorIds(value);
   }
   return true;
+}
+
+export function assertPythonTraceV1(trace, projectRoot = defaultProjectRoot) {
+  validateSourceDocument('python-trace', trace, projectRoot);
+  const normalizedSource = trace.source.replace(/\r\n?/g, '\n');
+  if (normalizedSource !== trace.source || createHash('sha256').update(trace.source, 'utf8').digest('hex') !== trace.sourceHash) {
+    throw new Error(`${trace.programId}: source must be canonical LF with matching SHA-256`);
+  }
+  if (/(?:\/Users\/|\/private\/|\/tmp\/|[A-Za-z]:\\)/.test(trace.source)) throw new Error(`${trace.programId}: host path in trace source`);
+  const frames = new Set();
+  const objects = new Set();
+  let lastOutput = '';
+  for (const [index, event] of trace.events.entries()) {
+    if (event.ordinal !== index) throw new Error(`${trace.programId}: non-contiguous trace event ordinal`);
+    if (event.parentFrameId && !frames.has(event.parentFrameId)) throw new Error(`${trace.programId}: parent frame precedes its call`);
+    frames.add(event.frameId);
+    if (event.output.length < lastOutput.length || !event.output.startsWith(lastOutput)) {
+      throw new Error(`${trace.programId}: stdout is not a monotone prefix`);
+    }
+    lastOutput = event.output;
+    for (const [objectId, value] of Object.entries(event.objects)) {
+      objects.add(objectId);
+      if (value.type === 'function') throw new Error(`${trace.programId}: function objects are not learner values`);
+    }
+    for (const objectId of Object.values(event.bindings)) {
+      if (!Object.hasOwn(event.objects, objectId)) throw new Error(`${trace.programId}: binding refers to an unrecorded object`);
+    }
+    if (event.result && !Object.hasOwn(event.objects, event.result)) throw new Error(`${trace.programId}: return result is missing from its event`);
+    if (event.event === 'start' && (index !== 0 || event.parentFrameId !== null)) throw new Error(`${trace.programId}: malformed start frame`);
+    if (event.event === 'exception' && event.exception.line !== event.line) throw new Error(`${trace.programId}: exception line mismatch`);
+  }
+  if (lastOutput !== trace.stdout) throw new Error(`${trace.programId}: final stdout does not match trace output`);
+  if (!frames.size || !objects.size) throw new Error(`${trace.programId}: trace is missing observed frames or objects`);
+  return trace;
+}
+
+export function assertPythonTraceCorpus(records = traceSnapshots.records, projectRoot = defaultProjectRoot) {
+  const keys = Object.keys(records).sort();
+  const required = [
+    'bouncer-age-16', 'bouncer-age-17', 'bouncer-age-18', 'dictionary', 'name-tags', 'smoke-detector', 'two-tags-one-list', 'vending-frame',
+    ...Array.from({ length: 4 }, (_, index) => {
+      const n0 = index + 1;
+      return [`ledger-n0-${n0}`, ...[1, 2, 3].map((sum0) => `ledger-n0-${n0}-sum0-${sum0}`)];
+    }).flat(),
+  ].sort();
+  if (JSON.stringify(keys) !== JSON.stringify(required)) throw new Error('python-trace/v1 corpus must contain exactly the allowlisted F1 records');
+  for (const [key, trace] of Object.entries(records)) {
+    assertPythonTraceV1(trace, projectRoot);
+    if (key === 'bouncer-age-16' && trace.inputs.age?.value !== '16') throw new Error('bouncer age-16 trace has wrong input');
+    if (key === 'bouncer-age-17' && trace.inputs.age?.value !== '17') throw new Error('bouncer age-17 trace has wrong input');
+    if (key === 'bouncer-age-18' && trace.inputs.age?.value !== '18') throw new Error('bouncer age-18 trace has wrong input');
+    if (key.startsWith('ledger-n0-')) {
+      const [, , n0, , sum0 = '0'] = key.split('-');
+      if (trace.inputs.n0?.value !== n0 || trace.inputs.sum0?.value !== sum0) throw new Error(`${key}: trace inputs do not match its allowlisted key`);
+    }
+  }
+  return records;
 }
 
 // typicalError ids are the stable label namespace: duplicates inside one
@@ -354,16 +412,16 @@ export function expandFigureTrace(spec, label, projectRoot = defaultProjectRoot)
   if (spec.beats?.from !== 'trace') return spec;
   const scene = figureScenes[spec.scene];
   if (typeof scene?.trace !== 'function') throw new Error(`${label}: trace-Beats brauchen scene.trace`);
-  if (spec.kind !== 'beats') throw new Error(`${label}: Trace-Expansion ist nur für lesson beats freigegeben`);
+  if (!['beats', 'explore'].includes(spec.kind)) throw new Error(`${label}: Trace-Expansion braucht lesson beats oder explore`);
   scene.validateParams(spec.params, { mode: 'lesson' });
   const states = scene.trace(scene.model(spec.params, { mode: 'lesson' }));
   if (!Array.isArray(states) || !states.length) throw new Error(`${label}: leere Trace-Spur`);
-  const expanded = { ...spec, beats: states.map(traceBeat) };
+  const expanded = { ...spec, beats: states.map((state) => traceBeat(state, spec.kind === 'explore')) };
   validateSourceDocument('figure', expanded, projectRoot);
   return expanded;
 }
 
-function traceBeat(state) {
+function traceBeat(state, parameterized = false) {
   if (!state || !Number.isInteger(state.line) || state.line < 0) throw new Error('Trace-Schritt ohne gültige Zeile');
   assertTraceObjects(state.bindings, 'Bindungen');
   assertTraceObjects(state.objects, 'Objekte');
@@ -374,7 +432,7 @@ function traceBeat(state) {
   for (const identity of Object.values(state.bindings)) {
     if (typeof identity !== 'string' || !Object.hasOwn(state.objects, identity)) throw new Error('Trace-Bindung ohne Objektidentität');
   }
-  return { id: state.id, caption: state.caption };
+  return { id: state.id, caption: parameterized ? `Zeile ${state.line} ausgeführt` : state.caption };
 }
 
 function assertTraceObjects(value, label) {
@@ -421,7 +479,9 @@ function assertKindParameters(spec, scene, fail) {
 function assertExploreField(spec, fail) {
   const e = spec.explore;
   if (!e || e.min >= e.max || e.step <= 0 || typeof spec.params[e.parameter] !== 'number') fail('explore braucht gültiges Zahlenfeld');
-  if (Array.isArray(spec.beats) && spec.beats.length > 3) fail('explore erlaubt höchstens drei Beats');
+  const traceExplore = spec.scene === 'bouncer' && e.parameter === 'age'
+    || spec.scene === 'ledger' && e.parameter === 'sum0';
+  if (Array.isArray(spec.beats) && spec.beats.length > 3 && !traceExplore) fail('explore erlaubt höchstens drei Beats');
   const steps = (spec.params[e.parameter] - e.min) / e.step;
   if (Math.abs(steps - Math.round(steps)) > 1e-8) fail('explore-Ausgangswert liegt nicht im Schrittraster');
 }
@@ -495,28 +555,146 @@ function assertFigureBeatLimits(spec, scene, fail) {
 
 export function validateFigureHints(document, families, scenes = figureScenes) {
   for (const entry of document.hints) validateHintEntry(entry, families, scenes);
+  const traceCases = new Set(document.hints
+    .filter((entry) => entry.familyId === 'trace-tag-after-line')
+    .flatMap((entry) => entry.caseIds ?? []));
+  for (const caseId of [
+    'bouncer-short-circuit', 'name-tags-assignments', 'ledger-loop-aliases',
+    'two-tags-one-list', 'dictionary-updates', 'vending-nested-frames',
+    'smoke-detector-index-error',
+  ]) {
+    if (!traceCases.has(caseId)) throw new Error(`trace-tag-after-line:${caseId}: sichere Neighbor-Hinweisabdeckung fehlt`);
+  }
 }
 
 function validateHintEntry(entry, families, scenes) {
   const family = EXERCISE_FAMILIES.get(entry.familyId);
   const scene = scenes[entry.scene];
   if (!family || !scene?.hintParams || !scene.hintBeatIds?.length) throw new Error(`${entry.familyId}: Hinweisvertrag fehlt`);
+  if (!entry.safety) throw new Error(`${entry.familyId}: Figurenhinweis ohne versionierten Sicherheitsvertrag`);
+  if (entry.safety.kind === 'figure-hint-parameters') {
+    if (entry.safety.source === 'neighbor') assertFigureHintParameterSafety(entry);
+    else {
+      validateSourceDocument('figure-hint-parameters', entry.safety);
+      if (entry.safety.familyId !== entry.familyId || entry.safety.caseId !== entry.caseIds?.[0]
+          || entry.caseIds?.length !== 1 || entry.source !== 'case') throw new Error('case hint projection must identify exactly one authored family case');
+    }
+  }
+  else if (entry.safety.kind !== 'trace-hint-prefix') throw new Error(`${entry.familyId}: unbekannter Figurenhinweis-Sicherheitsvertrag`);
+  if (family.taskArchetype === 'tag-after-line') validateSourceDocument('trace-hint-prefix', entry.safety);
   if (family.taskArchetype === 'choice-diagnose' && entry.source !== 'neighbor') throw new Error('Klassifikationshinweise brauchen source: neighbor');
   validateHintCases(entry, families, scene, family);
+}
+
+export function assertFigureHintParameterSafety(entry, instance) {
+  const safety = entry?.safety;
+  if (!safety || safety.kind !== 'figure-hint-parameters' || safety.schemaVersion !== 1 || safety.source !== 'neighbor') {
+    throw new Error(`${entry?.familyId || 'figure'}: unabhängige neighbor-Parameter brauchen figure-hint-parameters/v1`);
+  }
+  validateSourceDocument('figure-hint-parameters', safety);
+  const keys = Object.keys(entry.neighborParams || {}).sort();
+  if (!keys.length || JSON.stringify(keys) !== JSON.stringify(safety.parameterKeys)) {
+    throw new Error(`${entry.familyId}: safety.parameterKeys müssen genau den fixen neighborParams entsprechen`);
+  }
+  if (instance && Object.hasOwn(instance.parameters || {}, 'expectedAnswer')) throw new Error('Antwortdaten dürfen keine neighbor-Hinweisparameter steuern');
+  return Object.freeze(structuredClone(entry.neighborParams));
+}
+
+function assertCaseHintProjection(entry, scene, instance) {
+  const safety = entry.safety;
+  if (safety.source !== 'case' || safety.familyId !== entry.familyId || safety.caseId !== instance.caseId) {
+    throw new Error(`${entry.familyId}: case hint projection must match its authored case`);
+  }
+  const params = scene.hintParams(instance.familyId, instance.parameters);
+  if (!params || JSON.stringify(Object.keys(params).sort()) !== JSON.stringify(safety.parameterKeys)) {
+    throw new Error(`${entry.familyId}: case hint exposed fields outside its allowlist`);
+  }
+  return params;
+}
+
+// A trace hint can only publish the visible source prefix and captions from
+// states strictly before the target event. Every other field is rejected,
+// including values, bindings, output, exception type, and target metadata.
+export function assertTraceHintPrefixSafety(entry, scene, instance) {
+  const safety = entry?.safety;
+  if (!safety || safety.kind !== 'trace-hint-prefix' || safety.schemaVersion !== 1) {
+    throw new Error(`${entry?.familyId || 'trace'}: trace hint needs trace-hint-prefix/v1`);
+  }
+  validateSourceDocument('trace-hint-prefix', safety);
+  if (safety.familyId !== entry.familyId || safety.scene !== entry.scene
+      || (instance?.caseId && safety.caseId !== instance.caseId)) {
+    throw new Error('trace hint family, case, and scene must match the selected task');
+  }
+  const parameters = safety.source === 'neighbor'
+    ? safety.parameters
+    : scene.hintParams?.(entry.familyId, instance?.parameters);
+  if (!parameters) throw new Error('case trace hint needs its family parameter projection');
+  const source = scene.source?.(parameters);
+  if (typeof source !== 'string') throw new Error('trace hint needs compiler-visible authored source');
+  const sourceHash = createHash('sha256').update(source.replace(/\r\n?/g, '\n'), 'utf8').digest('hex');
+  if (safety.sourceHash !== sourceHash) throw new Error('trace hint source hash mismatch');
+  if (safety.source === 'neighbor' && !Object.hasOwn(safety, 'parameters')) throw new Error('neighbor trace hint needs fixed parameters');
+  if (safety.source === 'neighbor' && JSON.stringify(entry.neighborParams) !== JSON.stringify(parameters)) {
+    throw new Error('trace neighbor hint parameters must exactly match the independent authored neighbor');
+  }
+  const task = parameters.tagTask;
+  const traceKey = parameters.traceKey ?? task?.traceKey;
+  const record = traceSnapshots.records[traceKey];
+  const target = record?.events?.[safety.target.eventOrdinal];
+  const previous = record?.events?.[safety.target.eventOrdinal - 1];
+  if (!record || !target || !previous || record.sourceHash !== safety.sourceHash
+      || (parameters.caseId ?? task?.caseId) !== safety.caseId
+      || safety.target.lineId !== `trace:${record.programId}:${target.ordinal}`
+      || safety.target.frameId !== target.frameId || safety.target.line !== target.line
+      || safety.lastAllowedState.eventOrdinal !== previous.ordinal
+      || safety.lastAllowedState.frameId !== previous.frameId || safety.lastAllowedState.line !== previous.line) {
+    throw new Error(`${entry.familyId}:${safety.caseId}: trace hint must identify the exact recorded target and immediately preceding state`);
+  }
+  const requestedBindings = [...safety.requested.bindings].sort();
+  const targetBindings = Object.keys(target.bindings).sort();
+  if (JSON.stringify(requestedBindings) !== JSON.stringify(targetBindings)
+      || safety.requested.objectAttributes.length || safety.requested.values.length || safety.requested.classifications.length) {
+    throw new Error(`${entry.familyId}:${safety.caseId}: requested trace fields must exactly match target bindings`);
+  }
+  const projection = scene.safeHintProjection?.(parameters, safety);
+  if (!projection || Object.keys(projection).sort().join() !== 'priorCaptions,sourceLines') {
+    throw new Error('trace hint renderer must return only the approved prefix projection');
+  }
+  return projection;
 }
 
 function validateHintCases(entry, families, scene, family) {
   const cases = families.find((item) => item.familyId === entry.familyId)?.cases ?? [];
   const selected = entry.caseIds ?? family.caseTypes.map((item) => item.caseId);
+  if (family.familyId === 'classify-training-curve' && family.taskArchetype === 'choice-diagnose') {
+    const required = family.caseTypes.map((item) => item.caseId).sort();
+    if (entry.source !== 'neighbor' || JSON.stringify([...selected].sort()) !== JSON.stringify(required)) {
+      throw new Error(`${entry.familyId}: fester Neighbor muss alle drei Diagnosefälle gemeinsam abdecken`);
+    }
+  }
+  const fixedProjection = new Map();
   for (const caseId of selected) {
     if (!family.caseTypes.some((item) => item.caseId === caseId)) throw new Error(`Unbekannter Hinweisfall ${caseId}`);
     const authored = cases.find((item) => item.caseId === caseId);
-    if (authored) checkHintCase(entry, scene, family, { familyId: entry.familyId, caseId, parameters: { caseId, ...authored.parameters } });
-    checkHintSeeds(entry, scene, family, caseId);
+    if (authored) {
+      const difficulty = supportedHintProfile(family, caseId);
+      if (difficulty) checkHintCase(entry, scene, family, EXERCISE_FAMILIES.instantiate(entry.familyId, 0, difficulty, caseId));
+    }
+    checkHintSeeds(entry, scene, family, caseId, fixedProjection);
   }
 }
 
-function checkHintSeeds(entry, scene, family, caseId) {
+function supportedHintProfile(family, caseId) {
+  for (const difficulty of family.difficultyProfiles) {
+    try { family.generate({ seed: 0, caseId, difficulty }); return difficulty; }
+    catch (error) {
+      if (!/Unbekannter Fall .* für Profil|Unbekanntes Profil/.test(error.message)) throw error;
+    }
+  }
+  return null;
+}
+
+function checkHintSeeds(entry, scene, family, caseId, fixedProjection) {
   let profiles = 0;
   for (const difficulty of family.difficultyProfiles) {
     try { family.generate({ seed: 0, caseId, difficulty }); }
@@ -527,25 +705,88 @@ function checkHintSeeds(entry, scene, family, caseId) {
     profiles += 1;
     for (let seed = 0; seed < 50; seed += 1) {
       const instance = EXERCISE_FAMILIES.instantiate(entry.familyId, seed, difficulty, caseId);
-      checkHintCase(entry, scene, family, instance);
+      const projection = checkHintCase(entry, scene, family, instance);
+      if (entry.source === 'neighbor') {
+        const key = JSON.stringify(canonicalize(projection));
+        const projectionKey = `${entry.familyId}:${entry.scene}`;
+        const prior = fixedProjection.get(projectionKey);
+        if (prior !== undefined && prior.key !== key) {
+          const changed = [...new Set([...Object.keys(prior.projection), ...Object.keys(projection)])]
+            .filter((field) => JSON.stringify(canonicalize(prior.projection[field])) !== JSON.stringify(canonicalize(projection[field])));
+          throw new Error(`${entry.familyId}:${caseId}: neighbor hint changed with target instance or case (${changed.join(', ')})`);
+        }
+        fixedProjection.set(projectionKey, { key, projection });
+      }
     }
   }
   if (!profiles) throw new Error(`${caseId}: kein prüfbares Hinweisprofil`);
 }
 
 function checkHintCase(entry, scene, family, instance) {
+  if (family.taskArchetype === 'tag-after-line') return assertTraceHintPrefixSafety(entry, scene, instance);
+  if (entry.safety?.kind === 'figure-hint-parameters' && entry.safety.source === 'case') {
+    assertCaseHintProjection(entry, scene, instance);
+  }
+  if (family.taskArchetype === 'choice-diagnose' && family.familyId === 'classify-training-curve') {
+    return checkCategoricalHintCase(entry, scene, family, instance);
+  }
+  return checkNumericHintCase(entry, scene, family, instance);
+}
+
+function checkCategoricalHintCase(entry, scene, family, instance) {
+  if (entry.source !== 'neighbor' || entry.safety?.source !== 'neighbor') {
+    throw new Error(`${entry.familyId}: nichtnumerische Klassifikationshinweise brauchen einen festen Neighbor`);
+  }
+  const labels = ['Underfitting', 'Stabil', 'Overfitting'];
   const spec = hintSpec(entry, scene, instance);
-  const m = scene.model(spec.params, { mode: 'hint' });
-  const answers = answerNumbers(family.solve(instance.parameters));
-  if (!answers.length) throw new Error(`${entry.familyId}: keine prüfbare Solverantwort`);
+  const model = scene.model(spec.params, { mode: 'hint' });
+  const projection = { spec, model, displayNumbers: scene.displayNumbers?.(model), points: [] };
   for (const [index, beat] of spec.beats.entries()) {
     const duration = scene.beatDuration(beat.id);
     for (const time of [0, duration / 2, duration]) {
-      const p = scene.pose(m, index, time, 'hint');
-      const texts = [spec.title, spec.caption, beat.caption, scene.readout(m, p, 'hint'), scene.describe(m, index, 'hint'), ...hintTexts(scene.build(m, p, 'hint'))];
-      assertNoHintLeak(texts, answers, `${entry.familyId}:${instance.caseId ?? 'curated'}:${beat.id}`);
+      const pose = scene.pose(model, index, time, 'hint');
+      const items = scene.build(model, pose, 'hint');
+      const texts = [spec.title, spec.caption, beat.caption, scene.readout(model, pose, 'hint'), scene.describe(model, index, 'hint'), ...hintTexts(items)];
+      const visible = texts.join(' ');
+      if (labels.some((label) => !visible.includes(label))) {
+        throw new Error(`${entry.familyId}:${entry.caseId}: Neighbor muss alle drei Diagnoseformen gleichberechtigt zeigen`);
+      }
+      projection.points.push({ texts, items, targets: scene.selectionTargets?.(model, index) ?? [] });
     }
   }
+  return projection;
+}
+
+function hintAnswerValues(family, instance, entry) {
+  if (family.hintAnswers !== undefined && typeof family.hintAnswers !== 'function') {
+    throw new Error(`${entry.familyId}: hintAnswers muss eine Funktion sein`);
+  }
+  const solved = family.hintAnswers ? family.hintAnswers(instance.parameters) : family.solve(instance.parameters);
+  const answers = answerNumbers(solved);
+  if (!answers.length) throw new Error(`${entry.familyId}: keine prüfbare Solverantwort`);
+  return answers;
+}
+
+function checkNumericHintCase(entry, scene, family, instance) {
+  const spec = hintSpec(entry, scene, instance);
+  const m = scene.model(spec.params, { mode: 'hint' });
+  const answers = hintAnswerValues(family, instance, entry);
+  return checkNumericHintBeats(entry, scene, spec, m, answers);
+}
+
+function checkNumericHintBeats(entry, scene, spec, model, answers) {
+  const projection = { spec, points: [] };
+  for (const [index, beat] of spec.beats.entries()) {
+    const duration = scene.beatDuration(beat.id);
+    for (const time of [0, duration / 2, duration]) {
+      const pose = scene.pose(model, index, time, 'hint');
+      const items = scene.build(model, pose, 'hint');
+      const texts = [spec.title, spec.caption, beat.caption, scene.readout(model, pose, 'hint'), scene.describe(model, index, 'hint'), ...hintTexts(items)];
+      assertNoHintLeak(texts, answers, `${entry.familyId}:${entry.caseId ?? 'curated'}:${beat.id}`);
+      projection.points.push({ texts, items, targets: scene.selectionTargets?.(model, index) ?? [] });
+    }
+  }
+  return projection;
 }
 
 function assertFigurePredict(predict, scene, figureModel, label) {
@@ -1139,6 +1380,7 @@ function compileInputFingerprint(projectRoot) {
 }
 
 export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo' } = {}) {
+  assertPythonTraceCorpus(traceSnapshots.records, projectRoot);
   let fingerprint = null;
   if (cache === 'memo') {
     fingerprint = compileInputFingerprint(projectRoot);
@@ -1222,10 +1464,41 @@ function loadFamilyDocument(contentRoot, file, projectRoot) {
 
 function validateLoadedCatalog(contentRoot, catalog, files, entities) {
   configureExerciseFamilies(entities.families);
+  validateTraceTagFamilyInstances();
   validateProjectPackages(contentRoot, files.projects, entities.projects);
   assertUniqueCheckpoints(entities.lessons);
   assertCatalogRoots(contentRoot, catalog, files);
   assertCatalogOrphans(contentRoot, catalog, files, entities);
+}
+
+// Public compilation exercises every trace family case against its frozen
+// CPython snapshot. This keeps the catalog metadata-only: expected bindings
+// come from the procedural solver, never a placeholder stored in a case.
+function validateTraceTagFamilyInstances() {
+  const family = EXERCISE_FAMILIES.get('trace-tag-after-line');
+  if (!family) return;
+  for (const { caseId } of family.caseTypes) {
+    for (let seed = 0; seed < 16; seed += 1) {
+      const instance = EXERCISE_FAMILIES.instantiate('trace-tag-after-line', seed, 'core', caseId);
+      const task = instance.parameters?.tagTask;
+      const record = traceSnapshots.records[task?.traceKey];
+      const event = record?.events?.[task?.target?.eventOrdinal];
+      const expected = instance.expectedAnswer;
+      const solved = family.solve(instance.parameters);
+      if (!record || !event || task.sourceHash !== record.sourceHash
+          || event.event === 'start' || !Object.keys(event.bindings).length
+          || !expected?.states?.length || !expected.states[0].bindings?.length
+          || JSON.stringify(expected) !== JSON.stringify(solved)
+          || expected.states[0].lineId !== `trace:${record.programId}:${event.ordinal}`) {
+        throw new Error(`trace-tag-after-line:${caseId}: Instanz muss einen echten CPython-Zustand mit Bindungen verwenden`);
+      }
+      const actual = Object.entries(event.bindings).sort(([left], [right]) => left.localeCompare(right))
+        .map(([name, objectId]) => ({ name, objectId }));
+      if (JSON.stringify(expected.states[0].bindings) !== JSON.stringify(actual)) {
+        throw new Error(`trace-tag-after-line:${caseId}: Solverantwort weicht vom CPython-Zustand ab`);
+      }
+    }
+  }
 }
 
 function assertCatalogRoots(contentRoot, catalog, files) {

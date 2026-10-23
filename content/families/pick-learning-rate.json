@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "familyId": "pick-learning-rate",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "stable-convergent-rate",
+      "title": "Eine passende Lernrate wählen",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": ["figuren-f7-pick-learning-rate"]
+    }
+  ]
+}

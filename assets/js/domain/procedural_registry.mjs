@@ -38,6 +38,7 @@ import { FAMILY_SPEC as OPTIMIZE_SGD_STEP_PURE_UPDATE } from '../core/procedural
 import { FAMILY_SPEC as OPTIMIZE_SOFTMAX_ATTENTION_MASK } from '../core/procedural/optimize-softmax-attention-mask.mjs';
 import { FAMILY_SPEC as OPTIMIZE_TRAINING_PRIMITIVE_CONTRACT } from '../core/procedural/optimize-training-primitive-contract.mjs';
 import { FAMILY_SPEC as OPTIMIZE_TREE_BEST_SPLIT } from '../core/procedural/optimize-tree-best-split.mjs';
+import { FAMILY_SPEC as PICK_LEARNING_RATE } from '../core/procedural/pick-learning-rate.mjs';
 import { FAMILY_SPEC as RANK_EVIDENCE_TABLE } from '../core/procedural/rank-evidence-table.mjs';
 import { FAMILY_SPEC as REPRODUCE_CANONICAL_HASH_VERIFY } from '../core/procedural/reproduce-canonical-hash-verify.mjs';
 import { FAMILY_SPEC as REPRODUCE_PIPELINE_STATUS_REPORT } from '../core/procedural/reproduce-pipeline-status-report.mjs';
@@ -48,6 +49,7 @@ import { FAMILY_SPEC as TRACE_CHUNK_WINDOW_LOOP } from '../core/procedural/trace
 import { FAMILY_SPEC as TRACE_LIBRARY_API_OUTPUT } from '../core/procedural/trace-library-api-output.mjs';
 import { FAMILY_SPEC as TRACE_STUB_DOC_SENTENCE_SELECT } from '../core/procedural/trace-stub-doc-sentence-select.mjs';
 import { FAMILY_SPEC as TRACE_SUBSTRING_FLAG_SUM } from '../core/procedural/trace-substring-flag-sum.mjs';
+import { FAMILY_SPEC as TRACE_TAG_AFTER_LINE } from '../core/procedural/trace-tag-after-line.mjs';
 import { FAMILY_SPEC as TRACE_TOPOSORT_DEPENDENCY_ORDER } from '../core/procedural/trace-toposort-dependency-order.mjs';
 import { FAMILY_SPEC as TRACE_TRAINING_LOOP_COUNT } from '../core/procedural/trace-training-loop-count.mjs';
 import { FAMILY_SPEC as TRANSFORM_BPE_MERGE_APPLY } from '../core/procedural/transform-bpe-merge-apply.mjs';
@@ -96,6 +98,7 @@ export const PROCEDURAL_FAMILY_SPECS = [
   OPTIMIZE_SOFTMAX_ATTENTION_MASK,
   OPTIMIZE_TRAINING_PRIMITIVE_CONTRACT,
   OPTIMIZE_TREE_BEST_SPLIT,
+  PICK_LEARNING_RATE,
   RANK_EVIDENCE_TABLE,
   REPRODUCE_CANONICAL_HASH_VERIFY,
   REPRODUCE_PIPELINE_STATUS_REPORT,
@@ -106,6 +109,7 @@ export const PROCEDURAL_FAMILY_SPECS = [
   TRACE_LIBRARY_API_OUTPUT,
   TRACE_STUB_DOC_SENTENCE_SELECT,
   TRACE_SUBSTRING_FLAG_SUM,
+  TRACE_TAG_AFTER_LINE,
   TRACE_TOPOSORT_DEPENDENCY_ORDER,
   TRACE_TRAINING_LOOP_COUNT,
   TRANSFORM_BPE_MERGE_APPLY,

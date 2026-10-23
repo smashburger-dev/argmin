@@ -74,6 +74,17 @@
       "caseId": "pca-explained-variance-percent",
       "difficulty": "core",
       "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-ml-svm-pca-learning-rate",
+      "role": "curated",
+      "familyId": "pick-learning-rate",
+      "caseId": "stable-convergent-rate",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 10,
+      "lessonId": "l-ml-svm-pca",
+      "masteryEligible": true
     }
   ],
   "projectIds": [],

@@ -19,8 +19,11 @@ import * as frozenMatrixStrips from './frozen-matrix-strips.mjs';
 import * as gitSnapshots from './git-snapshots.mjs';
 import * as goodsIn from './goods-in.mjs';
 import * as houseAblation from './house-ablation.mjs';
+import * as kmeansPizza from './kmeans-pizza.mjs';
+import * as learningRateRun from './learning-rate-run.mjs';
 import * as ledger from './ledger.mjs';
 import * as libraryAttention from './library-attention.mjs';
+import * as linalgCaseNeighbor from './linalg-case-neighbor.mjs';
 import * as logisticSorter from './logistic-sorter.mjs';
 import * as mailSorter from './mail-sorter.mjs';
 import * as missingHighSales from './missing-high-sales.mjs';
@@ -29,8 +32,10 @@ import * as mseLandscape from './mse-landscape.mjs';
 import * as mseSection from './mse-section.mjs';
 import * as nameTags from './name-tags.mjs';
 import * as orderTimesPrices from './order-times-prices.mjs';
+import * as pcaShadow from './pca-shadow.mjs';
 import * as plugAdapter from './plug-adapter.mjs';
 import * as powerStack from './power-stack.mjs';
+import * as pythonTraceTag from './python-trace-tag.mjs';
 import * as receiptEchelon from './receipt-echelon-3x3.mjs';
 import * as receiptElimination from './receipt-elimination.mjs';
 import * as residualSprings from './residual-springs.mjs';
@@ -50,6 +55,8 @@ import * as tensorAddress from './tensor-address.mjs';
 import * as tokenConveyor from './token-conveyor.mjs';
 import * as tradesStopwatch from './trades-stopwatch.mjs';
 import * as trainingBook from './training-book.mjs';
+import * as trainingCurveNeighbor from './training-curve-neighbor.mjs';
+import * as updateRuleNeighbor from './update-rule-neighbor.mjs';
 import * as treeVoteField from './tree-vote-field.mjs';
 import * as twoTagsOneList from './two-tags-one-list.mjs';
 import * as vendingFrame from './vending-frame.mjs';
@@ -75,8 +82,11 @@ Object.assign(scenes, {
   [gitSnapshots.id]: gitSnapshots,
   [goodsIn.id]: goodsIn,
   [houseAblation.id]: houseAblation,
+  [kmeansPizza.id]: kmeansPizza,
+  [learningRateRun.id]: learningRateRun,
   [ledger.id]: ledger,
   [libraryAttention.id]: libraryAttention,
+  [linalgCaseNeighbor.id]: linalgCaseNeighbor,
   [logisticSorter.id]: logisticSorter,
   [mailSorter.id]: mailSorter,
   [missingHighSales.id]: missingHighSales,
@@ -85,8 +95,10 @@ Object.assign(scenes, {
   [mseSection.id]: mseSection,
   [nameTags.id]: nameTags,
   [orderTimesPrices.id]: orderTimesPrices,
+  [pcaShadow.id]: pcaShadow,
   [plugAdapter.id]: plugAdapter,
   [powerStack.id]: powerStack,
+  [pythonTraceTag.id]: pythonTraceTag,
   [receiptEchelon.id]: receiptEchelon,
   [receiptElimination.id]: receiptElimination,
   [residualSprings.id]: residualSprings,
@@ -105,6 +117,8 @@ Object.assign(scenes, {
   [tokenConveyor.id]: tokenConveyor,
   [tradesStopwatch.id]: tradesStopwatch,
   [trainingBook.id]: trainingBook,
+  [trainingCurveNeighbor.id]: trainingCurveNeighbor,
+  [updateRuleNeighbor.id]: updateRuleNeighbor,
   [treeVoteField.id]: treeVoteField,
   [twoTagsOneList.id]: twoTagsOneList,
   [vendingFrame.id]: vendingFrame,

@@ -5,15 +5,18 @@ export function figureHintFor(entries, instance) {
 }
 
 export function hintSpec(entry, scene, instance) {
-  const params = entry.source === 'neighbor'
-    ? entry.neighborParams : scene.hintParams(instance.familyId, instance.parameters);
+  const tracePrefix = entry.safety?.kind === 'trace-hint-prefix';
+  const params = tracePrefix
+    ? { ...entry.neighborParams, traceHintSafety: entry.safety }
+    : entry.source === 'neighbor'
+      ? entry.neighborParams : scene.hintParams(instance.familyId, instance.parameters);
   if (!params) throw new Error(`${entry.scene}: hintParams rejected mapped case`);
   scene.validateParams(params, { mode: 'hint' });
   const model = scene.model(params, { mode: 'hint' });
   return {
     schemaVersion: 1, kind: 'hint', engine: 'argmin-figure', scene: entry.scene,
-    title: 'Spalten als Zutaten',
-    caption: entry.source === 'neighbor' ? 'Ein festes Nachbarbeispiel. Übertrage die Idee auf deine Aufgabe.' : 'Finde die Gewichte der Spalten deiner Aufgabe.',
+    title: entry.title ?? 'Spalten als Zutaten',
+    caption: entry.caption ?? (entry.source === 'neighbor' ? 'Ein festes Nachbarbeispiel. Übertrage die Idee auf deine Aufgabe.' : 'Finde die Gewichte der Spalten deiner Aufgabe.'),
     hint: '', params,
     beats: scene.hintBeatIds.map((id, index) => ({ id, caption: scene.describe(model, index, 'hint') })),
   };

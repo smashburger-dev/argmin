@@ -4,7 +4,7 @@ import { hintSpec } from '../../assets/js/figures/kit/hints.mjs';
 import FigureRuntime from './FigureRuntime';
 import type { FigureSpec } from '../app/types';
 
-export type HintEntry = { familyId: string; caseIds?: string[]; scene: string; source: string; neighborParams?: object };
+export type HintEntry = { familyId: string; caseIds?: string[]; scene: string; source: string; neighborParams?: object; safety?: Record<string, unknown>; title?: string; caption?: string };
 export type HintInstance = { familyId: string; parameters: object; instanceId: string };
 
 export default function HintFigure({ entry, instance, onHide }: { entry: HintEntry; instance: HintInstance; onHide: () => void }) {
@@ -23,10 +23,10 @@ export default function HintFigure({ entry, instance, onHide }: { entry: HintEnt
     return () => { live = false; };
   }, [entry, instance]);
   return <figure class="figure-card figure-hint-card">
-    <figcaption class="figure-head"><strong>Hinweis · {loaded?.spec.title ?? 'Spalten als Zutaten'}</strong></figcaption>
+    <figcaption class="figure-head"><strong>Hinweis · {loaded?.spec.title ?? entry.title ?? 'Spalten als Zutaten'}</strong></figcaption>
     {error ? <p role="alert">Die Hinweisfigur konnte nicht geladen werden. Der Texthinweis bleibt verfügbar.</p> : null}
     {loaded ? <>
-      {entry.source === 'neighbor' ? <p class="figure-hint">{loaded.spec.caption}</p> : null}
+      {entry.source === 'neighbor' || entry.title || entry.caption ? <p class="figure-hint">{loaded.spec.caption}</p> : null}
       <FigureRuntime key={instance.instanceId} scene={loaded.scene} spec={loaded.spec} />
     </> : !error ? <p role="status">Figur wird geladen.</p> : null}
     <button class="btn btn-ghost btn-sm figure-hide" type="button" onClick={onHide}>Figur ausblenden</button>

@@ -32,6 +32,8 @@
 
 # Browser acceptance profiles and local scratch data
 /.tmp-acceptance-*/
+/docs/figuren-completion/ui-acceptance/raw/
+/docs/figuren-completion/gate/
 /vendor/tmp/
 
 # Local-only configuration and secrets

@@ -1,11 +1,13 @@
 import { fitZoom } from '../kit/camera.mjs';
 import { records } from './trace-records.mjs';
+import traceSnapshots from './python-traces-v1.json' with { type: 'json' };
 
 // A frontal code/binding diagram, not a Python evaluator. Every value and
 // identity comes from a frozen CPython capture. Only the visible pose moves.
 const SIZE = 100;
+const BOARD_HEIGHT = 140;
 const FONT = 5.1;
-const point = (x, y) => [x - SIZE / 2, 0, SIZE / 2 - y];
+const point = (x, y) => [x - SIZE / 2, 0, BOARD_HEIGHT / 2 - y];
 const text = (key, x, y, value, tone = 'hi', code = false) => ({
   t: 'text', key, x, y, runs: [{ text: value }], size: FONT,
   font: code ? 'code' : 'label', anchor: 'start', tone,
@@ -13,6 +15,33 @@ const text = (key, x, y, value, tone = 'hi', code = false) => ({
 });
 const line = (key, from, to, tone = 'hi') => ({ t: 'line', key, from, to, tone, width: 0.25 });
 const rect = (key, x, y, w, h, tone = 'board') => ({ t: 'rect', key, from: [x, y], to: [x + w, y + h], tone, plate: true });
+
+function capturedRecord(trace) {
+  return {
+    code: trace.source.split('\n'),
+    steps: trace.events.map((event, index) => ({
+      id: `step-${index}`, caption: `Trace-Schritt ${index + 1}`, event: event.event,
+      line: event.line, scope: event.function, bindings: event.bindings, objects: event.objects,
+      output: event.output,
+      ...(event.result ? { result: event.result } : {}),
+      ...(event.exception ? { exception: event.exception.type } : {}),
+    })),
+  };
+}
+
+function recordForInputs(id, params, fallback) {
+  if (id === 'bouncer' && Object.keys(params).join() === 'age' && [16, 17].includes(params.age)) {
+    return capturedRecord(traceSnapshots.records[`bouncer-age-${params.age}`]);
+  }
+  if (id === 'ledger' && Object.keys(params).join() === 'sum0' && Number.isInteger(params.sum0) && params.sum0 >= 0 && params.sum0 <= 3) {
+    return capturedRecord(traceSnapshots.records[`ledger-n0-3-sum0-${params.sum0}`] ?? traceSnapshots.records['ledger-n0-3']);
+  }
+  return fallback;
+}
+
+function displayBindingName(name) {
+  return name.replace(/^global\./, '').replace(/^frame:\d+:/, '');
+}
 
 function stepCaption(record, step, index, custom) {
   if (custom[index]) return custom[index];
@@ -31,14 +60,14 @@ function codeItems(m, s) {
 
 function bindingItems(m, s) {
   return m.names.flatMap((name, i) => {
-    const y = 60 + i * 13;
+    const y = 59 + i * 16;
     const identity = s.bindings[name];
     // Python commits a binding atomically. Keep the endpoint attached to
     // its object throughout the transition; never tween through empty space.
     const targetY = objectPosition(m, s, identity);
-    const label = `${name.replace('global.', '')}:${identity ?? ''}`;
+    const label = `${displayBindingName(name)}:${identity ?? ''}`;
     return [
-      { ...rect(`name-box-${i}`, 6, y - 6, 29, 9), visible: Boolean(identity) },
+      { ...rect(`name-box-${i}`, 6, y - 7.5, 29, 15), visible: Boolean(identity) },
       { ...text(`name-${i}`, 8, y, label, 'hi', true), visible: Boolean(identity) },
       { ...line(`bind-a-${i}`, [35, y - 2], [40 + i * 3, y - 2]), visible: Boolean(identity) },
       { ...line(`bind-b-${i}`, [40 + i * 3, y - 2], [40 + i * 3, targetY - 2]), visible: Boolean(identity) },
@@ -49,7 +78,7 @@ function bindingItems(m, s) {
 
 function objectPosition(m, state, identity) {
   const keys = m.keepObjects ? m.identities : Object.keys(state.objects);
-  return 60 + Math.max(0, keys.indexOf(identity)) * 13;
+  return 59 + Math.max(0, keys.indexOf(identity)) * 16;
 }
 
 function objectItems(m, s, index) {
@@ -60,7 +89,7 @@ function objectItems(m, s, index) {
     const y = objectPosition(m, s, identity);
     const value = (object?.value ?? '').replaceAll(', ', ',');
     return [
-      { ...rect(`object-box-${i}`, 49, y - 6, 46, 10), visible: Boolean(object) },
+      { ...rect(`object-box-${i}`, 49, y - 7.5, 46, 15), visible: Boolean(object) },
       { ...text(`object-${i}`, 51, y, `${identity}: ${value}`, s.result === identity ? 'lit' : 'hi', true), visible: Boolean(object) },
     ];
   });
@@ -84,7 +113,11 @@ const mechanisms = {
 
 function mechanismItems(m, s) {
   const output = s.output.trim() || '—';
-  return [text('output', 6, 98, `Ausgabe: ${output}`, s.output ? 'lit' : 'hi', true), ...(mechanisms[m.id]?.(m, s) ?? [])];
+  return [
+    rect('output-box', 6, 124, 90, 15),
+    text('output', 8, 134, `Ausgabe: ${output}`, s.output ? 'lit' : 'hi', true),
+    ...(mechanisms[m.id]?.(m, s) ?? []),
+  ];
 }
 
 function sectionHeadings(m, s) {
@@ -100,11 +133,11 @@ function items(m, p) {
     ...codeItems(m, s), ...sectionHeadings(m, s),
     ...bindingItems(m, s), ...objectItems(m, s, index), ...mechanismItems(m, s),
   ];
-  return [{ kind: 'plane', id: 'trace-board', origin: point(0, 0), ex: [1, 0, 0], ey: [0, 0, -1], normal: [0, -1, 0], size: [SIZE, SIZE], tone: 'board', prims }];
+  return [{ kind: 'plane', id: 'trace-board', origin: point(0, 0), ex: [1, 0, 0], ey: [0, 0, -1], normal: [0, -1, 0], size: [SIZE, BOARD_HEIGHT], tone: 'board', prims }];
 }
 
 function sceneModel(id, record, params, custom) {
-  validateParams(params);
+  validateParams(id, params);
   const steps = record.steps.map((step, index) => ({ ...step, id: `step-${index}`, caption: stepCaption(record, step, index, custom) }));
   return { id, code: record.code, steps,
     names: [...new Set(steps.flatMap((step) => Object.keys(step.bindings)))],
@@ -113,14 +146,68 @@ function sceneModel(id, record, params, custom) {
   };
 }
 
-function validateParams(params) {
-  if (!params || Object.keys(params).length) throw new Error('Diese geprüfte Spur hat keine freien Parameter');
+function validateParams(id, params) {
+  if (!params || typeof params !== 'object' || Array.isArray(params)) throw new Error('Trace-Parameter müssen ein Objekt sein');
+  const keys = Object.keys(params);
+  if (keys.length === 0) return;
+  if (id === 'bouncer' && keys.length === 1 && keys[0] === 'age' && Number.isInteger(params.age) && [16, 17].includes(params.age)) return;
+  if (id === 'ledger' && keys.length === 1 && keys[0] === 'sum0' && Number.isInteger(params.sum0) && params.sum0 >= 0 && params.sum0 <= 3) return;
+  throw new Error('Diese geprüfte Spur hat keine freien Parameter in diesem Bereich');
 }
 
 function describe(m, index) {
   const s = m.steps[index];
   const bindings = Object.entries(s.bindings).map(([name, identity]) => `${name}: ${identity} (${s.objects[identity].value})`);
   return [s.caption, ...bindings, `Ausgabe: ${s.output.trim() || 'keine'}`].join('. ');
+}
+
+function selectionTargets(m, index) {
+  const s = m.steps[Math.min(m.steps.length - 1, Math.max(0, Math.floor(index)))];
+  const names = Object.keys(s.bindings);
+  const visibleObjects = m.keepObjects
+    ? Object.assign({}, ...m.steps.slice(0, Math.floor(index) + 1).map((step) => step.objects))
+    : s.objects;
+  const identities = Object.keys(visibleObjects);
+  const frameByScope = new Map([['global', 0]]);
+  for (const name of m.names) {
+    const scope = name.slice(0, name.indexOf('.'));
+    if (!frameByScope.has(scope)) frameByScope.set(scope, frameByScope.size);
+  }
+  const targets = [
+    ...names.map((name) => {
+      const captured = name.match(/^frame:(\d+):(.+)$/);
+      if (captured) return {
+        id: `binding:${name}`,
+        itemId: 'trace-board',
+        primKey: `name-box-${m.names.indexOf(name)}`,
+        label: displayBindingName(name),
+        description: `${displayBindingName(name)} ist an ${s.bindings[name]} gebunden.`,
+      };
+      const separator = name.indexOf('.');
+      const scope = name.slice(0, separator);
+      const variable = name.slice(separator + 1);
+      return {
+        id: `binding:frame:${frameByScope.get(scope)}:${variable}`,
+        itemId: 'trace-board',
+        primKey: `name-box-${m.names.indexOf(name)}`,
+        label: displayBindingName(name),
+        description: `${displayBindingName(name)} ist an ${s.bindings[name]} gebunden.`,
+      };
+    }),
+    ...identities.filter((identity) => identity !== s.result).map((identity) => ({
+      id: identity.startsWith('object:') ? identity : `object:${identity}`,
+      itemId: 'trace-board',
+      primKey: `object-box-${m.identities.indexOf(identity)}`,
+      label: identity,
+      description: `Objektmarke ${identity}.`,
+    })),
+  ];
+  if (s.output.trim()) targets.push({ id: `output:${index}`, itemId: 'trace-board', primKey: 'output-box', label: 'Ausgabe', description: 'Sichtbare Programmausgabe.' });
+  if (s.result) targets.push({
+    id: `return:${s.result}`, itemId: 'trace-board', primKey: `object-box-${m.identities.indexOf(s.result)}`,
+    label: `Rückgabe ${s.result}`, description: `Rückgabewert des aktuellen Aufrufs: Objektmarke ${s.result}.`,
+  });
+  return targets;
 }
 
 function predictionValue(m, prediction) {
@@ -132,7 +219,8 @@ function predictionValue(m, prediction) {
 
 export function createTraceScene(id, custom = {}, prediction = null) {
   const record = records[id];
-  const model = (params) => sceneModel(id, record, params, custom);
+  const model = (params) => sceneModel(id, recordForInputs(id, params, record), params, custom);
+  const validate = (params) => validateParams(id, params);
   const reference = model({});
   const beatIds = reference.steps.map((step) => step.id);
   const beatDuration = (beat) => {
@@ -147,11 +235,11 @@ export function createTraceScene(id, custom = {}, prediction = null) {
     if (mode !== 'lesson') throw new Error('Trace-Hinweise sind ohne separaten Präfixvertrag gesperrt');
     return items(m, p);
   };
-  return { id, viewMode: 'flat', beatIds, validateParams, model, beatDuration, pose, build,
+  return { id, viewMode: 'flat', beatIds, validateParams: validate, model, beatDuration, pose, build, selectionTargets,
     trace: (m) => m.steps,
     cameraFor: (m, p, vp) => {
       const camera = { azimuth: 0, elevation: 0, target: [0, 0, 0], zoom: 1 };
-      camera.zoom = fitZoom(vp, [point(0, 0), point(SIZE, SIZE)], camera, 16);
+      camera.zoom = fitZoom(vp, [point(0, 0), point(SIZE, BOARD_HEIGHT)], camera, 16);
       return camera;
     },
     ground: () => null,

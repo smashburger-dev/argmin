@@ -142,7 +142,7 @@
           "enum": [
             "numeric", "single-choice", "vector", "algebraic-expression",
             "python-code", "short-rationale", "parsons", "code-trace", "predict-output",
-            "multiple-choice", "diagnostic-rationale", "worked-example-fading"
+            "multiple-choice", "diagnostic-rationale", "worked-example-fading", "scene-build"
           ]
         },
         "graderId": { "enum": ["deterministic", "pyodide", "manual-rubric"] },

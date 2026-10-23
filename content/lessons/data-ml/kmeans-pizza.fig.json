@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "kmeans-pizza",
+  "title": "k-Means: Zuordnen, Zentren bewegen, erneut prüfen",
+  "caption": "Ein deterministischer Seed zeigt den Weg vom Start bis zum Festpunkt.",
+  "hint": "Vergleiche die Punktzuordnungen nach jeder Bewegung der Zentren.",
+  "params": {},
+  "beats": [
+    { "id": "step-0", "caption": "Ordne die vier Pizzapunkte den Startzentren zu." },
+    { "id": "step-1", "caption": "Verschiebe beide Zentren zu den Gruppenmittelwerten." },
+    { "id": "step-2", "caption": "Ordne die Punkte mit den neuen Zentren erneut zu." },
+    { "id": "step-3", "caption": "Die Gruppen bleiben gleich; der Algorithmus ist konvergiert." }
+  ]
+}

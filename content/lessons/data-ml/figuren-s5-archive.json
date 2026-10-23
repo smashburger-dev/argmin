@@ -12,6 +12,7 @@
     { "blockId": "archive-mse", "type": "visualization", "contentRef": "lessons/data-ml/mse-bowl.viz.json" },
     { "blockId": "archive-residuals", "type": "visualization", "contentRef": "lessons/data-ml/residuals.viz.json" },
     { "blockId": "archive-ridge", "type": "visualization", "contentRef": "lessons/data-ml/ridge-shrink.viz.json" },
+    { "blockId": "archive-pca-axis", "type": "visualization", "contentRef": "lessons/data-ml/pca-axis.viz.json" },
     { "blockId": "archive-secant", "type": "visualization", "contentRef": "lessons/data-ml/secant-tangent.viz.json" },
     { "blockId": "archive-stopping", "type": "visualization", "contentRef": "lessons/deep-learning/early-stopping.viz.json" },
     { "blockId": "archive-step", "type": "visualization", "contentRef": "lessons/deep-learning/lr-step.viz.json" }

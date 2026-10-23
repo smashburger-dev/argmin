@@ -1,12 +1,13 @@
 {
   "schemaVersion": 1,
-  "kind": "beats",
+  "kind": "explore",
   "engine": "argmin-figure",
   "scene": "ledger",
   "title": "Zeilensprünge im Kassenbuch",
   "caption": "Der Zeiger kehrt zur Schleifenbedingung zurück. Der bisherige Zustand bleibt erhalten.",
   "hint": "Verfolge die ausgeführte Zeile und den zugehörigen Zustand.",
-  "params": {},
+  "params": { "sum0": 0 },
+  "explore": { "parameter": "sum0", "label": "Startguthaben", "min": 0, "max": 3, "step": 1, "input": "number" },
   "beats": {
     "from": "trace"
   },
