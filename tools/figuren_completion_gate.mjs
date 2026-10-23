@@ -17,6 +17,7 @@ const CHILD_ENV = {
 const COMMANDS = [
   { name: 'compile-content', command: process.execPath, args: ['tools/compile_content.mjs'] },
   { name: 'validate-content', command: process.execPath, args: ['tools/validate_content.mjs'] },
+  { name: 'derived-check', command: 'npm', args: ['run', 'check:derived'] },
   { name: 'node-tests', command: process.execPath, args: ['--test', 'tests/'] },
   { name: 'coverage-check', command: 'npm', args: ['run', 'coverage:check'] },
   { name: 'typecheck', command: 'npm', args: ['run', 'typecheck'] },

@@ -105,14 +105,14 @@ function listLessonMarkdown(dir) {
 const lessonFiles = listLessonMarkdown(LESSONS_ROOT);
 assert.ok(lessonFiles.length > 0, 'keine Lektions-Markdowns gefunden');
 
-// Eine Lektion kann aus mehreren Markdown-Blöcken bestehen (Visualisierung
+// Eine Lektion kann aus mehreren Textblöcken bestehen (Visualisierungen
 // dazwischen). Stilregeln gelten für die Lektion als Ganzes, also für die
-// verketteten worked-example-Blöcke in Blockreihenfolge.
+// verketteten Prosa-, Beispiel- und Definitionsblöcke in Blockreihenfolge.
 function lessonProse(rel) {
   const docPath = join(LESSONS_ROOT, rel.replace(/\.md$/, '.json'));
   const doc = JSON.parse(readFileSync(docPath, 'utf8'));
   const parts = (doc.blocks || [])
-    .filter((block) => block.type === 'worked-example' && block.contentRef.endsWith('.md'))
+    .filter((block) => ['prose', 'worked-example', 'definition'].includes(block.type) && block.contentRef.endsWith('.md'))
     .map((block) => readFileSync(join(LESSONS_ROOT, '..', block.contentRef), 'utf8'));
   return parts.length > 0 ? parts.join('\n') : readFileSync(join(LESSONS_ROOT, rel), 'utf8');
 }

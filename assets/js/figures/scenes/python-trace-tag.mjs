@@ -9,21 +9,43 @@ export const captions = ['Ordne nach jedem ausgeführten Schritt die Namen den O
 const tracePanel = (id, prims) => readingPlane(id, [-75, 0, 75], [150, 100], prims);
 
 function validateTask(task) {
+  assertTraceTaskShape(task);
+  assertTraceTaskOptions(task);
+  assertTraceTaskLines(task);
+  assertRecordedTraceTarget(task);
+}
+
+function assertTraceTaskShape(task) {
   if (!task || task.schemaVersion !== 1 || task.normalization !== 's6a-visible-events/v1'
       || typeof task.source !== 'string' || !Array.isArray(task.lines) || !Array.isArray(task.lineIds)
       || task.lines.length !== task.lineIds.length || !task.lines.length) throw new Error('Ungültige python-trace-tag Aufgabe');
-  assertTraceTaskOptions(task);
+}
+
+function assertTraceTaskLines(task) {
   if (task.lines.some((row, index) => row.lineId !== task.lineIds[index]
       || typeof row.sourceLine !== 'string' || !Number.isInteger(row.line) || row.line < 0)) {
     throw new Error('Trace-Zeilen müssen exakt der geordneten Eingabespur folgen');
   }
   if (task.lines.some((row) => !row.lineId.startsWith(`trace:${task.programId}:`))) throw new Error('Trace-Zeilen-ID passt nicht zum Programm');
+}
+
+function assertRecordedTraceTarget(task) {
   const record = traceSnapshot.records[task.traceKey];
+  assertTraceProgramIdentity(task, record);
   const target = record?.events?.[task.target?.eventOrdinal];
-  if (!record || record.programId !== task.programId || task.sourceHash !== record.sourceHash
-      || !target || target.ordinal !== task.target.eventOrdinal || target.frameId !== task.target.frameId
+  assertTraceEventIdentity(task, record, target);
+}
+
+function assertTraceProgramIdentity(task, record) {
+  if (!record || record.programId !== task.programId || task.sourceHash !== record.sourceHash || task.source !== record.source) {
+    throw new Error('Trace-Ziel muss zu einem aufgezeichneten CPython-Schritt gehören');
+  }
+}
+
+function assertTraceEventIdentity(task, record, target) {
+  if (!target || target.ordinal !== task.target.eventOrdinal || target.frameId !== task.target.frameId
       || target.line !== task.target.line || task.target.lineId !== `trace:${task.programId}:${target.ordinal}`
-      || task.source !== record.source) throw new Error('Trace-Ziel muss zu einem aufgezeichneten CPython-Schritt gehören');
+      ) throw new Error('Trace-Ziel muss zu einem aufgezeichneten CPython-Schritt gehören');
 }
 
 function fixedNeighborTask(params) {
@@ -45,7 +67,7 @@ function compute(params) {
   return { task: structuredClone(params.tagTask) };
 }
 
-function items(model, phase) {
+function items(model, _phase) {
   const task = model.task;
   const record = traceSnapshot.records[task.traceKey];
   const target = record.events[task.target.eventOrdinal];

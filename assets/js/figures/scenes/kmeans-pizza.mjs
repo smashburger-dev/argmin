@@ -3,10 +3,10 @@ import { KMEANS_PIZZA_TRACE } from '../objects/kmeans-pizza-trace.mjs';
 import { figure, panel, label, line, dot } from '../objects/optimization-plot.mjs';
 
 export const captions = [
-  'Zuordnung: Jeder Punkt kommt zum nächsten Startzentrum.',
-  'Bewegung: Jedes Zentrum wandert zum Mittelwert seiner Gruppe.',
-  'Nächste Runde: Ordne mit den neuen Zentren erneut zu.',
-  'Festpunkt: Gruppen und Zentren bleiben gleich; k-Means ist konvergiert.',
+  'Punkt zum nächsten Zentrum.',
+  'Zentren wandern zu Gruppenmitteln.',
+  'Neue Zentren: erneut zuordnen.',
+  'Konvergenz: Zuordnung bleibt stabil.',
 ];
 
 function validate(params) {

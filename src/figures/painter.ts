@@ -183,6 +183,7 @@ interface ItemBinding {
   groups: Map<string, SVGPathElement>;
   hulls: Map<number, SVGPathElement>;
   prims: Map<string, SVGElement>;
+  primOrder?: string;
   planeG: SVGGElement | null;
   strokeEl: SVGPathElement | null;
   lastSigs: Map<string, string>;
@@ -263,12 +264,17 @@ export class Painter {
     const g = el('g') as SVGGElement;
     b.planeG = g;
     for (const prim of item.prims) {
-      const e = primElement(prim);
-      e.setAttribute('data-prim', prim.key);
-      b.prims.set(prim.key, e);
-      g.appendChild(e);
+      this.mountPlanePrim(b, prim);
     }
+    b.primOrder = JSON.stringify(item.prims.map((prim: Prim) => prim.key));
     b.g.appendChild(g);
+  }
+
+  private mountPlanePrim(b: ItemBinding, prim: Prim): void {
+    const e = primElement(prim);
+    e.setAttribute('data-prim', prim.key);
+    b.prims.set(prim.key, e);
+    b.planeG?.appendChild(e);
   }
 
   private mountStroke(b: ItemBinding): void {
@@ -520,9 +526,35 @@ export class Painter {
     const n = item.normal;
     const shown = item.visible !== false && (n[0] * t[0] + n[1] * t[1] + n[2] * t[2]) > 1e-6;
     this.setAttr(b.g, 'display', shown ? null : 'none');
+    this.syncPlanePrims(b, item.prims);
     const m = planeMatrixOf(ctx, item);
     if (b.planeG) this.setAttr(b.planeG, 'transform', m);
     for (const prim of item.prims) this.paintPrim(b, prim);
+  }
+
+  private syncPlanePrims(b: ItemBinding, prims: Prim[]): void {
+    const keys = new Set(prims.map((prim) => prim.key));
+    this.removeMissingPlanePrims(b, keys);
+    for (const prim of prims) if (!b.prims.has(prim.key)) this.mountPlanePrim(b, prim);
+    this.orderPlanePrims(b, prims);
+  }
+
+  private removeMissingPlanePrims(b: ItemBinding, keys: Set<string>): void {
+    for (const [key, element] of b.prims) {
+      if (keys.has(key)) continue;
+      element.remove();
+      b.prims.delete(key);
+      b.lastSigs.delete(`prim-${key}`);
+    }
+  }
+
+  private orderPlanePrims(b: ItemBinding, prims: Prim[]): void {
+    const order = JSON.stringify(prims.map((prim) => prim.key));
+    if (order === b.primOrder || !b.planeG) return;
+    const fragment = document.createDocumentFragment();
+    for (const prim of prims) fragment.appendChild(b.prims.get(prim.key)!);
+    b.planeG.appendChild(fragment);
+    b.primOrder = order;
   }
 
   private paintPrim(b: ItemBinding, prim: Prim): void {

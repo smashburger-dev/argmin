@@ -24,7 +24,6 @@
       "contentRef": "lessons/transformer-llm/tf-inference.md"
     },
     { "blockId": "token-conveyor-figure", "type": "figure", "contentRef": "lessons/transformer-llm/token-conveyor.fig.json" },
-    { "blockId": "tf-inference-s7-after", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-inference-s7-after.md" },
     {
       "blockId": "tf-inference-check",
       "type": "checkpoint",

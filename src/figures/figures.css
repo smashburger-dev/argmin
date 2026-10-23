@@ -42,6 +42,7 @@
 }
 @container (max-width: 560px) {
   .figure-stage { aspect-ratio: 1 / 1; }
+  .figure-runtime[data-stage-layout="trace"] .figure-stage { aspect-ratio: 1 / 2; min-height: 0; }
 }
 .figure-runtime[data-view-mode="spatial"] .figure-stage { cursor: grab; }
 .figure-runtime[data-view-mode="spatial"] .figure-stage:active { cursor: grabbing; }

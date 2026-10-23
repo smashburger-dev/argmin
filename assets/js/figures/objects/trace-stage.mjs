@@ -4,9 +4,9 @@ import traceSnapshots from './python-traces-v1.json' with { type: 'json' };
 
 // A frontal code/binding diagram, not a Python evaluator. Every value and
 // identity comes from a frozen CPython capture. Only the visible pose moves.
-const SIZE = 100;
-const BOARD_HEIGHT = 140;
-const FONT = 5.1;
+const SIZE = 190;
+const BOARD_HEIGHT = 330;
+const FONT = 9;
 const point = (x, y) => [x - SIZE / 2, 0, BOARD_HEIGHT / 2 - y];
 const text = (key, x, y, value, tone = 'hi', code = false) => ({
   t: 'text', key, x, y, runs: [{ text: value }], size: FONT,
@@ -54,43 +54,49 @@ function stepCaption(record, step, index, custom) {
 
 function codeItems(m, s) {
   return m.code.map((value, i) => ({
-    ...text(`code-${i}`, 9, 9 + i * 6, `${i + 1}  ${value}`, i + 1 === s.line ? 'lit' : 'hi', true),
+    ...text(`code-${i}`, 9, 9 + i * 10, `${i + 1}  ${value}`, i + 1 === s.line ? 'lit' : 'hi', true),
   }));
 }
 
-function bindingItems(m, s) {
-  return m.names.flatMap((name, i) => {
-    const y = 59 + i * 16;
+function objectsForStep(m, s, index) {
+  return m.keepObjects
+    ? Object.assign({}, ...m.steps.slice(0, index + 1).map((step) => step.objects))
+    : s.objects;
+}
+
+function bindingItems(m, s, index) {
+  const names = Object.keys(s.bindings);
+  const objectIds = Object.keys(objectsForStep(m, s, index));
+  return names.flatMap((name, i) => {
+    const y = 94 + i * 42;
     const identity = s.bindings[name];
     // Python commits a binding atomically. Keep the endpoint attached to
     // its object throughout the transition; never tween through empty space.
-    const targetY = objectPosition(m, s, identity);
+    const targetY = objectPosition(objectIds, identity);
     const label = `${displayBindingName(name)}:${identity ?? ''}`;
     return [
-      { ...rect(`name-box-${i}`, 6, y - 7.5, 29, 15), visible: Boolean(identity) },
-      { ...text(`name-${i}`, 8, y, label, 'hi', true), visible: Boolean(identity) },
-      { ...line(`bind-a-${i}`, [35, y - 2], [40 + i * 3, y - 2]), visible: Boolean(identity) },
-      { ...line(`bind-b-${i}`, [40 + i * 3, y - 2], [40 + i * 3, targetY - 2]), visible: Boolean(identity) },
-      { ...line(`bind-c-${i}`, [40 + i * 3, targetY - 2], [49, targetY - 2]), visible: Boolean(identity) },
+      { ...rect(`name-box-${i}`, 6, y - 17, 76, 34), visible: Boolean(identity) },
+      { ...text(`name-${i}`, 9, y, label, 'hi', true), visible: Boolean(identity) },
+      { ...line(`bind-a-${i}`, [82, y], [91, y]), visible: Boolean(identity) },
+      { ...line(`bind-b-${i}`, [91, y], [91, targetY]), visible: Boolean(identity) },
+      { ...line(`bind-c-${i}`, [91, targetY], [101, targetY]), visible: Boolean(identity) },
     ];
   });
 }
 
-function objectPosition(m, state, identity) {
-  const keys = m.keepObjects ? m.identities : Object.keys(state.objects);
-  return 59 + Math.max(0, keys.indexOf(identity)) * 16;
+function objectPosition(objectIds, identity) {
+  return 94 + Math.max(0, objectIds.indexOf(identity)) * 42;
 }
 
 function objectItems(m, s, index) {
-  const seen = Object.assign({}, ...m.steps.slice(0, index + 1).map((step) => step.objects));
-  const objects = m.keepObjects ? seen : s.objects;
-  return m.identities.flatMap((identity, i) => {
+  const objects = objectsForStep(m, s, index);
+  return Object.keys(objects).flatMap((identity, i) => {
     const object = objects[identity];
-    const y = objectPosition(m, s, identity);
+    const y = 94 + i * 42;
     const value = (object?.value ?? '').replaceAll(', ', ',');
     return [
-      { ...rect(`object-box-${i}`, 49, y - 7.5, 46, 15), visible: Boolean(object) },
-      { ...text(`object-${i}`, 51, y, `${identity}: ${value}`, s.result === identity ? 'lit' : 'hi', true), visible: Boolean(object) },
+      { ...rect(`object-box-${i}`, 101, y - 17, 82, 34), visible: Boolean(object) },
+      { ...text(`object-${i}`, 104, y, `${identity}: ${value}`, s.result === identity ? 'lit' : 'hi', true), visible: Boolean(object) },
     ];
   });
 }
@@ -103,7 +109,7 @@ const mechanisms = {
   ],
   ledger: (m, s) => {
     const path = m.steps.slice(Math.max(1, s.index - 3), s.index + 1).map((step) => step.line).join(' → ');
-    return [text('ledger-path', 6, 87, `Zeilen: ${path || '—'}`, 'hi', true)];
+    return [text('ledger-path', 6, 310, `Zeilen: ${path || '—'}`, 'hi', true)];
   },
   'smoke-detector': (m, s) => [
     text('exception', 6, 36, s.exception ? `Act: ${s.exception}` : 'Arrange: Liste vorbereiten', s.exception ? 'lit' : 'hi'),
@@ -111,19 +117,21 @@ const mechanisms = {
   ],
 };
 
-function mechanismItems(m, s) {
+function mechanismItems(m, s, index) {
   const output = s.output.trim() || '—';
+  const rows = Math.max(Object.keys(s.bindings).length, Object.keys(objectsForStep(m, s, index)).length);
+  const outputY = Math.max(169, 77 + rows * 42);
   return [
-    rect('output-box', 6, 124, 90, 15),
-    text('output', 8, 134, `Ausgabe: ${output}`, s.output ? 'lit' : 'hi', true),
+    rect('output-box', 6, outputY, 177, 34),
+    text('output', 10, outputY + 21, `Ausgabe: ${output}`, s.output ? 'lit' : 'hi', true),
     ...(mechanisms[m.id]?.(m, s) ?? []),
   ];
 }
 
 function sectionHeadings(m, s) {
-  if (m.id !== 'vending-frame') return [text('names-label', 6, 49, 'Namen'), text('objects-label', 49, 49, 'Objekte')];
+  if (m.id !== 'vending-frame') return [text('names-label', 6, 72, 'Namen'), text('objects-label', 101, 72, 'Objekte')];
   const scope = s.scope === '<module>' ? 'global' : `Aufruf ${s.scope}`;
-  return [text('names-label', 6, 49, scope), text('objects-label', 49, 49, s.result ? 'Rückgabe' : 'Objekte')];
+  return [text('names-label', 6, 72, scope), text('objects-label', 101, 72, s.result ? 'Rückgabe' : 'Objekte')];
 }
 
 function items(m, p) {
@@ -131,7 +139,7 @@ function items(m, p) {
   const s = { ...m.steps[index], index };
   const prims = [
     ...codeItems(m, s), ...sectionHeadings(m, s),
-    ...bindingItems(m, s), ...objectItems(m, s, index), ...mechanismItems(m, s),
+    ...bindingItems(m, s, index), ...objectItems(m, s, index), ...mechanismItems(m, s, index),
   ];
   return [{ kind: 'plane', id: 'trace-board', origin: point(0, 0), ex: [1, 0, 0], ey: [0, 0, -1], normal: [0, -1, 0], size: [SIZE, BOARD_HEIGHT], tone: 'board', prims }];
 }
@@ -147,12 +155,23 @@ function sceneModel(id, record, params, custom) {
 }
 
 function validateParams(id, params) {
-  if (!params || typeof params !== 'object' || Array.isArray(params)) throw new Error('Trace-Parameter müssen ein Objekt sein');
-  const keys = Object.keys(params);
-  if (keys.length === 0) return;
-  if (id === 'bouncer' && keys.length === 1 && keys[0] === 'age' && Number.isInteger(params.age) && [16, 17].includes(params.age)) return;
-  if (id === 'ledger' && keys.length === 1 && keys[0] === 'sum0' && Number.isInteger(params.sum0) && params.sum0 >= 0 && params.sum0 <= 3) return;
+  assertTraceParamsObject(params);
+  if (Object.keys(params).length === 0 || validBouncerParameter(id, params) || validLedgerParameter(id, params)) return;
   throw new Error('Diese geprüfte Spur hat keine freien Parameter in diesem Bereich');
+}
+
+function assertTraceParamsObject(params) {
+  if (!params || typeof params !== 'object' || Array.isArray(params)) throw new Error('Trace-Parameter müssen ein Objekt sein');
+}
+
+function validBouncerParameter(id, params) {
+  return id === 'bouncer' && Object.keys(params).length === 1 && Object.hasOwn(params, 'age')
+    && Number.isInteger(params.age) && [16, 17].includes(params.age);
+}
+
+function validLedgerParameter(id, params) {
+  return id === 'ledger' && Object.keys(params).length === 1 && Object.hasOwn(params, 'sum0')
+    && Number.isInteger(params.sum0) && params.sum0 >= 0 && params.sum0 <= 3;
 }
 
 function describe(m, index) {
@@ -179,7 +198,7 @@ function selectionTargets(m, index) {
       if (captured) return {
         id: `binding:${name}`,
         itemId: 'trace-board',
-        primKey: `name-box-${m.names.indexOf(name)}`,
+        primKey: `name-box-${names.indexOf(name)}`,
         label: displayBindingName(name),
         description: `${displayBindingName(name)} ist an ${s.bindings[name]} gebunden.`,
       };
@@ -189,7 +208,7 @@ function selectionTargets(m, index) {
       return {
         id: `binding:frame:${frameByScope.get(scope)}:${variable}`,
         itemId: 'trace-board',
-        primKey: `name-box-${m.names.indexOf(name)}`,
+        primKey: `name-box-${names.indexOf(name)}`,
         label: displayBindingName(name),
         description: `${displayBindingName(name)} ist an ${s.bindings[name]} gebunden.`,
       };
@@ -197,14 +216,14 @@ function selectionTargets(m, index) {
     ...identities.filter((identity) => identity !== s.result).map((identity) => ({
       id: identity.startsWith('object:') ? identity : `object:${identity}`,
       itemId: 'trace-board',
-      primKey: `object-box-${m.identities.indexOf(identity)}`,
+      primKey: `object-box-${identities.indexOf(identity)}`,
       label: identity,
       description: `Objektmarke ${identity}.`,
     })),
   ];
   if (s.output.trim()) targets.push({ id: `output:${index}`, itemId: 'trace-board', primKey: 'output-box', label: 'Ausgabe', description: 'Sichtbare Programmausgabe.' });
   if (s.result) targets.push({
-    id: `return:${s.result}`, itemId: 'trace-board', primKey: `object-box-${m.identities.indexOf(s.result)}`,
+    id: `return:${s.result}`, itemId: 'trace-board', primKey: `object-box-${identities.indexOf(s.result)}`,
     label: `Rückgabe ${s.result}`, description: `Rückgabewert des aktuellen Aufrufs: Objektmarke ${s.result}.`,
   });
   return targets;
@@ -235,7 +254,7 @@ export function createTraceScene(id, custom = {}, prediction = null) {
     if (mode !== 'lesson') throw new Error('Trace-Hinweise sind ohne separaten Präfixvertrag gesperrt');
     return items(m, p);
   };
-  return { id, viewMode: 'flat', beatIds, validateParams: validate, model, beatDuration, pose, build, selectionTargets,
+  return { id, viewMode: 'flat', stageLayout: 'trace', beatIds, validateParams: validate, model, beatDuration, pose, build, selectionTargets,
     trace: (m) => m.steps,
     cameraFor: (m, p, vp) => {
       const camera = { azimuth: 0, elevation: 0, target: [0, 0, 0], zoom: 1 };

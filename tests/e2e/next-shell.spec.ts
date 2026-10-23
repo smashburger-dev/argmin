@@ -43,13 +43,19 @@ test('lesson tasks link only the curated placements of that lesson', async ({ pa
   await page.goto('/index.html#/lesson/l-foundations-python-state');
   await expect(page.getByRole('heading', { level: 1, name: 'Python-Zustand statt Code-Raten' })).toBeVisible();
   const tasks = page.locator('.lesson-tasks');
-  await expect(tasks.locator('.lesson-cta')).toHaveAttribute('href', '#/family/trace-assignment-state/reassign-two-variables-print/7/intro');
+  await expect(tasks.locator('.lesson-cta')).toHaveAttribute('href', '#/family/trace-tag-after-line/bouncer-short-circuit/0/intro');
   const cardLinks = tasks.locator('.side-card a');
-  await expect(cardLinks).toHaveCount(2);
-  await expect(cardLinks.nth(0)).toHaveAttribute('href', '#/family/trace-assignment-state/accumulate-reassign-print/11/core');
-  await expect(cardLinks.nth(1)).toHaveAttribute('href', '#/family/trace-assignment-state/chain3-overwrite-print/17/stretch');
+  await expect(cardLinks).toHaveCount(3);
+  await expect(cardLinks.nth(0)).toHaveAttribute('href', '#/family/trace-assignment-state/reassign-two-variables-print/7/intro');
+  await expect(cardLinks.nth(1)).toHaveAttribute('href', '#/family/trace-assignment-state/accumulate-reassign-print/11/core');
+  await expect(cardLinks.nth(2)).toHaveAttribute('href', '#/family/trace-assignment-state/chain3-overwrite-print/17/stretch');
   const hrefs = await tasks.locator('a[href^="#/family/"]').evaluateAll((links) => links.map((link) => link.getAttribute('href') ?? ''));
-  expect(hrefs.every((href) => href.startsWith('#/family/trace-assignment-state/'))).toBe(true);
+  expect(hrefs).toEqual([
+    '#/family/trace-tag-after-line/bouncer-short-circuit/0/intro',
+    '#/family/trace-assignment-state/reassign-two-variables-print/7/intro',
+    '#/family/trace-assignment-state/accumulate-reassign-print/11/core',
+    '#/family/trace-assignment-state/chain3-overwrite-print/17/stretch',
+  ]);
   expect(hrefs.some((href) => /slice|split/.test(href))).toBe(false);
 });
 

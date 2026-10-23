@@ -121,59 +121,98 @@ export function validateSourceDocument(schemaName, value, projectRoot = defaultP
 
 export function assertPythonTraceV1(trace, projectRoot = defaultProjectRoot) {
   validateSourceDocument('python-trace', trace, projectRoot);
+  assertCanonicalTraceSource(trace);
+  const state = { frames: new Set(), objects: new Set(), lastOutput: '' };
+  for (const [index, event] of trace.events.entries()) validateTraceEvent(trace, event, index, state);
+  assertTraceComplete(trace, state);
+  return trace;
+}
+
+function assertCanonicalTraceSource(trace) {
   const normalizedSource = trace.source.replace(/\r\n?/g, '\n');
   if (normalizedSource !== trace.source || createHash('sha256').update(trace.source, 'utf8').digest('hex') !== trace.sourceHash) {
     throw new Error(`${trace.programId}: source must be canonical LF with matching SHA-256`);
   }
   if (/(?:\/Users\/|\/private\/|\/tmp\/|[A-Za-z]:\\)/.test(trace.source)) throw new Error(`${trace.programId}: host path in trace source`);
-  const frames = new Set();
-  const objects = new Set();
-  let lastOutput = '';
-  for (const [index, event] of trace.events.entries()) {
-    if (event.ordinal !== index) throw new Error(`${trace.programId}: non-contiguous trace event ordinal`);
-    if (event.parentFrameId && !frames.has(event.parentFrameId)) throw new Error(`${trace.programId}: parent frame precedes its call`);
-    frames.add(event.frameId);
-    if (event.output.length < lastOutput.length || !event.output.startsWith(lastOutput)) {
-      throw new Error(`${trace.programId}: stdout is not a monotone prefix`);
-    }
-    lastOutput = event.output;
-    for (const [objectId, value] of Object.entries(event.objects)) {
-      objects.add(objectId);
-      if (value.type === 'function') throw new Error(`${trace.programId}: function objects are not learner values`);
-    }
-    for (const objectId of Object.values(event.bindings)) {
-      if (!Object.hasOwn(event.objects, objectId)) throw new Error(`${trace.programId}: binding refers to an unrecorded object`);
-    }
-    if (event.result && !Object.hasOwn(event.objects, event.result)) throw new Error(`${trace.programId}: return result is missing from its event`);
-    if (event.event === 'start' && (index !== 0 || event.parentFrameId !== null)) throw new Error(`${trace.programId}: malformed start frame`);
-    if (event.event === 'exception' && event.exception.line !== event.line) throw new Error(`${trace.programId}: exception line mismatch`);
+}
+
+function validateTraceEvent(trace, event, index, state) {
+  assertTraceEventOrder(trace, event, index, state.frames);
+  assertTraceOutputPrefix(trace, event, state);
+  assertTraceEventValues(trace, event, state.objects);
+  assertTraceEventKind(trace, event, index);
+}
+
+function assertTraceEventOrder(trace, event, index, frames) {
+  if (event.ordinal !== index) throw new Error(`${trace.programId}: non-contiguous trace event ordinal`);
+  if (event.parentFrameId && !frames.has(event.parentFrameId)) throw new Error(`${trace.programId}: parent frame precedes its call`);
+  frames.add(event.frameId);
+}
+
+function assertTraceOutputPrefix(trace, event, state) {
+  if (event.output.length < state.lastOutput.length || !event.output.startsWith(state.lastOutput)) {
+    throw new Error(`${trace.programId}: stdout is not a monotone prefix`);
   }
-  if (lastOutput !== trace.stdout) throw new Error(`${trace.programId}: final stdout does not match trace output`);
-  if (!frames.size || !objects.size) throw new Error(`${trace.programId}: trace is missing observed frames or objects`);
-  return trace;
+  state.lastOutput = event.output;
+}
+
+function assertTraceEventValues(trace, event, objects) {
+  for (const [objectId, value] of Object.entries(event.objects)) {
+    objects.add(objectId);
+    if (value.type === 'function') throw new Error(`${trace.programId}: function objects are not learner values`);
+  }
+  for (const objectId of Object.values(event.bindings)) {
+    if (!Object.hasOwn(event.objects, objectId)) throw new Error(`${trace.programId}: binding refers to an unrecorded object`);
+  }
+  if (event.result && !Object.hasOwn(event.objects, event.result)) throw new Error(`${trace.programId}: return result is missing from its event`);
+}
+
+function assertTraceEventKind(trace, event, index) {
+  if (event.event === 'start' && (index !== 0 || event.parentFrameId !== null)) throw new Error(`${trace.programId}: malformed start frame`);
+  if (event.event === 'exception' && event.exception.line !== event.line) throw new Error(`${trace.programId}: exception line mismatch`);
+}
+
+function assertTraceComplete(trace, state) {
+  if (state.lastOutput !== trace.stdout) throw new Error(`${trace.programId}: final stdout does not match trace output`);
+  if (!state.frames.size || !state.objects.size) throw new Error(`${trace.programId}: trace is missing observed frames or objects`);
 }
 
 export function assertPythonTraceCorpus(records = traceSnapshots.records, projectRoot = defaultProjectRoot) {
+  assertExactTraceCorpusKeys(records);
+  for (const [key, trace] of Object.entries(records)) validateCorpusTrace(key, trace, projectRoot);
+  return records;
+}
+
+function assertExactTraceCorpusKeys(records) {
   const keys = Object.keys(records).sort();
-  const required = [
+  const required = requiredTraceKeys();
+  if (JSON.stringify(keys) !== JSON.stringify(required)) throw new Error('python-trace/v1 corpus must contain exactly the allowlisted F1 records');
+}
+
+function requiredTraceKeys() {
+  return [
     'bouncer-age-16', 'bouncer-age-17', 'bouncer-age-18', 'dictionary', 'name-tags', 'smoke-detector', 'two-tags-one-list', 'vending-frame',
     ...Array.from({ length: 4 }, (_, index) => {
       const n0 = index + 1;
       return [`ledger-n0-${n0}`, ...[1, 2, 3].map((sum0) => `ledger-n0-${n0}-sum0-${sum0}`)];
     }).flat(),
   ].sort();
-  if (JSON.stringify(keys) !== JSON.stringify(required)) throw new Error('python-trace/v1 corpus must contain exactly the allowlisted F1 records');
-  for (const [key, trace] of Object.entries(records)) {
-    assertPythonTraceV1(trace, projectRoot);
-    if (key === 'bouncer-age-16' && trace.inputs.age?.value !== '16') throw new Error('bouncer age-16 trace has wrong input');
-    if (key === 'bouncer-age-17' && trace.inputs.age?.value !== '17') throw new Error('bouncer age-17 trace has wrong input');
-    if (key === 'bouncer-age-18' && trace.inputs.age?.value !== '18') throw new Error('bouncer age-18 trace has wrong input');
-    if (key.startsWith('ledger-n0-')) {
-      const [, , n0, , sum0 = '0'] = key.split('-');
-      if (trace.inputs.n0?.value !== n0 || trace.inputs.sum0?.value !== sum0) throw new Error(`${key}: trace inputs do not match its allowlisted key`);
-    }
-  }
-  return records;
+}
+
+function validateCorpusTrace(key, trace, projectRoot) {
+  assertPythonTraceV1(trace, projectRoot);
+  assertCorpusTraceInput(key, trace);
+}
+
+function assertCorpusTraceInput(key, trace) {
+  const expectedAge = { 'bouncer-age-16': '16', 'bouncer-age-17': '17', 'bouncer-age-18': '18' }[key];
+  if (expectedAge && trace.inputs.age?.value !== expectedAge) throw new Error(`${key}: trace has wrong input`);
+  if (key.startsWith('ledger-n0-')) assertLedgerTraceInput(key, trace);
+}
+
+function assertLedgerTraceInput(key, trace) {
+  const [, , n0, , sum0 = '0'] = key.split('-');
+  if (trace.inputs.n0?.value !== n0 || trace.inputs.sum0?.value !== sum0) throw new Error(`${key}: trace inputs do not match its allowlisted key`);
 }
 
 // typicalError ids are the stable label namespace: duplicates inside one
@@ -568,36 +607,61 @@ export function validateFigureHints(document, families, scenes = figureScenes) {
 }
 
 function validateHintEntry(entry, families, scenes) {
+  const { family, scene } = resolveHintContract(entry, scenes);
+  validateHintSafetyContract(entry);
+  validateHintArchetype(entry, family);
+  validateHintCases(entry, families, scene, family);
+}
+
+function resolveHintContract(entry, scenes) {
   const family = EXERCISE_FAMILIES.get(entry.familyId);
   const scene = scenes[entry.scene];
   if (!family || !scene?.hintParams || !scene.hintBeatIds?.length) throw new Error(`${entry.familyId}: Hinweisvertrag fehlt`);
+  return { family, scene };
+}
+
+function validateHintSafetyContract(entry) {
   if (!entry.safety) throw new Error(`${entry.familyId}: Figurenhinweis ohne versionierten Sicherheitsvertrag`);
-  if (entry.safety.kind === 'figure-hint-parameters') {
-    if (entry.safety.source === 'neighbor') assertFigureHintParameterSafety(entry);
-    else {
-      validateSourceDocument('figure-hint-parameters', entry.safety);
-      if (entry.safety.familyId !== entry.familyId || entry.safety.caseId !== entry.caseIds?.[0]
-          || entry.caseIds?.length !== 1 || entry.source !== 'case') throw new Error('case hint projection must identify exactly one authored family case');
-    }
-  }
-  else if (entry.safety.kind !== 'trace-hint-prefix') throw new Error(`${entry.familyId}: unbekannter Figurenhinweis-Sicherheitsvertrag`);
+  if (entry.safety.kind === 'figure-hint-parameters') return validateFigureHintSafetySource(entry);
+  if (entry.safety.kind !== 'trace-hint-prefix') throw new Error(`${entry.familyId}: unbekannter Figurenhinweis-Sicherheitsvertrag`);
+}
+
+function validateFigureHintSafetySource(entry) {
+  if (entry.safety.source === 'neighbor') return assertFigureHintParameterSafety(entry);
+  validateSourceDocument('figure-hint-parameters', entry.safety);
+  if (entry.safety.familyId !== entry.familyId || entry.safety.caseId !== entry.caseIds?.[0]
+      || entry.caseIds?.length !== 1 || entry.source !== 'case') throw new Error('case hint projection must identify exactly one authored family case');
+}
+
+function validateHintArchetype(entry, family) {
   if (family.taskArchetype === 'tag-after-line') validateSourceDocument('trace-hint-prefix', entry.safety);
   if (family.taskArchetype === 'choice-diagnose' && entry.source !== 'neighbor') throw new Error('Klassifikationshinweise brauchen source: neighbor');
-  validateHintCases(entry, families, scene, family);
 }
 
 export function assertFigureHintParameterSafety(entry, instance) {
   const safety = entry?.safety;
+  assertNeighborSafetyContract(entry, safety);
+  assertNeighborParameterKeys(entry, safety);
+  assertNoExpectedNeighborParameters(entry, instance);
+  return Object.freeze(structuredClone(entry.neighborParams));
+}
+
+function assertNeighborSafetyContract(entry, safety) {
   if (!safety || safety.kind !== 'figure-hint-parameters' || safety.schemaVersion !== 1 || safety.source !== 'neighbor') {
     throw new Error(`${entry?.familyId || 'figure'}: unabhängige neighbor-Parameter brauchen figure-hint-parameters/v1`);
   }
   validateSourceDocument('figure-hint-parameters', safety);
+}
+
+function assertNeighborParameterKeys(entry, safety) {
   const keys = Object.keys(entry.neighborParams || {}).sort();
   if (!keys.length || JSON.stringify(keys) !== JSON.stringify(safety.parameterKeys)) {
     throw new Error(`${entry.familyId}: safety.parameterKeys müssen genau den fixen neighborParams entsprechen`);
   }
+}
+
+function assertNoExpectedNeighborParameters(entry, instance) {
   if (instance && Object.hasOwn(instance.parameters || {}, 'expectedAnswer')) throw new Error('Antwortdaten dürfen keine neighbor-Hinweisparameter steuern');
-  return Object.freeze(structuredClone(entry.neighborParams));
 }
 
 function assertCaseHintProjection(entry, scene, instance) {
@@ -617,45 +681,106 @@ function assertCaseHintProjection(entry, scene, instance) {
 // including values, bindings, output, exception type, and target metadata.
 export function assertTraceHintPrefixSafety(entry, scene, instance) {
   const safety = entry?.safety;
+  assertTraceHintContract(entry, safety);
+  const parameters = traceHintParameters(entry, scene, instance, safety);
+  assertTraceHintSourceHash(entry, scene, safety, parameters);
+  const selected = resolveRecordedHintTarget(safety, parameters);
+  assertRecordedHintTarget(entry, safety, parameters, selected);
+  assertRequestedHintBindings(entry, safety, selected.target);
+  return safeTraceHintProjection(scene, parameters, safety);
+}
+
+function assertTraceHintContract(entry, safety) {
+  assertTraceHintSchema(safety, entry);
+  validateSourceDocument('trace-hint-prefix', safety);
+  assertTraceHintScope(entry, safety);
+}
+
+function assertTraceHintSchema(safety, entry) {
   if (!safety || safety.kind !== 'trace-hint-prefix' || safety.schemaVersion !== 1) {
     throw new Error(`${entry?.familyId || 'trace'}: trace hint needs trace-hint-prefix/v1`);
   }
-  validateSourceDocument('trace-hint-prefix', safety);
+}
+
+function assertTraceHintScope(entry, safety) {
   if (safety.familyId !== entry.familyId || safety.scene !== entry.scene
-      || (instance?.caseId && safety.caseId !== instance.caseId)) {
-    throw new Error('trace hint family, case, and scene must match the selected task');
-  }
-  const parameters = safety.source === 'neighbor'
-    ? safety.parameters
+      || (entry.caseIds && !entry.caseIds.includes(safety.caseId))
+      || (entry.source !== safety.source)) throw new Error('trace hint family, case, scene, and source must match the selected task');
+}
+
+function traceHintParameters(entry, scene, instance, safety) {
+  const parameters = safety.source === 'neighbor' ? safety.parameters
     : scene.hintParams?.(entry.familyId, instance?.parameters);
   if (!parameters) throw new Error('case trace hint needs its family parameter projection');
+  assertHintParameterCase(instance, parameters, safety);
+  assertNeighborHintParameters(entry, safety, parameters);
+  return parameters;
+}
+
+function assertHintParameterCase(instance, parameters, safety) {
+  if ((instance?.caseId && instance.caseId !== safety.caseId)
+      || (parameters.caseId && parameters.caseId !== safety.caseId)) throw new Error('trace hint case must match the selected task');
+}
+
+function assertNeighborHintParameters(entry, safety, parameters) {
+  if (safety.source === 'neighbor' && (!Object.hasOwn(safety, 'parameters')
+      || JSON.stringify(entry.neighborParams) !== JSON.stringify(parameters))) {
+    throw new Error('trace neighbor hint parameters must exactly match the independent authored neighbor');
+  }
+}
+
+function assertTraceHintSourceHash(entry, scene, safety, parameters) {
   const source = scene.source?.(parameters);
   if (typeof source !== 'string') throw new Error('trace hint needs compiler-visible authored source');
   const sourceHash = createHash('sha256').update(source.replace(/\r\n?/g, '\n'), 'utf8').digest('hex');
-  if (safety.sourceHash !== sourceHash) throw new Error('trace hint source hash mismatch');
-  if (safety.source === 'neighbor' && !Object.hasOwn(safety, 'parameters')) throw new Error('neighbor trace hint needs fixed parameters');
-  if (safety.source === 'neighbor' && JSON.stringify(entry.neighborParams) !== JSON.stringify(parameters)) {
-    throw new Error('trace neighbor hint parameters must exactly match the independent authored neighbor');
-  }
+  if (safety.sourceHash !== sourceHash) throw new Error(`${entry.familyId}:${safety.caseId}: trace hint source hash mismatch`);
+}
+
+function resolveRecordedHintTarget(safety, parameters) {
   const task = parameters.tagTask;
-  const traceKey = parameters.traceKey ?? task?.traceKey;
-  const record = traceSnapshots.records[traceKey];
+  const record = traceSnapshots.records[parameters.traceKey ?? task?.traceKey];
   const target = record?.events?.[safety.target.eventOrdinal];
   const previous = record?.events?.[safety.target.eventOrdinal - 1];
+  return { record, target, previous, task };
+}
+
+function assertRecordedHintTarget(entry, safety, parameters, { record, target, previous, task }) {
+  assertHintRecordAndCase(entry, safety, parameters, task, record, target, previous);
+  assertHintTargetIdentity(entry, safety, record, target);
+  assertHintPreviousState(entry, safety, previous);
+}
+
+function assertHintRecordAndCase(entry, safety, parameters, task, record, target, previous) {
   if (!record || !target || !previous || record.sourceHash !== safety.sourceHash
-      || (parameters.caseId ?? task?.caseId) !== safety.caseId
-      || safety.target.lineId !== `trace:${record.programId}:${target.ordinal}`
-      || safety.target.frameId !== target.frameId || safety.target.line !== target.line
-      || safety.lastAllowedState.eventOrdinal !== previous.ordinal
-      || safety.lastAllowedState.frameId !== previous.frameId || safety.lastAllowedState.line !== previous.line) {
+      || (parameters.caseId ?? task?.caseId) !== safety.caseId) {
     throw new Error(`${entry.familyId}:${safety.caseId}: trace hint must identify the exact recorded target and immediately preceding state`);
   }
+}
+
+function assertHintTargetIdentity(entry, safety, record, target) {
+  if (safety.target.lineId !== `trace:${record.programId}:${target.ordinal}`
+      || safety.target.frameId !== target.frameId || safety.target.line !== target.line) {
+    throw new Error(`${entry.familyId}:${safety.caseId}: trace hint target must match its recorded event`);
+  }
+}
+
+function assertHintPreviousState(entry, safety, previous) {
+  if (safety.lastAllowedState.eventOrdinal !== previous.ordinal
+      || safety.lastAllowedState.frameId !== previous.frameId || safety.lastAllowedState.line !== previous.line) {
+    throw new Error(`${entry.familyId}:${safety.caseId}: trace hint must use the immediately preceding state`);
+  }
+}
+
+function assertRequestedHintBindings(entry, safety, target) {
   const requestedBindings = [...safety.requested.bindings].sort();
   const targetBindings = Object.keys(target.bindings).sort();
   if (JSON.stringify(requestedBindings) !== JSON.stringify(targetBindings)
       || safety.requested.objectAttributes.length || safety.requested.values.length || safety.requested.classifications.length) {
     throw new Error(`${entry.familyId}:${safety.caseId}: requested trace fields must exactly match target bindings`);
   }
+}
+
+function safeTraceHintProjection(scene, parameters, safety) {
   const projection = scene.safeHintProjection?.(parameters, safety);
   if (!projection || Object.keys(projection).sort().join() !== 'priorCaptions,sourceLines') {
     throw new Error('trace hint renderer must return only the approved prefix projection');
@@ -666,22 +791,30 @@ export function assertTraceHintPrefixSafety(entry, scene, instance) {
 function validateHintCases(entry, families, scene, family) {
   const cases = families.find((item) => item.familyId === entry.familyId)?.cases ?? [];
   const selected = entry.caseIds ?? family.caseTypes.map((item) => item.caseId);
+  assertClassifierHintCoverage(entry, selected, family);
+  const fixedProjection = new Map();
+  for (const caseId of selected) validateOneHintCase(entry, cases, scene, family, caseId, fixedProjection);
+}
+
+function assertClassifierHintCoverage(entry, selected, family) {
   if (family.familyId === 'classify-training-curve' && family.taskArchetype === 'choice-diagnose') {
     const required = family.caseTypes.map((item) => item.caseId).sort();
     if (entry.source !== 'neighbor' || JSON.stringify([...selected].sort()) !== JSON.stringify(required)) {
       throw new Error(`${entry.familyId}: fester Neighbor muss alle drei Diagnosefälle gemeinsam abdecken`);
     }
   }
-  const fixedProjection = new Map();
-  for (const caseId of selected) {
-    if (!family.caseTypes.some((item) => item.caseId === caseId)) throw new Error(`Unbekannter Hinweisfall ${caseId}`);
-    const authored = cases.find((item) => item.caseId === caseId);
-    if (authored) {
-      const difficulty = supportedHintProfile(family, caseId);
-      if (difficulty) checkHintCase(entry, scene, family, EXERCISE_FAMILIES.instantiate(entry.familyId, 0, difficulty, caseId));
-    }
-    checkHintSeeds(entry, scene, family, caseId, fixedProjection);
-  }
+}
+
+function validateOneHintCase(entry, cases, scene, family, caseId, fixedProjection) {
+  if (!family.caseTypes.some((item) => item.caseId === caseId)) throw new Error(`Unbekannter Hinweisfall ${caseId}`);
+  validateAuthoredHintCase(entry, cases, scene, family, caseId);
+  checkHintSeeds(entry, scene, family, caseId, fixedProjection);
+}
+
+function validateAuthoredHintCase(entry, cases, scene, family, caseId) {
+  const authored = cases.find((item) => item.caseId === caseId);
+  const difficulty = authored && supportedHintProfile(family, caseId);
+  if (difficulty) checkHintCase(entry, scene, family, EXERCISE_FAMILIES.instantiate(entry.familyId, 0, difficulty, caseId));
 }
 
 function supportedHintProfile(family, caseId) {
@@ -1477,27 +1610,48 @@ function validateLoadedCatalog(contentRoot, catalog, files, entities) {
 function validateTraceTagFamilyInstances() {
   const family = EXERCISE_FAMILIES.get('trace-tag-after-line');
   if (!family) return;
-  for (const { caseId } of family.caseTypes) {
-    for (let seed = 0; seed < 16; seed += 1) {
-      const instance = EXERCISE_FAMILIES.instantiate('trace-tag-after-line', seed, 'core', caseId);
-      const task = instance.parameters?.tagTask;
-      const record = traceSnapshots.records[task?.traceKey];
-      const event = record?.events?.[task?.target?.eventOrdinal];
-      const expected = instance.expectedAnswer;
-      const solved = family.solve(instance.parameters);
-      if (!record || !event || task.sourceHash !== record.sourceHash
-          || event.event === 'start' || !Object.keys(event.bindings).length
-          || !expected?.states?.length || !expected.states[0].bindings?.length
-          || JSON.stringify(expected) !== JSON.stringify(solved)
-          || expected.states[0].lineId !== `trace:${record.programId}:${event.ordinal}`) {
-        throw new Error(`trace-tag-after-line:${caseId}: Instanz muss einen echten CPython-Zustand mit Bindungen verwenden`);
-      }
-      const actual = Object.entries(event.bindings).sort(([left], [right]) => left.localeCompare(right))
-        .map(([name, objectId]) => ({ name, objectId }));
-      if (JSON.stringify(expected.states[0].bindings) !== JSON.stringify(actual)) {
-        throw new Error(`trace-tag-after-line:${caseId}: Solverantwort weicht vom CPython-Zustand ab`);
-      }
-    }
+  for (const { caseId } of family.caseTypes) validateTraceCaseInstances(family, caseId);
+}
+
+function validateTraceCaseInstances(family, caseId) {
+  for (let seed = 0; seed < 16; seed += 1) assertTraceTagInstance(family, caseId, seed);
+}
+
+function assertTraceTagInstance(family, caseId, seed) {
+  const instance = EXERCISE_FAMILIES.instantiate('trace-tag-after-line', seed, 'core', caseId);
+  const task = instance.parameters?.tagTask;
+  const record = traceSnapshots.records[task?.traceKey];
+  const event = record?.events?.[task?.target?.eventOrdinal];
+  const expected = instance.expectedAnswer;
+  assertTraceTagExpectedState(caseId, task, record, event, expected, family.solve(instance.parameters));
+  assertTraceTagBindings(caseId, event, expected);
+}
+
+function assertTraceTagExpectedState(caseId, task, record, event, expected, solved) {
+  assertTraceTagRecordEvent(caseId, task, record, event);
+  assertTraceTagExpectedAnswer(caseId, record, event, expected, solved);
+}
+
+function assertTraceTagRecordEvent(caseId, task, record, event) {
+  if (!record || !event || task.sourceHash !== record.sourceHash
+      || event.event === 'start' || !Object.keys(event.bindings).length) {
+    throw new Error(`trace-tag-after-line:${caseId}: Instanz muss einen echten CPython-Zustand mit Bindungen verwenden`);
+  }
+}
+
+function assertTraceTagExpectedAnswer(caseId, record, event, expected, solved) {
+  if (!expected?.states?.length || !expected.states[0].bindings?.length
+      || JSON.stringify(expected) !== JSON.stringify(solved)
+      || expected.states[0].lineId !== `trace:${record.programId}:${event.ordinal}`) {
+    throw new Error(`trace-tag-after-line:${caseId}: Solverantwort muss zum echten CPython-Zustand passen`);
+  }
+}
+
+function assertTraceTagBindings(caseId, event, expected) {
+  const actual = Object.entries(event.bindings).sort(([left], [right]) => left.localeCompare(right))
+    .map(([name, objectId]) => ({ name, objectId }));
+  if (JSON.stringify(expected.states[0].bindings) !== JSON.stringify(actual)) {
+    throw new Error(`trace-tag-after-line:${caseId}: Solverantwort weicht vom CPython-Zustand ab`);
   }
 }
 

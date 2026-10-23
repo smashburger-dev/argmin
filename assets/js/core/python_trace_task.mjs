@@ -17,24 +17,38 @@ const candidateSet = (programId) => {
 };
 
 export function projectTraceHintPrefix(record, safety) {
+  assertTraceHintContract(safety);
+  const { events, targetIndex } = traceTarget(record, safety);
+  const allowedIndex = tracePrefixEnd(events, targetIndex, safety.lastAllowedState);
+  return buildTraceHintProjection(record, events, allowedIndex);
+}
+
+function assertTraceHintContract(safety) {
   if (safety?.kind !== 'trace-hint-prefix' || safety.schemaVersion !== 1
       || safety.cut !== 'after-last-allowed-state'
       || JSON.stringify(safety.visibleFields) !== JSON.stringify(['sourceLines', 'priorCaptions'])
-      || !safety.requested || !safety.lastAllowedState) {
-    throw new Error('Unsupported trace hint projection');
-  }
+      || !safety.requested || !safety.lastAllowedState) throw new Error('Unsupported trace hint projection');
+}
+
+function traceTarget(record, safety) {
   const events = record?.events;
   if (!Array.isArray(events) || typeof record.source !== 'string') throw new Error('Trace hint needs a recorded source and events');
   const targetIndex = events.findIndex((event) => event.ordinal === safety.target?.eventOrdinal);
   const target = events[targetIndex];
   if (!target || target.frameId !== safety.target.frameId || target.line !== safety.target.line
-      || `trace:${record.programId}:${target.ordinal}` !== safety.target.lineId) {
-    throw new Error('Trace hint target does not match the recorded event');
-  }
-  const allowedIndex = events.findIndex((event) => event.ordinal === safety.lastAllowedState.eventOrdinal);
+      || `trace:${record.programId}:${target.ordinal}` !== safety.target.lineId) throw new Error('Trace hint target does not match the recorded event');
+  return { events, target, targetIndex };
+}
+
+function tracePrefixEnd(events, targetIndex, lastAllowedState) {
+  const allowedIndex = events.findIndex((event) => event.ordinal === lastAllowedState.eventOrdinal);
   const allowed = events[allowedIndex];
-  if (allowedIndex < 0 || allowedIndex >= targetIndex || allowed.frameId !== safety.lastAllowedState.frameId
-      || allowed.line !== safety.lastAllowedState.line) throw new Error('Trace hint lastAllowedState must precede its target exactly');
+  if (allowedIndex < 0 || allowedIndex >= targetIndex || allowed.frameId !== lastAllowedState.frameId
+      || allowed.line !== lastAllowedState.line) throw new Error('Trace hint lastAllowedState must precede its target exactly');
+  return allowedIndex;
+}
+
+function buildTraceHintProjection(record, events, allowedIndex) {
   const source = record.source.split('\n');
   const lineNumbers = [...new Set(events.slice(0, allowedIndex + 1).map((event) => event.line).filter((line) => line > 0))].sort((a, b) => a - b);
   const sourceLines = lineNumbers.map((line) => ({ line, sourceLine: source[line - 1] }));
@@ -45,19 +59,27 @@ export function projectTraceHintPrefix(record, safety) {
 const stable = (value) => JSON.stringify(value);
 
 export function assertTraceTaskOptions(task, candidates = candidateSet(task?.programId)) {
+  assertIndependentOptions(task, candidates);
+  assertNoHiddenTraceAnswers(task);
+  assertUniqueCandidateIds(candidates);
+  return task;
+}
+
+function assertIndependentOptions(task, candidates) {
   if (!task || !task.selectionOptions || stable(task.selectionOptions.names) !== stable(candidates.names)
-      || stable(task.selectionOptions.objects) !== stable(candidates.objects)) {
-    throw new Error('Trace selection options must be copied from the independent candidate catalog');
-  }
+      || stable(task.selectionOptions.objects) !== stable(candidates.objects)) throw new Error('Trace selection options must be copied from the independent candidate catalog');
+}
+
+function assertNoHiddenTraceAnswers(task) {
   if (Object.hasOwn(task, 'expectedAnswer') || Object.hasOwn(task, 'states') || Object.hasOwn(task, 'events')) {
     throw new Error('Trace task parameters must not contain expected bindings or hidden events');
   }
+}
+
+function assertUniqueCandidateIds(candidates) {
   const names = new Set(candidates.names.map(({ name }) => name));
   const objects = new Set(candidates.objects.map(({ objectId }) => objectId));
-  if (names.size !== candidates.names.length || objects.size !== candidates.objects.length) {
-    throw new Error('Trace candidate catalog contains duplicate IDs');
-  }
-  return task;
+  if (names.size !== candidates.names.length || objects.size !== candidates.objects.length) throw new Error('Trace candidate catalog contains duplicate IDs');
 }
 
 function validateTraceTaskInput(record, metadata) {

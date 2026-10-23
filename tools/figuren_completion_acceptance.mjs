@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { createServer } from 'node:net';
 import { spawn } from 'node:child_process';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { closeSync, existsSync, openSync } from 'node:fs';
 import { delimiter, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium, expect } from '@playwright/test';
@@ -194,15 +194,20 @@ async function discoverContent(contentRoot) {
 async function discoverHintRoutes(contentRoot, modules) {
   const hintRoutes = [];
   for (const [familyId, caseId] of HINT_CASES) {
-    const found = findPlacement(modules, familyId, caseId);
-    const familySource = join(contentRoot, 'families', `${familyId}.json`);
-    const family = JSON.parse(await readFile(familySource, 'utf8'));
-    if (!(family.cases ?? []).some((item) => item.caseId === caseId)) throw new Error(`Hinweis-Fall ${familyId}/${caseId} fehlt in ${contentRoot}`);
-    hintRoutes.push({ familyId, caseId, seed: found?.placement.seed ?? 0,
-      difficulty: found?.placement.difficulty ?? 'core', module: found?.module.moduleId,
-      familySource, moduleSource: found ? join(contentRoot, 'modules', `${found.module.moduleId}.json`) : null });
+    hintRoutes.push(await discoverHintRoute(contentRoot, modules, familyId, caseId));
   }
   return hintRoutes;
+}
+
+async function discoverHintRoute(contentRoot, modules, familyId, caseId) {
+  const found = findPlacement(modules, familyId, caseId);
+  const familySource = join(contentRoot, 'families', `${familyId}.json`);
+  const family = JSON.parse(await readFile(familySource, 'utf8'));
+  const caseSpec = (family.cases ?? []).find((item) => item.caseId === caseId);
+  if (!caseSpec) throw new Error(`Hinweis-Fall ${familyId}/${caseId} fehlt in ${contentRoot}`);
+  return { familyId, caseId, seed: found?.placement.seed ?? 0,
+    difficulty: found?.placement.difficulty ?? caseSpec.difficultyProfile ?? 'core', module: found?.module.moduleId,
+    familySource, moduleSource: found ? join(contentRoot, 'modules', `${found.module.moduleId}.json`) : null };
 }
 
 async function assertFreePort() {
@@ -233,8 +238,16 @@ async function startServer(mode, logsDirectory) {
     ? [vite, '--host', '127.0.0.1', '--port', String(PORT), '--strictPort']
     : [vite, 'preview', '--outDir', 'build-next', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'];
   const logPath = join(logsDirectory, `${mode}-server.log`);
-  const log = await import('node:fs').then(({ createWriteStream }) => createWriteStream(logPath, { flags: 'w' }));
-  const child = spawn(process.execPath, args, { cwd: ROOT, detached: true, stdio: ['ignore', log, log] });
+  const logFd = openSync(logPath, 'w');
+  let logClosed = false;
+  const closeLog = () => {
+    if (logClosed) return;
+    closeSync(logFd);
+    logClosed = true;
+  };
+  const child = spawn(process.execPath, args, { cwd: ROOT, detached: true, stdio: ['ignore', logFd, logFd] });
+  child.once('close', closeLog);
+  child.once('error', closeLog);
   try {
     await waitServer(child, `http://127.0.0.1:${PORT}`, logPath);
     return { child, logPath, baseUrl: `http://127.0.0.1:${PORT}` };
@@ -265,7 +278,30 @@ function saveFailure(errors, message) {
 }
 
 async function waitSettled(stage) {
-  await expect(stage).toHaveAttribute('data-settled', 'true', { timeout: 25_000 });
+  if (await stage.getAttribute('data-settled') !== null) {
+    await expect(stage).toHaveAttribute('data-settled', 'true', { timeout: 25_000 });
+    return;
+  }
+  let previous = null;
+  let stableSamples = 0;
+  await expect.poll(async () => {
+    const current = await stage.evaluate((node) => {
+      const svg = node.querySelector('svg');
+      if (!svg) return null;
+      const svgBox = svg.getBoundingClientRect();
+      const marks = [...svg.querySelectorAll('[data-item], [data-prim]')].map((mark) => {
+        const box = mark.getBoundingClientRect();
+        return [mark.getAttribute('data-item'), mark.getAttribute('data-prim'), box.x, box.y, box.width, box.height]
+          .map((value) => typeof value === 'number' ? Math.round(value * 2) / 2 : value);
+      });
+      return svgBox.width > 0 && svgBox.height > 0 && marks.length
+        ? JSON.stringify([svgBox.x, svgBox.y, svgBox.width, svgBox.height, marks]) : null;
+    });
+    if (current && current === previous) stableSamples += 1;
+    else stableSamples = 0;
+    previous = current;
+    return stableSamples >= 2;
+  }, { timeout: 10_000, intervals: [50, 100, 150] }).toBe(true);
 }
 
 async function openLesson(page, baseUrl, lessonId) {
@@ -281,11 +317,36 @@ async function openLesson(page, baseUrl, lessonId) {
   return cards;
 }
 
-async function capture(page, mode, state, viewport, theme, motion, evidence) {
+async function capture(page, state, mode, viewport, theme, motion, evidence) {
   const file = `${safeName(mode)}-${viewport.width}-${theme}-${motion}-${safeName(state)}.png`;
   const path = join(RAW_OUT, mode, file);
   await mkdir(join(RAW_OUT, mode), { recursive: true });
-  await page.screenshot({ path, animations: 'disabled' });
+  const cards = page.locator('.figure-card');
+  const cardIndex = await cards.evaluateAll((items, stageSelector) => {
+    let nearest = -1;
+    let distance = Infinity;
+    items.forEach((item, index) => {
+      const stage = item.querySelector(stageSelector);
+      if (!stage) return;
+      const box = stage.getBoundingClientRect();
+      const nextDistance = Math.abs(box.top + box.height / 2 - window.innerHeight / 2);
+      if (nextDistance < distance) { nearest = index; distance = nextDistance; }
+    });
+    return nearest;
+  }, STAGE);
+  if (cardIndex < 0) throw new Error(`${state}: keine Figurenkarte für Screenshot`);
+  const card = cards.nth(cardIndex);
+  const clip = await card.evaluate((item) => {
+    const box = item.getBoundingClientRect();
+    const header = [...document.querySelectorAll('header, [role="banner"]')]
+      .map((node) => ({ rect: node.getBoundingClientRect(), position: getComputedStyle(node).position }))
+      .filter(({ rect, position }) => rect.height > 0 && rect.top <= 0 && ['fixed', 'sticky'].includes(position));
+    const stickyBottom = header.reduce((bottom, { rect }) => Math.max(bottom, rect.bottom), 0);
+    window.scrollTo({ top: Math.max(0, window.scrollY + box.top - stickyBottom - 12), behavior: 'instant' });
+    const current = item.getBoundingClientRect();
+    return { x: current.left + window.scrollX, y: current.top + window.scrollY, width: current.width, height: current.height };
+  });
+  await page.screenshot({ path, fullPage: true, clip, animations: 'disabled' });
   evidence.screenshots.push({ state, mode, viewport: viewport.width, theme, motion, rawPath: path, sha256: await hashFile(path) });
 }
 
@@ -355,12 +416,12 @@ async function advanceLessonBeats(page, card, stage, label, mode, title, viewpor
   const beatCount = Number(beatLabel?.match(/von (\d+)/i)?.[1] ?? 1);
   for (let beat = 1; beat < beatCount; beat += 1) {
     const skip = card.getByRole('button', { name: 'Überspringen', exact: true });
-    if (await skip.isVisible().catch(() => false)) await skip.click();
     const next = card.getByRole('button', { name: 'Weiter', exact: true });
-    if (!await next.isEnabled()) {
-      saveFailure(errors, `${label}: Beat ${beat + 1} kann nicht erreicht werden`);
-      break;
+    if (await skip.isVisible().catch(() => false)) {
+      await skip.click();
+      await expect(skip).toBeHidden();
     }
+    await expect(next).toBeEnabled();
     if (viewport.width <= 500) {
       const box = await next.boundingBox();
       if (box) await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
@@ -370,6 +431,7 @@ async function advanceLessonBeats(page, card, stage, label, mode, title, viewpor
       await next.click();
       states.push(`${label}: click Weiter`);
     }
+    await expect(stage).toHaveAttribute('data-beat', String(beat + 1), { timeout: 25_000 });
     await waitSettled(stage);
     await capture(page, `${label}-${title}-beat-${beat + 1}`, mode, viewport, theme, motion, evidence);
   }
@@ -379,6 +441,7 @@ async function restartLessonCard(card, stage, label, errors, states) {
   const restart = card.getByRole('button', { name: 'Von vorn', exact: true });
   if (!await restart.isEnabled().catch(() => false)) return;
   await restart.click();
+  await expect(stage).toHaveAttribute('data-beat', '0');
   await waitSettled(stage);
   if (Number(await stage.getAttribute('data-beat')) !== 0) saveFailure(errors, `${label}: Von vorn kehrt nicht zum ersten Beat zurück`);
   states.push(`${label}: Beat-Neustart`);
@@ -442,11 +505,13 @@ async function compareFlow(page, baseUrl, route, mode, label, viewport, theme, m
   await card.getByRole('button', { name: /A: Ridge/ }).click();
   await stage.waitFor({ state: 'visible' });
   await waitSettled(stage);
+  await expect(card.locator('.figure-readout')).toContainText(/Ridge/);
   await stage.scrollIntoViewIfNeeded();
   const ridgeCamera = Number(await stage.getAttribute('data-azimuth'));
   await capture(page, `${label}-ridge`, mode, viewport, theme, motion, evidence);
   await card.getByRole('button', { name: /B: Lasso/ }).click();
   await waitSettled(stage);
+  await expect(card.locator('.figure-readout')).toContainText(/Lasso/);
   const lassoCamera = Number(await stage.getAttribute('data-azimuth'));
   if (Math.abs(ridgeCamera - lassoCamera) > 0.5) saveFailure(errors, `${label}: Ridge/Lasso-Kamera unterscheidet sich`);
   await capture(page, `${label}-lasso`, mode, viewport, theme, motion, evidence);
@@ -493,18 +558,27 @@ async function checkLegacyTraceScene(page, card, label, viewport, errors, states
   if (!count) {
     return 0;
   }
+  if (count < 2) {
+    saveFailure(errors, `${label}: SVG- und Tastaturauswahl brauchen zwei verschiedene Ziele`);
+    return count;
+  }
   for (let index = 0; index < count; index += 1) {
-    await measureAndUseLegacyTarget(page, stage, selection.nth(index), label, viewport, errors, evidence);
+    await measureAndUseLegacyTarget(page, stage, selection, index, label, viewport, errors, evidence);
   }
   const first = selection.first();
+  const prior = selection.last();
+  await expect(first).toHaveAttribute('aria-pressed', 'false');
+  await expect(prior).toHaveAttribute('aria-pressed', 'true');
   await first.focus();
   await page.keyboard.press('Enter');
-  if (await first.getAttribute('aria-pressed') !== 'true') saveFailure(errors, `${label}: Tastatur-Auswahl nicht wirksam`);
+  await expect(first).toHaveAttribute('aria-pressed', 'true');
+  await expect(prior).toHaveAttribute('aria-pressed', 'false');
   states.push(`${label}: echte Szenenauswahl, SVG-Trefferflächen, Tastatur${viewport.width <= 500 ? ' und Touch' : ''}`);
   return count;
 }
 
-async function measureAndUseLegacyTarget(page, stage, button, label, viewport, errors, evidence) {
+async function measureAndUseLegacyTarget(page, stage, selection, index, label, viewport, errors, evidence) {
+  const button = selection.nth(index);
   const target = (await button.innerText()).trim();
   const buttonBox = await button.boundingBox();
   if (!buttonBox || buttonBox.height < 44 || buttonBox.width < 44) saveFailure(errors, `${label}: Auswahlziel „${target}“ kleiner als 44 px`);
@@ -518,7 +592,10 @@ async function measureAndUseLegacyTarget(page, stage, button, label, viewport, e
   const prim = await selected.getAttribute('data-prim').catch(() => null);
   const itemId = await selected.evaluate((node) => node.closest('[data-item]')?.getAttribute('data-item')).catch(() => null);
   recordLegacyTargetBox({ target, label, itemId, prim, box, viewport, errors, evidence });
-  await clickLegacyTarget(page, button, target, box, label, viewport, errors);
+  const alternate = selection.nth(index === 0 ? 1 : 0);
+  await alternate.click();
+  await expect(button).toHaveAttribute('aria-pressed', 'false');
+  await clickLegacyTarget(page, button, target, box, label, viewport);
 }
 
 function recordLegacyTargetBox({ target, label, itemId, prim, box, viewport, errors, evidence }) {
@@ -529,11 +606,26 @@ function recordLegacyTargetBox({ target, label, itemId, prim, box, viewport, err
     width: box?.width ?? 0, height: box?.height ?? 0, viewport: viewport.width });
 }
 
-async function clickLegacyTarget(page, button, target, box, label, viewport, errors) {
+async function clickLegacyTarget(page, button, target, box, label, viewport) {
   if (!box) return;
   if (viewport.width <= 500) await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
   else await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-  if (await button.getAttribute('aria-pressed') !== 'true') saveFailure(errors, `${label}: SVG-Trefferfläche „${target}“ wählt das Ziel nicht aus`);
+  await expect(button, `${label}: SVG-Trefferfläche „${target}“ wählt das Ziel nicht aus`).toHaveAttribute('aria-pressed', 'true');
+}
+
+function checkVendingMeasurements(mode, variant, evidence, errors) {
+  const prefix = `${mode}-${variant.viewport.width}-${variant.theme}-${variant.motion}-vending-frame-`;
+  const vending = evidence.traceTargetMeasurements.filter(({ label }) => label.startsWith(prefix));
+  const returnMeasurement = vending.find(({ target }) => /^Rückgabe\s/.test(target));
+  const globalOutputMeasurement = vending.filter(({ target }) => target === 'x')
+    .sort((left, right) => Number(left.label.match(/-beat-(\d+)$/)?.[1] ?? 0)
+      - Number(right.label.match(/-beat-(\d+)$/)?.[1] ?? 0)).at(-1);
+  if (!returnMeasurement) saveFailure(errors, `${mode}-vending-frame: kein tatsächliches Rückgabe-Szenenziel vermessen`);
+  if (!globalOutputMeasurement) saveFailure(errors, `${mode}-vending-frame: globale Ausgabe x nicht über ein echtes Szenenziel vermessen`);
+  if (returnMeasurement && globalOutputMeasurement) {
+    evidence.traceReturnMeasurements.push({ mode, viewport: variant.viewport.width, theme: variant.theme, motion: variant.motion,
+      return: returnMeasurement, globalOutput: globalOutputMeasurement });
+  }
 }
 
 async function checkLegacyTraceLessons(page, baseUrl, content, mode, variant, evidence, errors, states) {
@@ -546,17 +638,22 @@ async function checkLegacyTraceLessons(page, baseUrl, content, mode, variant, ev
     const beatCount = Number(beatLabel?.match(/von (\d+)/i)?.[1] ?? 1);
     let targetsFound = 0;
     for (let beat = 0; beat < beatCount; beat += 1) {
+      await expect(stage).toHaveAttribute('data-beat', String(beat));
       await waitSettled(stage);
       const label = `${mode}-${variant.viewport.width}-${variant.theme}-${variant.motion}-${lesson.label}-beat-${beat + 1}`;
       targetsFound += await checkLegacyTraceScene(page, card, label, variant.viewport, errors, states, evidence);
       await capture(page, `${lesson.label}-trace-selection-beat-${beat + 1}`, mode, variant.viewport, variant.theme, variant.motion, evidence);
       if (beat + 1 < beatCount) {
+        const skip = card.getByRole('button', { name: 'Überspringen', exact: true });
+        if (await skip.isVisible().catch(() => false)) await skip.click();
         await card.getByRole('button', { name: 'Weiter', exact: true }).click();
+        await expect(stage).toHaveAttribute('data-beat', String(beat + 1));
         await waitSettled(stage);
       }
     }
     if (!targetsFound) saveFailure(errors, `${mode}-${lesson.label}: über alle Szenenbeats fehlen Auswahlziele`);
   }
+  checkVendingMeasurements(mode, variant, evidence, errors);
 }
 
 async function resetTraceTask(page, label, errors, states) {
@@ -710,6 +807,10 @@ async function returnFromTask(page, label, states) {
   if (!await back.count()) return;
   await back.click();
   await page.waitForURL(/#\/(lesson|module)\//);
+  const stage = page.locator(STAGE).first();
+  await stage.waitFor({ state: 'visible', timeout: 25_000 });
+  await expect(stage).toHaveAttribute('data-beat', '0');
+  await waitSettled(stage);
   states.push(`${label}: Rückkehr aus der Antwort`);
 }
 
@@ -761,8 +862,12 @@ async function runVariant(browser, mode, baseUrl, variant, content, evidence) {
     await page.addInitScript((theme) => localStorage.setItem('ki-lernplattform:theme', theme), variant.theme);
     const reduced = await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
     if (reduced !== (variant.motion === 'reduce')) saveFailure(errors, `${suffix}: Bewegungspräferenz stimmt nicht`);
-    await lessonFlow(page, baseUrl, content.pcaLesson.id, mode, `${suffix}-pca`, variant.viewport, variant.theme, variant.motion, evidence, errors, states);
-    await lessonFlow(page, baseUrl, content.kmeansLesson.id, mode, `${suffix}-kmeans`, variant.viewport, variant.theme, variant.motion, evidence, errors, states);
+    if (content.pcaLesson.id === content.kmeansLesson.id) {
+      await lessonFlow(page, baseUrl, content.pcaLesson.id, mode, `${suffix}-pca-kmeans`, variant.viewport, variant.theme, variant.motion, evidence, errors, states);
+    } else {
+      await lessonFlow(page, baseUrl, content.pcaLesson.id, mode, `${suffix}-pca`, variant.viewport, variant.theme, variant.motion, evidence, errors, states);
+      await lessonFlow(page, baseUrl, content.kmeansLesson.id, mode, `${suffix}-kmeans`, variant.viewport, variant.theme, variant.motion, evidence, errors, states);
+    }
     await exploreFlow(page, baseUrl, content.exploreLesson.id, mode, `${suffix}-explore`, variant.viewport, variant.theme, variant.motion, evidence, errors, states);
     await compareFlow(page, baseUrl, content.compareLesson.id, mode, `${suffix}-compare`, variant.viewport, variant.theme, variant.motion, evidence, errors, states);
     await taskFlow(page, baseUrl, content.rateRoute, mode, `${suffix}-f7`, variant.viewport, variant.theme, variant.motion, evidence, errors, states, 'rate');
@@ -787,22 +892,30 @@ async function writeContactSheet(mode, evidence, browser) {
     || (shot.viewport === 375 && shot.theme === 'dark' && shot.motion === 'reduce');
   const mainStates = shots.filter((shot) => /pca/.test(shot.state)
     || (representative(shot) && /-(?:kmeans|explore|compare|f7|f1|baseline-smoothie|invalid-family)|trace-selection|hint-/.test(shot.state)));
-  const body = mainStates.map((shot) => {
-    const imagePath = relative(BASE_OUT, shot.rawPath).split(sep).join('/');
-    return `<figure><img src="${imagePath}" alt="${shot.state}"><figcaption>${shot.state} · ${shot.viewport}px · ${shot.theme} · ${shot.motion}</figcaption></figure>`;
-  }).join('\n');
-  const htmlPath = join(BASE_OUT, `contact-${mode}.html`);
-  const html = `<!doctype html><meta charset="utf-8"><title>${mode} UI-Abnahme</title><style>body{font:14px system-ui;margin:20px;background:#eee}main{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}figure{margin:0;padding:10px;background:white;border:1px solid #bbb}img{width:100%;height:auto;object-fit:contain}figcaption{overflow-wrap:anywhere;padding-top:6px}</style><h1>${mode} UI-Abnahme</h1><main>${body}</main>`;
-  await writeFile(htmlPath, html);
-  if (browser && mainStates.length) {
-    const page = await browser.newPage({ viewport: { width: 1560, height: 1100 }, deviceScaleFactor: 1 });
-    try {
-      await page.goto(pathToFileURL(htmlPath).href);
-      const pngPath = join(BASE_OUT, `contact-${mode}.png`);
-      await page.screenshot({ path: pngPath, fullPage: true });
-      evidence.contactSheets.push({ mode, htmlPath, pngPath, sha256: await hashFile(pngPath), states: mainStates.map((shot) => shot.state) });
-    } finally { await page.close(); }
+  const pages = [];
+  for (let start = 0; start < mainStates.length; start += 12) {
+    const pageNumber = String(pages.length + 1).padStart(2, '0');
+    const shotsOnPage = mainStates.slice(start, start + 12);
+    const body = shotsOnPage.map((shot) => {
+      const imagePath = relative(BASE_OUT, shot.rawPath).split(sep).join('/');
+      return `<figure><img src="${imagePath}" alt="${shot.state}"><figcaption>${shot.state} · ${shot.viewport}px · ${shot.theme} · ${shot.motion}</figcaption></figure>`;
+    }).join('\n');
+    const htmlPath = join(BASE_OUT, `contact-${mode}-${pageNumber}.html`);
+    const html = `<!doctype html><meta charset="utf-8"><title>${mode} UI-Abnahme · ${pageNumber}</title><style>body{font:14px system-ui;margin:20px;background:#eee}main{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}figure{min-width:0;margin:0;padding:10px;background:white;border:1px solid #bbb}img{display:block;width:100%;height:auto;object-fit:contain}figcaption{overflow-wrap:anywhere;padding-top:6px}</style><h1>${mode} UI-Abnahme · Seite ${pageNumber}</h1><main>${body}</main>`;
+    await writeFile(htmlPath, html);
+    const pageEvidence = { mode, page: Number(pageNumber), htmlPath, states: shotsOnPage.map((shot) => shot.state) };
+    if (browser) {
+      const page = await browser.newPage({ viewport: { width: 1560, height: 1100 }, deviceScaleFactor: 1 });
+      try {
+        await page.goto(pathToFileURL(htmlPath).href);
+        const pngPath = join(BASE_OUT, `contact-${mode}-${pageNumber}.png`);
+        await page.screenshot({ path: pngPath, fullPage: true });
+        Object.assign(pageEvidence, { pngPath, sha256: await hashFile(pngPath) });
+      } finally { await page.close(); }
+    }
+    pages.push(pageEvidence);
   }
+  evidence.contactSheets.push(...pages);
 }
 
 async function discoverModes(targetModes) {
@@ -859,7 +972,7 @@ async function createEvidence(targetModes) {
     requestedModel: 'gpt-6-luna medium (runtime identity not independently verified)',
     budgetStatus: 'Size and latency targets remain open by explicit user waiver; this runner does not measure performance.',
     head: git.head, gitStatus: git.status, port: PORT, browser: null, contentByMode,
-    sourceHashes: {}, releaseHashes: {}, screenshots: [], hintSnapshots: [], traceTargetMeasurements: [], contactSheets: [], variants: [],
+    sourceHashes: {}, releaseHashes: {}, screenshots: [], hintSnapshots: [], traceTargetMeasurements: [], traceReturnMeasurements: [], contactSheets: [], variants: [],
   };
   await addSourceHashes(evidence, contentByMode);
   if (targetModes.includes('release')) {

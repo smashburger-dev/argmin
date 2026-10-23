@@ -33,7 +33,7 @@ test('module card counts curated placements and credits a solved case', async ({
   test.skip(browserName !== 'chromium', 'Progress roundtrip runs in Chromium.');
   const card = page.locator('.learn-rail a.module-card-link[href="#/module/lm-foundations-python-state"]');
   await page.goto('/index.html#/learn');
-  await expect(card).toContainText('3 Aufgaben');
+  await expect(card).toContainText('4 Aufgaben');
   await page.goto('/index.html#/family/trace-assignment-state/reassign-two-variables-print/7/intro');
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByRole('heading', { level: 1, name: 'Variante wird geladen' })).toHaveCount(0);
@@ -51,7 +51,7 @@ test('module card counts curated placements and credits a solved case', async ({
   await page.getByRole('button', { name: 'Tabelle prüfen' }).click();
   await expect(page.getByText(/Richtig/)).toBeVisible();
   await page.goto('/index.html#/learn');
-  await expect(card).toContainText('1 von 3 Aufgaben');
+  await expect(card).toContainText('1 von 4 Aufgaben');
 });
 
 test('history collects opened lessons and modules', async ({ page }) => {

@@ -23,6 +23,16 @@ Für Agenten zum Kopieren:
 - Inhaltsänderung: `node tools/compile_content.mjs && node tools/validate_content.mjs` und `node --test tests/`.
 - Zu wenige Instanzen: `node tools/audit_variants.mjs`. Golden Corpus nur bewusst neu schreiben: `node tests/family_golden_corpus.test.mjs --write-family-golden`.
 
+## 2. Release 0.10.0: eigene interaktive Figuren
+
+**Ziel:** Figuren als erklärende, interaktive Ergänzung zu den Lektionen integrieren und ihre Hinweise ohne Antwort-Leaks ausliefern.
+
+**Wo:** Figuren in `assets/js/figures/`, Platzierungen in `content/lessons/` und `content/figure-hints.json`, Registrierung und Public-Allowlist in den jeweiligen Registern und `tools/build_public.mjs`.
+
+**Status:** Implementierung und Dokumentation stehen in [PR #113](https://github.com/smashburger-dev/argmin/pull/113). Die vollständige Browser-Abnahme und CI sind noch offen; Details und Nachweise stehen in `docs/figuren-completion/`.
+
+**Fertig, wenn:** Release-Build, Inhalts- und Leak-Prüfungen, fokussierte Aufgaben, Browser-Abnahme sowie Remote-CI erfolgreich sind und die Kontaktbögen geprüft wurden.
+
 ## Ideen ohne Termin
 
 - Fortschritt zwischen Geräten ohne Pflicht-Account (heute: JSON-Export/Import). Erst als Issue.

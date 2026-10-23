@@ -345,7 +345,7 @@ export default function FigureRuntime({ scene, spec, style, initialBeat, onPredi
   };
 
   return (
-    <div class="figure-runtime" data-style={styleId} data-kind={kind} data-view-mode={spatial ? 'spatial' : 'flat'}>
+    <div class="figure-runtime" data-style={styleId} data-kind={kind} data-view-mode={spatial ? 'spatial' : 'flat'} data-stage-layout={runtimeScene.stageLayout ?? 'default'}>
       {calm ? <p class="figure-calm" role="status">Vereinfachte Bewegung</p> : null}
       <div
         class="figure-stage"

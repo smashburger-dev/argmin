@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 — 2026-10-23
+
+Eigene interaktive Figuren machen zentrale Lernideen sichtbar und laden zum Vorhersagen, Erkunden und schrittweisen Aufbauen ein. Außerdem fließen die verständlicheren Erklärungen aus [PR #112](https://github.com/smashburger-dev/argmin/pull/112) in die Lektionen ein.
+
+Für Lernende: Figuren zeigen Prozesse und Zusammenhänge direkt im Lerntext, darunter Python-Zustände, Gauß-Elimination, Gradienten und Trainingskurven. Hinweise verwenden sichere Nachbarbeispiele, sodass sie beim Denken helfen, ohne die Antwort des aktuellen Falls vorwegzunehmen. Die überarbeiteten Erklärungen ergänzen Rechenschritte und konkrete Beispiele, besonders zu Pivot und Rang.
+
+Für Beitragende: Die Visualisierungsarbeit wird in [PR #113](https://github.com/smashburger-dev/argmin/pull/113) integriert. PR #112 ergänzt sieben prüfbare Verständlichkeitssymptome im Autorenleitfaden und überarbeitet Pivot und Rang sowie Beispiele in allen 50 Lektionen. Die früheren Einträge, einschließlich 0.9.3, bleiben Teil der Versionsgeschichte.
+
 ## 0.9.3 — 2026-10-18
 
 Neues Logo, ein Link zum GitHub-Repo in der Kopfzeile und ein leise pulsierender Hintergrund aus Ziffern und Formelzeichen, durch den die Maus einen „argmin“-Banner zieht.

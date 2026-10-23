@@ -35,7 +35,7 @@
     },
     {
       "blockId": "rag-s7-handoffs",
-      "type": "worked-example",
+      "type": "prose",
       "contentRef": "lessons/genai-systems/rag-retrieval-s7-handoffs.md"
     },
     {
@@ -45,7 +45,7 @@
     },
     {
       "blockId": "s8b-glossary-l-genai-rag",
-      "type": "worked-example",
+      "type": "definition",
       "contentRef": "lessons/genai-systems/rag-retrieval-glossary.md"
     },
     {

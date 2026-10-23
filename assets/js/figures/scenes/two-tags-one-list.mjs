@@ -6,4 +6,4 @@ const scene = createTraceScene("two-tags-one-list", {
   "4": "Auch der Indexzugriff verändert o1. Seine Identität bleibt gleich.",
   "5": "x wird neu gebunden. y bleibt an o1; die bisherige Liste wird nicht überschrieben."
 }, null);
-export const { id, viewMode, beatIds, validateParams, model, beatDuration, pose, build, trace, cameraFor, ground, readout, describe, answerValues, predictValue, displayNumbers, selectionTargets } = scene;
+export const { id, viewMode, stageLayout, beatIds, validateParams, model, beatDuration, pose, build, trace, cameraFor, ground, readout, describe, answerValues, predictValue, displayNumbers, selectionTargets } = scene;

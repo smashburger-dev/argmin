@@ -69,9 +69,10 @@ json.dumps({"rounds":[{"round":n,"assignments":kmeans(X,2,0,iters=n)[0].tolist()
     return state.flatMap((item) => (item.prims ?? []).flatMap((prim) => (prim.runs ?? []).map((run) => run.text ?? ''))).join(' ');
   });
   assert.match(beatText[0], /A|B/);
-  assert.match(beatText[1], /Bewegung/);
-  assert.match(beatText[2], /erneut/);
-  assert.match(beatText[3], /Festpunkt/);
+  assert.match(beatText[0], /Zentren: \(10; 10\) und \(11; 10\)/);
+  assert.match(beatText[1], /Gruppenmitteln/);
+  assert.match(beatText[2], /Neue Zentren: erneut zuordnen/);
+  assert.match(beatText[3], /Konvergenz/);
 });
 
 test('neighbor figures are independent of each target case and answer', async () => {
