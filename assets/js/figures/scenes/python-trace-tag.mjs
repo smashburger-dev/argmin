@@ -130,10 +130,13 @@ export const model = (params, options = {}) => {
   const result = lessonModel({ tagTask: normalized.tagTask });
   return result;
 };
-export const { pose, beatDuration, ground, readout, predictValue, answerValues } = scene;
+export const { pose, beatDuration, ground, predictValue, answerValues } = scene;
 export const describe = (m, index, mode) => mode === 'hint'
   ? (m.hintProjection?.priorCaptions[index] ?? '')
   : scene.describe(m, index, mode);
+export const readout = (m, pose, mode) => mode === 'hint'
+  ? describe(m, 0, mode)
+  : scene.readout(m, pose, mode);
 export const build = (m, phase, mode = 'lesson') => {
   if (mode === 'lesson') return scene.build(m, phase, mode);
   if (mode !== 'hint') throw new Error(`Unbekannter python-trace-tag Modus: ${mode}`);

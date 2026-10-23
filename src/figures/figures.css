@@ -68,6 +68,7 @@
 .figure-stage [data-prim][data-selected] { outline: none; stroke: var(--fig-a1-lit); stroke-width: 2px; vector-effect: non-scaling-stroke; }
 .figure-stage text[data-prim][data-selected] { stroke: none; font-weight: 650; text-decoration: underline; }
 .figure-inputs [aria-pressed="true"] { border: 2px solid currentColor; }
+.figure-selection button { min-inline-size: 44px; min-block-size: 44px; }
 .figure-selection p { font-size: 0.875rem; margin: 12px 0 0; }
 .figure-controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; margin-top: 24px; }
 .figure-controls .btn { width: auto; flex: 0 0 auto; min-height: 44px; padding: 8px 18px; }
