@@ -1,0 +1,291 @@
+{
+  "date": "2026-10-18",
+  "cpuThrottle": 4,
+  "runsPerScenario": 3,
+  "tool": "tests/e2e/figures-perf.spec.ts measurement functions, temporary driver against compiled lessons on port 4406",
+  "scenario": "critical beat",
+  "traceStageSha256": "1791cdc48e16e8f1c65859b6105133574c87e4e9db9f6dc2ca97c0ed7f0d7aee",
+  "traceRecordsSha256": "55412bbad94b290bfe97d33e45f5887c4f2fbfb85057566b3f5c5421f59d6584",
+  "measuredTraceRecordsSha256": "3c9d7cb40cc19568ead20e5c61bbeee9d3f8d7ce7f3928ba3eae93730e1310ec",
+  "postMeasurementChange": "Only redundant blank lines at EOF removed from trace-records and six scene wrappers; all other source bytes unchanged.",
+  "summaries": [
+    {
+      "scene": "name-tags",
+      "width": 1440,
+      "fromBeat": 2,
+      "mediansMs": [
+        0.4,
+        0.3,
+        0.5
+      ],
+      "medianOfMediansMs": 0.4,
+      "maxP95Ms": 0.9,
+      "maxMs": 1.2,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "name-tags",
+      "width": 375,
+      "fromBeat": 2,
+      "mediansMs": [
+        0.4,
+        0.4,
+        0.2
+      ],
+      "medianOfMediansMs": 0.4,
+      "maxP95Ms": 1,
+      "maxMs": 1.1,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "bouncer",
+      "width": 1440,
+      "fromBeat": 1,
+      "mediansMs": [
+        0.5,
+        0.5,
+        0.2
+      ],
+      "medianOfMediansMs": 0.5,
+      "maxP95Ms": 0.9,
+      "maxMs": 1.3,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "bouncer",
+      "width": 375,
+      "fromBeat": 1,
+      "mediansMs": [
+        0.5,
+        0.4,
+        0.2
+      ],
+      "medianOfMediansMs": 0.4,
+      "maxP95Ms": 0.9,
+      "maxMs": 1.2,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "vending-frame",
+      "width": 1440,
+      "fromBeat": 1,
+      "mediansMs": [
+        0.5,
+        0.4,
+        0.4
+      ],
+      "medianOfMediansMs": 0.4,
+      "maxP95Ms": 0.9,
+      "maxMs": 1.1,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "vending-frame",
+      "width": 375,
+      "fromBeat": 1,
+      "mediansMs": [
+        0.5,
+        0.4,
+        0.4
+      ],
+      "medianOfMediansMs": 0.4,
+      "maxP95Ms": 1,
+      "maxMs": 1.4,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "ledger",
+      "width": 1440,
+      "fromBeat": 4,
+      "mediansMs": [
+        0.5,
+        0.1,
+        0.1
+      ],
+      "medianOfMediansMs": 0.1,
+      "maxP95Ms": 1,
+      "maxMs": 1.6,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "ledger",
+      "width": 375,
+      "fromBeat": 4,
+      "mediansMs": [
+        0,
+        0.4,
+        0.2
+      ],
+      "medianOfMediansMs": 0.2,
+      "maxP95Ms": 0.9,
+      "maxMs": 1.9,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "two-tags-one-list",
+      "width": 1440,
+      "fromBeat": 4,
+      "mediansMs": [
+        0.1,
+        0,
+        0
+      ],
+      "medianOfMediansMs": 0,
+      "maxP95Ms": 0.9,
+      "maxMs": 1.1,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "two-tags-one-list",
+      "width": 375,
+      "fromBeat": 4,
+      "mediansMs": [
+        0.2,
+        0.2,
+        0.1
+      ],
+      "medianOfMediansMs": 0.2,
+      "maxP95Ms": 0.9,
+      "maxMs": 1.2,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "smoke-detector",
+      "width": 1440,
+      "fromBeat": 1,
+      "mediansMs": [
+        0.1,
+        0,
+        0.1
+      ],
+      "medianOfMediansMs": 0.1,
+      "maxP95Ms": 0.5,
+      "maxMs": 1.1,
+      "minSamples": 75,
+      "longFrames": 0
+    },
+    {
+      "scene": "smoke-detector",
+      "width": 375,
+      "fromBeat": 1,
+      "mediansMs": [
+        0.1,
+        0.1,
+        0.1
+      ],
+      "medianOfMediansMs": 0.1,
+      "maxP95Ms": 0.9,
+      "maxMs": 1.1,
+      "minSamples": 76,
+      "longFrames": 0
+    }
+  ],
+  "chunks": [
+    {
+      "file": "trace-stage-CrqLl3GN.js",
+      "bytes": 11495,
+      "gzipBytes": [
+        3090,
+        3090,
+        3090
+      ]
+    },
+    {
+      "file": "two-tags-one-list-CTZBg977.js",
+      "bytes": 795,
+      "gzipBytes": [
+        501,
+        501,
+        501
+      ]
+    },
+    {
+      "file": "smoke-detector-C2fKYmT0.js",
+      "bytes": 491,
+      "gzipBytes": [
+        301,
+        301,
+        301
+      ]
+    },
+    {
+      "file": "bouncer-CC_ObmxL.js",
+      "bytes": 680,
+      "gzipBytes": [
+        423,
+        423,
+        423
+      ]
+    },
+    {
+      "file": "name-tags-BhpWw0Uv.js",
+      "bytes": 712,
+      "gzipBytes": [
+        438,
+        438,
+        438
+      ]
+    },
+    {
+      "file": "figure-kit-B9rgBTpy.js",
+      "bytes": 14548,
+      "gzipBytes": [
+        5971,
+        5971,
+        5971
+      ]
+    },
+    {
+      "file": "vending-frame-BcEhLT6P.js",
+      "bytes": 604,
+      "gzipBytes": [
+        390,
+        390,
+        390
+      ]
+    },
+    {
+      "file": "FigureRuntime-Bqu4YdOl.js",
+      "bytes": 27812,
+      "gzipBytes": [
+        10047,
+        10047,
+        10047
+      ]
+    },
+    {
+      "file": "ledger-CaeLbfT7.js",
+      "bytes": 516,
+      "gzipBytes": [
+        317,
+        317,
+        317
+      ]
+    },
+    {
+      "file": "FigureRuntime-af-wuB6n.css",
+      "bytes": 4353,
+      "gzipBytes": [
+        1376,
+        1376,
+        1376
+      ]
+    }
+  ],
+  "runtimeBudget": {
+    "limitGzipBytes": 10000,
+    "baselineGzipBytes": 10003,
+    "currentGzipBytes": 10047,
+    "status": "open"
+  }
+}

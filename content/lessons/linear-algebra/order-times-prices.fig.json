@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "order-times-prices",
+  "title": "Bestellung mal Preisliste",
+  "caption": "Ein Betrag entsteht aus einer Bestellzeile und einer Preisspalte.",
+  "hint": "Das feste Beispiel ergänzt die Rechnung in der Lektüre.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Zwei Personen, drei Produkte: Jede Zeile ist eine Bestellung. Die Reihenfolge ist Kaffee, Croissant, Saft."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die gleichen Produkte stehen jetzt in Zeilen. Jede Spalte enthält die Preise eines Ladens, in Euro."
+    },
+    {
+      "id": "step-2",
+      "caption": "Adas Zeile trifft die Spalte Nord. Der erste Posten wird multipliziert; die Summe beginnt mit dem Kaffee-Posten."
+    },
+    {
+      "id": "step-3",
+      "caption": "Der Croissant-Posten kommt hinzu. Summiert wird über Produkte, nicht über Personen oder Läden."
+    },
+    {
+      "id": "step-4",
+      "caption": "Auch der Saft-Posten zählt mit. Eine Nullmenge trägt nichts zur Rechnung bei."
+    },
+    {
+      "id": "step-5",
+      "caption": "Alle Zeilen treffen alle Spalten: Das Ergebnis ordnet jeder Person einen Betrag pro Laden zu."
+    },
+    {
+      "id": "step-6",
+      "caption": "Übertragung zum bisherigen Spaltenbild: andere Matrix, x = (1, 2). Der alte Checkpoint meint dessen blauen Pfeil."
+    },
+    {
+      "id": "step-7",
+      "caption": "Die gewichteten Spalten addieren sich komponentenweise. Das ist dieselbe Matrixmultiplikation."
+    }
+  ],
+  "predict": {
+    "beat": "step-6",
+    "prompt": "Setze x₁ = 1 und x₂ = 2. Welchen Vektor b = x₁·a₁ + x₂·a₂ zeigt der blaue Pfeil? Antwort als (b₁, b₂).",
+    "input": "vector",
+    "expected": [
+      4,
+      7
+    ],
+    "tolerance": 0.000001,
+    "hints": [
+      "b = 1·(2, 1) + 2·(1, 3) — rechne die beiden Komponenten getrennt aus."
+    ],
+    "typicalErrors": [
+      {
+        "match": [
+          7,
+          4
+        ],
+        "feedback": "Komponenten vertauscht: b₁ = 2x₁ + x₂ und b₂ = x₁ + 3x₂."
+      },
+      {
+        "match": [
+          5,
+          5
+        ],
+        "feedback": "Das ist x₁·a₂ + x₂·a₁ — die Koeffizienten x₁, x₂ gehören zu den Spalten a₁, a₂ in dieser Reihenfolge."
+      }
+    ]
+  }
+}

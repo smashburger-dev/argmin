@@ -4,6 +4,8 @@ Von [Noa Katana](https://noakatana.com/work/argmin/), Creative Technologist aus 
 
 **KI verstehen, Schritt für Schritt. Auf Deutsch, direkt im Browser. Kostenlos.**
 
+Aktuelle Plattformversion: **0.10.0**.
+
 [![Die Heute-Seite in argmin: Empfehlung, Milestone und Wochenplan, dunkles Theme](docs/media/heute-dark.png)](https://smashburger-dev.github.io/argmin/)
 
 argmin ist eine offene Lernplattform für alle, die verstehen wollen, wie künstliche Intelligenz wirklich funktioniert: von den Mathe-Grundlagen über Lineare Algebra und Machine Learning bis zu Deep Learning, Transformern und GenAI. Kein Vorwissen nötig. Fang von dort an, wo du jetzt gerade stehst.
@@ -34,11 +36,11 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
 [![Der Lernpfad in argmin: Module in sinnvoller Reihenfolge, dunkles Theme](docs/media/lernpfad-dark.png)](https://smashburger-dev.github.io/argmin/)
 
 - **Python direkt im Browser.** Du schreibst und testest echten Code, ohne irgendetwas zu installieren.
-  + NumPy für Matrizen und Vektoren, sauber gesetzte Formeln (KaTeX) und interaktive Grafiken zum Anfassen (JSXGraph)… LOKAL!
+  + NumPy für Matrizen und Vektoren, sauber gesetzte Formeln (KaTeX), interaktive Grafiken und eigene Figuren für Abläufe wie Gauß-Elimination, Gradientenabstieg und Python-Zustände — alles lokal.
 
   ![Demo: Code in den Editor tippen, prüfen, alle Tests bestehen](docs/media/python-demo.gif)
 - **Üben, bis es sitzt.** Konzeptfragen, Mehrfachauswahl, Fehlerdiagnose, Coding, Ablauf, Parsons, Vektor, Lücken in Musterlösungen: neuer Seed, neu erzeugte Aufgabe. Gleicher Seed, gleiche Aufgabe.
-- **Visualisierungen, die zurückfragen.** Jede interaktive Grafik endet mit einer Vorhersage-Aufgabe — erst schätzen, dann prüfen.
+- **Visualisierungen, die zurückfragen.** Interaktive Grafiken und Figuren verbinden anschauliche Schritte mit Vorhersage-Aufgaben — erst schätzen, dann prüfen.
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
 - **Lexikon mit 320 Kurzdefinitionen.** Fachbegriffe sind in den Lektionen verlinkt; ein Klick öffnet die Definition direkt im Text, ohne die Seite zu verlassen.
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget

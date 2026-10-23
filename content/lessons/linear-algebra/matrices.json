@@ -24,8 +24,13 @@
     },
     {
       "blockId": "matrices-viz",
-      "type": "visualization",
-      "contentRef": "lessons/linear-algebra/column-picture.viz.json"
+      "type": "figure",
+      "contentRef": "lessons/linear-algebra/order-times-prices.fig.json"
+    },
+    {
+      "blockId": "matrices-f2-after",
+      "type": "worked-example",
+      "contentRef": "lessons/linear-algebra/matrices-f2-after.md"
     }
   ],
   "sourceRefs": [

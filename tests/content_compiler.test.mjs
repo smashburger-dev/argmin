@@ -35,7 +35,9 @@ test('public compiler is deterministic and excludes private-only legacy content'
   assert.equal(first.projects.length, expectedCounts.projects);
   assert.equal(first.explanations.length, expectedCounts.explanations);
   assert.equal(first.lessons.every((lesson) => lesson.blocks.every((block) => (
-    block.type === 'visualization' ? block.html === '' && block.viz : block.html?.length > 0
+    block.type === 'visualization' ? block.html === '' && block.viz
+      : block.type === 'figure' ? block.html === '' && block.fig
+        : block.html?.length > 0
   ))), true);
   assert.doesNotMatch(JSON.stringify(first.lessons), /<script|href=\\"javascript:/i);
   assert.equal(first.familyActivities.length, expectedCounts.exercises);
@@ -389,7 +391,7 @@ test('tool cards preserve public runtimes, repositories and visualization routes
   assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-browser-python-workspace' && tool.routes.some((route) => route.href === '#/family/construct-matvec-shape-contract/matvec-code-reference/0/core')));
   assert.equal(JSON.stringify(publicBundle).includes('#/lab/'), false);
   assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-expression-equivalence' && tool.routes.length === 0));
-  assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-matrix-column-visualization' && tool.routes.some((route) => route.href === '#/visualization/column-picture')));
+  assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-matrix-column-visualization' && tool.routes.some((route) => route.href === '#/lesson/l-linalg-matrices')));
   assert.ok(publicBundle.tools.some((tool) => tool.kind === 'repository' && tool.sourceRefs.includes('dlwp-notebooks')));
   assert.equal(publicBundle.tools.some((tool) => tool.availability === 'local-only'), false);
 });

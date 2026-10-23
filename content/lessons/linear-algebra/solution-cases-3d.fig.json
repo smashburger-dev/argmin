@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "solution-cases-3d",
+  "title": "Bedingungen im Glaswürfel",
+  "caption": "Drei Ebenen zeigen Punkt, Gerade und Widerspruch.",
+  "hint": "Ziehen dreht die Ansicht. Pfeiltasten wechseln den Schritt.",
+  "params": {
+    "a": 1,
+    "c": 2
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Eine Ebene lässt viele Punkte zu. Ihr innerer Umriss zeigt eine einzige Bedingung."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die zweite Ebene schneidet die erste. Nur die Punkte auf der gemeinsamen Geraden erfüllen beide Bedingungen."
+    },
+    {
+      "id": "step-2",
+      "caption": "Ein Punkt erfüllt alle drei Ebenen. Übertrage: Wann fallen x + y = 2 und a·x + y = c zusammen?"
+    },
+    {
+      "id": "step-3",
+      "caption": "Die dritte Ebene dreht sich um den Ursprung. Am Ende enthält sie die gemeinsame Gerade."
+    },
+    {
+      "id": "step-4",
+      "caption": "Die dritte Ebene rückt ab. Nun erfüllt kein Punkt mehr alle drei Bedingungen."
+    },
+    {
+      "id": "step-5",
+      "caption": "Wo der Vergleich hinkt: Die Glaswände begrenzen nur den Ausschnitt, die mathematischen Ebenen reichen weiter."
+    }
+  ],
+  "predict": {
+    "beat": "step-2",
+    "prompt": "Stelle c = 2 ein. Bei welchem Wert von a liegen beide Geraden aufeinander?",
+    "input": "numeric",
+    "expected": 1,
+    "tolerance": 0.000001,
+    "hints": [
+      "Aufeinander liegen die Geraden, wenn Steigung und Achsenabschnitt übereinstimmen: a = 1 und c = 2. Die eliminierte Zeile zeigt dann 0 = 0."
+    ],
+    "typicalErrors": [
+      {
+        "match": 2,
+        "feedback": "Das ist der Wert von c, gefragt ist a. Deckungsgleich braucht a = 1 und c = 2 zugleich."
+      }
+    ]
+  }
+}

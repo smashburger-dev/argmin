@@ -1,0 +1,50 @@
+[
+  {
+    "command": "node tools/compile_content.mjs",
+    "exit": 0,
+    "seconds": 3,
+    "log": "/private/tmp/figuren-s5-core-0.log",
+    "summary": []
+  },
+  {
+    "command": "node tools/validate_content.mjs",
+    "exit": 0,
+    "seconds": 1,
+    "log": "/private/tmp/figuren-s5-core-1.log",
+    "summary": []
+  },
+  {
+    "command": "npm run typecheck",
+    "exit": 0,
+    "seconds": 2,
+    "log": "/private/tmp/figuren-s5-core-2.log",
+    "summary": []
+  },
+  {
+    "command": "npm run coverage:check",
+    "exit": 0,
+    "seconds": 1,
+    "log": "/private/tmp/figuren-s5-core-3.log",
+    "summary": []
+  },
+  {
+    "command": "npm run build:release",
+    "exit": 0,
+    "seconds": 5,
+    "log": "/private/tmp/figuren-s5-core-4.log",
+    "summary": []
+  },
+  {
+    "command": "node --test tests/",
+    "exit": 0,
+    "seconds": 65,
+    "log": "/private/tmp/figuren-s5-core-5.log",
+    "summary": [
+      "ℹ tests 2240",
+      "ℹ pass 2240",
+      "ℹ fail 0",
+      "ℹ skipped 0",
+      "ℹ duration_ms 64784.639834"
+    ]
+  }
+]

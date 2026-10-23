@@ -8,6 +8,7 @@ import { FAMILY_SPEC as AGGREGATE_EVIDENCE_RULE_AUDIT } from '../core/procedural
 import { FAMILY_SPEC as AGGREGATE_GROUPED_METRICS_REPORT } from '../core/procedural/aggregate-grouped-metrics-report.mjs';
 import { FAMILY_SPEC as AGGREGATE_PARITY_THRESHOLD_SELECTION } from '../core/procedural/aggregate-parity-threshold-selection.mjs';
 import { FAMILY_SPEC as AGGREGATE_RETRIEVAL_RANKING_METRIC } from '../core/procedural/aggregate-retrieval-ranking-metric.mjs';
+import { FAMILY_SPEC as BALANCE_SOLVE } from '../core/procedural/balance-solve.mjs';
 import { FAMILY_SPEC as CLASSIFY_RULE_CASCADE_PRIORITY } from '../core/procedural/classify-rule-cascade-priority.mjs';
 import { FAMILY_SPEC as COMPOSE_TOY_INFERENCE_PIPELINE } from '../core/procedural/compose-toy-inference-pipeline.mjs';
 import { FAMILY_SPEC as CONSTRUCT_ATTENTION_MASK } from '../core/procedural/construct-attention-mask.mjs';
@@ -27,6 +28,7 @@ import { FAMILY_SPEC as FIT_WEIGHT_DECAY_ABLATION } from '../core/procedural/fit
 import { FAMILY_SPEC as FORMULA_DESCRIPTIVE_STATS_NUMPY } from '../core/procedural/formula-descriptive-stats-numpy.mjs';
 import { FAMILY_SPEC as FORMULA_LORA_DELTA_APPLY } from '../core/procedural/formula-lora-delta-apply.mjs';
 import { FAMILY_SPEC as FORMULA_RIDGE_LASSO_CLOSED_FORM } from '../core/procedural/formula-ridge-lasso-closed-form.mjs';
+import { FAMILY_SPEC as MIX_TO_TARGET } from '../core/procedural/mix-to-target.mjs';
 import { FAMILY_SPEC as OPTIMIZE_BACKPROP_GRADIENT_CHECK } from '../core/procedural/optimize-backprop-gradient-check.mjs';
 import { FAMILY_SPEC as OPTIMIZE_BPE_MERGE_LEARN } from '../core/procedural/optimize-bpe-merge-learn.mjs';
 import { FAMILY_SPEC as OPTIMIZE_DECODE_GREEDY_LOOP } from '../core/procedural/optimize-decode-greedy-loop.mjs';
@@ -36,6 +38,7 @@ import { FAMILY_SPEC as OPTIMIZE_SGD_STEP_PURE_UPDATE } from '../core/procedural
 import { FAMILY_SPEC as OPTIMIZE_SOFTMAX_ATTENTION_MASK } from '../core/procedural/optimize-softmax-attention-mask.mjs';
 import { FAMILY_SPEC as OPTIMIZE_TRAINING_PRIMITIVE_CONTRACT } from '../core/procedural/optimize-training-primitive-contract.mjs';
 import { FAMILY_SPEC as OPTIMIZE_TREE_BEST_SPLIT } from '../core/procedural/optimize-tree-best-split.mjs';
+import { FAMILY_SPEC as PICK_LEARNING_RATE } from '../core/procedural/pick-learning-rate.mjs';
 import { FAMILY_SPEC as RANK_EVIDENCE_TABLE } from '../core/procedural/rank-evidence-table.mjs';
 import { FAMILY_SPEC as REPRODUCE_CANONICAL_HASH_VERIFY } from '../core/procedural/reproduce-canonical-hash-verify.mjs';
 import { FAMILY_SPEC as REPRODUCE_PIPELINE_STATUS_REPORT } from '../core/procedural/reproduce-pipeline-status-report.mjs';
@@ -46,6 +49,7 @@ import { FAMILY_SPEC as TRACE_CHUNK_WINDOW_LOOP } from '../core/procedural/trace
 import { FAMILY_SPEC as TRACE_LIBRARY_API_OUTPUT } from '../core/procedural/trace-library-api-output.mjs';
 import { FAMILY_SPEC as TRACE_STUB_DOC_SENTENCE_SELECT } from '../core/procedural/trace-stub-doc-sentence-select.mjs';
 import { FAMILY_SPEC as TRACE_SUBSTRING_FLAG_SUM } from '../core/procedural/trace-substring-flag-sum.mjs';
+import { FAMILY_SPEC as TRACE_TAG_AFTER_LINE } from '../core/procedural/trace-tag-after-line.mjs';
 import { FAMILY_SPEC as TRACE_TOPOSORT_DEPENDENCY_ORDER } from '../core/procedural/trace-toposort-dependency-order.mjs';
 import { FAMILY_SPEC as TRACE_TRAINING_LOOP_COUNT } from '../core/procedural/trace-training-loop-count.mjs';
 import { FAMILY_SPEC as TRANSFORM_BPE_MERGE_APPLY } from '../core/procedural/transform-bpe-merge-apply.mjs';
@@ -64,6 +68,7 @@ export const PROCEDURAL_FAMILY_SPECS = [
   AGGREGATE_GROUPED_METRICS_REPORT,
   AGGREGATE_PARITY_THRESHOLD_SELECTION,
   AGGREGATE_RETRIEVAL_RANKING_METRIC,
+  BALANCE_SOLVE,
   CLASSIFY_RULE_CASCADE_PRIORITY,
   COMPOSE_TOY_INFERENCE_PIPELINE,
   CONSTRUCT_ATTENTION_MASK,
@@ -83,6 +88,7 @@ export const PROCEDURAL_FAMILY_SPECS = [
   FORMULA_DESCRIPTIVE_STATS_NUMPY,
   FORMULA_LORA_DELTA_APPLY,
   FORMULA_RIDGE_LASSO_CLOSED_FORM,
+  MIX_TO_TARGET,
   OPTIMIZE_BACKPROP_GRADIENT_CHECK,
   OPTIMIZE_BPE_MERGE_LEARN,
   OPTIMIZE_DECODE_GREEDY_LOOP,
@@ -92,6 +98,7 @@ export const PROCEDURAL_FAMILY_SPECS = [
   OPTIMIZE_SOFTMAX_ATTENTION_MASK,
   OPTIMIZE_TRAINING_PRIMITIVE_CONTRACT,
   OPTIMIZE_TREE_BEST_SPLIT,
+  PICK_LEARNING_RATE,
   RANK_EVIDENCE_TABLE,
   REPRODUCE_CANONICAL_HASH_VERIFY,
   REPRODUCE_PIPELINE_STATUS_REPORT,
@@ -102,6 +109,7 @@ export const PROCEDURAL_FAMILY_SPECS = [
   TRACE_LIBRARY_API_OUTPUT,
   TRACE_STUB_DOC_SENTENCE_SELECT,
   TRACE_SUBSTRING_FLAG_SUM,
+  TRACE_TAG_AFTER_LINE,
   TRACE_TOPOSORT_DEPENDENCY_ORDER,
   TRACE_TRAINING_LOOP_COUNT,
   TRANSFORM_BPE_MERGE_APPLY,

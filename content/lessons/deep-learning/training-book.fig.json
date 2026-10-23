@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "training-book",
+  "title": "Ein Update nach jeder Seite",
+  "caption": "Vier Batches bilden eine Epoche. Die Korrekturen folgen derselben Update-Regel.",
+  "hint": "Die Lektüre erklärt das Beispiel und seine Grenzen.",
+  "params": {
+    "eta": 0.4
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Eine Seite ist ein Batch. Nach dem Batch folgt genau eine Korrektur des Gewichts."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die erste Korrektur folgt der Update-Regel. Übertrage sie auf das Quadrat-Beispiel der Frage."
+    },
+    {
+      "id": "step-2",
+      "caption": "Vier Seiten sind eine Epoche: vier Batches und vier Updates."
+    },
+    {
+      "id": "step-3",
+      "caption": "Im zweiten Kapitel werden dieselben vier Batches erneut verarbeitet. Insgesamt sind es acht Updates."
+    }
+  ],
+  "predict": {
+    "beat": "step-0",
+    "prompt": "Setze x₀ = 2 und lr = 0,4. Welchen Wert hat x₁ nach einem Gradientenschritt auf f(x) = x²?",
+    "input": "numeric",
+    "expected": 0.4,
+    "tolerance": 0.000001,
+    "hints": [
+      "Der Gradient von x² bei x₀ ist 2x₀. Dann gilt x₁ = x₀ − lr·(2x₀)."
+    ],
+    "typicalErrors": [
+      {
+        "match": 3.6,
+        "feedback": "Falsches Vorzeichen: Der Schritt geht entgegen dem Gradienten — x₀ − lr·2x₀, nicht plus."
+      },
+      {
+        "match": 1.6,
+        "feedback": "Das ist nur die Schrittweite lr·2x₀ = 1,6. Gefragt ist der neue Punkt x₁ = x₀ − 1,6."
+      }
+    ]
+  }
+}

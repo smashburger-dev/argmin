@@ -101,20 +101,27 @@ interface VizCheckpointFeedback {
 
 /** Compact formative checkpoint under the board. Grading is deterministic
  *  and in-memory only — deliberately NO IndexedDB write and NO
- *  mastery/progress update (formativ per Option-A-Kontrakt). */
-function VizCheckpointPanel({ checkpoint }: { checkpoint: VizCheckpoint }) {
+ *  mastery/progress update (formativ per Option-A-Kontrakt). FigureRuntime
+ *  reuses it for the predict beat; onGraded reports each submission. */
+export function VizCheckpointPanel({ checkpoint, onGraded, stateKey = '' }: {
+  checkpoint: VizCheckpoint;
+  onGraded?: (result: VizCheckpointFeedback) => void;
+  stateKey?: string;
+}) {
   const isVector = checkpoint.input === 'vector';
-  const [scalar, setScalar] = useState('');
-  const [vector, setVector] = useState<[string, string]>(['', '']);
-  const [feedback, setFeedback] = useState<VizCheckpointFeedback | null>(null);
+  const [answers, setAnswers] = useState<Record<string, { scalar: string; vector: [string, string]; feedback: VizCheckpointFeedback | null }>>({});
+  const answer = answers[stateKey] ?? { scalar: '', vector: ['', ''] as [string, string], feedback: null };
+  const { scalar, vector, feedback } = answer;
+  const update = (patch: Partial<typeof answer>) => setAnswers(previous => ({ ...previous, [stateKey]: { ...answer, ...patch } }));
   const hints = checkpoint.hints || [];
   const submit = (event: Event) => {
     event.preventDefault();
-    setFeedback(gradeVizCheckpoint(checkpoint, isVector ? vector : scalar));
+    const result = gradeVizCheckpoint(checkpoint, isVector ? vector : scalar);
+    update({ feedback: result });
+    onGraded?.(result);
   };
   const editVector = (index: number, value: string) => {
-    setVector(index === 0 ? [value, vector[1]] : [vector[0], value]);
-    setFeedback(null);
+    update({ vector: index === 0 ? [value, vector[1]] : [vector[0], value], feedback: null });
   };
   return (
     <div class="viz-checkpoint">
@@ -132,7 +139,7 @@ function VizCheckpointPanel({ checkpoint }: { checkpoint: VizCheckpoint }) {
           </span>
         ) : (
           <input class="viz-checkpoint-input" aria-label="Antwort" inputMode="decimal" autocomplete="off" value={scalar}
-            onInput={(event) => { setScalar(event.currentTarget.value); setFeedback(null); }} />
+            onInput={(event) => update({ scalar: event.currentTarget.value, feedback: null })} />
         )}
         <Button variant="primary" size="sm" type="submit">Prüfen</Button>
       </form>

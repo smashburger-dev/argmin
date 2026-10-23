@@ -23,11 +23,7 @@
       "type": "worked-example",
       "contentRef": "lessons/genai-systems/genai-evaluation.md"
     },
-    {
-      "blockId": "genai-eval-viz",
-      "type": "visualization",
-      "contentRef": "lessons/genai-systems/precision-recall-threshold.viz.json"
-    },
+    { "blockId": "evaluation-sorter-figure", "type": "figure", "contentRef": "lessons/genai-systems/evaluation-sorter.fig.json" },
     {
       "blockId": "genai-eval-check",
       "type": "checkpoint",

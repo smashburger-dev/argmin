@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "kind": "explore",
+  "engine": "argmin-figure",
+  "scene": "pca-shadow",
+  "title": "PCA: Varianz entlang einer Achse",
+  "caption": "Drehe die Projektionsachse durch die Punktwolke und vergleiche die Streuung der Schatten.",
+  "hint": "Die erste Hauptkomponente maximiert die Varianz der Projektionen.",
+  "params": { "theta": 0.46 },
+  "explore": { "parameter": "theta", "label": "Winkel θ", "min": 0, "max": 3.14, "step": 0.01, "input": "number" },
+  "beats": [
+    { "id": "step-0", "caption": "Die Achse dreht sich durch die Punktwolke." },
+    { "id": "step-1", "caption": "Jeder Punkt erhält einen Schatten auf der Achse." },
+    { "id": "step-2", "caption": "Die Hauptkomponente maximiert die Varianz entlang dieser Achse." }
+  ],
+  "predict": {
+    "beat": "step-1",
+    "prompt": "Die Punkte liegen auf y = 0,5x. Welcher Winkel θ beschreibt die Achse maximaler Varianz?",
+    "input": "numeric",
+    "expected": 0.46,
+    "tolerance": 0.02,
+    "hints": ["Die Achse hat die Steigung 0,5; ihr Winkel ist arctan(0,5)."],
+    "typicalErrors": [
+      { "match": 1.10715, "feedback": "Dieser Winkel gehört zur senkrechten Richtung, nicht zur Richtung der Daten." }
+    ]
+  }
+}

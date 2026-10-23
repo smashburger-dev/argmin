@@ -1,0 +1,5458 @@
+{
+  "schemaVersion": 1,
+  "records": {
+    "name-tags": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "name-tags",
+      "normalization": "s6a-visible-events/v1",
+      "source": "a = 3\nb = a + 4\na = b - 2\nprint(a, b)",
+      "sourceHash": "a2e2bcac8ece7bf2b7b198da450a6ddfdf9d190b20dc2d4b9c8a32762c2e5be9",
+      "pythonVersion": "3.14.7",
+      "inputs": {},
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:a": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:a": "object:0",
+            "frame:0:b": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:a": "object:2",
+            "frame:0:b": "object:1"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:a": "object:2",
+            "frame:0:b": "object:1"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": "5 7\n"
+        }
+      ],
+      "stdout": "5 7\n"
+    },
+    "bouncer-age-16": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "bouncer",
+      "normalization": "s6a-visible-events/v1",
+      "source": "age = 16\nok = age >= 18 and ticket\nprint(ok)",
+      "sourceHash": "413fa51397d4e1d381dd2be161c822fe9dcf7c15443f88c734837624b7e753dc",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "age": {
+          "type": "int",
+          "value": "16"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:age": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "16"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:age": "object:0",
+            "frame:0:ok": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "16"
+            },
+            "object:1": {
+              "type": "bool",
+              "value": "False"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:age": "object:0",
+            "frame:0:ok": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "16"
+            },
+            "object:1": {
+              "type": "bool",
+              "value": "False"
+            }
+          },
+          "output": "False\n"
+        }
+      ],
+      "stdout": "False\n"
+    },
+    "bouncer-age-18": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "bouncer",
+      "normalization": "s6a-visible-events/v1",
+      "source": "age = 18\nok = age >= 18 and ticket\nprint(ok)",
+      "sourceHash": "a70c4226223da2dd50e8f92ce78aa772af4c461b7f743795bfee3ae4ccfacfa2",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "age": {
+          "type": "int",
+          "value": "18"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:age": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "18"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "exception",
+          "line": 2,
+          "bindings": {
+            "frame:0:age": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "18"
+            }
+          },
+          "output": "",
+          "exception": {
+            "type": "NameError",
+            "line": 2
+          }
+        }
+      ],
+      "stdout": ""
+    },
+    "vending-frame": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "vending-frame",
+      "normalization": "s6a-visible-events/v1",
+      "source": "def f(x):\n    return x + 10\ndef g(x):\n    return x * 3\nx = f(g(2))\nprint(x)",
+      "sourceHash": "e8c37012ce7b6afb107a39ec5d077555d6babca49f996e2ab60edc9afa452737",
+      "pythonVersion": "3.14.7",
+      "inputs": {},
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:1",
+          "parentFrameId": "frame:0",
+          "function": "g",
+          "event": "call",
+          "line": 3,
+          "bindings": {
+            "frame:1:x": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:1",
+          "parentFrameId": "frame:0",
+          "function": "g",
+          "event": "return",
+          "line": 4,
+          "bindings": {
+            "frame:1:x": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": "",
+          "result": "object:1"
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:2",
+          "parentFrameId": "frame:0",
+          "function": "f",
+          "event": "call",
+          "line": 1,
+          "bindings": {
+            "frame:2:x": "object:1"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:2",
+          "parentFrameId": "frame:0",
+          "function": "f",
+          "event": "return",
+          "line": 2,
+          "bindings": {
+            "frame:2:x": "object:1"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "6"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "16"
+            }
+          },
+          "output": "",
+          "result": "object:2"
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:x": "object:2"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "16"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:x": "object:2"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "16"
+            }
+          },
+          "output": "16\n"
+        }
+      ],
+      "stdout": "16\n"
+    },
+    "ledger-n0-1": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 1\nsumme = 0\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "e99a8408acc9617f3cbaa88d5aead82eb7ce4f501228a3cc4b8afc56800290bd",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "1"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "0"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": "1 0\n"
+        }
+      ],
+      "stdout": "1 0\n"
+    },
+    "ledger-n0-2": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 2\nsumme = 0\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "18317ad16391c1a211e7c980d92e9812a39aed34a8eaf7e453707caa76772d98",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "2"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "0"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": "3 0\n"
+        }
+      ],
+      "stdout": "3 0\n"
+    },
+    "ledger-n0-3": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 3\nsumme = 0\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "68c7e19c77bdd6744f52b14261dd4e37572c7fb31ce0dc6c5f3bf97fe61e2204",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "3"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "0"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 11,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 12,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 13,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": "6 0\n"
+        }
+      ],
+      "stdout": "6 0\n"
+    },
+    "ledger-n0-4": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 4\nsumme = 0\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "c6173b28a1d6181e9100ff7268d12b6204efe028b5b64fd6c8df0b044e8f4605",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "4"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "0"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "9"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 11,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "9"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 12,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "9"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 13,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "10"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 14,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "10"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 15,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "10"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 16,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "10"
+            }
+          },
+          "output": "10 0\n"
+        }
+      ],
+      "stdout": "10 0\n"
+    },
+    "two-tags-one-list": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "two-tags-one-list",
+      "normalization": "s6a-visible-events/v1",
+      "source": "x = [-6, 3]\ny = x\ny.append(2)\nx[0] = 9\nx = [0]\nprint(y)",
+      "sourceHash": "e7344f97ca2301880d5b0bc1d274cae77f6f9a6d1212e8d556c0cc09000c957e",
+      "pythonVersion": "3.14.7",
+      "inputs": {},
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:x": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "list",
+              "value": "[-6, 3]"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:x": "object:0",
+            "frame:0:y": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "list",
+              "value": "[-6, 3]"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:x": "object:0",
+            "frame:0:y": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "list",
+              "value": "[-6, 3, 2]"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:x": "object:0",
+            "frame:0:y": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "list",
+              "value": "[9, 3, 2]"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:x": "object:1",
+            "frame:0:y": "object:0"
+          },
+          "objects": {
+            "object:1": {
+              "type": "list",
+              "value": "[0]"
+            },
+            "object:0": {
+              "type": "list",
+              "value": "[9, 3, 2]"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:x": "object:1",
+            "frame:0:y": "object:0"
+          },
+          "objects": {
+            "object:1": {
+              "type": "list",
+              "value": "[0]"
+            },
+            "object:0": {
+              "type": "list",
+              "value": "[9, 3, 2]"
+            }
+          },
+          "output": "[9, 3, 2]\n"
+        }
+      ],
+      "stdout": "[9, 3, 2]\n"
+    },
+    "dictionary": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "dictionary",
+      "normalization": "s6a-visible-events/v1",
+      "source": "lage = {'start': 1}\nlage['ende'] = -1\nlage['start'] = -2\ndel lage['ende']",
+      "sourceHash": "cbc53dea4c92f936db66f549915b9d0fa5162db56e283192ad57954dccfa8a01",
+      "pythonVersion": "3.14.7",
+      "inputs": {},
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:lage": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "dict",
+              "value": "{'start': 1}"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:lage": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "dict",
+              "value": "{'start': 1, 'ende': -1}"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:lage": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "dict",
+              "value": "{'start': -2, 'ende': -1}"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:lage": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "dict",
+              "value": "{'start': -2}"
+            }
+          },
+          "output": ""
+        }
+      ],
+      "stdout": ""
+    },
+    "smoke-detector": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "smoke-detector",
+      "normalization": "s6a-visible-events/v1",
+      "source": "werte = [9, 6]\nwert = werte[9]\nassert wert == 6",
+      "sourceHash": "c07008a0676cbb8dfaba0480d3e957c6881806a0b8312e6d17d89cf92c79b737",
+      "pythonVersion": "3.14.7",
+      "inputs": {},
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:werte": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "list",
+              "value": "[9, 6]"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "exception",
+          "line": 2,
+          "bindings": {
+            "frame:0:werte": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "list",
+              "value": "[9, 6]"
+            }
+          },
+          "output": "",
+          "exception": {
+            "type": "IndexError",
+            "line": 2
+          }
+        }
+      ],
+      "stdout": ""
+    },
+    "bouncer-age-17": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "bouncer",
+      "normalization": "s6a-visible-events/v1",
+      "source": "age = 17\nok = age >= 18 and ticket\nprint(ok)",
+      "sourceHash": "e2aa08b05412792630846a6887f1db76105bae1e3bde5765347f88d0110adb79",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "age": {
+          "type": "int",
+          "value": "17"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:age": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "17"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:age": "object:0",
+            "frame:0:ok": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "17"
+            },
+            "object:1": {
+              "type": "bool",
+              "value": "False"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:age": "object:0",
+            "frame:0:ok": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "17"
+            },
+            "object:1": {
+              "type": "bool",
+              "value": "False"
+            }
+          },
+          "output": "False\n"
+        }
+      ],
+      "stdout": "False\n"
+    },
+    "ledger-n0-1-sum0-1": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 1\nsumme = 1\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "6cc03dc54e71d48349f97fc7cb051ba85f5740e17dca79009f31fc95cd18f3e9",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "1"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "1"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": "2 0\n"
+        }
+      ],
+      "stdout": "2 0\n"
+    },
+    "ledger-n0-1-sum0-2": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 1\nsumme = 2\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "f253def1942b5ffbdab2d41e925dc751ce7c72a1715286333a0b6997019330c5",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "1"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "2"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": "3 0\n"
+        }
+      ],
+      "stdout": "3 0\n"
+    },
+    "ledger-n0-1-sum0-3": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 1\nsumme = 3\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "35bcbcbd82619c42f15717025e049c2980ca41c9f33740987d318c3eba2fbbfd",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "1"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "3"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": "4 0\n"
+        }
+      ],
+      "stdout": "4 0\n"
+    },
+    "ledger-n0-2-sum0-1": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 2\nsumme = 1\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "d7bfbc64d2a23a07c5f395d6f1f9e6f04c39c4d61210b0efc0c8f258c422c176",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "2"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "1"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": "4 0\n"
+        }
+      ],
+      "stdout": "4 0\n"
+    },
+    "ledger-n0-2-sum0-2": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 2\nsumme = 2\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "6e31ca82eb6b64048b5a643aff697e30eb7c9a103239c554d26cc3ec75aa6641",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "2"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "2"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": "5 0\n"
+        }
+      ],
+      "stdout": "5 0\n"
+    },
+    "ledger-n0-2-sum0-3": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 2\nsumme = 3\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "ea641f7e183f3b7c0ea3a1fb11e605e111ed1682e9e8874e2c531c93b98b49ec",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "2"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "3"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:5",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:5": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:5",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:5": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:5",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:5": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": "6 0\n"
+        }
+      ],
+      "stdout": "6 0\n"
+    },
+    "ledger-n0-3-sum0-1": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 3\nsumme = 1\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "015125de193c3fe5e548ca982100a1d3ed6ae395554271feec0e5e0c58776973",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "3"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "1"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 11,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 12,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 13,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": "7 0\n"
+        }
+      ],
+      "stdout": "7 0\n"
+    },
+    "ledger-n0-3-sum0-2": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 3\nsumme = 2\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "37101d8918e5f2dece7c54eddd24cb65d33ae3070c28158a9fe9f24a2f31b81b",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "3"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "2"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "8"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 11,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "8"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 12,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "8"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 13,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "8"
+            }
+          },
+          "output": "8 0\n"
+        }
+      ],
+      "stdout": "8 0\n"
+    },
+    "ledger-n0-3-sum0-3": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 3\nsumme = 3\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "0afd9cac762bfd995982e567ee41da904cd61d512f70c42df74bb0f7d3e28145",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "3"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "3"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:2",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:2": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "8"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "8"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "8"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "9"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 11,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "9"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 12,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "9"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 13,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "9"
+            }
+          },
+          "output": "9 0\n"
+        }
+      ],
+      "stdout": "9 0\n"
+    },
+    "ledger-n0-4-sum0-1": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 4\nsumme = 1\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "b7ba017a7abd3f65caef1fc55d7822da885e8b0288730dd9a1960fc2a3e56c9f",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "4"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "1"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "5"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "8"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:5",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:5": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "8"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:5",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:5": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "8"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:5",
+            "frame:0:summe": "object:6"
+          },
+          "objects": {
+            "object:5": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:6": {
+              "type": "int",
+              "value": "10"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 11,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:6"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:6": {
+              "type": "int",
+              "value": "10"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 12,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:6"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:6": {
+              "type": "int",
+              "value": "10"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 13,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "11"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 14,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:8",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:8": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "11"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 15,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:8",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:8": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "11"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 16,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:8",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:8": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "11"
+            }
+          },
+          "output": "11 0\n"
+        }
+      ],
+      "stdout": "11 0\n"
+    },
+    "ledger-n0-4-sum0-2": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 4\nsumme = 2\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "4c5fe88438024325f95af23650bffb071dcf1f989e65f5ef16b9944c00557e5e",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "4"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "2"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "6"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:3",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:3": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "9"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "9"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:4"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:4": {
+              "type": "int",
+              "value": "9"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "11"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 11,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "11"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 12,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "11"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 13,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "12"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 14,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:8",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:8": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "12"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 15,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:8",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:8": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "12"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 16,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:8",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:8": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "12"
+            }
+          },
+          "output": "12 0\n"
+        }
+      ],
+      "stdout": "12 0\n"
+    },
+    "ledger-n0-4-sum0-3": {
+      "kind": "python-trace",
+      "schemaVersion": 1,
+      "programId": "ledger",
+      "normalization": "s6a-visible-events/v1",
+      "source": "n = 4\nsumme = 3\nwhile n > 0:\n    summe += n\n    n -= 1\nprint(summe, n)",
+      "sourceHash": "c786cddae981fec48cb109ea088059c047704b617844f131dfcb0514535279a9",
+      "pythonVersion": "3.14.7",
+      "inputs": {
+        "n0": {
+          "type": "int",
+          "value": "4"
+        },
+        "sum0": {
+          "type": "int",
+          "value": "3"
+        }
+      },
+      "events": [
+        {
+          "ordinal": 0,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "start",
+          "line": 0,
+          "bindings": {},
+          "objects": {},
+          "output": ""
+        },
+        {
+          "ordinal": 1,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 1,
+          "bindings": {
+            "frame:0:n": "object:0"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 2,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 2,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 3,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:1"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:1": {
+              "type": "int",
+              "value": "3"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 4,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:0",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:0": {
+              "type": "int",
+              "value": "4"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 5,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 6,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:2"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:2": {
+              "type": "int",
+              "value": "7"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 7,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:1",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:1": {
+              "type": "int",
+              "value": "3"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "10"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 8,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "10"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 9,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:3"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:3": {
+              "type": "int",
+              "value": "10"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 10,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:4",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:4": {
+              "type": "int",
+              "value": "2"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "12"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 11,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "12"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 12,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:5"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:5": {
+              "type": "int",
+              "value": "12"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 13,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 4,
+          "bindings": {
+            "frame:0:n": "object:6",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:6": {
+              "type": "int",
+              "value": "1"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "13"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 14,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 5,
+          "bindings": {
+            "frame:0:n": "object:8",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:8": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "13"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 15,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 3,
+          "bindings": {
+            "frame:0:n": "object:8",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:8": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "13"
+            }
+          },
+          "output": ""
+        },
+        {
+          "ordinal": 16,
+          "frameId": "frame:0",
+          "parentFrameId": null,
+          "function": "<module>",
+          "event": "line",
+          "line": 6,
+          "bindings": {
+            "frame:0:n": "object:8",
+            "frame:0:summe": "object:7"
+          },
+          "objects": {
+            "object:8": {
+              "type": "int",
+              "value": "0"
+            },
+            "object:7": {
+              "type": "int",
+              "value": "13"
+            }
+          },
+          "output": "13 0\n"
+        }
+      ],
+      "stdout": "13 0\n"
+    }
+  }
+}

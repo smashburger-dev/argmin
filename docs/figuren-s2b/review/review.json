@@ -1,0 +1,970 @@
+[
+  {
+    "name": "explore-large-375-light",
+    "width": 343,
+    "readout": "η = 0,25, Schritt 12. w = -4.985,573, b = -2.064,979. MSE = 169.864.555,603. ∂w = -58.139,643, ∂b = -24.082,249, |∇L| = 62.929,903. Die Spur hat den Ausschnitt verlassen. Verlust wächst seit drei Schritten, erkannt bei Schritt 3.",
+    "beat": "2",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Übernehmen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "explore-invalid-375-light",
+    "width": 343,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26.",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Übernehmen",
+        "height": 44
+      },
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-A-375-light",
+    "width": 343,
+    "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+    "beat": "1",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "A: Ridge",
+        "height": 44
+      },
+      {
+        "text": "B: Lasso",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-B-375-light",
+    "width": 343,
+    "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+    "beat": "1",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "A: Ridge",
+        "height": 44
+      },
+      {
+        "text": "B: Lasso",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-contract-375-light",
+    "variants": [
+      {
+        "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+        "matrix": "matrix(2.8091 0 0 2.8091 14 14)",
+        "scale": "+3"
+      },
+      {
+        "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+        "matrix": "matrix(2.8091 0 0 2.8091 14 14)",
+        "scale": "+3"
+      }
+    ]
+  },
+  {
+    "name": "selection-names-375-light",
+    "width": 343,
+    "readout": "",
+    "beat": "2",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "a:o1",
+        "height": 44
+      },
+      {
+        "text": "b:o2",
+        "height": 44
+      },
+      {
+        "text": "o1: 3",
+        "height": 44
+      },
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Überspringen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "selection-matrix-375-light",
+    "width": 343,
+    "readout": "Genau eine Lösung",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zeile 1, Spalte 1: 1",
+        "height": 44
+      },
+      {
+        "text": "Zeile 1, Spalte 2: 1",
+        "height": 44
+      },
+      {
+        "text": "Zeile 1, Spalte 3: 0",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "hint-375-light",
+    "width": 343,
+    "readout": "Hafer ? · Beeren ? · Ziel b",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      },
+      {
+        "text": "Figur ausblenden",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "hint-padding-375-light",
+    "padding": 13
+  },
+  {
+    "name": "hint-state-375-light-1",
+    "padding": 13,
+    "beat": "1"
+  },
+  {
+    "name": "hint-state-375-light-2",
+    "padding": 13,
+    "beat": "2"
+  },
+  {
+    "name": "hint-state-375-light-3",
+    "padding": 13,
+    "beat": "3"
+  },
+  {
+    "name": "hint-last-375-light",
+    "width": 343,
+    "readout": "Hafer ? · Beeren ? · Ziel b",
+    "beat": "3",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      },
+      {
+        "text": "Figur ausblenden",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "page-errors-375-light",
+    "errors": []
+  },
+  {
+    "name": "explore-large-375-dark",
+    "width": 343,
+    "readout": "η = 0,25, Schritt 12. w = -4.985,573, b = -2.064,979. MSE = 169.864.555,603. ∂w = -58.139,643, ∂b = -24.082,249, |∇L| = 62.929,903. Die Spur hat den Ausschnitt verlassen. Verlust wächst seit drei Schritten, erkannt bei Schritt 3.",
+    "beat": "2",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Übernehmen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "explore-invalid-375-dark",
+    "width": 343,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26.",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Übernehmen",
+        "height": 44
+      },
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-A-375-dark",
+    "width": 343,
+    "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+    "beat": "1",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "A: Ridge",
+        "height": 44
+      },
+      {
+        "text": "B: Lasso",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-B-375-dark",
+    "width": 343,
+    "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+    "beat": "1",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "A: Ridge",
+        "height": 44
+      },
+      {
+        "text": "B: Lasso",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-contract-375-dark",
+    "variants": [
+      {
+        "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+        "matrix": "matrix(2.8091 0 0 2.8091 14 14)",
+        "scale": "+3"
+      },
+      {
+        "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+        "matrix": "matrix(2.8091 0 0 2.8091 14 14)",
+        "scale": "+3"
+      }
+    ]
+  },
+  {
+    "name": "selection-names-375-dark",
+    "width": 343,
+    "readout": "",
+    "beat": "2",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "a:o1",
+        "height": 44
+      },
+      {
+        "text": "b:o2",
+        "height": 44
+      },
+      {
+        "text": "o1: 3",
+        "height": 44
+      },
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Überspringen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "selection-matrix-375-dark",
+    "width": 343,
+    "readout": "Genau eine Lösung",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zeile 1, Spalte 1: 1",
+        "height": 44
+      },
+      {
+        "text": "Zeile 1, Spalte 2: 1",
+        "height": 44
+      },
+      {
+        "text": "Zeile 1, Spalte 3: 0",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "hint-375-dark",
+    "width": 343,
+    "readout": "Hafer ? · Beeren ? · Ziel b",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      },
+      {
+        "text": "Figur ausblenden",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "hint-padding-375-dark",
+    "padding": 13
+  },
+  {
+    "name": "hint-state-375-dark-1",
+    "padding": 13,
+    "beat": "1"
+  },
+  {
+    "name": "hint-state-375-dark-2",
+    "padding": 13,
+    "beat": "2"
+  },
+  {
+    "name": "hint-state-375-dark-3",
+    "padding": 13,
+    "beat": "3"
+  },
+  {
+    "name": "hint-last-375-dark",
+    "width": 343,
+    "readout": "Hafer ? · Beeren ? · Ziel b",
+    "beat": "3",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      },
+      {
+        "text": "Figur ausblenden",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "page-errors-375-dark",
+    "errors": []
+  },
+  {
+    "name": "explore-large-1440-light",
+    "width": 828,
+    "readout": "η = 0,25, Schritt 12. w = -4.985,573, b = -2.064,979. MSE = 169.864.555,603. ∂w = -58.139,643, ∂b = -24.082,249, |∇L| = 62.929,903. Die Spur hat den Ausschnitt verlassen. Verlust wächst seit drei Schritten, erkannt bei Schritt 3.",
+    "beat": "2",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Übernehmen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "explore-invalid-1440-light",
+    "width": 828,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26.",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Übernehmen",
+        "height": 44
+      },
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-A-1440-light",
+    "width": 828,
+    "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+    "beat": "1",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "A: Ridge",
+        "height": 44
+      },
+      {
+        "text": "B: Lasso",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-B-1440-light",
+    "width": 828,
+    "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+    "beat": "1",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "A: Ridge",
+        "height": 44
+      },
+      {
+        "text": "B: Lasso",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-contract-1440-light",
+    "variants": [
+      {
+        "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+        "matrix": "matrix(5.4136 0 0 5.4136 126.3 27.1)",
+        "scale": "+3"
+      },
+      {
+        "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+        "matrix": "matrix(5.4136 0 0 5.4136 126.3 27.1)",
+        "scale": "+3"
+      }
+    ]
+  },
+  {
+    "name": "selection-names-1440-light",
+    "width": 728,
+    "readout": "",
+    "beat": "2",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "a:o1",
+        "height": 44
+      },
+      {
+        "text": "b:o2",
+        "height": 44
+      },
+      {
+        "text": "o1: 3",
+        "height": 44
+      },
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Überspringen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "selection-matrix-1440-light",
+    "width": 728,
+    "readout": "Genau eine Lösung",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zeile 1, Spalte 1: 1",
+        "height": 44
+      },
+      {
+        "text": "Zeile 1, Spalte 2: 1",
+        "height": 44
+      },
+      {
+        "text": "Zeile 1, Spalte 3: 0",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "hint-1440-light",
+    "width": 420,
+    "readout": "Hafer ? · Beeren ? · Ziel b",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      },
+      {
+        "text": "Figur ausblenden",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "hint-padding-1440-light",
+    "padding": 17
+  },
+  {
+    "name": "hint-state-1440-light-1",
+    "padding": 17,
+    "beat": "1"
+  },
+  {
+    "name": "hint-state-1440-light-2",
+    "padding": 17,
+    "beat": "2"
+  },
+  {
+    "name": "hint-state-1440-light-3",
+    "padding": 17,
+    "beat": "3"
+  },
+  {
+    "name": "hint-last-1440-light",
+    "width": 420,
+    "readout": "Hafer ? · Beeren ? · Ziel b",
+    "beat": "3",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      },
+      {
+        "text": "Figur ausblenden",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "page-errors-1440-light",
+    "errors": []
+  },
+  {
+    "name": "explore-large-1440-dark",
+    "width": 828,
+    "readout": "η = 0,25, Schritt 12. w = -4.985,573, b = -2.064,979. MSE = 169.864.555,603. ∂w = -58.139,643, ∂b = -24.082,249, |∇L| = 62.929,903. Die Spur hat den Ausschnitt verlassen. Verlust wächst seit drei Schritten, erkannt bei Schritt 3.",
+    "beat": "2",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Übernehmen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "explore-invalid-1440-dark",
+    "width": 828,
+    "readout": "η = 0,05, Schritt 0. w = 0, b = 0. MSE = 29. ∂w = -24, ∂b = -10, |∇L| = 26.",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Übernehmen",
+        "height": 44
+      },
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-A-1440-dark",
+    "width": 828,
+    "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+    "beat": "1",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "A: Ridge",
+        "height": 44
+      },
+      {
+        "text": "B: Lasso",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-B-1440-dark",
+    "width": 828,
+    "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+    "beat": "1",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "A: Ridge",
+        "height": 44
+      },
+      {
+        "text": "B: Lasso",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "compare-contract-1440-dark",
+    "variants": [
+      {
+        "readout": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+        "matrix": "matrix(5.4136 0 0 5.4136 126.3 27.1)",
+        "scale": "+3"
+      },
+      {
+        "readout": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+        "matrix": "matrix(5.4136 0 0 5.4136 126.3 27.1)",
+        "scale": "+3"
+      }
+    ]
+  },
+  {
+    "name": "selection-names-1440-dark",
+    "width": 728,
+    "readout": "",
+    "beat": "2",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "a:o1",
+        "height": 44
+      },
+      {
+        "text": "b:o2",
+        "height": 44
+      },
+      {
+        "text": "o1: 3",
+        "height": 44
+      },
+      {
+        "text": "Prüfen",
+        "height": 44
+      },
+      {
+        "text": "Überspringen",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "selection-matrix-1440-dark",
+    "width": 728,
+    "readout": "Genau eine Lösung",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zeile 1, Spalte 1: 1",
+        "height": 44
+      },
+      {
+        "text": "Zeile 1, Spalte 2: 1",
+        "height": 44
+      },
+      {
+        "text": "Zeile 1, Spalte 3: 0",
+        "height": 44
+      },
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "hint-1440-dark",
+    "width": 420,
+    "readout": "Hafer ? · Beeren ? · Ziel b",
+    "beat": "0",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Weiter",
+        "height": 44
+      },
+      {
+        "text": "Figur ausblenden",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "hint-padding-1440-dark",
+    "padding": 17
+  },
+  {
+    "name": "hint-state-1440-dark-1",
+    "padding": 17,
+    "beat": "1"
+  },
+  {
+    "name": "hint-state-1440-dark-2",
+    "padding": 17,
+    "beat": "2"
+  },
+  {
+    "name": "hint-state-1440-dark-3",
+    "padding": 17,
+    "beat": "3"
+  },
+  {
+    "name": "hint-last-1440-dark",
+    "width": 420,
+    "readout": "Hafer ? · Beeren ? · Ziel b",
+    "beat": "3",
+    "font": "14px",
+    "buttons": [
+      {
+        "text": "Zurück",
+        "height": 44
+      },
+      {
+        "text": "Von vorn",
+        "height": 44
+      },
+      {
+        "text": "Figur ausblenden",
+        "height": 44
+      }
+    ]
+  },
+  {
+    "name": "page-errors-1440-dark",
+    "errors": []
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "goods-in",
+  "title": "Wareneingang: Zahl oder Fehler",
+  "caption": "Die erste Zeile passiert Parser und Bereichsprüfung als gültige Zahl.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die erste Zeile passiert Parser und Bereichsprüfung als gültige Zahl."
+    },
+    {
+      "id": "step-1",
+      "caption": "Unlesbarer Text läuft als erwarteter ValueError in die Fehlerliste."
+    },
+    {
+      "id": "step-2",
+      "caption": "Auch eine Zahl kann den Wertebereich verletzen. Programmfehler gehören nicht in diese Rutsche."
+    }
+  ]
+}
+

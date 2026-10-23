@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-figuren-s7-archive",
+  "version": 1,
+  "locale": "de",
+  "title": "Archiv der ersetzten Figuren S7",
+  "objectives": ["Ersetzte Visualisierungen bis zur ausdrücklichen Freigabe aufbewahren"],
+  "competencyIds": ["c-ml-logistic", "c-genai-eval"],
+  "requires": [],
+  "estimatedMinutes": 1,
+  "blocks": [
+    { "blockId": "archive-logistic", "type": "visualization", "contentRef": "lessons/data-ml/sigmoid-threshold.viz.json" },
+    { "blockId": "archive-eval", "type": "visualization", "contentRef": "lessons/genai-systems/precision-recall-threshold.viz.json" }
+  ],
+  "sourceRefs": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "local-only"
+}

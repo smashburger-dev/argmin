@@ -16,6 +16,7 @@ Das **Residuum** (englisch *residual*) ist der Schätzfehler einer einzelnen Woh
 
 Wo der Vergleich hinkt: Echte Preise wachsen nicht linear, eine Wohnung im Zentrum kostet pro m² mehr als eine am Rand, und einzelne Ausreißer können das Bild verzerren.
 
+Die folgende Figur verwendet vier kleine Zahlenpaare statt Wohnungspreise. Jede Feder misst ein vertikales Residuum. Wandert der letzte Punkt nach oben, verändert sich auch die beste Gerade. Die Federenergie steht für das Quadrat des Residuums; echte Federn bewegen sich nicht wie ein Optimierungsalgorithmus.
 ## Design-Matrix und geschlossene Lösung
 
 Um den Achsenabschnitt $w_0$ mitzurechnen, wird aus der Datentabelle die **Design-Matrix**: Eine [Matrix](#/glossary/matrix) $A$, deren erste Spalte nur Einsen enthält und deren übrige Spalten die Merkmale sind. Für vier Wohnungen mit 40, 60, 80 und 100 m² sieht sie so aus:

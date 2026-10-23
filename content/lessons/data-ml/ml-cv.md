@@ -7,7 +7,6 @@ Ein einziger Train/Test-Split kann Glück oder Pech sein, und ein Sprachmodell, 
 Stell dir fünf Übungsblätter vor. Fünfmal lernst du mit vier Blättern und testest dich mit dem fünften; am Ende hast du fünf Noten. Ihre Streuung sagt, wie verlässlich dein Können ist, besser als eine einzelne Note. **Leakage** ist in diesem Bild: Du hast die Prüfungsfragen vorher gesehen.
 
 Wo der Vergleich hinkt: Übungsblätter sind unabhängig erstellt. Datenpunkte können zusammenhängen, etwa Messungen derselben Person oder desselben Zeitraums; dann müssen die Folds nach Gruppen oder Zeit getrennt werden, sonst sickert die Lösung ins Training.
-
 ## Fold-Aufteilung: n mod k verteilen
 
 **K-Fold-Kreuzvalidierung** teilt die Daten in $k$ **Folds** (Teilmengen): Jeder Fold ist einmal der Testfall, die anderen $k - 1$ Folds trainieren das Modell. Aus den $k$ Scores bildest du Mittelwert und Streuung; die Streuung ist die eigentliche Nachricht.

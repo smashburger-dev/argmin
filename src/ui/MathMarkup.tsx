@@ -48,6 +48,7 @@ export function MathMarkup({ html, inline = false }: { html: string; inline?: bo
   const root = useRef<HTMLElement>(null);
   useEffect(() => {
     let active = true;
+    let stopObserving = () => {};
     void ensureKatex().then((ready) => {
       if (!active || !ready || !root.current || !window.renderMathInElement) return;
       window.renderMathInElement(root.current, {
@@ -60,12 +61,29 @@ export function MathMarkup({ html, inline = false }: { html: string; inline?: bo
         throwOnError: false,
       });
       // Horizontally scrollable display formulas must be keyboard reachable
-      // (WCAG scrollable-region-focusable); only mark actual overflowers.
-      root.current?.querySelectorAll<HTMLElement>('.katex-display').forEach((el) => {
+      // (WCAG scrollable-region-focusable), including after fonts/layout load.
+      const displays = [...root.current.querySelectorAll<HTMLElement>('.katex-display')];
+      const updateFocusability = () => displays.forEach((el) => {
         if (el.scrollWidth > el.clientWidth) el.tabIndex = 0;
+        else el.removeAttribute('tabindex');
       });
+      updateFocusability();
+      const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateFocusability);
+      if (observer) {
+        observer.observe(root.current);
+        displays.forEach((el) => {
+          observer.observe(el);
+          if (el.firstElementChild) observer.observe(el.firstElementChild);
+        });
+      }
+      window.addEventListener('resize', updateFocusability);
+      void document.fonts?.ready.then(() => { if (active) updateFocusability(); });
+      stopObserving = () => {
+        observer?.disconnect();
+        window.removeEventListener('resize', updateFocusability);
+      };
     });
-    return () => { active = false; };
+    return () => { active = false; stopObserving(); };
   }, [html]);
   const Tag = inline ? 'span' : 'div';
   return <Tag ref={root as never}><SafeMarkup html={html} /></Tag>;

@@ -291,3 +291,37 @@ Ein Satz kann korrekt sein und trotzdem nicht ankommen. Die folgenden Symptome s
 - Jede Fertigkeit, die eine kuratierte Aufgabe der Lektion verlangt, wird in der Lektion erklärt.
 - Das durchgerechnete Beispiel löst nie eine verlinkte oder kuratierte Aufgabeninstanz vorweg.
 - Links unter „Direkter Check“ behalten ihr Ziel; nur der Linktext darf sich ändern.
+
+## 10. Figuren (`.fig.json`)
+
+Gilt für Figuren in Lektionen (Werkbank-Kit, ADR-0018). Familienplan und Szenenliste: `docs/figuren-familienplan.md`. Die Darstellungsform richtet sich nach dem konkreten Beispiel: statisches Bild, Objektinteraktion, Parametererkundung oder Ablauf. Der unten beschriebene technische Vertrag ist der aktuell implementierte Beat-Vertrag; andere Arten erst nutzen, wenn S2 sie bereitstellt.
+
+### Wann eine Figur
+
+- Die Lektüre erklärt, die Figur macht einen Zusammenhang oder Vorgang sichtbar. Lies bei der Gestaltung den angrenzenden Text. Bewegung und Interaktion erhalten einen konkreten Zweck; eine Sequenz, Kamerafahrt, Tafel oder eigenständige vollständige Erklärung ist keine Pflicht. Noas S3-Review: `docs/figuren-lesson-and-stage.md`.
+- Eine Figur ersetzt eine `.viz.json`, wenn der Gegenstand in 3D klarer wird, die Analogie im Bild arbeiten kann oder der Inhalt ein Ablauf mit Schritten ist. Sie übernimmt dann Frage, erwarteten Wert, Toleranz, Hinweise und `typicalErrors` des alten Checkpoints wörtlich.
+
+### Datei und Platzierung
+
+- Block `{ "type": "figure", "contentRef": "lessons/<bereich>/<name>.fig.json" }` im Lesson-JSON. Die Figur steht zwischen zwei Markdown-Blöcken; für die Platzierung im Text wird das Markdown geteilt (Beispiel `systems.md` und `systems-matrix.md`). Neue Dateien in die Allowlist von `tools/build_public.mjs`.
+- Felder: `scene` (ID aus `assets/js/figures/scenes/index.mjs`), `title`, `caption`, `hint` (wie man die Figur bedient), `params` (prüft die Szene), `beats` (genau die Beat-IDs der Szene in ihrer Reihenfolge, je mit `caption`), optional `predict` (Checkpoint-Felder plus `beat`).
+
+### Was der Compiler erzwingt
+
+- Unbekannte Szene, ungültige Parameter oder abweichende Beat-IDs brechen den Build ab.
+- `predict.expected` muss dem Wert entsprechen, den das Szenenmodell für diesen Beat liefert.
+- Jede Zahl in `title`, `caption`, `hint`, Beat-Beschriftungen und der Vorhersagefrage muss eine Zahl sein, die die Figur selbst zeigt (`displayNumbers` der Szene). Index-Schreibweise wie `a_1` zählt nicht als Zahl.
+- Beschriftungen laufen durch dieselben Textprüfungen wie Lektions-Markdown.
+
+### Beschriftungen
+
+- Eine Beat-Beschriftung lenkt den Blick auf die relevante Änderung. Sie wiederholt weder die Szene noch den vorhandenen Lehrtext und verrät keine Vorhersage, bevor sie gestellt ist.
+- Die Grenze einer Analogie wird dort deutlich, wo sie im Lernfluss relevant ist: in der Figur oder im angrenzenden Absatz „Wo der Vergleich hinkt“. Dafür keinen bewegungslosen Pflicht-Beat erfinden.
+- Sprach- und Formelregeln aus §9 gelten (keine Gedankenstriche, Dezimalkomma als `{,}`, du-Form).
+
+### Szenen bauen
+
+- Szenenmodule sind rein (`assets/js/figures/scenes/<name>.mjs`) und folgen dem Vertrag aus ADR-0018. Jede Zahl, jede Länge und jede Bewegung kommt aus `model` und `pose`; keine Zahl wird in die Darstellung getippt.
+- Höchstens 4 Sekunden pro Beat, kein Autoplay über mehrere Beats, genau ein hervorgehobener Teil pro Beat, Farbe nie allein.
+- Keine neuen figurspezifischen Tests oder Snapshot-Sammlungen standardmäßig anlegen (Noas S3-Regel vom 17.10.2026). Zahlen mit vorhandenen Lösern und Compiler gegenprüfen, den tatsächlichen Vorgang im Browser selbst ansehen, Kontrast zur Trägerfläche in beiden Themes prüfen und Shrink Complexity anwenden. Neue dauerhafte Tests nur auf ausdrücklichen Auftrag; vorhandene Projekt-Gates am Integrationspunkt verwenden.
+- Stil A1 Tonale Werkbank, nur über Tokens in `src/figures/figures.css`, nie im Szenencode. Verbindliche Stil- und Bauregeln: Skill `.devin/skills/workbench/SKILL.md`. Im Entwicklungsbuild zeigt `#/figurenlabor?beat=<n>` die Figur an einem Beat.

@@ -48,8 +48,9 @@ $$w \leftarrow 1{,}2 + 0{,}5 = 1{,}7, \qquad b \leftarrow 0{,}5 + 0{,}21 = 0{,}7
 
 Die Gradienten schrumpfen, weil sich $w$ und $b$ dem Optimum $(2, 1)$ nähern; dort sind beide null.
 
-## Numerischer Gradientencheck
+Die folgende Landschaft verwendet genau die beiden Punkte und die Lernrate dieses Rechenbeispiels. Der Akzent zeigt den Gradienten bergauf; die Spur entsteht durch Schritte entgegen seiner Richtung. Die Pfeile verwenden denselben Darstellungsfaktor für beide Komponenten. Das feine Kachelraster ist nur eine Render-Unterteilung, keine Aufteilung der Daten.
 
+Die geschützte Übertragungsfrage nutzt dagegen die drei Punkte $(1|2)$, $(2|4)$ und $(3|6)$ mit festem $b=0$. Dort ist $\mathrm{MSE}(w)=\tfrac{14}{3}(w-2)^2$. Die Antwort prüft deren Ableitung, nicht den Funktionswert und nicht die beiden Punkte der räumlichen Ansicht.
 Ob eine implementierte Ableitung stimmt, prüfst du ohne Algebra mit der zentralen Differenz:
 
 $$f'(x) \approx \frac{f(x+h) - f(x-h)}{2h}.$$

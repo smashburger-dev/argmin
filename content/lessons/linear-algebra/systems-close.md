@@ -18,7 +18,7 @@ Der umgekehrte Fall tritt im Training auf: Hat ein Modell mehr Gewichte als unab
 
 1. Wähle die richtige Mischung in der [Spaltenbild-Auswahl](#/family/classify-column-combination/column-choice-authored/0/intro).
 2. Bestimme die Koeffizienten in der [Koeffizientenaufgabe](#/family/formula-scalar-product/column-vector-authored/0/core).
-3. Verändere anschließend $x_1$ und $x_2$ in der [interaktiven Visualisierung](#/visualization/column-picture).
+3. Verfolge anschließend ein Matrixprodukt in der [Matrixlektion](#/lesson/l-linalg-matrices) und prüfe jede Ergebniszeile gegen die zugehörige Zeile von $A$.
 
 ## Begriffe auf einen Blick
 

@@ -57,17 +57,3 @@ Assistenten mit Websuche oder Firmendokumenten arbeiten exakt so: Sie holen Chun
 ## Direkter Check
 
 Berechne in einer Einstiegsaufgabe Recall-Werte aus generierten Rankings. In der [Kernaufgabe: normalize und chunk](#/family/construct-normalize-chunk-contract/normalize-chunk-contract/0/core) implementierst du `chunk` und die gepinnte Normalisierung exakt; die [Vertiefungsaufgabe: Retrieval-Baseline](#/family/aggregate-retrieval-ranking-metric/retrieval-ranking-recall/0/stretch) verlangt TF-IDF-Kosinus-Suche und `recall_at_k` auf einer festen Dokumentmenge; die [Herausforderung](#/family/aggregate-retrieval-ranking-metric/retrieval-evaluate-queries/0/challenge) baut daraus einen bewertbaren Mini-Retrieval-Index mit Recall@k und MRR gegen Referenzwerte.
-
-## Begriffe auf einen Blick
-
-- **RAG** (englisch *retrieval-augmented generation*): Pipeline, die zu einer Anfrage erst Dokumente holt und erst dann antwortet.
-- **Chunk**: Textstück fester Größe, das indexiert und abgerufen wird.
-- **Überlappung** (englisch *overlap*): gemeinsamer Rand benachbarter Chunks; verhindert zerschnittene Fakten an Fenstergrenzen.
-- **Index**: Register aus Vokabular und TF-IDF-Matrix, das Terme auf Chunks abbildet.
-- **TF-IDF** (englisch *term frequency-inverse document frequency*): Gewichtung, die häufige lokale Terme hoch und überall vorkommende Terme niedrig stuft.
-- **Kosinus-Ähnlichkeit** (englisch *cosine similarity*): Skalarprodukt geteilt durch die Vektorlängen; misst den Winkel zwischen zwei Vektoren.
-- **Norm**: Länge eines Vektors, geschrieben $\lVert v \rVert$; in NumPy `np.linalg.norm(v)`.
-- **top-k**: die $k$ höchstbewerteten Treffer eines Rankings.
-- **Golden Set**: eingefrorene Testanfragen mit markierten relevanten Dokumenten; definiert die Retrieval-Metrik.
-- **Recall@k**: Anteil der relevanten Dokumente im top-k-Fenster.
-- **MRR** (englisch *mean reciprocal rank*): Mittelwert von eins durch Rang des ersten relevanten Treffers.

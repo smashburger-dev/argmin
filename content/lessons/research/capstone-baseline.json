@@ -24,6 +24,11 @@
       "contentRef": "lessons/research/capstone-baseline.md"
     },
     {
+      "blockId": "s8b-sha256-seal",
+      "type": "figure",
+      "contentRef": "lessons/research/sha256-seal.fig.json"
+    },
+    {
       "blockId": "capstone-baseline-check",
       "type": "checkpoint",
       "contentRef": "lessons/research/capstone-baseline-checkpoint.md"

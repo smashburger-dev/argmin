@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "two-tags-one-list",
+  "title": "Zwei Namen, eine Liste",
+  "caption": "Mutation ändert dasselbe Objekt. Eine neue Zuweisung kann nur einen Namen an ein anderes Objekt hängen.",
+  "hint": "Verfolge die ausgeführte Zeile und den zugehörigen Zustand.",
+  "params": {},
+  "beats": {
+    "from": "trace"
+  }
+}

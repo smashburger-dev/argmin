@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-foundations-control-flow",
-  "version": 3,
+  "version": 4,
   "locale": "de",
   "title": "Bedingungen als Wahrheitsfragen lesen",
   "objectives": ["Bedingungen als Wahrheitsfragen formulieren", "for und while passend auswählen", "Abbruch und Fortschritt einer Schleife prüfen"],
@@ -9,8 +9,10 @@
   "requires": ["c-python-basics"],
   "estimatedMinutes": 75,
   "blocks": [
-    { "blockId": "control-flow-core", "type": "worked-example", "contentRef": "lessons/foundations/control-flow.md" },
-    { "blockId": "control-flow-viz", "type": "visualization", "contentRef": "lessons/foundations/threshold-branch.viz.json" }
+    {"blockId":"control-flow-core","type":"worked-example","contentRef":"lessons/foundations/control-flow.md"},
+    {"blockId":"bouncer","type":"figure","contentRef":"lessons/foundations/bouncer.fig.json"},
+    {"blockId":"control-flow-core-after-trace","type":"worked-example","contentRef":"lessons/foundations/control-flow-trace-after.md"},
+    {"blockId":"control-flow-viz","type":"visualization","contentRef":"lessons/foundations/threshold-branch.viz.json"}
   ],
   "sourceRefs": [
     { "sourceId": "py-tutorial-official-3.14", "role": "practice", "locator": "Kapitel 4.1 bis 4.5: if, for, range und break" }

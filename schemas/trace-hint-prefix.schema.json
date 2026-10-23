@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ki-lernplattform.local/schemas/trace-hint-prefix.schema.json",
+  "title": "Safe trace hint prefix v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "schemaVersion", "familyId", "caseId", "scene", "sourceHash", "source", "target", "requested", "lastAllowedState", "cut", "visibleFields"],
+  "properties": {
+    "kind": { "const": "trace-hint-prefix" },
+    "schemaVersion": { "const": 1 },
+    "familyId": { "type": "string", "minLength": 1 },
+    "caseId": { "type": "string", "minLength": 1 },
+    "scene": { "type": "string", "minLength": 1 },
+    "sourceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "source": { "enum": ["case", "neighbor"] },
+    "parameters": { "type": "object", "maxProperties": 16 },
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["lineId", "frameId", "eventOrdinal", "line"],
+      "properties": {
+        "lineId": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "frameId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "eventOrdinal": { "type": "integer", "minimum": 0, "maximum": 2047 },
+        "line": { "type": "integer", "minimum": 0, "maximum": 1024 }
+      }
+    },
+    "requested": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bindings", "objectAttributes", "values", "classifications"],
+      "properties": {
+        "bindings": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^frame:[0-9]+:[A-Za-z_][A-Za-z0-9_]*$" } },
+        "objectAttributes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "values": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 128 } },
+        "classifications": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 128 } }
+      }
+    },
+    "lastAllowedState": {
+      "type": "object", "additionalProperties": false,
+      "required": ["frameId", "eventOrdinal", "line"],
+      "properties": {
+        "frameId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "eventOrdinal": { "type": "integer", "minimum": 0, "maximum": 2047 },
+        "line": { "type": "integer", "minimum": 0, "maximum": 1024 }
+      }
+    },
+    "cut": { "const": "after-last-allowed-state" },
+    "visibleFields": { "const": ["sourceLines", "priorCaptions"] }
+  },
+  "allOf": [
+    { "if": { "properties": { "source": { "const": "neighbor" } }, "required": ["source"] }, "then": { "properties": { "parameters": { "type": "object" } }, "required": ["parameters"] } },
+    { "if": { "properties": { "source": { "const": "case" } }, "required": ["source"] }, "then": { "properties": { "parameters": {} }, "not": { "required": ["parameters"] } } }
+  ]
+}

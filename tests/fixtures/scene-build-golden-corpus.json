@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "id": "mix-to-target",
+      "model": "mixer",
+      "parameters": { "a1": [2, 1], "a2": [1, 2], "target": [5, 4] },
+      "answer": { "kind": "scene-build", "schemaVersion": 1, "form": { "solutionSet": "unique", "portions": [2, 1] }, "steps": [] },
+      "solved": { "solutionSet": "unique", "portions": [2, 1] },
+      "simulation": { "hit": true, "mix": [5, 4], "diff": [0, 0] }
+    },
+    {
+      "id": "mix-infinite",
+      "model": "mixer",
+      "parameters": { "a1": [1, 2], "a2": [2, 4], "target": [3, 6] },
+      "answer": { "kind": "scene-build", "schemaVersion": 1, "form": { "solutionSet": "infinite", "portions": [1, 1] }, "steps": [] },
+      "solved": { "solutionSet": "infinite" },
+      "simulation": { "hit": true, "mix": [3, 6], "diff": [0, 0] }
+    },
+    {
+      "id": "mix-unreachable",
+      "model": "mixer",
+      "parameters": { "a1": [1, 2], "a2": [2, 4], "target": [3, 5] },
+      "answer": { "kind": "scene-build", "schemaVersion": 1, "form": { "solutionSet": "none" }, "steps": [] },
+      "solved": { "solutionSet": "none" },
+      "simulation": null
+    },
+    {
+      "id": "balance-solve",
+      "model": "balance",
+      "parameters": { "left": { "x": 2, "constant": 3 }, "right": { "x": 0, "constant": 7 } },
+      "answer": {
+        "kind": "scene-build", "schemaVersion": 1,
+        "form": { "equation": { "left": { "x": "1", "constant": "0" }, "right": { "x": "0", "constant": "2" } } },
+        "steps": [
+          { "operation": "subtract", "side": "both", "term": { "x": 0, "constant": 3 } },
+          { "operation": "divide", "side": "both", "term": { "x": 0, "constant": 2 } }
+        ]
+      },
+      "solved": { "solutionSet": "unique", "value": "2" },
+      "simulation": { "state": { "left": { "x": "1", "constant": "0" }, "right": { "x": "0", "constant": "2" } } }
+    }
+  ]
+}

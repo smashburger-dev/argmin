@@ -1,0 +1,31 @@
+{
+  "A: Ridge": {
+    "before": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+    "after": "Ridge, λ = 2. Gewichte: 1; 0,5; -0,333.",
+    "printedBeat": "1",
+    "restoredBeat": "1"
+  },
+  "B: Lasso": {
+    "before": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+    "after": "Lasso, λ = 2. Gewichte: 1; 0; 0.",
+    "printedBeat": "1",
+    "restoredBeat": "1"
+  },
+  "forcedColors": "rgb(0, 0, 0)",
+  "forcedCompareBorder": "2px",
+  "reducedMotion": {
+    "beat": "1",
+    "settled": "true"
+  },
+  "touch": {
+    "az0": 32,
+    "az1": 72.5,
+    "scroll0": 7619,
+    "scroll1": 7750
+  },
+  "selection": "auto",
+  "beatSelectionReset": true,
+  "directSelection": true,
+  "cachedTargetReset": true,
+  "memoizedModelReset": true
+}

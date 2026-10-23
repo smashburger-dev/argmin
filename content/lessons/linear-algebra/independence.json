@@ -24,9 +24,11 @@
     },
     {
       "blockId": "independence-viz",
-      "type": "visualization",
-      "contentRef": "lessons/linear-algebra/span-2d.viz.json"
-    }
+      "type": "figure",
+      "contentRef": "lessons/linear-algebra/span-carpet.fig.json"
+    },
+    { "blockId": "independence-details", "type": "worked-example", "contentRef": "lessons/linear-algebra/independence-details.md" },
+    { "blockId": "independence-cases-figure", "type": "figure", "contentRef": "lessons/linear-algebra/solution-cases-3d.fig.json" }
   ],
   "sourceRefs": [
     {

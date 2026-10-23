@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "kind": "explore",
+  "engine": "argmin-figure",
+  "scene": "mse-landscape",
+  "title": "MSE-Landschaft und Gradient",
+  "caption": "Zwei Parameter bestimmen die Lage, der Verlust bestimmt die Höhe.",
+  "hint": "Die Lektüre erklärt das Beispiel und seine Grenzen.",
+  "params": {
+    "eta": 0.05
+  },
+  "explore": {
+    "parameter": "eta",
+    "label": "Lernrate η",
+    "min": 0.005,
+    "max": 0.3,
+    "step": 0.005,
+    "input": "number"
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die Höhe ist der MSE über w und b. Das Zeichnungsraster besteht nicht aus Datenpunkten."
+    },
+    {
+      "id": "step-1",
+      "caption": "Der Gradient zeigt bergauf. Seine Komponenten liefern mit der Lernrate den Schritt bergab."
+    },
+    {
+      "id": "step-2",
+      "caption": "Jeder Spurpunkt ist neu berechnet. Eine zu große Lernrate lässt den Verlust wiederholt wachsen."
+    }
+  ],
+  "predict": {
+    "beat": "step-0",
+    "prompt": "Setze w = 2,5. Welchen Wert hat der Gradient der MSE an dieser Stelle?",
+    "input": "numeric",
+    "expected": 4.67,
+    "tolerance": 0.01,
+    "hints": [
+      "MSE(w) = (14/3)·(w−2)² — die Ableitung ist (28/3)·(w−2); setze w = 2,5 ein."
+    ],
+    "typicalErrors": [
+      {
+        "match": 1.17,
+        "feedback": "Das ist der Funktionswert MSE(2,5) = (14/3)·0,25, nicht die Ableitung."
+      },
+      {
+        "match": -4.67,
+        "feedback": "Vorzeichen beachten: w = 2,5 liegt rechts vom Minimum, der Gradient ist dort positiv (der Updateschritt geht trotzdem nach links)."
+      }
+    ]
+  }
+}

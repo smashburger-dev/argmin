@@ -16,6 +16,25 @@ import { ExerciseFrame } from './ExerciseFrame';
 import { formatGermanDate } from './format';
 import { getExerciseContext, practiceCasePool, randomVariantSeed } from './exercise-context';
 import type { CatalogData } from '../app/types';
+import figureHints from '../../content/figure-hints.json';
+import { figureHintFor } from '../../assets/js/figures/kit/hints.mjs';
+import type { HintEntry, HintInstance } from '../figures/HintFigure';
+import type { SceneAnswer, SceneFeedback } from './scene-build-state';
+const HintFigure = lazy(() => import('../figures/HintFigure'));
+const SceneBuildControls = lazy(() => import('./SceneBuildControls'));
+
+function FigureHintButton({ entry, visible, busy, runBusy, correct, solutionVisible, onOpen }: {
+  entry: HintEntry | null; visible: boolean; busy: boolean; runBusy: boolean;
+  correct: boolean | null; solutionVisible: boolean; onOpen: () => void;
+}) {
+  if (!entry || visible || solutionVisible || correct === true) return null;
+  return <Button variant="secondary" disabled={busy || runBusy} onClick={onOpen}>Hinweis als Figur</Button>;
+}
+
+function figureHintContent(entry: HintEntry | null, instance: HintInstance, visible: boolean, onHide: () => void) {
+  if (!visible || !entry) return undefined;
+  return <Suspense fallback={<p role="status">Figur wird geladen.</p>}><HintFigure entry={entry} instance={instance} onHide={onHide} /></Suspense>;
+}
 
 // S4D0: öffnet kuratierte Familien-Placements ohne definitionId.
 // Route: #/family/:familyId/:caseId/:seed/:difficulty, '-' heißt Zufall.
@@ -74,8 +93,34 @@ const CodeEditor = lazy(async () => {
 
 configureExerciseFamilies(loadFamilyIndex());
 
+function FamilyAnswerControl({ exercise, answer, feedback, disabled, onAnswer, onSceneAnswer }: {
+  exercise: ReturnType<typeof EXERCISE_FAMILIES.instantiate>; answer: unknown; feedback: SceneFeedback | null;
+  disabled: boolean; onAnswer: (answer: unknown) => void; onSceneAnswer: (answer: SceneAnswer) => void;
+}) {
+  if (exercise.activityType !== 'scene-build') return <AnswerControls exercise={exercise} onAnswer={onAnswer} />;
+  return <Suspense fallback={<p role="status">Formular wird geladen.</p>}><SceneBuildControls key={exercise.instanceId}
+    exercise={exercise} answer={answer as SceneAnswer} feedback={feedback} disabled={disabled} onAnswer={onSceneAnswer} /></Suspense>;
+}
+
+async function initialFamilyAnswer(instance: ReturnType<typeof EXERCISE_FAMILIES.instantiate>) {
+  if (instance.activityType === 'scene-build') return (await import('./scene-build-state')).loadSceneDraft(instance);
+  if (instance.activityType === 'python-code') warmPythonRuntime();
+  return typeof instance.parameters?.starterCode === 'string' ? instance.parameters.starterCode : null;
+}
+
+function storedAnswer(activityType: string, answer: unknown) {
+  if (activityType === 'scene-build' || typeof answer === 'string') return answer;
+  return JSON.stringify(answer);
+}
+
+const sceneLocked = (busy: boolean, revealed: boolean, correct: boolean | null) => busy || revealed || correct === true;
+const attemptMastery = (eligible: boolean, result: { masteryEligible?: boolean }) => eligible && result.masteryEligible !== false;
+
 export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogData; familyRef: string }) {
+  const [figureVisible, setFigureVisible] = useState(false);
+  useEffect(() => { setFigureVisible(false); }, [familyRef]);
   const [answer, setAnswer] = useState<unknown>(null);
+  const [sceneFeedback, setSceneFeedback] = useState<SceneFeedback | null>(null);
   const [verdict, setVerdict] = useState<string | null>(null);
   const [correct, setCorrect] = useState<boolean | null>(null);
   const [diagnosis, setDiagnosis] = useState<string | null>(null);
@@ -107,6 +152,11 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     let active = true;
     setInstance(null);
     setFailed(null);
+    setSceneFeedback(null);
+    setCorrect(null);
+    setVerdict(null);
+    setSolutionVisible(false);
+    setShownHints([]);
     if (!parsed) return () => { active = false; };
     void (async () => {
       try {
@@ -122,12 +172,10 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
         const next = EXERCISE_FAMILIES.instantiate(parsed.familyId, parsed.seed, parsed.difficulty, parsed.caseId, pool);
         if (!active) return;
         setSummary(EXERCISE_FAMILIES.get(parsed.familyId)?.summary ?? '');
-        setAnswer(typeof next.parameters?.starterCode === 'string' ? next.parameters.starterCode : null);
+        const initialAnswer = await initialFamilyAnswer(next);
+        if (!active) return;
+        setAnswer(initialAnswer);
         setInstance(next);
-        // Warm the pyodide worker at mount so the first submit does not pay
-        // the init latency. Silent on failure: the submit path reports
-        // runtime errors itself.
-        if (next.activityType === 'python-code') warmPythonRuntime();
       } catch (error) {
         if (active) setFailed(error instanceof Error ? error.message : String(error));
       }
@@ -160,6 +208,12 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   // family, not the instance, so it is added explicitly.
   const hintSource = { ...instance, summary };
   const maxHints = familyMaxHints(hintSource);
+  const figureEntry = figureHintFor(figureHints.hints, instance);
+  const openFigureHint = async () => {
+    if (busy || runBusy || correct === true || solutionVisible) return;
+    if (shownHints.length === 0) await openHint();
+    setFigureVisible(true);
+  };
 
   const recordAssistance = async (eventType: string, event: string, hintsUsed: number, revealedSolution: boolean) => {
     if (!learningLedger) return;
@@ -199,14 +253,15 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
         await learningLedger.record({
           ...input,
           eventType: 'attempt',
-          answer: typeof answer === 'string' ? answer : JSON.stringify(answer),
+          answer: storedAnswer(instance.activityType, answer),
           hintsUsed,
           correct: Boolean(result.correct),
-          masteryEligible: input.masteryEligible,
+          masteryEligible: attemptMastery(input.masteryEligible, result),
           errorType: result.errorType ?? null,
         });
       }
       setCorrect(Boolean(result.correct));
+      setSceneFeedback(instance.activityType === 'scene-build' ? result : null);
       setVerdict(result.verdictText || (result.correct ? 'Richtig.' : 'Nicht richtig.'));
       setDiagnosis(result.diagnosis ?? null);
       setWorkspace(result.result && typeof result.result === 'object' ? result.result as WorkspaceResult : null);
@@ -360,18 +415,22 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
       snippet={!isCode && !isFading && instance.activityType !== 'predict-output' && instance.activityType !== 'code-trace' && typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
       answer={isCode
         ? <Suspense fallback={<p class="editor-loading">Editor wird geladen …</p>}><CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} /></Suspense>
-        : isFading ? null : <AnswerControls exercise={instance} onAnswer={setAnswer} />}
+        : isFading ? null : <FamilyAnswerControl exercise={instance} answer={answer} feedback={sceneFeedback}
+            disabled={sceneLocked(busy, solutionVisible, correct)} onAnswer={setAnswer}
+            onSceneAnswer={(next) => { setAnswer(next); setSceneFeedback(null); setVerdict(null); setCorrect(null); }} />}
       actions={
         <>
           <Button variant="primary" disabled={busy || runBusy || solutionVisible || correct === true} onClick={() => void submit()}>Antwort prüfen</Button>
           {isCode ? <Button variant="secondary" disabled={busy || runBusy || solutionVisible} onClick={() => void runOnly()}>Nur ausführen</Button> : null}
           {shownHints.length < maxHints && !solutionVisible && correct !== true ? <Button variant="secondary" disabled={busy || runBusy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/{maxHints}</Button> : null}
+          <FigureHintButton entry={figureEntry} visible={figureVisible} busy={busy} runBusy={runBusy} solutionVisible={solutionVisible} correct={correct} onOpen={() => void openFigureHint()} />
           {nextHintCostsEvidence ? <p class="privacy-note" style={{ flexBasis: '100%' }}>Dieser Hinweis kostet den Kompetenzbeleg für diese Variante.</p> : null}
           {!solutionVisible && instance.fullSolution ? <Button variant="ghost" onClick={() => void revealSolution()}>Lösung anzeigen</Button> : null}
         </>
       }
       feedback={feedback}
       hints={shownHints}
+      figureHint={figureHintContent(figureEntry, instance, figureVisible, () => setFigureVisible(false))}
       solution={solutionVisible && instance.fullSolution
         ? <div class="solution-panel"><h2>Lösung</h2><MathMarkup html={instance.fullSolution} /><p>Diese Variante zählt nicht mehr als unabhängiger Kompetenznachweis.</p></div>
         : undefined}

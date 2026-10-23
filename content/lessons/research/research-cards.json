@@ -23,6 +23,11 @@
       "contentRef": "lessons/research/research-cards.md"
     },
     {
+      "blockId": "s8b-consistent-cards",
+      "type": "figure",
+      "contentRef": "lessons/research/consistent-cards.fig.json"
+    },
+    {
       "blockId": "research-cards-check",
       "type": "checkpoint",
       "contentRef": "lessons/research/research-cards-checkpoint.md"

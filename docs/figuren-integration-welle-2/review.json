@@ -1,0 +1,1797 @@
+{
+  "results": [
+    {
+      "scene": "balance-isolate",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-foundations-algebra",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "balance-isolate-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 565.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 45,
+      "opacity": "1"
+    },
+    {
+      "scene": "bag-unpack",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-foundations-algebra-transformations",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "file": "bag-unpack-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 794,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Prüfen",
+          "height": 44
+        },
+        {
+          "text": "Überspringen",
+          "height": 44
+        },
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 26,
+      "opacity": "1"
+    },
+    {
+      "scene": "power-stack",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-foundations-algebra",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "power-stack-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 771.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Prüfen",
+          "height": 44
+        },
+        {
+          "text": "Überspringen",
+          "height": 44
+        },
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 48,
+      "opacity": "1"
+    },
+    {
+      "scene": "mse-landscape",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-grad-regression",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "mse-landscape-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 685,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 4,
+      "opacity": "1"
+    },
+    {
+      "scene": "mse-section",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-grad-regression",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "mse-section-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 665.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 4,
+      "opacity": "1"
+    },
+    {
+      "scene": "residual-springs",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-ml-linear",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "residual-springs-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 668.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 5,
+      "opacity": "1"
+    },
+    {
+      "scene": "rubber-band-coefficients",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-ml-regularization",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "rubber-band-coefficients-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 646,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 7,
+      "opacity": "1"
+    },
+    {
+      "scene": "training-book",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-dl-training",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "training-book-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 685,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 9,
+      "opacity": "1"
+    },
+    {
+      "scene": "early-stopping-flag",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-dl-regularization",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "early-stopping-flag-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 665.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 6,
+      "opacity": "1"
+    },
+    {
+      "scene": "name-tags",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-foundations-python-state",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "file": "name-tags-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 588,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 12,
+      "opacity": "1"
+    },
+    {
+      "scene": "bouncer",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-foundations-control-flow",
+      "states": [
+        "4",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "bouncer-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 565.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 12,
+      "opacity": "1"
+    },
+    {
+      "scene": "vending-frame",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-foundations-functions",
+      "states": [
+        "3",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "file": "vending-frame-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 588,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 15,
+      "opacity": "1"
+    },
+    {
+      "scene": "ledger",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-foundations-code-reading",
+      "states": [
+        "6",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "file": "ledger-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 588,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 18,
+      "opacity": "1"
+    },
+    {
+      "scene": "two-tags-one-list",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-foundations-collections",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "file": "two-tags-one-list-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 588,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 13,
+      "opacity": "1"
+    },
+    {
+      "scene": "smoke-detector",
+      "width": 375,
+      "theme": "light",
+      "lesson": "l-foundations-testing-debugging",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "smoke-detector-375-light.png",
+      "cardWidth": 343,
+      "cardHeight": 588,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 9,
+      "opacity": "1"
+    },
+    {
+      "scene": "balance-isolate",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-foundations-algebra",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "balance-isolate-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 565.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 45,
+      "opacity": "1"
+    },
+    {
+      "scene": "bag-unpack",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-foundations-algebra-transformations",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "file": "bag-unpack-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 794,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Prüfen",
+          "height": 44
+        },
+        {
+          "text": "Überspringen",
+          "height": 44
+        },
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 26,
+      "opacity": "1"
+    },
+    {
+      "scene": "power-stack",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-foundations-algebra",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "power-stack-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 771.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Prüfen",
+          "height": 44
+        },
+        {
+          "text": "Überspringen",
+          "height": 44
+        },
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 48,
+      "opacity": "1"
+    },
+    {
+      "scene": "mse-landscape",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-grad-regression",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "mse-landscape-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 685,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 4,
+      "opacity": "1"
+    },
+    {
+      "scene": "mse-section",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-grad-regression",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "mse-section-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 665.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 4,
+      "opacity": "1"
+    },
+    {
+      "scene": "residual-springs",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-ml-linear",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "residual-springs-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 668.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 5,
+      "opacity": "1"
+    },
+    {
+      "scene": "rubber-band-coefficients",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-ml-regularization",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "rubber-band-coefficients-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 646,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 7,
+      "opacity": "1"
+    },
+    {
+      "scene": "training-book",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-dl-training",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "training-book-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 685,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 9,
+      "opacity": "1"
+    },
+    {
+      "scene": "early-stopping-flag",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-dl-regularization",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "early-stopping-flag-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 665.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 6,
+      "opacity": "1"
+    },
+    {
+      "scene": "name-tags",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-foundations-python-state",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "file": "name-tags-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 588,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 12,
+      "opacity": "1"
+    },
+    {
+      "scene": "bouncer",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-foundations-control-flow",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "bouncer-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 565.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 12,
+      "opacity": "1"
+    },
+    {
+      "scene": "vending-frame",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-foundations-functions",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "file": "vending-frame-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 588,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 15,
+      "opacity": "1"
+    },
+    {
+      "scene": "ledger",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-foundations-code-reading",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "file": "ledger-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 588,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 18,
+      "opacity": "1"
+    },
+    {
+      "scene": "two-tags-one-list",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-foundations-collections",
+      "states": [
+        "13",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "file": "two-tags-one-list-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 588,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 13,
+      "opacity": "1"
+    },
+    {
+      "scene": "smoke-detector",
+      "width": 375,
+      "theme": "dark",
+      "lesson": "l-foundations-testing-debugging",
+      "states": [
+        "6",
+        "1",
+        "2"
+      ],
+      "file": "smoke-detector-375-dark.png",
+      "cardWidth": 343,
+      "cardHeight": 588,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 9,
+      "opacity": "1"
+    },
+    {
+      "scene": "balance-isolate",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-foundations-algebra",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "balance-isolate-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 801,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 45,
+      "opacity": "1"
+    },
+    {
+      "scene": "bag-unpack",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-foundations-algebra-transformations",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "file": "bag-unpack-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 984.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Prüfen",
+          "height": 44
+        },
+        {
+          "text": "Überspringen",
+          "height": 44
+        },
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 26,
+      "opacity": "1"
+    },
+    {
+      "scene": "power-stack",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-foundations-algebra",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "power-stack-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 984.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Prüfen",
+          "height": 44
+        },
+        {
+          "text": "Überspringen",
+          "height": 44
+        },
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 48,
+      "opacity": "1"
+    },
+    {
+      "scene": "mse-landscape",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-grad-regression",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "mse-landscape-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 836.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 4,
+      "opacity": "1"
+    },
+    {
+      "scene": "mse-section",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-grad-regression",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "mse-section-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 865,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 4,
+      "opacity": "1"
+    },
+    {
+      "scene": "residual-springs",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-ml-linear",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "residual-springs-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 865,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 5,
+      "opacity": "1"
+    },
+    {
+      "scene": "rubber-band-coefficients",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-ml-regularization",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "rubber-band-coefficients-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 865,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 7,
+      "opacity": "1"
+    },
+    {
+      "scene": "training-book",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-dl-training",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "training-book-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 836.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 9,
+      "opacity": "1"
+    },
+    {
+      "scene": "early-stopping-flag",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-dl-regularization",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "early-stopping-flag-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 836.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 6,
+      "opacity": "1"
+    },
+    {
+      "scene": "name-tags",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-foundations-python-state",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "file": "name-tags-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 829.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 12,
+      "opacity": "1"
+    },
+    {
+      "scene": "bouncer",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-foundations-control-flow",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "bouncer-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 801,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 12,
+      "opacity": "1"
+    },
+    {
+      "scene": "vending-frame",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-foundations-functions",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "file": "vending-frame-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 829.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 15,
+      "opacity": "1"
+    },
+    {
+      "scene": "ledger",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-foundations-code-reading",
+      "states": [
+        "6",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "file": "ledger-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 829.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 18,
+      "opacity": "1"
+    },
+    {
+      "scene": "two-tags-one-list",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-foundations-collections",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "file": "two-tags-one-list-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 829.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 13,
+      "opacity": "1"
+    },
+    {
+      "scene": "smoke-detector",
+      "width": 1440,
+      "theme": "light",
+      "lesson": "l-foundations-testing-debugging",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "smoke-detector-1440-light.png",
+      "cardWidth": 828,
+      "cardHeight": 829.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 9,
+      "opacity": "1"
+    },
+    {
+      "scene": "balance-isolate",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-foundations-algebra",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "balance-isolate-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 801,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 45,
+      "opacity": "1"
+    },
+    {
+      "scene": "bag-unpack",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-foundations-algebra-transformations",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "file": "bag-unpack-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 984.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Prüfen",
+          "height": 44
+        },
+        {
+          "text": "Überspringen",
+          "height": 44
+        },
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 26,
+      "opacity": "1"
+    },
+    {
+      "scene": "power-stack",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-foundations-algebra",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "power-stack-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 984.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Prüfen",
+          "height": 44
+        },
+        {
+          "text": "Überspringen",
+          "height": 44
+        },
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 48,
+      "opacity": "1"
+    },
+    {
+      "scene": "mse-landscape",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-grad-regression",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "mse-landscape-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 836.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 4,
+      "opacity": "1"
+    },
+    {
+      "scene": "mse-section",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-grad-regression",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "mse-section-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 865,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 4,
+      "opacity": "1"
+    },
+    {
+      "scene": "residual-springs",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-ml-linear",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "residual-springs-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 865,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 5,
+      "opacity": "1"
+    },
+    {
+      "scene": "rubber-band-coefficients",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-ml-regularization",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "rubber-band-coefficients-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 865,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 7,
+      "opacity": "1"
+    },
+    {
+      "scene": "training-book",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-dl-training",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "training-book-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 836.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 9,
+      "opacity": "1"
+    },
+    {
+      "scene": "early-stopping-flag",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-dl-regularization",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "early-stopping-flag-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 836.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 6,
+      "opacity": "1"
+    },
+    {
+      "scene": "name-tags",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-foundations-python-state",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "file": "name-tags-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 829.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 12,
+      "opacity": "1"
+    },
+    {
+      "scene": "bouncer",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-foundations-control-flow",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "file": "bouncer-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 801,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 12,
+      "opacity": "1"
+    },
+    {
+      "scene": "vending-frame",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-foundations-functions",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "file": "vending-frame-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 829.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 15,
+      "opacity": "1"
+    },
+    {
+      "scene": "ledger",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-foundations-code-reading",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "file": "ledger-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 829.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 18,
+      "opacity": "1"
+    },
+    {
+      "scene": "two-tags-one-list",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-foundations-collections",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "file": "two-tags-one-list-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 829.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 13,
+      "opacity": "1"
+    },
+    {
+      "scene": "smoke-detector",
+      "width": 1440,
+      "theme": "dark",
+      "lesson": "l-foundations-testing-debugging",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "file": "smoke-detector-1440-dark.png",
+      "cardWidth": 828,
+      "cardHeight": 829.5,
+      "pageOverflow": false,
+      "buttons": [
+        {
+          "text": "Zurück",
+          "height": 44
+        },
+        {
+          "text": "Von vorn",
+          "height": 44
+        }
+      ],
+      "textCount": 9,
+      "opacity": "1"
+    }
+  ],
+  "errors": []
+}

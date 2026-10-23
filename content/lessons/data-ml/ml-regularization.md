@@ -14,6 +14,7 @@ Wo der Vergleich hinkt: Das Gummiband zieht proportional zur Auslenkung, die Las
 
 Der Preis dafür ist etwas **Bias**, eine Verzerrung: Im Mittel liegen die Vorhersagen ein Stück neben dem wahren Wert. Dafür sinkt die [**Varianz**](#/glossary/varianz). Trainierst du auf einer anderen Stichprobe derselben Wohnungen, springen die Koeffizienten weniger. Der Trainingsfehler steigt mit $\lambda$ typischerweise an, der Fehler auf neuen Daten sinkt bis zu einem gewissen $\lambda$. „Bias“ meint hier die statistische Verzerrung, nicht den Bias-Term einer Schicht.
 
+Die Schienen zeigen den orthogonalen Spezialfall $X^T X = I$ mit unregularisierten Gewichten $(3;\ 1{,}5;\ -1)$. Ridge nutzt hier $\|Xw-y\|^2 + \lambda\|w\|^2$, Lasso die in den Aufgaben verwendete Normierung $\tfrac12\|Xw-y\|^2 + \lambda\|w\|_1$. Die gleiche Zahl für $\lambda$ bedeutet deshalb nicht die gleiche Stärke der Strafe. Die Form der Schrumpfung ist der Vergleich. Der Checkpoint prüft weiterhin den skalaren Ridge-Fall $(w-3)^2+\lambda w^2$.
 ## Ridge: die geschlossene Form
 
 Die **Ridge-Regression (L2)** minimiert die quadrierten Fehler plus $\lambda\sum_j w_j^2$ (sprich: Summe der quadrierten Gewichte). Die Lösung lässt sich direkt hinschreiben:

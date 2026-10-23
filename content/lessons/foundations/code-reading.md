@@ -28,7 +28,6 @@ print(total)
 | 3 | 1 | falsch | 3 |
 
 Die Ausgabe ist `3`. Der häufigste Lesefehler ist, nur die Zeilen im wahren Zweig zu beachten oder `total` in jedem Lauf gedanklich auf null zu setzen.
-
 ## Bausteine, die du tracest
 
 Vier Ausdrucksformen tauchen in den Aufgaben häufig auf.

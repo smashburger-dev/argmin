@@ -343,6 +343,8 @@ test('transformer-llm lessons pair a worked example with a checkpoint block', as
     for (const block of doc.blocks) {
       if (block.type === 'visualization') {
         assert.ok(block.contentRef.endsWith('.viz.json'), `${lesson.file}: visualization contentRef must be .viz.json`);
+      } else if (block.type === 'figure') {
+        assert.ok(block.contentRef.endsWith('.fig.json'), `${lesson.file}: figure contentRef must be .fig.json`);
       } else {
         assert.ok(block.contentRef.endsWith('.md'), `${lesson.file}: contentRef must be markdown`);
       }
@@ -355,8 +357,10 @@ test('transformer-llm lessons pair a worked example with a checkpoint block', as
 test('transformer-llm worked examples are German essays of 500-1300 words', async () => {
   for (const lesson of LESSONS) {
     const doc = JSON.parse(await readFile(join(root, 'content', 'lessons', 'transformer-llm', lesson.file), 'utf8'));
-    const worked = doc.blocks.find((block) => block.type === 'worked-example');
-    const markdown = readFileSync(join(root, 'content', worked.contentRef), 'utf8');
+    const markdown = doc.blocks
+      .filter((block) => block.type === 'worked-example' && block.contentRef.endsWith('.md'))
+      .map((block) => readFileSync(join(root, 'content', block.contentRef), 'utf8'))
+      .join('\n');
     const words = markdown.split(/\s+/).filter(Boolean).length;
     assert.ok(words >= 500 && words <= 1300,
       `${lesson.file} worked example has ${words} words (expected 500-1300)`);

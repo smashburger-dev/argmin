@@ -22,11 +22,8 @@
       "type": "worked-example",
       "contentRef": "lessons/data-ml/ml-logistic.md"
     },
-    {
-      "blockId": "ml-logistic-viz",
-      "type": "visualization",
-      "contentRef": "lessons/data-ml/sigmoid-threshold.viz.json"
-    }
+    { "blockId": "logistic-sorter-figure", "type": "figure", "contentRef": "lessons/data-ml/logistic-sorter.fig.json" },
+    { "blockId": "ml-logistic-s7-after", "type": "worked-example", "contentRef": "lessons/data-ml/ml-logistic-s7-after.md" }
   ],
   "sourceRefs": [
     {

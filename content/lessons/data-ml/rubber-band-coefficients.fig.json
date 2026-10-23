@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "kind": "compare",
+  "engine": "argmin-figure",
+  "scene": "rubber-band-coefficients",
+  "title": "Ridge und Lasso an der Nullmarke",
+  "caption": "Gleiche Skala, unterschiedliche Strafe: Ridge schrumpft, Lasso kann exakt null setzen.",
+  "hint": "Die Lektüre erklärt das Beispiel und seine Grenzen.",
+  "params": {
+    "lambda": 2,
+    "method": 0
+  },
+  "compare": {
+    "labels": { "a": "Ridge", "b": "Lasso" },
+    "beat": "step-1",
+    "a": {
+      "lambda": 2,
+      "method": 0
+    },
+    "b": {
+      "lambda": 2,
+      "method": 1
+    }
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Ohne Strafe sitzen die Schlitten bei den unregularisierten Koeffizienten."
+    },
+    {
+      "id": "step-1",
+      "caption": "Ridge zieht jeden Schlitten proportional zur Auslenkung Richtung null."
+    },
+    {
+      "id": "step-2",
+      "caption": "Lasso setzt kleine Beiträge exakt null. Hier gelten die im Text genannten unterschiedlichen Loss-Normierungen."
+    }
+  ],
+  "predict": {
+    "beat": "step-0",
+    "prompt": "Setze λ = 2. Bei welchem w* liegt das Minimum der Verlustfunktion?",
+    "input": "numeric",
+    "expected": 1,
+    "tolerance": 0.000001,
+    "hints": [
+      "Ableitung von (w−3)² + λw² null setzen: 2(w−3) + 2λw = 0, dann nach w auflösen."
+    ],
+    "typicalErrors": [
+      {
+        "match": 3,
+        "feedback": "Das ist das unregularisierte Minimum bei λ = 0. Mit λ = 2 schrumpft w* auf 3/(1+2)."
+      },
+      {
+        "match": 1.5,
+        "feedback": "3/λ = 1,5 ist nicht die Regel — die Ableitung ergibt w* = 3/(1+λ)."
+      }
+    ]
+  }
+}

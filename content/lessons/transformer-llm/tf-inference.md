@@ -11,7 +11,6 @@ Wir laden keine Modellgewichte, rufen keine API, nutzen kein Netzwerk. Die Gewic
 Stell dir ein Fließband mit vier Stationen vor: Der Text kommt als Rohmaterial an, jede Station übergibt ihr Ergebnis an die nächste. Für Greedy Decoding ein zweites Bild: ein Navi, das an jeder Kreuzung die im Moment kürzeste Straße nimmt, ohne zu prüfen, ob der Gesamtweg der kürzeste ist.
 
 Wo der Vergleich hinkt: Ein echtes Fließband kehrt nicht zurück. Die Dekodierschleife füttert jedes neue Token wieder vorne ein, bis das Ende-Token kommt oder die Längengrenze greift.
-
 ## Station 1: Tokenisieren
 
 Ein fester Zeichen-Tokenizer (Vokabular aus [Tokenisierung mit Folgen vergleichen](#/lesson/l-tf-tokenizer), mit `<eos>`) übersetzt den Text in eine Indizesliste. Encode ist deterministisch: gleicher Text, gleiche Indizes, keine Zufälligkeit an dieser Station.

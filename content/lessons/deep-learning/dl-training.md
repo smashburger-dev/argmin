@@ -24,6 +24,7 @@ BCE hat eine numerische Falle: $\log(0)$ ist $-\infty$. Deshalb werden Wahrschei
 
 Drei Zähler, oft verwechselt: Ein **Batch** ist die Gruppe von Beispielen pro Update; eine **Epoche** ist ein vollständiger Durchlauf durch die Daten; die Zahl der **Optimizer-Schritte** pro Epoche ist $\lceil n / B \rceil$ ($\lceil\cdot\rceil$ sprich: aufgerundet auf die nächste ganze Zahl), denn der letzte Batch darf kleiner sein. Über $E$ Epochen sind es $E \cdot \lceil n / B \rceil$ Updates. Full-Batch ($B = n$) macht einen Schritt pro Epoche; das ist für Spielzeuggrößen in Ordnung und deterministisch.
 
+Das kleine Buch unten hat vier Seiten. Jeder Batch verwendet zur Übersicht denselben Verlust $L(w)=w^2$ bei festem Bias null. Start ist $w=2$ und die Lernrate $\eta=0{,}4$. Nach jeder Seite gilt $w\leftarrow w-\eta\cdot2w$. Reale Batches besitzen unterschiedliche Gradienten; die Figur isoliert zunächst die Zählweise.
 ## Updates: SGD und Momentum
 
 Reines SGD mit [Lernrate](#/glossary/lernrate) $\mathrm{lr}$ (in anderen Texten oft $\eta$ geschrieben):

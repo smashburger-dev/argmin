@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "smoothie-column-picture",
+  "title": "Smoothie mischen",
+  "caption": "Portionen werden Pfeile: das Spaltenbild von $Ax = b$.",
+  "hint": "Ziehen dreht die Werkbank. Pfeiltasten wechseln den Schritt.",
+  "params": { "a1": [2, 1], "a2": [1, 2], "b": [4, 5], "ghost": [1, 3] },
+  "beats": [
+    { "id": "ingredients", "caption": "Zwei Zutaten, jede mit festem Nährwertvektor: Hafer liefert (2, 1), Beerenmix liefert (1, 2). Auf der Tafel wartet das Ziel $b = (4, 5)$." },
+    { "id": "oats", "caption": "Eine Portion Hafer: Auf der Tafel entsteht der erste Pfeil, $1 \\cdot a_1 = (2, 1)$." },
+    { "id": "predict", "caption": "Vom Pfeilende bis zum Ziel fehlt noch ein Stück. Wie viele Portionen Beerenmix füllen es?" },
+    { "id": "berries", "caption": "Zwei Portionen Beerenmix: Jeder Pfeil $a_2$ hängt am Ende des vorigen an, die Summe trifft $b$ genau." },
+    { "id": "board", "caption": "An der Tafel steht dieselbe Rechnung als Spaltenbild: $1 \\cdot a_1 + 2 \\cdot a_2 = b$, allgemein $x_1 a_1 + x_2 a_2 = b$." },
+    { "id": "ghost", "caption": "Wo der Vergleich hinkt: Das Ziel (1, 3) verlangt $x_1 = -1/3$ Portionen Hafer. Rechnerisch möglich, im Mixer unmöglich." }
+  ],
+  "predict": {
+    "beat": "predict",
+    "prompt": "Wie viele Portionen Beerenmix brauchst du, um von (2, 1) aus das Ziel (4, 5) zu treffen?",
+    "input": "numeric",
+    "expected": 2,
+    "tolerance": 1e-6,
+    "hints": ["Ein Beerenpfeil ist (1, 2). Wie oft passt er in die Lücke von (2, 1) bis (4, 5)?"],
+    "typicalErrors": [
+      { "match": 5, "feedback": "Das ist der Zuckerwert des Ziels. Gefragt ist die Zahl der Portionen Beerenmix." },
+      { "match": 4, "feedback": "Das ist der Eiweißwert des Ziels. Gefragt ist die Zahl der Portionen." },
+      { "match": 1, "feedback": "Eine Portion Beerenmix bringt dich nur bis (3, 3). Es fehlt noch ein Pfeil." }
+    ]
+  }
+}

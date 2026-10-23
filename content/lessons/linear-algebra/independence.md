@@ -15,7 +15,6 @@ Die Zuordnung:
 Ein Datenbeispiel: Eine Tabelle mit den Spalten „Preis in Euro“ und „Preis in Cent“ sieht nach zwei Merkmalen aus, ist aber nur eine Richtung, denn Cent = 100 mal Euro.
 
 Wo der Vergleich hinkt: Ab drei Dimensionen kann ein Vektor aus mehreren anderen zusammengesetzt sein, ohne zu einem einzigen davon parallel zu zeigen. „Vielfaches des anderen“ reicht dann nicht mehr als Prüfbild; die formale Definition unten trägt weiter.
-
 ## Unabhängigkeit prüfen
 
 Wir arbeiten in $\mathbb{R}^2$, gesprochen „R zwei“, der Ebene aller Zahlenpaare. Die Frage lautet: Mit welchen Zahlen $c_1, \dots, c_k$ ergibt die Mischung den Nullvektor?

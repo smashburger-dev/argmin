@@ -6,7 +6,7 @@ Ein Gleichungssystem per Einsetzen zu lösen funktioniert, ist aber schnell unü
 
 Zwei Kassenzettel aus demselben Café: „2 Kaffee + 1 Croissant = 7 €“ und „1 Kaffee + 1 Croissant = 4,50 €“. Ziehst du den zweiten Zettel vom ersten ab, fällt das Croissant weg: 1 Kaffee kostet 2,50 €. Dann kostet das Croissant $4{,}50 - 2{,}50 = 2$ €.
 
-Genau das ist eine Zeilenoperation. Kaufst du dieselbe Tüte zweimal, steht auf dem Zettel überall das Doppelte: „2 Kaffee + 2 Croissants = 9 €“. Ziehst du den ersten Zettel von diesem verdoppelten ab, fällt der Kaffee weg: 1 Croissant kostet $9 - 7 = 2$ €. Das ist derselbe Preis wie oben, nur auf anderem Weg. Die Zuordnung:
+Genau das ist eine Zeilenoperation. Kaufst du dieselbe Tüte zweimal, steht auf dem Zettel überall das Doppelte: „2 Kaffee + 2 Croissants = 9 €“. Ziehst du den ersten Zettel von diesem verdoppelten ab, fällt der Kaffee weg: 1 Croissant kostet $9 - 7 = 2$ €. Das ist derselbe Preis wie oben, nur auf anderem Weg. Genau diese Richtung zeigt die Figur; danach setzt du den Croissantpreis ein, um den Kaffeepreis zu erhalten. Die Zuordnung:
 
 - ein Kassenzettel: eine Zeile, also eine Gleichung
 - ein Posten auf dem Zettel: ein [Koeffizient](#/glossary/koeffizient)
@@ -14,7 +14,6 @@ Genau das ist eine Zeilenoperation. Kaufst du dieselbe Tüte zweimal, steht auf 
 - Zettel voneinander abziehen: ein Vielfaches einer Zeile von einer anderen subtrahieren
 
 Wo der Vergleich hinkt: Auf echten Kassenzetteln stehen positive Preise; in echten Systemen tauchen negative und gebrochene Koeffizienten auf.
-
 ## Erlaubte Zeilenoperationen
 
 Jede Zeile der **erweiterten Matrix** steht für eine Gleichung; der Strich trennt die Koeffizienten von der rechten Seite:

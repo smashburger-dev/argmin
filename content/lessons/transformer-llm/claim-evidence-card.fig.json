@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kind": "inline",
+  "engine": "argmin-figure",
+  "scene": "evidence-cards",
+  "title": "Ein Claim, zwei Zahlenlesarten",
+  "caption": "Halbierte Fehlerrate: derselbe Beleg begründet einen absoluten und einen relativen Unterschied.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {
+    "card": "papers"
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die festen Felder machen den dokumentierten Zusammenhang sichtbar."
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { recordLessonOpened, recordModuleOpened } from '../adapters/local-progre
 import { MathMarkup } from './MathMarkup';
 import { useGlossaryPopover } from './GlossaryPopover';
 import { VisualizationBlock } from './VisualizationBlock';
+import { FigureBlock } from './FigureBlock';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Button } from './Button';
 import { activityLabel, difficultyLabelFor, exerciseForPlacement, routeForPlacement } from './exercise-context';
@@ -104,6 +105,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
     const used = new Set<string>();
     const blocks = (lesson?.blocks ?? []).map((block) => {
       if (block.type === 'visualization' && block.viz) return { block, segments: null as LessonSegment[] | null };
+      if (block.type === 'figure' && block.fig) return { block, segments: null as LessonSegment[] | null };
       const segments = splitLessonHtml(typeof block.html === 'string' ? block.html : '');
       for (const segment of segments) {
         if (!segment.heading) continue;
@@ -121,6 +123,27 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
       firstProse: blocks.findIndex(({ segments }) => segments !== null),
     };
   }, [lesson]);
+  const proseRef = useRef<HTMLElement>(null);
+  // .lesson-section scrolls horizontally when content is wider than the card
+  // (WCAG scrollable-region-focusable). Only a section that actually
+  // overflows gets a tab stop — a blanket tabIndex would add one per
+  // section on every lesson. Re-checked on resize and on late layout shifts
+  // (KaTeX renders async), like the scroll-spy effect below.
+  useEffect(() => {
+    const article = proseRef.current;
+    if (!article) return;
+    const markOverflow = () => {
+      article.querySelectorAll<HTMLElement>('.lesson-section').forEach((el) => {
+        if (el.scrollWidth > el.clientWidth + 1) el.tabIndex = 0;
+        else el.removeAttribute('tabindex');
+      });
+    };
+    markOverflow();
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(markOverflow);
+    observer?.observe(article);
+    window.addEventListener('resize', markOverflow);
+    return () => { observer?.disconnect(); window.removeEventListener('resize', markOverflow); };
+  }, [prose]);
   useEffect(() => {
     if (prose.toc.length === 0) return;
     const sections = prose.toc
@@ -222,12 +245,16 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
           </div>
         </nav>
       )}
-      <article class="lesson-prose" aria-busy={!lesson && !loadError} onClick={onClickCapture}>
+      <article ref={proseRef} class="lesson-prose" aria-busy={!lesson && !loadError} onClick={onClickCapture}>
         {loadError && <p role="alert" class="content-error">Lektion konnte nicht geladen werden: {loadError}</p>}
         {!loadError && !lesson && <p role="status">Lektionsinhalt wird geladen.</p>}
         {prose.blocks.map(({ block, segments }, blockIndex) => {
           if (block.type === 'visualization' && block.viz) {
             return <VisualizationBlock key={block.blockId} id={block.visualizationId || block.blockId} spec={block.viz} />;
+          }
+          if (block.type === 'figure' && block.fig) {
+            const figureIndex = prose.blocks.slice(0, blockIndex + 1).filter(({ block: b }) => b.type === 'figure').length;
+            return <FigureBlock key={block.blockId} spec={block.fig} figureIndex={figureIndex} />;
           }
           if (segments === null) return null;
           return segments.map((segment, index) => {

@@ -1,0 +1,699 @@
+{
+  "label": "1440-light-no-preference-hint-classify-rank-solution-case-echelon-read-rank-case",
+  "mode": "source",
+  "snapshot": [
+    {
+      "selector": ".hint-stack",
+      "text": "Hinweis Liest aus einer Zeilenstufenform Rang, freie Variable und Lösungsfall gleichzeitig ab, indem Pivotzeilen gezählt und die Nullzeile korrekt gedeutet wird.",
+      "html": "<div class=\"hint-stack\"><p><strong>Hinweis</strong> <span>Liest aus einer Zeilenstufenform Rang, freie Variable und Lösungsfall gleichzeitig ab, indem Pivotzeilen gezählt und die Nullzeile korrekt gedeutet wird.</span></p></div>",
+      "nodes": [
+        {
+          "tag": "p",
+          "text": "",
+          "attributes": {},
+          "box": {
+            "x": 304,
+            "y": 1058.46875,
+            "width": 636,
+            "height": 97.21875
+          }
+        },
+        {
+          "tag": "strong",
+          "text": "Hinweis",
+          "attributes": {},
+          "box": {
+            "x": 317,
+            "y": 1071.46875,
+            "width": 610,
+            "height": 18.84375
+          }
+        },
+        {
+          "tag": "span",
+          "text": "Liest aus einer Zeilenstufenform Rang, freie Variable und Lösungsfall gleichzeitig ab, indem Pivotzeilen gezählt und die Nullzeile korrekt gedeutet wird.",
+          "attributes": {},
+          "box": {
+            "x": 317,
+            "y": 1098.3125,
+            "width": 608.765625,
+            "height": 41.1875
+          }
+        }
+      ],
+      "ariaSnapshot": "- paragraph:\n  - strong: Hinweis\n  - text: Liest aus einer Zeilenstufenform Rang, freie Variable und Lösungsfall gleichzeitig ab, indem Pivotzeilen gezählt und die Nullzeile korrekt gedeutet wird."
+    },
+    {
+      "selector": ".figure-hint-card",
+      "text": "Hinweis · Rang im NachbarbeispielVergleiche den Rang der Koeffizientenmatrix mit dem der erweiterten Matrix.Unabhängiges Nachbarbeispiela₁a₂bSpaltenrichtung: abhängigZiel: im SpaltenraumVergleiche die Richtungen der Spalten und des Zielvektors.Vergleiche die Richtungen der Spalten und des Zielvektors.Vergleiche die Richtungen der Spalten und des Zielvektors.Zurück1 / 1Von vornVergleiche die Richtungen der Spalten und des Zielvektors.Figur ausblenden",
+      "html": "<figure class=\"figure-card figure-hint-card\"><figcaption class=\"figure-head\"><strong>Hinweis · Rang im Nachbarbeispiel</strong></figcaption><p class=\"figure-hint\">Vergleiche den Rang der Koeffizientenmatrix mit dem der erweiterten Matrix.</p><div data-style=\"a1\" data-kind=\"hint\" data-view-mode=\"flat\" data-stage-layout=\"default\" class=\"figure-runtime\"><div tabindex=\"0\" role=\"group\" aria-roledescription=\"Figur\" aria-label=\"Rang im Nachbarbeispiel. Pfeiltasten links/rechts: Schritt. Leertaste: wiederholen.\" class=\"figure-stage\" data-azimuth=\"0.0\" data-beat=\"0\" data-settled=\"true\" style=\"background: rgb(246, 241, 232);\"><svg role=\"img\" aria-label=\"Vergleiche die Richtungen der Spalten und des Zielvektors.\" viewBox=\"0 0 386 386\"><ellipse display=\"none\"></ellipse><g data-item=\"plot-labels\"><g transform=\"matrix(3.5091 0 0 3.5091 17.5 17.5)\"><text data-prim=\"title\" data-tone=\"hi\" display=\"inline\" stroke=\"none\" fill=\"#5c5650\" x=\"8\" y=\"8\" font-size=\"5\" text-anchor=\"start\" fill-opacity=\"1\" font-weight=\"400\"><tspan font-family=\"var(--sans)\">Unabhängiges Nachbarbeispiel</tspan></text><path data-prim=\"x-axis\" data-tone=\"lo\" display=\"inline\" stroke=\"#5c5650\" fill=\"none\" d=\"M12 50 L88 50\" stroke-width=\"0.35\" stroke-opacity=\"0.5\" stroke-linecap=\"round\"></path><path data-prim=\"y-axis\" data-tone=\"lo\" display=\"inline\" stroke=\"#5c5650\" fill=\"none\" d=\"M50 12 L50 88\" stroke-width=\"0.35\" stroke-opacity=\"0.5\" stroke-linecap=\"round\"></path><path data-prim=\"column-1\" data-tone=\"lit\" display=\"inline\" stroke=\"#6d3fd4\" fill=\"none\" d=\"M50 50 L58 34\" stroke-width=\"0.7\" stroke-opacity=\"1\" stroke-linecap=\"round\"></path><path data-prim=\"column-2\" data-tone=\"hi\" display=\"inline\" stroke=\"#5c5650\" fill=\"none\" d=\"M50 50 L66 18\" stroke-width=\"0.7\" stroke-opacity=\"1\" stroke-linecap=\"round\"></path><path data-prim=\"target\" data-tone=\"mid\" display=\"inline\" stroke=\"#5c5650\" fill=\"none\" d=\"M50 50 L74 2\" stroke-width=\"0.6\" stroke-opacity=\"0.8\" stroke-linecap=\"round\" stroke-dasharray=\"1 0.5\"></path><circle data-prim=\"origin\" data-tone=\"hi\" display=\"inline\" stroke=\"none\" fill=\"#5c5650\" cx=\"50\" cy=\"50\" r=\"1.2\" fill-opacity=\"1\"></circle><text data-prim=\"a1\" data-tone=\"lit\" display=\"inline\" stroke=\"none\" fill=\"#6d3fd4\" x=\"58\" y=\"34\" font-size=\"5\" text-anchor=\"start\" fill-opacity=\"1\" font-weight=\"400\"><tspan font-family=\"var(--sans)\">a₁</tspan></text><text data-prim=\"a2\" data-tone=\"hi\" display=\"inline\" stroke=\"none\" fill=\"#5c5650\" x=\"66\" y=\"18\" font-size=\"5\" text-anchor=\"start\" fill-opacity=\"1\" font-weight=\"400\"><tspan font-family=\"var(--sans)\">a₂</tspan></text><text data-prim=\"b\" data-tone=\"mid\" display=\"inline\" stroke=\"none\" fill=\"#5c5650\" x=\"74\" y=\"2\" font-size=\"5\" text-anchor=\"start\" fill-opacity=\"0.8\" font-weight=\"400\"><tspan font-family=\"var(--sans)\">b</tspan></text><text data-prim=\"determinant\" data-tone=\"hi\" display=\"inline\" stroke=\"none\" fill=\"#5c5650\" x=\"8\" y=\"91\" font-size=\"5\" text-anchor=\"start\" fill-opacity=\"1\" font-weight=\"400\"><tspan font-family=\"var(--sans)\">Spaltenrichtung: abhängig</tspan></text><text data-prim=\"ranks\" data-tone=\"hi\" display=\"inline\" stroke=\"none\" fill=\"#5c5650\" x=\"8\" y=\"99\" font-size=\"5\" text-anchor=\"start\" fill-opacity=\"1\" font-weight=\"400\"><tspan font-family=\"var(--sans)\">Ziel: im Spaltenraum</tspan></text></g></g></svg></div><div class=\"figure-step-body\"><p class=\"figure-beat-caption\"><span>Vergleiche die Richtungen der Spalten und des Zielvektors.</span></p><p aria-hidden=\"true\" class=\"figure-readout\">Vergleiche die Richtungen der Spalten und des Zielvektors.</p><span aria-live=\"polite\" class=\"visually-hidden\">Vergleiche die Richtungen der Spalten und des Zielvektors.</span><div role=\"group\" aria-label=\"Schritte\" class=\"figure-controls\"><button type=\"button\" disabled=\"\" class=\"btn btn-ghost btn-sm\">Zurück</button><span aria-label=\"Schritt 1 von 1\" class=\"figure-step\">1 / 1</span><button type=\"button\" class=\"btn btn-primary btn-sm figure-next\">Von vorn</button></div></div><div class=\"figure-print-description\"><ol><li>Vergleiche die Richtungen der Spalten und des Zielvektors.</li></ol></div></div><button type=\"button\" class=\"btn btn-ghost btn-sm figure-hide\">Figur ausblenden</button></figure>",
+      "nodes": [
+        {
+          "tag": "figcaption",
+          "text": "",
+          "attributes": {
+            "class": "figure-head"
+          },
+          "box": {
+            "x": 981,
+            "y": 238.09375,
+            "width": 386,
+            "height": 24
+          }
+        },
+        {
+          "tag": "strong",
+          "text": "Hinweis · Rang im Nachbarbeispiel",
+          "attributes": {},
+          "box": {
+            "x": 981,
+            "y": 238.09375,
+            "width": 263.609375,
+            "height": 24
+          }
+        },
+        {
+          "tag": "p",
+          "text": "Vergleiche den Rang der Koeffizientenmatrix mit dem der erweiterten Matrix.",
+          "attributes": {
+            "class": "figure-hint"
+          },
+          "box": {
+            "x": 981,
+            "y": 278.09375,
+            "width": 386,
+            "height": 51.1875
+          }
+        },
+        {
+          "tag": "div",
+          "text": "",
+          "attributes": {
+            "data-style": "a1",
+            "data-kind": "hint",
+            "data-view-mode": "flat",
+            "data-stage-layout": "default",
+            "class": "figure-runtime"
+          },
+          "box": {
+            "x": 981,
+            "y": 345.28125,
+            "width": 386,
+            "height": 540
+          }
+        },
+        {
+          "tag": "div",
+          "text": "",
+          "attributes": {
+            "tabindex": "0",
+            "role": "group",
+            "aria-roledescription": "Figur",
+            "aria-label": "Rang im Nachbarbeispiel. Pfeiltasten links/rechts: Schritt. Leertaste: wiederholen.",
+            "class": "figure-stage",
+            "data-azimuth": "0.0",
+            "data-beat": "0",
+            "data-settled": "true",
+            "style": "background: rgb(246, 241, 232);"
+          },
+          "box": {
+            "x": 981,
+            "y": 345.28125,
+            "width": 386,
+            "height": 386
+          }
+        },
+        {
+          "tag": "svg",
+          "text": "",
+          "attributes": {
+            "role": "img",
+            "aria-label": "Vergleiche die Richtungen der Spalten und des Zielvektors.",
+            "viewBox": "0 0 386 386"
+          },
+          "box": {
+            "x": 981,
+            "y": 345.28125,
+            "width": 386,
+            "height": 386
+          }
+        },
+        {
+          "tag": "ellipse",
+          "text": "",
+          "attributes": {
+            "display": "none"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "tag": "g",
+          "text": "",
+          "attributes": {
+            "data-item": "plot-labels"
+          },
+          "box": {
+            "x": 1026.57275390625,
+            "y": 352.7994384765625,
+            "width": 280.72802734375,
+            "height": 361.3826904296875
+          }
+        },
+        {
+          "tag": "g",
+          "text": "",
+          "attributes": {
+            "transform": "matrix(3.5091 0 0 3.5091 17.5 17.5)"
+          },
+          "box": {
+            "x": 1026.57275390625,
+            "y": 352.7994384765625,
+            "width": 280.72802734375,
+            "height": 361.3826904296875
+          }
+        },
+        {
+          "tag": "text",
+          "text": "",
+          "attributes": {
+            "data-prim": "title",
+            "data-tone": "hi",
+            "display": "inline",
+            "stroke": "none",
+            "fill": "#5c5650",
+            "x": "8",
+            "y": "8",
+            "font-size": "5",
+            "text-anchor": "start",
+            "fill-opacity": "1",
+            "font-weight": "400"
+          },
+          "box": {
+            "x": 1026.57275390625,
+            "y": 373.85406494140625,
+            "width": 277.140625,
+            "height": 21
+          }
+        },
+        {
+          "tag": "tspan",
+          "text": "Unabhängiges Nachbarbeispiel",
+          "attributes": {
+            "font-family": "var(--sans)"
+          },
+          "box": {
+            "x": 1026.57275390625,
+            "y": 373.85406494140625,
+            "width": 277.140625,
+            "height": 21
+          }
+        },
+        {
+          "tag": "path",
+          "text": "",
+          "attributes": {
+            "data-prim": "x-axis",
+            "data-tone": "lo",
+            "display": "inline",
+            "stroke": "#5c5650",
+            "fill": "none",
+            "d": "M12 50 L88 50",
+            "stroke-width": "0.35",
+            "stroke-opacity": "0.5",
+            "stroke-linecap": "round"
+          },
+          "box": {
+            "x": 1040.6092529296875,
+            "y": 538.2362670898438,
+            "width": 266.6915283203125,
+            "height": 0
+          }
+        },
+        {
+          "tag": "path",
+          "text": "",
+          "attributes": {
+            "data-prim": "y-axis",
+            "data-tone": "lo",
+            "display": "inline",
+            "stroke": "#5c5650",
+            "fill": "none",
+            "d": "M50 12 L50 88",
+            "stroke-width": "0.35",
+            "stroke-opacity": "0.5",
+            "stroke-linecap": "round"
+          },
+          "box": {
+            "x": 1173.9549560546875,
+            "y": 404.89044189453125,
+            "width": 0,
+            "height": 266.69158935546875
+          }
+        },
+        {
+          "tag": "path",
+          "text": "",
+          "attributes": {
+            "data-prim": "column-1",
+            "data-tone": "lit",
+            "display": "inline",
+            "stroke": "#6d3fd4",
+            "fill": "none",
+            "d": "M50 50 L58 34",
+            "stroke-width": "0.7",
+            "stroke-opacity": "1",
+            "stroke-linecap": "round"
+          },
+          "box": {
+            "x": 1173.9549560546875,
+            "y": 482.09063720703125,
+            "width": 28.0728759765625,
+            "height": 56.1456298828125
+          }
+        },
+        {
+          "tag": "path",
+          "text": "",
+          "attributes": {
+            "data-prim": "column-2",
+            "data-tone": "hi",
+            "display": "inline",
+            "stroke": "#5c5650",
+            "fill": "none",
+            "d": "M50 50 L66 18",
+            "stroke-width": "0.7",
+            "stroke-opacity": "1",
+            "stroke-linecap": "round"
+          },
+          "box": {
+            "x": 1173.9549560546875,
+            "y": 425.945068359375,
+            "width": 56.1456298828125,
+            "height": 112.29119873046875
+          }
+        },
+        {
+          "tag": "path",
+          "text": "",
+          "attributes": {
+            "data-prim": "target",
+            "data-tone": "mid",
+            "display": "inline",
+            "stroke": "#5c5650",
+            "fill": "none",
+            "d": "M50 50 L74 2",
+            "stroke-width": "0.6",
+            "stroke-opacity": "0.8",
+            "stroke-linecap": "round",
+            "stroke-dasharray": "1 0.5"
+          },
+          "box": {
+            "x": 1173.9549560546875,
+            "y": 369.7994384765625,
+            "width": 84.2183837890625,
+            "height": 168.43682861328125
+          }
+        },
+        {
+          "tag": "circle",
+          "text": "",
+          "attributes": {
+            "data-prim": "origin",
+            "data-tone": "hi",
+            "display": "inline",
+            "stroke": "none",
+            "fill": "#5c5650",
+            "cx": "50",
+            "cy": "50",
+            "r": "1.2",
+            "fill-opacity": "1"
+          },
+          "box": {
+            "x": 1169.744140625,
+            "y": 534.0253295898438,
+            "width": 8.4217529296875,
+            "height": 8.42181396484375
+          }
+        },
+        {
+          "tag": "text",
+          "text": "",
+          "attributes": {
+            "data-prim": "a1",
+            "data-tone": "lit",
+            "display": "inline",
+            "stroke": "none",
+            "fill": "#6d3fd4",
+            "x": "58",
+            "y": "34",
+            "font-size": "5",
+            "text-anchor": "start",
+            "fill-opacity": "1",
+            "font-weight": "400"
+          },
+          "box": {
+            "x": 1202.02783203125,
+            "y": 465.09063720703125,
+            "width": 15.6875,
+            "height": 21
+          }
+        },
+        {
+          "tag": "tspan",
+          "text": "a₁",
+          "attributes": {
+            "font-family": "var(--sans)"
+          },
+          "box": {
+            "x": 1202.02783203125,
+            "y": 465.09063720703125,
+            "width": 15.6875,
+            "height": 21
+          }
+        },
+        {
+          "tag": "text",
+          "text": "",
+          "attributes": {
+            "data-prim": "a2",
+            "data-tone": "hi",
+            "display": "inline",
+            "stroke": "none",
+            "fill": "#5c5650",
+            "x": "66",
+            "y": "18",
+            "font-size": "5",
+            "text-anchor": "start",
+            "fill-opacity": "1",
+            "font-weight": "400"
+          },
+          "box": {
+            "x": 1230.1005859375,
+            "y": 408.9450378417969,
+            "width": 17.078125,
+            "height": 21.000030517578125
+          }
+        },
+        {
+          "tag": "tspan",
+          "text": "a₂",
+          "attributes": {
+            "font-family": "var(--sans)"
+          },
+          "box": {
+            "x": 1230.1005859375,
+            "y": 408.9450378417969,
+            "width": 17.078125,
+            "height": 21.000030517578125
+          }
+        },
+        {
+          "tag": "text",
+          "text": "",
+          "attributes": {
+            "data-prim": "b",
+            "data-tone": "mid",
+            "display": "inline",
+            "stroke": "none",
+            "fill": "#5c5650",
+            "x": "74",
+            "y": "2",
+            "font-size": "5",
+            "text-anchor": "start",
+            "fill-opacity": "0.8",
+            "font-weight": "400"
+          },
+          "box": {
+            "x": 1258.17333984375,
+            "y": 352.7994384765625,
+            "width": 11.484375,
+            "height": 21
+          }
+        },
+        {
+          "tag": "tspan",
+          "text": "b",
+          "attributes": {
+            "font-family": "var(--sans)"
+          },
+          "box": {
+            "x": 1258.17333984375,
+            "y": 352.7994384765625,
+            "width": 11.484375,
+            "height": 21
+          }
+        },
+        {
+          "tag": "text",
+          "text": "",
+          "attributes": {
+            "data-prim": "determinant",
+            "data-tone": "hi",
+            "display": "inline",
+            "stroke": "none",
+            "fill": "#5c5650",
+            "x": "8",
+            "y": "91",
+            "font-size": "5",
+            "text-anchor": "start",
+            "fill-opacity": "1",
+            "font-weight": "400"
+          },
+          "box": {
+            "x": 1026.57275390625,
+            "y": 665.109375,
+            "width": 235.265625,
+            "height": 21
+          }
+        },
+        {
+          "tag": "tspan",
+          "text": "Spaltenrichtung: abhängig",
+          "attributes": {
+            "font-family": "var(--sans)"
+          },
+          "box": {
+            "x": 1026.57275390625,
+            "y": 665.109375,
+            "width": 235.265625,
+            "height": 21
+          }
+        },
+        {
+          "tag": "text",
+          "text": "",
+          "attributes": {
+            "data-prim": "ranks",
+            "data-tone": "hi",
+            "display": "inline",
+            "stroke": "none",
+            "fill": "#5c5650",
+            "x": "8",
+            "y": "99",
+            "font-size": "5",
+            "text-anchor": "start",
+            "fill-opacity": "1",
+            "font-weight": "400"
+          },
+          "box": {
+            "x": 1026.57275390625,
+            "y": 693.18212890625,
+            "width": 183.46875,
+            "height": 21
+          }
+        },
+        {
+          "tag": "tspan",
+          "text": "Ziel: im Spaltenraum",
+          "attributes": {
+            "font-family": "var(--sans)"
+          },
+          "box": {
+            "x": 1026.57275390625,
+            "y": 693.18212890625,
+            "width": 183.46875,
+            "height": 21
+          }
+        },
+        {
+          "tag": "div",
+          "text": "",
+          "attributes": {
+            "class": "figure-step-body"
+          },
+          "box": {
+            "x": 981,
+            "y": 751.28125,
+            "width": 386,
+            "height": 134
+          }
+        },
+        {
+          "tag": "p",
+          "text": "",
+          "attributes": {
+            "class": "figure-beat-caption"
+          },
+          "box": {
+            "x": 981,
+            "y": 772.28125,
+            "width": 386,
+            "height": 45
+          }
+        },
+        {
+          "tag": "span",
+          "text": "Vergleiche die Richtungen der Spalten und des Zielvektors.",
+          "attributes": {},
+          "box": {
+            "x": 981,
+            "y": 774.28125,
+            "width": 320.140625,
+            "height": 40.5
+          }
+        },
+        {
+          "tag": "p",
+          "text": "Vergleiche die Richtungen der Spalten und des Zielvektors.",
+          "attributes": {
+            "aria-hidden": "true",
+            "class": "figure-readout"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "tag": "span",
+          "text": "Vergleiche die Richtungen der Spalten und des Zielvektors.",
+          "attributes": {
+            "aria-live": "polite",
+            "class": "visually-hidden"
+          },
+          "box": {
+            "x": 981,
+            "y": 817.28125,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "tag": "div",
+          "text": "",
+          "attributes": {
+            "role": "group",
+            "aria-label": "Schritte",
+            "class": "figure-controls"
+          },
+          "box": {
+            "x": 981,
+            "y": 841.28125,
+            "width": 386,
+            "height": 44
+          }
+        },
+        {
+          "tag": "button",
+          "text": "Zurück",
+          "attributes": {
+            "type": "button",
+            "disabled": "",
+            "class": "btn btn-ghost btn-sm"
+          },
+          "box": {
+            "x": 981,
+            "y": 841.28125,
+            "width": 82.703125,
+            "height": 44
+          }
+        },
+        {
+          "tag": "span",
+          "text": "1 / 1",
+          "attributes": {
+            "aria-label": "Schritt 1 von 1",
+            "class": "figure-step"
+          },
+          "box": {
+            "x": 1160.34375,
+            "y": 853.53125,
+            "width": 27.296875,
+            "height": 19.5
+          }
+        },
+        {
+          "tag": "button",
+          "text": "Von vorn",
+          "attributes": {
+            "type": "button",
+            "class": "btn btn-primary btn-sm figure-next"
+          },
+          "box": {
+            "x": 1263,
+            "y": 841.28125,
+            "width": 104,
+            "height": 44
+          }
+        },
+        {
+          "tag": "div",
+          "text": "",
+          "attributes": {
+            "class": "figure-print-description"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "tag": "ol",
+          "text": "",
+          "attributes": {},
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "tag": "li",
+          "text": "Vergleiche die Richtungen der Spalten und des Zielvektors.",
+          "attributes": {},
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "tag": "button",
+          "text": "Figur ausblenden",
+          "attributes": {
+            "type": "button",
+            "class": "btn btn-ghost btn-sm figure-hide"
+          },
+          "box": {
+            "x": 981,
+            "y": 889.28125,
+            "width": 133.28125,
+            "height": 44
+          }
+        }
+      ],
+      "ariaSnapshot": "- figure \"Hinweis · Rang im Nachbarbeispiel\":\n  - strong: Hinweis · Rang im Nachbarbeispiel\n  - paragraph: Vergleiche den Rang der Koeffizientenmatrix mit dem der erweiterten Matrix.\n  - 'group \"Rang im Nachbarbeispiel. Pfeiltasten links/rechts: Schritt. Leertaste: wiederholen.\"':\n    - img \"Vergleiche die Richtungen der Spalten und des Zielvektors.\": \"Unabhängiges Nachbarbeispiel a₁ a₂ b Spaltenrichtung: abhängig Ziel: im Spaltenraum\"\n  - paragraph: Vergleiche die Richtungen der Spalten und des Zielvektors.\n  - text: Vergleiche die Richtungen der Spalten und des Zielvektors.\n  - group \"Schritte\":\n    - button \"Zurück\" [disabled]\n    - text: 1 / 1\n    - button \"Von vorn\"\n  - button \"Figur ausblenden\""
+    }
+  ]
+}

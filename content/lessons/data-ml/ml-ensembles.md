@@ -26,7 +26,6 @@ Dabei ist $p_0$ der Anteil der Klasse 0, sprich: p null. Bild dazu: ein Bonbongl
 - Verteilung $[0, 0, 0, 1]$: $p_0 = 0{,}75$, also $G = 1 - 0{,}5625 - 0{,}0625 = 0{,}375$ (reiner).
 
 Für einen Split wird $G$ pro Kind berechnet und nach Zeilenzahl gewichtet; der Split mit der kleinsten gewichteten Summe gewinnt. Beispiel: $x = (1, 2, 3, 4)$, $y = (0, 0, 1, 1)$, Schwelle $2{,}5$ ergibt die Kinder $[0, 0]$ und $[1, 1]$ mit gewichtetem Gini $0$; die Schwelle trennt perfekt.
-
 ## Tiefe steuern
 
 Die **Tiefe** ist die Zahl der Fragen auf dem Weg von der Wurzel zum Blatt. Tiefe 1 ist ein Baumstumpf mit einem Split; Tiefe 2 erlaubt eine zweite Frage pro Seite. Mit jeder weiteren Ebene steigt die Komplexität: Bäume, die zu tief wachsen, merken sich Ausreißer und verlieren die Verallgemeinerung auf neue Daten. Das ist genau der Bias-Varianz-Tradeoff. Ein Baumstumpf liegt auf fast jeder Stichprobe ähnlich daneben: hohe Verzerrung, kleine Varianz. Ein sehr tiefer Baum trifft die Trainingsdaten perfekt, sieht aber nach einer anderen Stichprobe derselben Daten ganz anders aus: kleine Verzerrung, hohe Varianz.

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "token-conveyor",
+  "title": "Ein neues Token kehrt an den Eingang zurück",
+  "caption": "Die gestellte Forward-Fixtur liefert Logits. Argmax wählt das nächste Token und erweitert den Kontext.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die gestellte Forward-Fixtur liefert Logits. Argmax wählt das nächste Token und erweitert den Kontext."
+    },
+    {
+      "id": "step-1",
+      "caption": "Der nächste Durchlauf sieht den erweiterten Kontext. Das gewählte Ende-Token stoppt die Schleife."
+    }
+  ]
+}
+

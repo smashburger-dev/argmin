@@ -1,4 +1,5 @@
 import { MASTERY_MAX_HINTS } from '../domain/learning_policy.mjs';
+import { snapshotAttemptAnswer } from '../domain/scene_answer.mjs';
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
 
@@ -35,14 +36,34 @@ function exclusionFor(attempt, eventType, competencyIds) {
   return null;
 }
 
-export function normalizeAttemptV3(attempt, context) {
-  const installationId = context.installationId;
-  const nowIso = context.nowIso || new Date().toISOString();
-  const occurredAt = attempt.occurredAt || attempt.ts || nowIso;
+function attemptIdentity(attempt) {
   const activityId = attempt.activityId || attempt.exerciseId;
   const definitionId = attempt.definitionId || attempt.exerciseId;
   const cycleId = attempt.cycleId || 'legacy';
   const seed = attempt.seed ?? 0;
+  return { activityId, definitionId, cycleId, seed };
+}
+
+function normalizedMetadata(attempt, identity, context, occurredAt) {
+  const { activityId, definitionId, cycleId, seed } = identity;
+  const fallbackId = attempt.id ?? stableHash(JSON.stringify([
+    activityId, definitionId, seed, occurredAt, attempt.answer, context.ordinal || 0,
+  ]));
+  return {
+    eventId: attempt.eventId || `legacy:${context.installationId}:${fallbackId}`,
+    installationId: attempt.installationId || context.installationId,
+    activityVersion: attempt.activityVersion || 'legacy-unknown',
+    instanceId: attempt.instanceId || `${definitionId}:${cycleId}:${seed}`,
+    contentVersion: attempt.contentVersion || context.contentVersion || 'pre-v3',
+    recordedAt: attempt.recordedAt || context.nowIso,
+  };
+}
+
+export function normalizeAttemptV3(attempt, context) {
+  snapshotAttemptAnswer(attempt);
+  const nowIso = context.nowIso || new Date().toISOString();
+  const occurredAt = attempt.occurredAt || attempt.ts || nowIso;
+  const identity = attemptIdentity(attempt);
   const competencyIds = Array.isArray(attempt.competencyIds)
     ? [...attempt.competencyIds]
     : competencyIdsFor(attempt.exerciseId, context.competencyIdsByExercise);
@@ -50,23 +71,15 @@ export function normalizeAttemptV3(attempt, context) {
   const computedExclusion = exclusionFor(attempt, eventType, competencyIds);
   const exclusionCode = attempt.exclusionCode
     ?? (attempt.evidenceEligible === false && computedExclusion === null ? 'explicitly-ineligible' : computedExclusion);
-  const fallbackId = attempt.id ?? stableHash(JSON.stringify([
-    activityId, definitionId, seed, occurredAt, attempt.answer, context.ordinal || 0,
-  ]));
   return {
     ...clone(attempt),
-    eventId: attempt.eventId || `legacy:${installationId}:${fallbackId}`,
-    installationId: attempt.installationId || installationId,
+    ...normalizedMetadata(attempt, identity, { ...context, nowIso }, occurredAt),
     eventType,
-    activityId,
-    activityVersion: attempt.activityVersion || 'legacy-unknown',
-    definitionId,
-    instanceId: attempt.instanceId || `${definitionId}:${cycleId}:${seed}`,
-    cycleId,
+    activityId: identity.activityId,
+    definitionId: identity.definitionId,
+    cycleId: identity.cycleId,
     competencyIds,
-    contentVersion: attempt.contentVersion || context.contentVersion || 'pre-v3',
     occurredAt,
-    recordedAt: attempt.recordedAt || nowIso,
     evidenceEligible: exclusionCode === null && attempt.evidenceEligible !== false,
     exclusionCode,
   };

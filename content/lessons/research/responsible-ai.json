@@ -23,6 +23,8 @@
       "type": "worked-example",
       "contentRef": "lessons/research/responsible-ai.md"
     },
+    { "blockId": "responsible-sorter-figure", "type": "figure", "contentRef": "lessons/research/responsible-sorter.fig.json" },
+    { "blockId": "responsible-ai-s7-after", "type": "worked-example", "contentRef": "lessons/research/responsible-ai-s7-after.md" },
     {
       "blockId": "responsible-ai-check",
       "type": "checkpoint",

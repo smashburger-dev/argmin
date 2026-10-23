@@ -1,0 +1,56 @@
+{
+  "throttle": 4,
+  "results": [
+    {
+      "style": "a1",
+      "viewport": "1440",
+      "scenario": "beat",
+      "ticks": 239,
+      "frames": 331,
+      "scriptMedian": 5.5,
+      "scriptP95": 7.6,
+      "scriptMax": 14.7,
+      "buildMedian": 0.6,
+      "sortMedian": 2.4,
+      "paintMedian": 2.4,
+      "faces": 234,
+      "frameMedian": 8.4,
+      "frameP95": 17,
+      "longFrames": 1
+    },
+    {
+      "style": "a1",
+      "viewport": "1440",
+      "scenario": "drag",
+      "ticks": 501,
+      "frames": 549,
+      "scriptMedian": 10.1,
+      "scriptP95": 13.5,
+      "scriptMax": 32.7,
+      "buildMedian": 0,
+      "sortMedian": 4.2,
+      "paintMedian": 5.8,
+      "faces": 236,
+      "frameMedian": 25.9,
+      "frameP95": 49.2,
+      "longFrames": 5
+    },
+    {
+      "style": "a1",
+      "viewport": "1440",
+      "scenario": "board",
+      "ticks": 123,
+      "frames": 129,
+      "scriptMedian": 9.6,
+      "scriptP95": 13.4,
+      "scriptMax": 17.7,
+      "buildMedian": 0.2,
+      "sortMedian": 2.8,
+      "paintMedian": 6.2,
+      "faces": 236,
+      "frameMedian": 25,
+      "frameP95": 41.8,
+      "longFrames": 4
+    }
+  ]
+}

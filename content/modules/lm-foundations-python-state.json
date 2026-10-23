@@ -13,6 +13,17 @@
   ],
   "placements": [
     {
+      "placementId": "p-foundations-python-state-trace-short-circuit",
+      "role": "curated",
+      "familyId": "trace-tag-after-line",
+      "caseId": "bouncer-short-circuit",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-python-state",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-foundations-python-state-reassign-two-variables-print",
       "role": "curated",
       "familyId": "trace-assignment-state",

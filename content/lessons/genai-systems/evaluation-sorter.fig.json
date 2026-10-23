@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "evaluation-sorter",
+  "title": "Eine Schwelle, dieselben gelabelten Fälle",
+  "caption": "Die niedrige Schranke lässt viele Fälle als positiv passieren. Gefüllte Punkte sind tatsächlich positiv.",
+  "hint": "Zustände aus demselben Modell vergleichen.",
+  "params": {
+    "threshold": 0.5
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die niedrige Schranke lässt viele Fälle als positiv passieren. Gefüllte Punkte sind tatsächlich positiv."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die mittlere Schranke zählt dieselben Fälle neu in die vier Matrixfächer."
+    },
+    {
+      "id": "step-2",
+      "caption": "Aus den vier Matrixfächern wird F1 berechnet. Kein Zähler folgt einem vorgegebenen Kurvenverlauf."
+    },
+    {
+      "id": "step-3",
+      "caption": "Die hohe Schranke vermeidet falsche Alarme und übersieht dafür mehr positive Fälle."
+    }
+  ],
+  "predict": {
+    "beat": "step-1",
+    "prompt": "Setze t = 0,5. Welchen Wert hat F1 am aktuellen Schwellwert?",
+    "input": "numeric",
+    "expected": 0.75,
+    "tolerance": 0.000001,
+    "hints": [
+      "Berechne zuerst P = 0,5 + 0,5t und R = 1 − t², dann F1 = 2PR/(P+R)."
+    ],
+    "typicalErrors": [
+      {
+        "match": 1.125,
+        "feedback": "Das ist 2PR ohne den Nenner — F1 ist das harmonische Mittel 2PR/(P+R)."
+      },
+      {
+        "match": 0.56,
+        "feedback": "P·R ≈ 0,56 ist nicht F1 — F1 = 2PR/(P+R)."
+      }
+    ]
+  }
+}
+

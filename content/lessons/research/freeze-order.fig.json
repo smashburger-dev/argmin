@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "freeze-order",
+  "title": "Abhängigkeiten vor Ausführung",
+  "caption": "Das kleine Ordnungsbeispiel trennt Punkteberechnung und Regelprüfung. Beide müssen vor dem Bericht fertig sein.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die Pfeile sind Abhängigkeiten. Nur gold ist anfangs ohne unerledigten Vorgänger bereit."
+    },
+    {
+      "id": "step-1",
+      "caption": "Nach gold sind punkte und regel bereit. Der gepinnte Ablauf wählt alphabetisch punkte."
+    },
+    {
+      "id": "step-2",
+      "caption": "regel kann unabhängig von punkte laufen. Beide brauchen gold."
+    },
+    {
+      "id": "step-3",
+      "caption": "Erst nach punkte und regel darf bericht starten. Jede Kante bestimmt eine notwendige Reihenfolge."
+    },
+    {
+      "id": "step-4",
+      "caption": "Alle Abhängigkeiten sind erfüllt. Andere gültige Ordnungen müssen ebenfalls jede Kante respektieren."
+    }
+  ]
+}

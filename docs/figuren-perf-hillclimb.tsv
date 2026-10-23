@@ -1,0 +1,14 @@
+run	change	beat1440	drag1440	board1440	beat375	drag375	board375	kept
+baseline	A1 only + 4-button controls	7.2	11.6	11.7	7.2	11.1	14.2	yes
+g1	group faces into (part|tone|style) bucket paths	6.3	11.0	10.5	6.1	10.4	10.2	keep
+g2	numeric fill table + packed bucket keys	6.2	11.3	11.8	6.2	11.0	11.0	revert
+g3	memoize pairwise coverCmp per (item pair|dirKey)	5.6	11.4	11.3	5.8	10.8	11.7	keep
+g4	order reuse under 1deg via item-box overlap mask	-	-	-	-	-	-	revert
+s2-base	S2 full motion baseline; three runs, median of medians	5.1	10.2	10.7	5.0	9.6	9.2	yes
+s2-v1	project unique vertices of mounted meshes once per camera; three runs	5.2	10.3	10.5	4.7	9.6	9.8	revert
+s2-final	final painter; exact order, three full-motion runs	5.1	10.4	9.8	4.8	9.4	9.7	yes
+s2b-wave2	Welle-2 base before S2b edits; three runs; reference only	5.1	10.3	9.9	4.7	9.5	9.7	baseline
+s2b-controls	shared controls before color experiments; three runs; six-scenario mean 10.05ms	5.7	12.3	13.7	6.2	10.7	11.7	baseline
+s2b-palette	quantized fill cache only; three runs; mean gain -1.16 percent vs controls	6.3	12.2	11.3	6.3	11.8	13.1	revert
+s2b-rgb	bounded RGB parse cache only; three runs; mean gain 10.28 percent vs controls; pixels and depth correct	5.9	10.3	10.8	5.7	10.3	11.1	keep
+s2b-final	final source three runs; mean gain 12.44 percent vs controls; 7.32 percent slower than Welle 2; budgets open	5.2	10.8	11.8	5.4	10.1	9.5	yes

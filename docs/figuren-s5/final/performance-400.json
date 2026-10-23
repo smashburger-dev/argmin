@@ -1,0 +1,693 @@
+{
+  "cpu": 4,
+  "results": [
+    {
+      "run": 0,
+      "width": 375,
+      "id": "mse-section",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 1.2999999970197678,
+      "build": 0.19999999925494194,
+      "sort": 0,
+      "paint": 0.6999999992549419
+    },
+    {
+      "run": 0,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 54,
+      "medianMs": 22,
+      "build": 0.19999999925494194,
+      "sort": 17.5,
+      "paint": 4.100000001490116
+    },
+    {
+      "run": 0,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 92,
+      "medianMs": 39,
+      "build": 0,
+      "sort": 20.900000002235174,
+      "paint": 17.600000001490116
+    },
+    {
+      "run": 0,
+      "width": 375,
+      "id": "residual-springs",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.5999999977648258,
+      "build": 0.6000000014901161,
+      "sort": 0.09999999776482582,
+      "paint": 0.8000000007450581
+    },
+    {
+      "run": 0,
+      "width": 375,
+      "id": "rubber-band-coefficients",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.6000000014901161,
+      "build": 0.5999999977648258,
+      "sort": 0,
+      "paint": 0.8999999985098839
+    },
+    {
+      "run": 0,
+      "width": 375,
+      "id": "training-book",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 1.199999999254942,
+      "build": 0.30000000074505806,
+      "sort": 0,
+      "paint": 0.6999999992549419
+    },
+    {
+      "run": 0,
+      "width": 375,
+      "id": "early-stopping-flag",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.3999999985098839,
+      "build": 0.3999999985098839,
+      "sort": 0.09999999776482582,
+      "paint": 0.7999999970197678
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "mse-section",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.5,
+      "build": 0.19999999925494194,
+      "sort": 0.09999999776482582,
+      "paint": 0.8999999985098839
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 52,
+      "medianMs": 22.5,
+      "build": 0.19999999925494194,
+      "sort": 17.800000000745058,
+      "paint": 4.200000002980232
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 95,
+      "medianMs": 40.19999999925494,
+      "build": 0,
+      "sort": 21.899999998509884,
+      "paint": 18.400000002235174
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "residual-springs",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.4000000022351742,
+      "build": 0.5,
+      "sort": 0.09999999776482582,
+      "paint": 0.7999999970197678
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "rubber-band-coefficients",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.800000000745058,
+      "build": 0.6999999992549419,
+      "sort": 0,
+      "paint": 1
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "training-book",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 1.300000000745058,
+      "build": 0.3999999985098839,
+      "sort": 0,
+      "paint": 0.6999999992549419
+    },
+    {
+      "run": 0,
+      "width": 1440,
+      "id": "early-stopping-flag",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.3999999985098839,
+      "build": 0.3999999985098839,
+      "sort": 0.09999999776482582,
+      "paint": 0.7000000029802322
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "mse-section",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 1.5,
+      "build": 0.30000000074505806,
+      "sort": 0.09999999776482582,
+      "paint": 0.8000000007450581
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 53,
+      "medianMs": 23.100000001490116,
+      "build": 0.19999999925494194,
+      "sort": 18.199999999254942,
+      "paint": 4.300000000745058
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 92,
+      "medianMs": 37.399999998509884,
+      "build": 0,
+      "sort": 20.399999998509884,
+      "paint": 16.699999999254942
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "residual-springs",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 0.9000000022351742,
+      "build": 0.10000000149011612,
+      "sort": 0,
+      "paint": 0.6000000014901161
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "rubber-band-coefficients",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 1.199999999254942,
+      "build": 0.3999999985098839,
+      "sort": 0,
+      "paint": 0.8000000007450581
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "training-book",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 0.6999999992549419,
+      "build": 0.09999999776482582,
+      "sort": 0,
+      "paint": 0.3999999985098839
+    },
+    {
+      "run": 1,
+      "width": 375,
+      "id": "early-stopping-flag",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1,
+      "build": 0.10000000149011612,
+      "sort": 0,
+      "paint": 0.6999999992549419
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "mse-section",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 0.9000000022351742,
+      "build": 0.10000000149011612,
+      "sort": 0,
+      "paint": 0.6999999992549419
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 56,
+      "medianMs": 21.400000002235174,
+      "build": 0.10000000149011612,
+      "sort": 17.099999997764826,
+      "paint": 4
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 101,
+      "medianMs": 37.30000000074506,
+      "build": 0,
+      "sort": 20.300000000745058,
+      "paint": 17
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "residual-springs",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.5,
+      "build": 0.5,
+      "sort": 0.09999999776482582,
+      "paint": 0.8000000007450581
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "rubber-band-coefficients",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 1.699999999254942,
+      "build": 0.6000000014901161,
+      "sort": 0,
+      "paint": 0.8999999985098839
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "training-book",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.199999999254942,
+      "build": 0.30000000074505806,
+      "sort": 0,
+      "paint": 0.6999999992549419
+    },
+    {
+      "run": 1,
+      "width": 1440,
+      "id": "early-stopping-flag",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.199999999254942,
+      "build": 0.19999999925494194,
+      "sort": 0.09999999776482582,
+      "paint": 0.6999999992549419
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "mse-section",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.3999999985098839,
+      "build": 0.10000000149011612,
+      "sort": 0.09999999776482582,
+      "paint": 0.8000000007450581
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 54,
+      "medianMs": 21.899999998509884,
+      "build": 0.29999999701976776,
+      "sort": 17.600000001490116,
+      "paint": 4
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 92,
+      "medianMs": 39.099999997764826,
+      "build": 0,
+      "sort": 21.400000002235174,
+      "paint": 17.600000001490116
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "residual-springs",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 1.5,
+      "build": 0.5,
+      "sort": 0,
+      "paint": 0.8000000007450581
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "rubber-band-coefficients",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 1.6000000014901161,
+      "build": 0.5999999977648258,
+      "sort": 0,
+      "paint": 0.9000000022351742
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "training-book",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.199999999254942,
+      "build": 0.30000000074505806,
+      "sort": 0,
+      "paint": 0.6999999992549419
+    },
+    {
+      "run": 2,
+      "width": 375,
+      "id": "early-stopping-flag",
+      "scenario": "beat",
+      "ticks": 191,
+      "medianMs": 1.2000000029802322,
+      "build": 0.29999999701976776,
+      "sort": 0.09999999776482582,
+      "paint": 0.6999999992549419
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "mse-section",
+      "scenario": "beat",
+      "ticks": 193,
+      "medianMs": 1.300000000745058,
+      "build": 0.19999999925494194,
+      "sort": 0.09999999776482582,
+      "paint": 0.7999999970197678
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "ticks": 54,
+      "medianMs": 22.199999999254942,
+      "build": 0.19999999925494194,
+      "sort": 17.399999998509884,
+      "paint": 4.100000001490116
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "ticks": 96,
+      "medianMs": 38.899999998509884,
+      "build": 0,
+      "sort": 20.699999999254942,
+      "paint": 18
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "residual-springs",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.3999999985098839,
+      "build": 0.30000000074505806,
+      "sort": 0,
+      "paint": 0.8000000007450581
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "rubber-band-coefficients",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.699999999254942,
+      "build": 0.6999999992549419,
+      "sort": 0,
+      "paint": 0.9000000022351742
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "training-book",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.300000000745058,
+      "build": 0.30000000074505806,
+      "sort": 0,
+      "paint": 0.6999999992549419
+    },
+    {
+      "run": 2,
+      "width": 1440,
+      "id": "early-stopping-flag",
+      "scenario": "beat",
+      "ticks": 192,
+      "medianMs": 1.199999999254942,
+      "build": 0.20000000298023224,
+      "sort": 0,
+      "paint": 0.6999999992549419
+    }
+  ],
+  "summary": [
+    {
+      "width": 375,
+      "id": "mse-section",
+      "scenario": "beat",
+      "medianOfMedians": 1.3999999985098839,
+      "runs": [
+        1.2999999970197678,
+        1.5,
+        1.3999999985098839
+      ],
+      "ticks": [
+        191,
+        191,
+        192
+      ]
+    },
+    {
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "medianOfMedians": 22,
+      "runs": [
+        22,
+        23.100000001490116,
+        21.899999998509884
+      ],
+      "ticks": [
+        54,
+        53,
+        54
+      ]
+    },
+    {
+      "width": 375,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "medianOfMedians": 39,
+      "runs": [
+        39,
+        37.399999998509884,
+        39.099999997764826
+      ],
+      "ticks": [
+        92,
+        92,
+        92
+      ]
+    },
+    {
+      "width": 375,
+      "id": "residual-springs",
+      "scenario": "beat",
+      "medianOfMedians": 1.5,
+      "runs": [
+        1.5999999977648258,
+        0.9000000022351742,
+        1.5
+      ],
+      "ticks": [
+        192,
+        192,
+        191
+      ]
+    },
+    {
+      "width": 375,
+      "id": "rubber-band-coefficients",
+      "scenario": "beat",
+      "medianOfMedians": 1.6000000014901161,
+      "runs": [
+        1.6000000014901161,
+        1.199999999254942,
+        1.6000000014901161
+      ],
+      "ticks": [
+        192,
+        191,
+        191
+      ]
+    },
+    {
+      "width": 375,
+      "id": "training-book",
+      "scenario": "beat",
+      "medianOfMedians": 1.199999999254942,
+      "runs": [
+        1.199999999254942,
+        0.6999999992549419,
+        1.199999999254942
+      ],
+      "ticks": [
+        191,
+        192,
+        192
+      ]
+    },
+    {
+      "width": 375,
+      "id": "early-stopping-flag",
+      "scenario": "beat",
+      "medianOfMedians": 1.2000000029802322,
+      "runs": [
+        1.3999999985098839,
+        1,
+        1.2000000029802322
+      ],
+      "ticks": [
+        192,
+        192,
+        191
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "mse-section",
+      "scenario": "beat",
+      "medianOfMedians": 1.300000000745058,
+      "runs": [
+        1.5,
+        0.9000000022351742,
+        1.300000000745058
+      ],
+      "ticks": [
+        192,
+        191,
+        193
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "beat",
+      "medianOfMedians": 22.199999999254942,
+      "runs": [
+        22.5,
+        21.400000002235174,
+        22.199999999254942
+      ],
+      "ticks": [
+        52,
+        56,
+        54
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "mse-landscape",
+      "scenario": "drag",
+      "medianOfMedians": 38.899999998509884,
+      "runs": [
+        40.19999999925494,
+        37.30000000074506,
+        38.899999998509884
+      ],
+      "ticks": [
+        95,
+        101,
+        96
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "residual-springs",
+      "scenario": "beat",
+      "medianOfMedians": 1.4000000022351742,
+      "runs": [
+        1.4000000022351742,
+        1.5,
+        1.3999999985098839
+      ],
+      "ticks": [
+        192,
+        192,
+        192
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "rubber-band-coefficients",
+      "scenario": "beat",
+      "medianOfMedians": 1.699999999254942,
+      "runs": [
+        1.800000000745058,
+        1.699999999254942,
+        1.699999999254942
+      ],
+      "ticks": [
+        192,
+        191,
+        192
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "training-book",
+      "scenario": "beat",
+      "medianOfMedians": 1.300000000745058,
+      "runs": [
+        1.300000000745058,
+        1.199999999254942,
+        1.300000000745058
+      ],
+      "ticks": [
+        191,
+        192,
+        192
+      ]
+    },
+    {
+      "width": 1440,
+      "id": "early-stopping-flag",
+      "scenario": "beat",
+      "medianOfMedians": 1.199999999254942,
+      "runs": [
+        1.3999999985098839,
+        1.199999999254942,
+        1.199999999254942
+      ],
+      "ticks": [
+        192,
+        192,
+        192
+      ]
+    }
+  ]
+}

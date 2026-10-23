@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-foundations-algebra",
-  "version": 3,
+  "version": 4,
   "locale": "de",
   "title": "Algebra als überprüfbare Umformung",
   "objectives": ["Lineare Gleichungen schrittweise äquivalent umformen", "Potenz- und Logarithmusaufgaben über Definitionen prüfen", "Vorzeichen- und Operationsfehler lokalisieren"],
@@ -10,6 +10,11 @@
   "estimatedMinutes": 50,
   "blocks": [
     { "blockId": "algebra-core", "type": "worked-example", "contentRef": "lessons/foundations/algebra.md" },
+    {"blockId": "algebra-balance", "type": "figure", "contentRef": "lessons/foundations/balance-isolate.fig.json"},
+    {"blockId": "algebra-equations", "type": "worked-example", "contentRef": "lessons/foundations/algebra-equations.md"},
+    {"blockId": "algebra-powers", "type": "worked-example", "contentRef": "lessons/foundations/algebra-powers.md"},
+    {"blockId": "algebra-power-stack", "type": "figure", "contentRef": "lessons/foundations/power-stack.fig.json"},
+    {"blockId": "algebra-close", "type": "worked-example", "contentRef": "lessons/foundations/algebra-close.md"},
     { "blockId": "algebra-viz", "type": "visualization", "contentRef": "lessons/foundations/linear-function.viz.json" }
   ],
   "sourceRefs": [

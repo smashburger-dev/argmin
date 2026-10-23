@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "git-snapshots",
+  "title": "Arbeitsdatei, Index und Commit",
+  "caption": "Das Vormerken hält einen Stand fest. Eine spätere Änderung wandert erst nach erneutem Vormerken in den Commit.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die Arbeitsdatei ist verändert. Index und letzter Commit enthalten weiterhin den alten Stand."
+    },
+    {
+      "id": "step-1",
+      "caption": "git add kopiert den gewählten Dateiinhalt in den Index."
+    },
+    {
+      "id": "step-2",
+      "caption": "Eine weitere Bearbeitung ändert nur die Arbeitsdatei. Der vorgemerkte Inhalt bleibt erhalten."
+    },
+    {
+      "id": "step-3",
+      "caption": "git commit speichert den Index. Die spätere unvorgemerkte Änderung bleibt in der Arbeitsdatei."
+    },
+    {
+      "id": "step-4",
+      "caption": "Ein Merge-Commit verbindet zwei Eltern. Die Graphkante belegt Abstammung, keine Codekorrektheit."
+    }
+  ]
+}

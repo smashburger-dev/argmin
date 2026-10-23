@@ -8,7 +8,18 @@
   "competencyIds": ["c-git-basics"],
   "requires": ["c-meta-learning"],
   "estimatedMinutes": 30,
-  "blocks": [{ "blockId": "git-core", "type": "project-step", "contentRef": "lessons/foundations/git.md" }],
+  "blocks": [
+    {
+      "blockId": "git-core",
+      "type": "project-step",
+      "contentRef": "lessons/foundations/git.md"
+    },
+    {
+      "blockId": "s8b-git-snapshots",
+      "type": "figure",
+      "contentRef": "lessons/foundations/git-snapshots.fig.json"
+    }
+  ],
   "sourceRefs": [
     { "sourceId": "pro-git-book", "role": "practice", "locator": "Kapitel 2 und 3: Git Basics; Git Branching" }
   ],

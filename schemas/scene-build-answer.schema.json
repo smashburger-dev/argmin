@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://argmin.local/schemas/scene-build-answer.schema.json",
+  "title": "Scene-build answer v1",
+  "type": "object",
+  "required": ["kind", "schemaVersion", "form", "steps"],
+  "additionalProperties": false,
+  "properties": {
+    "kind": { "const": "scene-build" },
+    "schemaVersion": { "const": 1 },
+    "form": { "$ref": "#/$defs/jsonObject" },
+    "steps": {
+      "type": "array",
+      "maxItems": 128,
+      "items": { "$ref": "#/$defs/jsonObject" }
+    }
+  },
+  "$defs": {
+    "jsonObject": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": { "not": { "enum": ["__proto__", "constructor", "prototype"] } },
+      "additionalProperties": { "$ref": "#/$defs/jsonValue" }
+    },
+    "jsonValue": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" },
+        { "type": "number" },
+        { "type": "string", "maxLength": 4096 },
+        { "type": "array", "maxItems": 128, "items": { "$ref": "#/$defs/jsonValue" } },
+        { "$ref": "#/$defs/jsonObject" }
+      ]
+    },
+    "pickLearningRateFormV1": {
+      "type": "object",
+      "required": ["eta"],
+      "additionalProperties": false,
+      "properties": { "eta": { "type": "number" } }
+    },
+    "tagAfterLineFormV1": {
+      "type": "object",
+      "required": ["tags"],
+      "additionalProperties": false,
+      "properties": {
+        "tags": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "$ref": "#/$defs/tagAfterLineStateV1" }
+        }
+      }
+    },
+    "tagAfterLineStateV1": {
+      "type": "object",
+      "required": ["lineId", "bindings"],
+      "additionalProperties": false,
+      "properties": {
+        "lineId": { "type": "string", "minLength": 1 },
+        "bindings": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "$ref": "#/$defs/tagAfterLineBindingV1" }
+        }
+      }
+    },
+    "tagAfterLineBindingV1": {
+      "type": "object",
+      "required": ["name", "objectId"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "objectId": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

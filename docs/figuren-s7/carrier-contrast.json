@@ -1,0 +1,99 @@
+{
+  "pairs": [
+    {
+      "theme": "light",
+      "tone": "hi",
+      "carrier": "paper",
+      "ink": "#5c5650",
+      "alpha": 1,
+      "background": "rgb(246, 241, 232)",
+      "ratio": 6.432056174360287
+    },
+    {
+      "theme": "light",
+      "tone": "hi",
+      "carrier": "plate",
+      "ink": "#5c5650",
+      "alpha": 1,
+      "background": "#ebe6dd",
+      "ratio": 5.821903235333682
+    },
+    {
+      "theme": "light",
+      "tone": "lit",
+      "carrier": "paper",
+      "ink": "#6d3fd4",
+      "alpha": 1,
+      "background": "rgb(246, 241, 232)",
+      "ratio": 5.635952163279221
+    },
+    {
+      "theme": "light",
+      "tone": "lit",
+      "carrier": "plate",
+      "ink": "#6d3fd4",
+      "alpha": 1,
+      "background": "#ebe6dd",
+      "ratio": 5.1013186520941005
+    },
+    {
+      "theme": "dark",
+      "tone": "hi",
+      "carrier": "paper",
+      "ink": "#a89f94",
+      "alpha": 1,
+      "background": "rgb(32, 29, 35)",
+      "ratio": 6.383103508064552
+    },
+    {
+      "theme": "dark",
+      "tone": "hi",
+      "carrier": "plate",
+      "ink": "#a89f94",
+      "alpha": 1,
+      "background": "#2a262b",
+      "ratio": 5.708192119744705
+    },
+    {
+      "theme": "dark",
+      "tone": "lit",
+      "carrier": "paper",
+      "ink": "#b79cff",
+      "alpha": 1,
+      "background": "rgb(32, 29, 35)",
+      "ratio": 7.303485228677982
+    },
+    {
+      "theme": "dark",
+      "tone": "lit",
+      "carrier": "plate",
+      "ink": "#b79cff",
+      "alpha": 1,
+      "background": "#2a262b",
+      "ratio": 6.531258153081779
+    }
+  ],
+  "minimum": 5.1013186520941005,
+  "matrixGlyphCenters": [
+    {
+      "text": "TP  4",
+      "horizontalOffset": -0.000003814697265625,
+      "verticalOffset": 0.1181793212890625
+    },
+    {
+      "text": "FP  2",
+      "horizontalOffset": 0,
+      "verticalOffset": 0.1181793212890625
+    },
+    {
+      "text": "FN  0",
+      "horizontalOffset": -0.000003814697265625,
+      "verticalOffset": 0.1181640625
+    },
+    {
+      "text": "TN  2",
+      "horizontalOffset": -0.00000762939453125,
+      "verticalOffset": 0.1181640625
+    }
+  ]
+}

@@ -1,0 +1,948 @@
+{
+  "checkedProductCommit": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+  "port": 4400,
+  "final": [
+    {
+      "stage": "final-consumers",
+      "command": "node tools/compile_content.mjs",
+      "start": "2026-10-21T11:48:51.043Z",
+      "end": "2026-10-21T11:48:52.084Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-consumers-1.log",
+      "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)"
+      ]
+    },
+    {
+      "stage": "final-consumers",
+      "command": "node tools/validate_content.mjs",
+      "start": "2026-10-21T11:48:52.104Z",
+      "end": "2026-10-21T11:48:52.987Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-consumers-2.log",
+      "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+      "summary": [
+        "Content-Bundle: 46 Kompetenzen, 50 Lektionen, 290 Aktivitäten"
+      ]
+    },
+    {
+      "stage": "final-consumers",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:48:53.004Z",
+      "end": "2026-10-21T11:48:55.661Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-consumers-3.log",
+      "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "final-consumers",
+      "command": "npm run build:release",
+      "start": "2026-10-21T11:48:55.678Z",
+      "end": "2026-10-21T11:49:01.841Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-consumers-4.log",
+      "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "final-consumers",
+      "command": "node tools/validate_content.mjs --dir build-next",
+      "start": "2026-10-21T11:49:01.871Z",
+      "end": "2026-10-21T11:49:02.425Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-consumers-5.log",
+      "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+      "summary": []
+    },
+    {
+      "stage": "final-consumers",
+      "command": "node --test --test-concurrency=2 tests/",
+      "start": "2026-10-21T11:49:02.442Z",
+      "end": "2026-10-21T11:49:46.645Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-consumers-6.log",
+      "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2240",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 44108.22075"
+      ]
+    },
+    {
+      "stage": "final-consumers",
+      "command": "npm run test:project-runner",
+      "start": "2026-10-21T11:49:46.666Z",
+      "end": "2026-10-21T11:49:47.059Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-consumers-7.log",
+      "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+      "summary": [
+        "Ran 20 tests in 0.075s",
+        "OK (skipped=1)"
+      ]
+    },
+    {
+      "stage": "final-consumers",
+      "command": "npm run test:e2e -- --project=chromium --workers=2",
+      "start": "2026-10-21T11:49:47.075Z",
+      "end": "2026-10-21T11:50:52.040Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-consumers-8.log",
+      "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "  26 skipped",
+        "  96 passed (1.0m)"
+      ]
+    },
+    {
+      "stage": "final-consumers",
+      "command": "npm run test:e2e:build -- --workers=2",
+      "start": "2026-10-21T11:50:52.061Z",
+      "end": "2026-10-21T11:51:56.051Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-consumers-9.log",
+      "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell",
+        "  27 skipped",
+        "  95 passed (54.8s)"
+      ]
+    }
+  ],
+  "mergeAndRepairChecks": [
+    {
+      "stage": "s2b",
+      "command": "node --test tests/",
+      "start": "2026-10-21T11:13:08.300Z",
+      "end": "2026-10-21T11:13:52.083Z",
+      "status": 1,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s2b-1.log",
+      "head": "7c30e7a45a96f551d05ca8b8085896e3ce6da7aa",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2239",
+        "ℹ fail 1",
+        "ℹ skipped 0",
+        "ℹ duration_ms 43683.911375"
+      ]
+    },
+    {
+      "stage": "s2b-typecheck",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:14:05.890Z",
+      "end": "2026-10-21T11:14:08.469Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s2b-typecheck-1.log",
+      "head": "7c30e7a45a96f551d05ca8b8085896e3ce6da7aa",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "s2b-recheck",
+      "command": "node --test tests/",
+      "start": "2026-10-21T11:14:43.158Z",
+      "end": "2026-10-21T11:15:27.446Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s2b-recheck-1.log",
+      "head": "7c30e7a45a96f551d05ca8b8085896e3ce6da7aa",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2240",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 44198.935625"
+      ]
+    },
+    {
+      "stage": "s2b-recheck",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:15:27.473Z",
+      "end": "2026-10-21T11:15:30.070Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s2b-recheck-2.log",
+      "head": "7c30e7a45a96f551d05ca8b8085896e3ce6da7aa",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "shared-8172c3e",
+      "command": "node tools/compile_content.mjs",
+      "start": "2026-10-21T11:19:03.778Z",
+      "end": "2026-10-21T11:19:04.762Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/shared-8172c3e-1.log",
+      "head": "8172c3e82599d5aad2ae1e5291905dd9c480451f",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)"
+      ]
+    },
+    {
+      "stage": "shared-8172c3e",
+      "command": "node --test tests/",
+      "start": "2026-10-21T11:19:04.783Z",
+      "end": "2026-10-21T11:19:51.130Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/shared-8172c3e-2.log",
+      "head": "8172c3e82599d5aad2ae1e5291905dd9c480451f",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2240",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 46256.800667"
+      ]
+    },
+    {
+      "stage": "shared-8172c3e",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:19:51.154Z",
+      "end": "2026-10-21T11:19:53.641Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/shared-8172c3e-3.log",
+      "head": "8172c3e82599d5aad2ae1e5291905dd9c480451f",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "s6b",
+      "command": "node tools/compile_content.mjs",
+      "start": "2026-10-21T11:20:11.965Z",
+      "end": "2026-10-21T11:20:12.831Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s6b-1.log",
+      "head": "4582be981ffceab71b8e5320532f83630a52817b",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)"
+      ]
+    },
+    {
+      "stage": "s6b",
+      "command": "node --test --test-concurrency=2 tests/",
+      "start": "2026-10-21T11:20:12.849Z",
+      "end": "2026-10-21T11:20:56.988Z",
+      "status": 1,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s6b-2.log",
+      "head": "4582be981ffceab71b8e5320532f83630a52817b",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2238",
+        "ℹ fail 2",
+        "ℹ skipped 0",
+        "ℹ duration_ms 44050.689917"
+      ]
+    },
+    {
+      "stage": "s6b-recheck",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:22:15.571Z",
+      "end": "2026-10-21T11:22:18.045Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s6b-recheck-1.log",
+      "head": "4582be981ffceab71b8e5320532f83630a52817b",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "s6b-recheck",
+      "command": "node --test --test-concurrency=2 tests/",
+      "start": "2026-10-21T11:22:18.065Z",
+      "end": "2026-10-21T11:23:02.149Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s6b-recheck-2.log",
+      "head": "4582be981ffceab71b8e5320532f83630a52817b",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2240",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 43990.803833"
+      ]
+    },
+    {
+      "stage": "s7",
+      "command": "node tools/compile_content.mjs",
+      "start": "2026-10-21T11:24:34.979Z",
+      "end": "2026-10-21T11:24:35.946Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s7-1.log",
+      "head": "7c3a07f652a5561f47d4c5eb79839f8a3cc7da6c",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)"
+      ]
+    },
+    {
+      "stage": "s7",
+      "command": "node --test --test-concurrency=2 tests/",
+      "start": "2026-10-21T11:24:35.965Z",
+      "end": "2026-10-21T11:25:20.164Z",
+      "status": 1,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s7-2.log",
+      "head": "7c3a07f652a5561f47d4c5eb79839f8a3cc7da6c",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2239",
+        "ℹ fail 1",
+        "ℹ skipped 0",
+        "ℹ duration_ms 44111.5595"
+      ]
+    },
+    {
+      "stage": "s7-recheck",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:25:29.833Z",
+      "end": "2026-10-21T11:25:32.394Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s7-recheck-1.log",
+      "head": "7c3a07f652a5561f47d4c5eb79839f8a3cc7da6c",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "s7-recheck",
+      "command": "node --test --test-concurrency=2 tests/",
+      "start": "2026-10-21T11:25:32.412Z",
+      "end": "2026-10-21T11:26:16.271Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s7-recheck-2.log",
+      "head": "7c3a07f652a5561f47d4c5eb79839f8a3cc7da6c",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2240",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 43776.343625"
+      ]
+    },
+    {
+      "stage": "s8a",
+      "command": "node tools/compile_content.mjs",
+      "start": "2026-10-21T11:27:03.022Z",
+      "end": "2026-10-21T11:27:03.896Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s8a-1.log",
+      "head": "9c0d9ef6c75725102694ca7b55bfec4972f1d960",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)"
+      ]
+    },
+    {
+      "stage": "s8a",
+      "command": "node --test --test-concurrency=2 tests/",
+      "start": "2026-10-21T11:27:03.915Z",
+      "end": "2026-10-21T11:27:48.079Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s8a-2.log",
+      "head": "9c0d9ef6c75725102694ca7b55bfec4972f1d960",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2240",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 44080.044666"
+      ]
+    },
+    {
+      "stage": "s8a",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:27:48.099Z",
+      "end": "2026-10-21T11:27:50.625Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s8a-3.log",
+      "head": "9c0d9ef6c75725102694ca7b55bfec4972f1d960",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "s8b",
+      "command": "node tools/compile_content.mjs",
+      "start": "2026-10-21T11:28:28.919Z",
+      "end": "2026-10-21T11:28:29.792Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s8b-1.log",
+      "head": "2947c6695f68362a119f2edb551834098f1e7cfe",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)"
+      ]
+    },
+    {
+      "stage": "s8b",
+      "command": "node --test --test-concurrency=2 tests/",
+      "start": "2026-10-21T11:28:29.810Z",
+      "end": "2026-10-21T11:29:13.911Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s8b-2.log",
+      "head": "2947c6695f68362a119f2edb551834098f1e7cfe",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2240",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 44018.02475"
+      ]
+    },
+    {
+      "stage": "s8b",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:29:13.929Z",
+      "end": "2026-10-21T11:29:16.424Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/s8b-3.log",
+      "head": "2947c6695f68362a119f2edb551834098f1e7cfe",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "fragments",
+      "command": "node tools/compile_content.mjs",
+      "start": "2026-10-21T11:30:51.519Z",
+      "end": "2026-10-21T11:30:52.393Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/fragments-1.log",
+      "head": "2947c6695f68362a119f2edb551834098f1e7cfe",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)"
+      ]
+    },
+    {
+      "stage": "fragments",
+      "command": "node tools/validate_content.mjs",
+      "start": "2026-10-21T11:30:52.411Z",
+      "end": "2026-10-21T11:30:53.306Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/fragments-2.log",
+      "head": "2947c6695f68362a119f2edb551834098f1e7cfe",
+      "summary": [
+        "Content-Bundle: 46 Kompetenzen, 50 Lektionen, 290 Aktivitäten"
+      ]
+    },
+    {
+      "stage": "fragments",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:30:53.322Z",
+      "end": "2026-10-21T11:30:55.705Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/fragments-3.log",
+      "head": "2947c6695f68362a119f2edb551834098f1e7cfe",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "lint",
+      "command": "/Users/no8/.bun/bin/bun lint -f agent --rule \"complexity: [error, 10]\" src/figures/painter.ts assets/js/figures/scenes/rubber-band-coefficients.mjs tests/lesson_content_transformer.test.mjs tests/lesson_content_genai.test.mjs tests/e2e/mobile-touch.spec.ts",
+      "start": "2026-10-21T11:31:08.614Z",
+      "end": "2026-10-21T11:31:08.661Z",
+      "status": 1,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/lint-1.log",
+      "head": "2947c6695f68362a119f2edb551834098f1e7cfe",
+      "summary": []
+    },
+    {
+      "stage": "final",
+      "command": "node tools/compile_content.mjs",
+      "start": "2026-10-21T11:31:33.154Z",
+      "end": "2026-10-21T11:31:34.016Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-1.log",
+      "head": "31fa9a2b4d3621a6770d49cc826ae53068bd9bf0",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)"
+      ]
+    },
+    {
+      "stage": "final",
+      "command": "node tools/validate_content.mjs",
+      "start": "2026-10-21T11:31:34.033Z",
+      "end": "2026-10-21T11:31:34.923Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-2.log",
+      "head": "31fa9a2b4d3621a6770d49cc826ae53068bd9bf0",
+      "summary": [
+        "Content-Bundle: 46 Kompetenzen, 50 Lektionen, 290 Aktivitäten"
+      ]
+    },
+    {
+      "stage": "final",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:31:34.940Z",
+      "end": "2026-10-21T11:31:37.340Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-3.log",
+      "head": "31fa9a2b4d3621a6770d49cc826ae53068bd9bf0",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "final",
+      "command": "npm run build:release",
+      "start": "2026-10-21T11:31:37.357Z",
+      "end": "2026-10-21T11:31:43.323Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-4.log",
+      "head": "31fa9a2b4d3621a6770d49cc826ae53068bd9bf0",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "final",
+      "command": "node tools/validate_content.mjs --dir build-next",
+      "start": "2026-10-21T11:31:43.348Z",
+      "end": "2026-10-21T11:31:43.903Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-5.log",
+      "head": "31fa9a2b4d3621a6770d49cc826ae53068bd9bf0",
+      "summary": []
+    },
+    {
+      "stage": "final",
+      "command": "node --test --test-concurrency=2 tests/",
+      "start": "2026-10-21T11:31:43.923Z",
+      "end": "2026-10-21T11:32:27.949Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-6.log",
+      "head": "31fa9a2b4d3621a6770d49cc826ae53068bd9bf0",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2240",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 43933.093875"
+      ]
+    },
+    {
+      "stage": "final",
+      "command": "npm run test:project-runner",
+      "start": "2026-10-21T11:32:27.970Z",
+      "end": "2026-10-21T11:32:28.404Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-7.log",
+      "head": "31fa9a2b4d3621a6770d49cc826ae53068bd9bf0",
+      "summary": [
+        "Ran 20 tests in 0.078s",
+        "OK (skipped=1)"
+      ]
+    },
+    {
+      "stage": "final",
+      "command": "npm run test:e2e -- --project=chromium --workers=2",
+      "start": "2026-10-21T11:32:28.420Z",
+      "end": "2026-10-21T11:33:32.387Z",
+      "status": 1,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-8.log",
+      "head": "31fa9a2b4d3621a6770d49cc826ae53068bd9bf0",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "  1 failed",
+        "  26 skipped",
+        "  95 passed (1.0m)"
+      ]
+    },
+    {
+      "stage": "glossary",
+      "command": "npx playwright test tests/e2e/glossary.spec.ts --project=chromium --workers=1",
+      "start": "2026-10-21T11:34:09.431Z",
+      "end": "2026-10-21T11:34:22.385Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/glossary-1.log",
+      "head": "31fa9a2b4d3621a6770d49cc826ae53068bd9bf0",
+      "summary": [
+        "  7 passed (12.1s)"
+      ]
+    },
+    {
+      "stage": "final-fixed",
+      "command": "node tools/compile_content.mjs",
+      "start": "2026-10-21T11:35:46.389Z",
+      "end": "2026-10-21T11:35:47.342Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-fixed-1.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)"
+      ]
+    },
+    {
+      "stage": "final-fixed",
+      "command": "node tools/validate_content.mjs",
+      "start": "2026-10-21T11:35:47.359Z",
+      "end": "2026-10-21T11:35:48.253Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-fixed-2.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": [
+        "Content-Bundle: 46 Kompetenzen, 50 Lektionen, 290 Aktivitäten"
+      ]
+    },
+    {
+      "stage": "final-fixed",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:35:48.269Z",
+      "end": "2026-10-21T11:35:50.749Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-fixed-3.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "final-fixed",
+      "command": "npm run build:release",
+      "start": "2026-10-21T11:35:50.765Z",
+      "end": "2026-10-21T11:35:55.992Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-fixed-4.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "final-fixed",
+      "command": "node tools/validate_content.mjs --dir build-next",
+      "start": "2026-10-21T11:35:56.009Z",
+      "end": "2026-10-21T11:35:56.467Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-fixed-5.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": []
+    },
+    {
+      "stage": "final-fixed",
+      "command": "node --test --test-concurrency=2 tests/",
+      "start": "2026-10-21T11:35:56.483Z",
+      "end": "2026-10-21T11:36:40.454Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-fixed-6.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2240",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 43886.281875"
+      ]
+    },
+    {
+      "stage": "final-fixed",
+      "command": "npm run test:project-runner",
+      "start": "2026-10-21T11:36:40.475Z",
+      "end": "2026-10-21T11:36:40.812Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-fixed-7.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": [
+        "Ran 20 tests in 0.071s",
+        "OK (skipped=1)"
+      ]
+    },
+    {
+      "stage": "final-fixed",
+      "command": "npm run test:e2e -- --project=chromium --workers=2",
+      "start": "2026-10-21T11:36:40.828Z",
+      "end": "2026-10-21T11:37:42.198Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-fixed-8.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "  26 skipped",
+        "  96 passed (58.9s)"
+      ]
+    },
+    {
+      "stage": "final-fixed",
+      "command": "npm run test:e2e:build -- --workers=2",
+      "start": "2026-10-21T11:37:42.222Z",
+      "end": "2026-10-21T11:38:41.496Z",
+      "status": 1,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-fixed-9.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell",
+        "  1 failed",
+        "  27 skipped",
+        "  94 passed (51.3s)"
+      ]
+    },
+    {
+      "stage": "tour",
+      "command": "npm run build:release",
+      "start": "2026-10-21T11:39:18.553Z",
+      "end": "2026-10-21T11:39:24.054Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/tour-1.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "tour",
+      "command": "PLAYWRIGHT_PREVIEW=1 npx playwright test tests/e2e/dialog-a11y.spec.ts --project=chromium --workers=1",
+      "start": "2026-10-21T11:39:24.072Z",
+      "end": "2026-10-21T11:39:28.868Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/tour-2.log",
+      "head": "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13",
+      "summary": [
+        "  3 passed (4.0s)"
+      ]
+    },
+    {
+      "stage": "final-complete",
+      "command": "node tools/compile_content.mjs",
+      "start": "2026-10-21T11:40:00.438Z",
+      "end": "2026-10-21T11:40:01.299Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-complete-1.log",
+      "head": "bc17db6353860d8fd8a6149cc192582c9a106c0a",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)"
+      ]
+    },
+    {
+      "stage": "final-complete",
+      "command": "node tools/validate_content.mjs",
+      "start": "2026-10-21T11:40:01.317Z",
+      "end": "2026-10-21T11:40:02.212Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-complete-2.log",
+      "head": "bc17db6353860d8fd8a6149cc192582c9a106c0a",
+      "summary": [
+        "Content-Bundle: 46 Kompetenzen, 50 Lektionen, 290 Aktivitäten"
+      ]
+    },
+    {
+      "stage": "final-complete",
+      "command": "npm run typecheck",
+      "start": "2026-10-21T11:40:02.228Z",
+      "end": "2026-10-21T11:40:04.689Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-complete-3.log",
+      "head": "bc17db6353860d8fd8a6149cc192582c9a106c0a",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "final-complete",
+      "command": "npm run build:release",
+      "start": "2026-10-21T11:40:04.705Z",
+      "end": "2026-10-21T11:40:10.482Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-complete-4.log",
+      "head": "bc17db6353860d8fd8a6149cc192582c9a106c0a",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell"
+      ]
+    },
+    {
+      "stage": "final-complete",
+      "command": "node tools/validate_content.mjs --dir build-next",
+      "start": "2026-10-21T11:40:10.511Z",
+      "end": "2026-10-21T11:40:11.081Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-complete-5.log",
+      "head": "bc17db6353860d8fd8a6149cc192582c9a106c0a",
+      "summary": []
+    },
+    {
+      "stage": "final-complete",
+      "command": "node --test --test-concurrency=2 tests/",
+      "start": "2026-10-21T11:40:11.102Z",
+      "end": "2026-10-21T11:40:55.412Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-complete-6.log",
+      "head": "bc17db6353860d8fd8a6149cc192582c9a106c0a",
+      "summary": [
+        "ℹ tests 2240",
+        "ℹ pass 2240",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ duration_ms 44215.9315"
+      ]
+    },
+    {
+      "stage": "final-complete",
+      "command": "npm run test:project-runner",
+      "start": "2026-10-21T11:40:55.436Z",
+      "end": "2026-10-21T11:40:55.785Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-complete-7.log",
+      "head": "bc17db6353860d8fd8a6149cc192582c9a106c0a",
+      "summary": [
+        "Ran 20 tests in 0.075s",
+        "OK (skipped=1)"
+      ]
+    },
+    {
+      "stage": "final-complete",
+      "command": "npm run test:e2e -- --project=chromium --workers=2",
+      "start": "2026-10-21T11:40:55.802Z",
+      "end": "2026-10-21T11:41:58.419Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-complete-8.log",
+      "head": "bc17db6353860d8fd8a6149cc192582c9a106c0a",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "  26 skipped",
+        "  96 passed (1.0m)"
+      ]
+    },
+    {
+      "stage": "final-complete",
+      "command": "npm run test:e2e:build -- --workers=2",
+      "start": "2026-10-21T11:41:58.440Z",
+      "end": "2026-10-21T11:42:58.243Z",
+      "status": 0,
+      "signal": null,
+      "log": "/private/tmp/figuren-integration-welle-3/final-complete-9.log",
+      "head": "bc17db6353860d8fd8a6149cc192582c9a106c0a",
+      "summary": [
+        "Content-Bundle geschrieben: .content-build/public/content-bundle.json (46 Kompetenzen, 50 Lektionen, 290 Aktivitäten)",
+        "Split-Content geschrieben: .content-build/public/split (50 Lektionen, 290 Aktivitäten)",
+        "Kompetenz-Familien-Coverage aktuell",
+        "  27 skipped",
+        "  95 passed (51.8s)"
+      ]
+    }
+  ],
+  "limitations": [
+    "Raw command logs remain at their absolute local paths.",
+    "Browser skips are reported separately and are not counted as passes.",
+    "Final visual review and performance measurements are separate artifacts."
+  ]
+}

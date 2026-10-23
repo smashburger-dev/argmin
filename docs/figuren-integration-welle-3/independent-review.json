@@ -1,0 +1,25 @@
+{
+  "requestedModel": "gpt-5.6-sol",
+  "actualRuntimeModelIndependentlyVerified": false,
+  "checkedProductCommit": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+  "mode": "Read-only source review followed by final artifact and local decision-trail review; no repeated browser suite.",
+  "resolvedProductFinding": "A retired public column-picture route was still advertised. d2f1171 corrects both consumers and removes the retired public allowlist entry while preserving the source.",
+  "finalArtifactReview": {
+    "remainingConcreteFlags": [],
+    "verified": [
+      "Nine final gate records all exit 0 at d2f1171; referenced local logs exist and counts match the report.",
+      "Dev review transparently records bc17db6; final shared and release reviews record d2f1171; all report zero errors and failures.",
+      "All 58 figure specifications retain source parity; registries contain the same 53 scenes; 399 allowlist entries have no missing files or duplicates.",
+      "58 figure specifications cover 49 of 50 lessons; the remaining S5b lesson is explicitly open.",
+      "Performance and chunk sizes match their artifacts; unmet budgets remain open.",
+      "Markdown links and image manifest references resolve.",
+      "Final port evidence shows 4400 through 4411 free; final public browser interactions succeed.",
+      "The append-only local trail includes reconstructed-time disclosure, absolute-path correction, final gate and final server evidence."
+    ]
+  },
+  "limits": [
+    "No claim of independently verified runtime model identity.",
+    "No substitute for Noa's design acceptance or outstanding family acceptance.",
+    "Raw command logs and the decision trail remain local working artifacts."
+  ]
+}

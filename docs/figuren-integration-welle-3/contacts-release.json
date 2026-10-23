@@ -1,0 +1,44 @@
+[
+  {
+    "file": "contact-release-s7-375-light-1.jpg",
+    "owner": "s7",
+    "width": 375,
+    "theme": "light",
+    "states": 12
+  },
+  {
+    "file": "contact-release-s8a-375-light-1.jpg",
+    "owner": "s8a",
+    "width": 375,
+    "theme": "light",
+    "states": 4
+  },
+  {
+    "file": "contact-release-shared-375-light-1.jpg",
+    "owner": "shared",
+    "width": 375,
+    "theme": "light",
+    "states": 5
+  },
+  {
+    "file": "contact-release-s8b-375-light-1.jpg",
+    "owner": "s8b",
+    "width": 375,
+    "theme": "light",
+    "states": 12
+  },
+  {
+    "file": "contact-release-s8b-375-light-2.jpg",
+    "owner": "s8b",
+    "width": 375,
+    "theme": "light",
+    "states": 3
+  },
+  {
+    "file": "contact-release-s6b-375-light-1.jpg",
+    "owner": "s6b",
+    "width": 375,
+    "theme": "light",
+    "states": 6
+  }
+]

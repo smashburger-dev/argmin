@@ -25,13 +25,28 @@
     },
     {
       "blockId": "genai-rag-chunk-viz",
-      "type": "visualization",
-      "contentRef": "lessons/genai-systems/chunk-overlap.viz.json"
+      "type": "figure",
+      "contentRef": "lessons/genai-systems/chunk-windows.fig.json"
     },
     {
       "blockId": "genai-rag-index",
       "type": "worked-example",
       "contentRef": "lessons/genai-systems/rag-retrieval-index.md"
+    },
+    {
+      "blockId": "rag-s7-handoffs",
+      "type": "prose",
+      "contentRef": "lessons/genai-systems/rag-retrieval-s7-handoffs.md"
+    },
+    {
+      "blockId": "s8b-retrieval-handoffs",
+      "type": "figure",
+      "contentRef": "lessons/genai-systems/retrieval-handoffs.fig.json"
+    },
+    {
+      "blockId": "s8b-glossary-l-genai-rag",
+      "type": "definition",
+      "contentRef": "lessons/genai-systems/rag-retrieval-glossary.md"
     },
     {
       "blockId": "genai-rag-check",

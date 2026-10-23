@@ -14,6 +14,7 @@ export const activityTypeLabels = {
   'multiple-choice': 'Mehrfachauswahl',
   'diagnostic-rationale': 'Fehlerdiagnose',
   'worked-example-fading': 'Lückentext',
+  'scene-build': 'Szene konstruieren',
 } as const;
 
 export function activityLabel(activityType: string | undefined) {

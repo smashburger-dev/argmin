@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "smoke-detector",
+  "title": "Die erste abweichende Zeile",
+  "caption": "Ein Fehler im Act stoppt diesen Test schon vor Assert. Die Assertion wird nicht erreicht.",
+  "hint": "Verfolge die ausgeführte Zeile und den zugehörigen Zustand.",
+  "params": {},
+  "beats": {
+    "from": "trace"
+  }
+}

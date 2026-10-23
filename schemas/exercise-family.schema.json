@@ -17,7 +17,7 @@
       "enum": [
         "numeric-exact", "choice-diagnose", "code-test", "output-predict-lines",
         "state-trace-vars", "program-ordering", "tuple-exact",
-        "expression-equivalence", "rationale-note", "numbas-exam-retired"
+        "expression-equivalence", "rationale-note", "numbas-exam-retired", "scene-build-task", "scene-properties", "tag-after-line"
       ]
     },
     "authorityMode": { "enum": ["static", "seeded"] },
@@ -73,7 +73,7 @@
       "enum": [
         "numeric", "single-choice", "vector", "algebraic-expression",
         "python-code", "short-rationale", "parsons", "code-trace", "predict-output",
-        "multiple-choice", "diagnostic-rationale", "worked-example-fading"
+        "multiple-choice", "diagnostic-rationale", "worked-example-fading", "scene-build"
       ]
     }
   }

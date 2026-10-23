@@ -10,6 +10,10 @@ import { renderMarkdown } from './markdown_content.mjs';
 import { buildGlossary } from './glossary_content.mjs';
 import { compileExpression, compileTemplate } from '../assets/js/domain/expression_eval.mjs';
 import { validateCompetencyGraph } from '../assets/js/domain/competency_graph.mjs';
+import { assertVizCheckpointContract } from '../assets/js/core/viz_checkpoint_grader.mjs';
+import { scenes as figureScenes } from '../assets/js/figures/scenes/index.mjs';
+import { hintSpec, hintTexts, answerNumbers, assertNoHintLeak } from '../assets/js/figures/kit/hints.mjs';
+import traceSnapshots from '../assets/js/figures/objects/python-traces-v1.json' with { type: 'json' };
 import { assertFamilyPlacement, configureExerciseFamilies, EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import {
@@ -40,7 +44,7 @@ export { validateCompetencyGraph };
 const defaultProjectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
-  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization',
+  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization', 'figure', 'figure-hint-parameters', 'trace-hint-prefix', 'python-trace', 'figure-hints',
   'capsule-bank',
 ];
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
@@ -113,6 +117,102 @@ export function validateSourceDocument(schemaName, value, projectRoot = defaultP
     validateTypicalErrorIds(value);
   }
   return true;
+}
+
+export function assertPythonTraceV1(trace, projectRoot = defaultProjectRoot) {
+  validateSourceDocument('python-trace', trace, projectRoot);
+  assertCanonicalTraceSource(trace);
+  const state = { frames: new Set(), objects: new Set(), lastOutput: '' };
+  for (const [index, event] of trace.events.entries()) validateTraceEvent(trace, event, index, state);
+  assertTraceComplete(trace, state);
+  return trace;
+}
+
+function assertCanonicalTraceSource(trace) {
+  const normalizedSource = trace.source.replace(/\r\n?/g, '\n');
+  if (normalizedSource !== trace.source || createHash('sha256').update(trace.source, 'utf8').digest('hex') !== trace.sourceHash) {
+    throw new Error(`${trace.programId}: source must be canonical LF with matching SHA-256`);
+  }
+  if (/(?:\/Users\/|\/private\/|\/tmp\/|[A-Za-z]:\\)/.test(trace.source)) throw new Error(`${trace.programId}: host path in trace source`);
+}
+
+function validateTraceEvent(trace, event, index, state) {
+  assertTraceEventOrder(trace, event, index, state.frames);
+  assertTraceOutputPrefix(trace, event, state);
+  assertTraceEventValues(trace, event, state.objects);
+  assertTraceEventKind(trace, event, index);
+}
+
+function assertTraceEventOrder(trace, event, index, frames) {
+  if (event.ordinal !== index) throw new Error(`${trace.programId}: non-contiguous trace event ordinal`);
+  if (event.parentFrameId && !frames.has(event.parentFrameId)) throw new Error(`${trace.programId}: parent frame precedes its call`);
+  frames.add(event.frameId);
+}
+
+function assertTraceOutputPrefix(trace, event, state) {
+  if (event.output.length < state.lastOutput.length || !event.output.startsWith(state.lastOutput)) {
+    throw new Error(`${trace.programId}: stdout is not a monotone prefix`);
+  }
+  state.lastOutput = event.output;
+}
+
+function assertTraceEventValues(trace, event, objects) {
+  for (const [objectId, value] of Object.entries(event.objects)) {
+    objects.add(objectId);
+    if (value.type === 'function') throw new Error(`${trace.programId}: function objects are not learner values`);
+  }
+  for (const objectId of Object.values(event.bindings)) {
+    if (!Object.hasOwn(event.objects, objectId)) throw new Error(`${trace.programId}: binding refers to an unrecorded object`);
+  }
+  if (event.result && !Object.hasOwn(event.objects, event.result)) throw new Error(`${trace.programId}: return result is missing from its event`);
+}
+
+function assertTraceEventKind(trace, event, index) {
+  if (event.event === 'start' && (index !== 0 || event.parentFrameId !== null)) throw new Error(`${trace.programId}: malformed start frame`);
+  if (event.event === 'exception' && event.exception.line !== event.line) throw new Error(`${trace.programId}: exception line mismatch`);
+}
+
+function assertTraceComplete(trace, state) {
+  if (state.lastOutput !== trace.stdout) throw new Error(`${trace.programId}: final stdout does not match trace output`);
+  if (!state.frames.size || !state.objects.size) throw new Error(`${trace.programId}: trace is missing observed frames or objects`);
+}
+
+export function assertPythonTraceCorpus(records = traceSnapshots.records, projectRoot = defaultProjectRoot) {
+  assertExactTraceCorpusKeys(records);
+  for (const [key, trace] of Object.entries(records)) validateCorpusTrace(key, trace, projectRoot);
+  return records;
+}
+
+function assertExactTraceCorpusKeys(records) {
+  const keys = Object.keys(records).sort();
+  const required = requiredTraceKeys();
+  if (JSON.stringify(keys) !== JSON.stringify(required)) throw new Error('python-trace/v1 corpus must contain exactly the allowlisted F1 records');
+}
+
+function requiredTraceKeys() {
+  return [
+    'bouncer-age-16', 'bouncer-age-17', 'bouncer-age-18', 'dictionary', 'name-tags', 'smoke-detector', 'two-tags-one-list', 'vending-frame',
+    ...Array.from({ length: 4 }, (_, index) => {
+      const n0 = index + 1;
+      return [`ledger-n0-${n0}`, ...[1, 2, 3].map((sum0) => `ledger-n0-${n0}-sum0-${sum0}`)];
+    }).flat(),
+  ].sort();
+}
+
+function validateCorpusTrace(key, trace, projectRoot) {
+  assertPythonTraceV1(trace, projectRoot);
+  assertCorpusTraceInput(key, trace);
+}
+
+function assertCorpusTraceInput(key, trace) {
+  const expectedAge = { 'bouncer-age-16': '16', 'bouncer-age-17': '17', 'bouncer-age-18': '18' }[key];
+  if (expectedAge && trace.inputs.age?.value !== expectedAge) throw new Error(`${key}: trace has wrong input`);
+  if (key.startsWith('ledger-n0-')) assertLedgerTraceInput(key, trace);
+}
+
+function assertLedgerTraceInput(key, trace) {
+  const [, , n0, , sum0 = '0'] = key.split('-');
+  if (trace.inputs.n0?.value !== n0 || trace.inputs.sum0?.value !== sum0) throw new Error(`${key}: trace inputs do not match its allowlisted key`);
 }
 
 // typicalError ids are the stable label namespace: duplicates inside one
@@ -288,12 +388,606 @@ function assertUniqueCheckpoints(lessons) {
   }
 }
 
+// --- figure contracts (.fig.json) ---------------------------------------------
+// A figure block names a scene from the pure registry. The compile must
+// prove fail-closed that the authored spec cannot disagree with the scene
+// model: unknown scene ids, beats out of contract order, a predict
+// expectation the model does not produce, or a caption number the scene
+// never displays all reject the build.
+
+export function validateFigureSpec(spec, label) {
+  spec = expandFigureTrace(spec, label);
+  const scene = figureScenes[spec.scene];
+  if (!scene) throw new Error(`${label}: Unbekannte Figurenszene ${spec.scene}`);
+  const mode = spec.kind === 'hint' ? 'hint' : 'lesson';
+  scene.validateParams(spec.params, { mode });
+  const figureModel = scene.model(spec.params, { mode });
+  assertFigureKind(spec, scene, label);
+  assertFigureInputs(spec, scene, label);
+  const beatIds = (spec.beats || []).map((beat) => beat.id);
+  const expectedBeats = mode === 'hint' ? scene.hintBeatIds : scene.beatIds;
+  const subset = ['inline', 'static', 'explore', 'compare'].includes(spec.kind);
+  if (!subset && JSON.stringify(beatIds) !== JSON.stringify(expectedBeats)) {
+    throw new Error(`${label}: Beats [${beatIds.join(', ')}] stimmen nicht mit der Szene [${scene.beatIds.join(', ')}] überein`);
+  }
+  if (spec.predict) assertFigurePredict(spec.predict, scene, figureModel, label);
+  if (mode === 'lesson') assertFigureSelections(scene, figureModel, label);
+  assertFigureNumbers(spec, scene, figureModel, label);
+  return true;
+}
+
+function assertFigureSelections(scene, model, label) {
+  if (!scene.selectionTargets) return;
+  for (const [beat, id] of scene.beatIds.entries()) {
+    const targets = scene.selectionTargets(model, beat);
+    if (!Array.isArray(targets)) throw new Error(`${label}: Auswahlziele müssen eine Liste sein`);
+    const items = scene.build(model, scene.pose(model, beat, scene.beatDuration(id), 'lesson'), 'lesson');
+    const ids = new Set();
+    for (const target of targets) {
+      assertFigureSelectionTarget(target, items, label);
+      if (ids.has(target.id)) throw new Error(`${label}: doppelte Auswahl-ID`);
+      ids.add(target.id);
+      const overlaps = targets.some(other => other !== target && other.itemId === target.itemId &&
+        (!other.primKey || !target.primKey || other.primKey === target.primKey));
+      if (overlaps) throw new Error(`${label}: mehrdeutiges Auswahlziel`);
+    }
+  }
+}
+
+function assertFigureSelectionTarget(target, items, label) {
+  if (!target || !['id', 'itemId', 'label', 'description'].every(key => typeof target[key] === 'string' && target[key].trim())) {
+    throw new Error(`${label}: Auswahlziel ohne ID, Beschriftung oder Rückmeldung`);
+  }
+  const item = items.find(item => item.id === target.itemId && item.visible !== false);
+  if (!item) throw new Error(`${label}: Auswahlziel ist kein sichtbares Item`);
+  if (target.primKey !== undefined && !item.prims?.some(p => p.key === target.primKey && p.visible !== false)) {
+    throw new Error(`${label}: Auswahlziel ist kein sichtbares Primitiv`);
+  }
+}
+
+// Trace expansion is a compiler responsibility. Scenes supply checked state
+// records; the browser receives the same beat-array contract as other figures.
+export function expandFigureTrace(spec, label, projectRoot = defaultProjectRoot) {
+  if (spec.beats?.from !== 'trace') return spec;
+  const scene = figureScenes[spec.scene];
+  if (typeof scene?.trace !== 'function') throw new Error(`${label}: trace-Beats brauchen scene.trace`);
+  if (!['beats', 'explore'].includes(spec.kind)) throw new Error(`${label}: Trace-Expansion braucht lesson beats oder explore`);
+  scene.validateParams(spec.params, { mode: 'lesson' });
+  const states = scene.trace(scene.model(spec.params, { mode: 'lesson' }));
+  if (!Array.isArray(states) || !states.length) throw new Error(`${label}: leere Trace-Spur`);
+  const expanded = { ...spec, beats: states.map((state) => traceBeat(state, spec.kind === 'explore')) };
+  validateSourceDocument('figure', expanded, projectRoot);
+  return expanded;
+}
+
+function traceBeat(state, parameterized = false) {
+  if (!state || !Number.isInteger(state.line) || state.line < 0) throw new Error('Trace-Schritt ohne gültige Zeile');
+  assertTraceObjects(state.bindings, 'Bindungen');
+  assertTraceObjects(state.objects, 'Objekte');
+  assertTraceEvent(state);
+  assertTraceValues(state.objects);
+  assertTraceOutcome(state);
+  if (typeof state.output !== 'string') throw new Error('Trace-Schritt ohne Ausgabezustand');
+  for (const identity of Object.values(state.bindings)) {
+    if (typeof identity !== 'string' || !Object.hasOwn(state.objects, identity)) throw new Error('Trace-Bindung ohne Objektidentität');
+  }
+  return { id: state.id, caption: parameterized ? `Zeile ${state.line} ausgeführt` : state.caption };
+}
+
+function assertTraceObjects(value, label) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`Trace-Schritt ohne ${label}`);
+}
+
+function assertTraceEvent(state) {
+  if (!['start', 'line', 'call', 'return', 'exception'].includes(state.event)) throw new Error('Unbekanntes Trace-Ereignis');
+  if (typeof state.scope !== 'string' || !state.scope) throw new Error('Trace-Schritt ohne Aufrufrahmen');
+  if ((state.event === 'start') !== (state.line === 0)) throw new Error('Trace-Anfang muss Zeile null verwenden');
+}
+
+function assertTraceValues(objects) {
+  for (const object of Object.values(objects)) {
+    if (!object || typeof object.type !== 'string' || typeof object.value !== 'string') throw new Error('Trace-Objekt ohne Typ oder Wert');
+  }
+}
+
+function assertTraceOutcome(state) {
+  if (state.event === 'return') {
+    if (typeof state.result !== 'string' || !Object.hasOwn(state.objects, state.result)) throw new Error('Trace-Rückgabe ohne Ergebnisobjekt');
+  }
+  if (state.event === 'exception' && typeof state.exception !== 'string') throw new Error('Trace-Ausnahme ohne Typ');
+}
+
+function assertFigureKind(spec, scene, label) {
+  const fail = (reason) => { throw new Error(`${label}: ${reason}`); };
+  if (spec.beats?.from === 'trace' && typeof scene.trace !== 'function') fail('trace-Beats brauchen scene.trace');
+  assertKindParameters(spec, scene, fail);
+  assertFigureBeatLimits(spec, scene, fail);
+}
+
+function assertKindParameters(spec, scene, fail) {
+  const checks = {
+    explore: () => assertExploreField(spec, fail),
+    compare: () => { if (!spec.compare?.a || !spec.compare?.b) fail('compare braucht a und b'); },
+    hint: () => { if (!scene.hintBeatIds?.length) fail('Hinweis-Beats fehlen'); },
+  };
+  checks[spec.kind]?.();
+  if (['hint', 'inline', 'static'].includes(spec.kind) && spec.predict) fail('Diese Figurenart erlaubt keine Vorhersage');
+  if (['inline', 'static'].includes(spec.kind) && spec.beats?.length !== 1) fail('inline/static brauchen genau einen Zustand');
+}
+
+function assertExploreField(spec, fail) {
+  const e = spec.explore;
+  if (!e || e.min >= e.max || e.step <= 0 || typeof spec.params[e.parameter] !== 'number') fail('explore braucht gültiges Zahlenfeld');
+  const traceExplore = spec.scene === 'bouncer' && e.parameter === 'age'
+    || spec.scene === 'ledger' && e.parameter === 'sum0';
+  if (Array.isArray(spec.beats) && spec.beats.length > 3 && !traceExplore) fail('explore erlaubt höchstens drei Beats');
+  const steps = (spec.params[e.parameter] - e.min) / e.step;
+  if (Math.abs(steps - Math.round(steps)) > 1e-8) fail('explore-Ausgangswert liegt nicht im Schrittraster');
+}
+
+function assertExploreLabel(spec, label) {
+  if (spec.scene !== 'mse-landscape' && !spec.explore.label?.trim()) throw new Error(`${label}: explore braucht eine fachliche Beschriftung`);
+}
+
+function assertFigureInputs(spec, scene, label) {
+  if (spec.kind === 'explore') {
+    assertExploreLabel(spec, label);
+    const e = spec.explore;
+    if (![e.min, e.max, e.step, spec.params[e.parameter]].every(Number.isFinite)) throw new Error(`${label}: nicht endliches Zahlenfeld`);
+    if (spec.params[e.parameter] < e.min || spec.params[e.parameter] > e.max) throw new Error(`${label}: Parameter außerhalb des Zahlenfelds`);
+    for (const value of exploreGrid(e, label)) validateFigureInputModel(spec, scene, { ...spec.params, [e.parameter]: value }, label);
+  }
+  if (spec.kind === 'compare') assertFigureComparison(spec, scene, label);
+}
+
+function exploreGrid(field, label) {
+  const count = Math.floor((field.max - field.min) / field.step + 1e-8) + 1;
+  if (count > 1000) throw new Error(`${label}: explore erlaubt höchstens 1000 Rasterwerte`);
+  const grid = Array.from({ length: count }, (_, index) => Math.min(field.max, field.min + index * field.step));
+  return [...new Set([...grid, field.max])];
+}
+
+function validateFigureInputModel(spec, scene, params, label) {
+  scene.validateParams(params, { mode: 'lesson' });
+  const model = scene.model(params, { mode: 'lesson' });
+  if (spec.predict) assertFigurePredict(spec.predict, scene, model, label);
+  assertFigureSelections(scene, model, label);
+  assertFigureNumbers(spec, scene, model, label);
+  return model;
+}
+
+function assertComparisonLabels(spec, label) {
+  if (spec.scene !== 'rubber-band-coefficients' && !(spec.compare.labels?.a && spec.compare.labels?.b && spec.compare.beat)) {
+    throw new Error(`${label}: compare braucht benannte Varianten und einen Vergleichsschritt`);
+  }
+}
+
+function assertFigureComparison(spec, scene, label) {
+  assertComparisonLabels(spec, label);
+  const beat = scene.beatIds.indexOf(spec.compare.beat ?? spec.beats[1]?.id);
+  if (beat < 0 || !spec.beats.some(b => b.id === scene.beatIds[beat])) throw new Error(`${label}: compare braucht einen gemeinsamen Vergleichsschritt`);
+  const models = ['a', 'b'].map(side => validateFigureInputModel(spec, scene, { ...spec.params, ...spec.compare[side] }, label));
+  for (const vp of [{ width: 309, height: 309 }, { width: 343, height: 343 }, { width: 720, height: 540 }]) {
+    const cameras = models.map(m => comparisonCamera(scene.cameraFor(m, scene.pose(m, beat, scene.beatDuration(scene.beatIds[beat]), 'lesson'), vp), label));
+    if (JSON.stringify(cameras[0]) !== JSON.stringify(cameras[1])) throw new Error(`${label}: Compare-Kamera oder Maßstab unterscheiden sich`);
+  }
+}
+
+function comparisonCamera(camera, label) {
+  if (!Array.isArray(camera?.target) || camera.target.length !== 3) throw new Error(`${label}: Compare-Kamera ohne Zielpunkt`);
+  const values = [camera.azimuth, camera.elevation, camera.zoom, ...camera.target];
+  if (!values.every(Number.isFinite) || camera.zoom <= 0) throw new Error(`${label}: ungültige Compare-Kamera`);
+  return values;
+}
+
+function assertFigureBeatLimits(spec, scene, fail) {
+  let previous = -1;
+  for (const beat of Array.isArray(spec.beats) ? spec.beats : []) {
+    const index = scene.beatIds.indexOf(beat.id);
+    if (index < 0) fail(`Beats enthalten unbekannten Schritt ${beat.id}`);
+    if (index <= previous) fail('Doppelte oder vertauschte Beat-ID');
+    previous = index;
+    if (beat.caption.length > 140) fail('Beat-Beschriftung länger als 140 Zeichen');
+    if (scene.beatDuration(beat.id) > 4) fail('Beat länger als vier Sekunden');
+  }
+}
+
+export function validateFigureHints(document, families, scenes = figureScenes) {
+  for (const entry of document.hints) validateHintEntry(entry, families, scenes);
+  const traceCases = new Set(document.hints
+    .filter((entry) => entry.familyId === 'trace-tag-after-line')
+    .flatMap((entry) => entry.caseIds ?? []));
+  for (const caseId of [
+    'bouncer-short-circuit', 'name-tags-assignments', 'ledger-loop-aliases',
+    'two-tags-one-list', 'dictionary-updates', 'vending-nested-frames',
+    'smoke-detector-index-error',
+  ]) {
+    if (!traceCases.has(caseId)) throw new Error(`trace-tag-after-line:${caseId}: sichere Neighbor-Hinweisabdeckung fehlt`);
+  }
+}
+
+function validateHintEntry(entry, families, scenes) {
+  const { family, scene } = resolveHintContract(entry, scenes);
+  validateHintSafetyContract(entry);
+  validateHintArchetype(entry, family);
+  validateHintCases(entry, families, scene, family);
+}
+
+function resolveHintContract(entry, scenes) {
+  const family = EXERCISE_FAMILIES.get(entry.familyId);
+  const scene = scenes[entry.scene];
+  if (!family || !scene?.hintParams || !scene.hintBeatIds?.length) throw new Error(`${entry.familyId}: Hinweisvertrag fehlt`);
+  return { family, scene };
+}
+
+function validateHintSafetyContract(entry) {
+  if (!entry.safety) throw new Error(`${entry.familyId}: Figurenhinweis ohne versionierten Sicherheitsvertrag`);
+  if (entry.safety.kind === 'figure-hint-parameters') return validateFigureHintSafetySource(entry);
+  if (entry.safety.kind !== 'trace-hint-prefix') throw new Error(`${entry.familyId}: unbekannter Figurenhinweis-Sicherheitsvertrag`);
+}
+
+function validateFigureHintSafetySource(entry) {
+  if (entry.safety.source === 'neighbor') return assertFigureHintParameterSafety(entry);
+  validateSourceDocument('figure-hint-parameters', entry.safety);
+  if (entry.safety.familyId !== entry.familyId || entry.safety.caseId !== entry.caseIds?.[0]
+      || entry.caseIds?.length !== 1 || entry.source !== 'case') throw new Error('case hint projection must identify exactly one authored family case');
+}
+
+function validateHintArchetype(entry, family) {
+  if (family.taskArchetype === 'tag-after-line') validateSourceDocument('trace-hint-prefix', entry.safety);
+  if (family.taskArchetype === 'choice-diagnose' && entry.source !== 'neighbor') throw new Error('Klassifikationshinweise brauchen source: neighbor');
+}
+
+export function assertFigureHintParameterSafety(entry, instance) {
+  const safety = entry?.safety;
+  assertNeighborSafetyContract(entry, safety);
+  assertNeighborParameterKeys(entry, safety);
+  assertNoExpectedNeighborParameters(entry, instance);
+  return Object.freeze(structuredClone(entry.neighborParams));
+}
+
+function assertNeighborSafetyContract(entry, safety) {
+  if (!safety || safety.kind !== 'figure-hint-parameters' || safety.schemaVersion !== 1 || safety.source !== 'neighbor') {
+    throw new Error(`${entry?.familyId || 'figure'}: unabhängige neighbor-Parameter brauchen figure-hint-parameters/v1`);
+  }
+  validateSourceDocument('figure-hint-parameters', safety);
+}
+
+function assertNeighborParameterKeys(entry, safety) {
+  const keys = Object.keys(entry.neighborParams || {}).sort();
+  if (!keys.length || JSON.stringify(keys) !== JSON.stringify(safety.parameterKeys)) {
+    throw new Error(`${entry.familyId}: safety.parameterKeys müssen genau den fixen neighborParams entsprechen`);
+  }
+}
+
+function assertNoExpectedNeighborParameters(entry, instance) {
+  if (instance && Object.hasOwn(instance.parameters || {}, 'expectedAnswer')) throw new Error('Antwortdaten dürfen keine neighbor-Hinweisparameter steuern');
+}
+
+function assertCaseHintProjection(entry, scene, instance) {
+  const safety = entry.safety;
+  if (safety.source !== 'case' || safety.familyId !== entry.familyId || safety.caseId !== instance.caseId) {
+    throw new Error(`${entry.familyId}: case hint projection must match its authored case`);
+  }
+  const params = scene.hintParams(instance.familyId, instance.parameters);
+  if (!params || JSON.stringify(Object.keys(params).sort()) !== JSON.stringify(safety.parameterKeys)) {
+    throw new Error(`${entry.familyId}: case hint exposed fields outside its allowlist`);
+  }
+  return params;
+}
+
+// A trace hint can only publish the visible source prefix and captions from
+// states strictly before the target event. Every other field is rejected,
+// including values, bindings, output, exception type, and target metadata.
+export function assertTraceHintPrefixSafety(entry, scene, instance) {
+  const safety = entry?.safety;
+  assertTraceHintContract(entry, safety);
+  const parameters = traceHintParameters(entry, scene, instance, safety);
+  assertTraceHintSourceHash(entry, scene, safety, parameters);
+  const selected = resolveRecordedHintTarget(safety, parameters);
+  assertRecordedHintTarget(entry, safety, parameters, selected);
+  assertRequestedHintBindings(entry, safety, selected.target);
+  return safeTraceHintProjection(scene, parameters, safety);
+}
+
+function assertTraceHintContract(entry, safety) {
+  assertTraceHintSchema(safety, entry);
+  validateSourceDocument('trace-hint-prefix', safety);
+  assertTraceHintScope(entry, safety);
+}
+
+function assertTraceHintSchema(safety, entry) {
+  if (!safety || safety.kind !== 'trace-hint-prefix' || safety.schemaVersion !== 1) {
+    throw new Error(`${entry?.familyId || 'trace'}: trace hint needs trace-hint-prefix/v1`);
+  }
+}
+
+function assertTraceHintScope(entry, safety) {
+  if (safety.familyId !== entry.familyId || safety.scene !== entry.scene
+      || (entry.caseIds && !entry.caseIds.includes(safety.caseId))
+      || (entry.source !== safety.source)) throw new Error('trace hint family, case, scene, and source must match the selected task');
+}
+
+function traceHintParameters(entry, scene, instance, safety) {
+  const parameters = safety.source === 'neighbor' ? safety.parameters
+    : scene.hintParams?.(entry.familyId, instance?.parameters);
+  if (!parameters) throw new Error('case trace hint needs its family parameter projection');
+  assertHintParameterCase(instance, parameters, safety);
+  assertNeighborHintParameters(entry, safety, parameters);
+  return parameters;
+}
+
+function assertHintParameterCase(instance, parameters, safety) {
+  if ((instance?.caseId && instance.caseId !== safety.caseId)
+      || (parameters.caseId && parameters.caseId !== safety.caseId)) throw new Error('trace hint case must match the selected task');
+}
+
+function assertNeighborHintParameters(entry, safety, parameters) {
+  if (safety.source === 'neighbor' && (!Object.hasOwn(safety, 'parameters')
+      || JSON.stringify(entry.neighborParams) !== JSON.stringify(parameters))) {
+    throw new Error('trace neighbor hint parameters must exactly match the independent authored neighbor');
+  }
+}
+
+function assertTraceHintSourceHash(entry, scene, safety, parameters) {
+  const source = scene.source?.(parameters);
+  if (typeof source !== 'string') throw new Error('trace hint needs compiler-visible authored source');
+  const sourceHash = createHash('sha256').update(source.replace(/\r\n?/g, '\n'), 'utf8').digest('hex');
+  if (safety.sourceHash !== sourceHash) throw new Error(`${entry.familyId}:${safety.caseId}: trace hint source hash mismatch`);
+}
+
+function resolveRecordedHintTarget(safety, parameters) {
+  const task = parameters.tagTask;
+  const record = traceSnapshots.records[parameters.traceKey ?? task?.traceKey];
+  const target = record?.events?.[safety.target.eventOrdinal];
+  const previous = record?.events?.[safety.target.eventOrdinal - 1];
+  return { record, target, previous, task };
+}
+
+function assertRecordedHintTarget(entry, safety, parameters, { record, target, previous, task }) {
+  assertHintRecordAndCase(entry, safety, parameters, task, record, target, previous);
+  assertHintTargetIdentity(entry, safety, record, target);
+  assertHintPreviousState(entry, safety, previous);
+}
+
+function assertHintRecordAndCase(entry, safety, parameters, task, record, target, previous) {
+  if (!record || !target || !previous || record.sourceHash !== safety.sourceHash
+      || (parameters.caseId ?? task?.caseId) !== safety.caseId) {
+    throw new Error(`${entry.familyId}:${safety.caseId}: trace hint must identify the exact recorded target and immediately preceding state`);
+  }
+}
+
+function assertHintTargetIdentity(entry, safety, record, target) {
+  if (safety.target.lineId !== `trace:${record.programId}:${target.ordinal}`
+      || safety.target.frameId !== target.frameId || safety.target.line !== target.line) {
+    throw new Error(`${entry.familyId}:${safety.caseId}: trace hint target must match its recorded event`);
+  }
+}
+
+function assertHintPreviousState(entry, safety, previous) {
+  if (safety.lastAllowedState.eventOrdinal !== previous.ordinal
+      || safety.lastAllowedState.frameId !== previous.frameId || safety.lastAllowedState.line !== previous.line) {
+    throw new Error(`${entry.familyId}:${safety.caseId}: trace hint must use the immediately preceding state`);
+  }
+}
+
+function assertRequestedHintBindings(entry, safety, target) {
+  const requestedBindings = [...safety.requested.bindings].sort();
+  const targetBindings = Object.keys(target.bindings).sort();
+  if (JSON.stringify(requestedBindings) !== JSON.stringify(targetBindings)
+      || safety.requested.objectAttributes.length || safety.requested.values.length || safety.requested.classifications.length) {
+    throw new Error(`${entry.familyId}:${safety.caseId}: requested trace fields must exactly match target bindings`);
+  }
+}
+
+function safeTraceHintProjection(scene, parameters, safety) {
+  const projection = scene.safeHintProjection?.(parameters, safety);
+  if (!projection || Object.keys(projection).sort().join() !== 'priorCaptions,sourceLines') {
+    throw new Error('trace hint renderer must return only the approved prefix projection');
+  }
+  return projection;
+}
+
+function validateHintCases(entry, families, scene, family) {
+  const cases = families.find((item) => item.familyId === entry.familyId)?.cases ?? [];
+  const selected = entry.caseIds ?? family.caseTypes.map((item) => item.caseId);
+  assertClassifierHintCoverage(entry, selected, family);
+  const fixedProjection = new Map();
+  for (const caseId of selected) validateOneHintCase(entry, cases, scene, family, caseId, fixedProjection);
+}
+
+function assertClassifierHintCoverage(entry, selected, family) {
+  if (family.familyId === 'classify-training-curve' && family.taskArchetype === 'choice-diagnose') {
+    const required = family.caseTypes.map((item) => item.caseId).sort();
+    if (entry.source !== 'neighbor' || JSON.stringify([...selected].sort()) !== JSON.stringify(required)) {
+      throw new Error(`${entry.familyId}: fester Neighbor muss alle drei Diagnosefälle gemeinsam abdecken`);
+    }
+  }
+}
+
+function validateOneHintCase(entry, cases, scene, family, caseId, fixedProjection) {
+  if (!family.caseTypes.some((item) => item.caseId === caseId)) throw new Error(`Unbekannter Hinweisfall ${caseId}`);
+  validateAuthoredHintCase(entry, cases, scene, family, caseId);
+  checkHintSeeds(entry, scene, family, caseId, fixedProjection);
+}
+
+function validateAuthoredHintCase(entry, cases, scene, family, caseId) {
+  const authored = cases.find((item) => item.caseId === caseId);
+  const difficulty = authored && supportedHintProfile(family, caseId);
+  if (difficulty) checkHintCase(entry, scene, family, EXERCISE_FAMILIES.instantiate(entry.familyId, 0, difficulty, caseId));
+}
+
+function supportedHintProfile(family, caseId) {
+  for (const difficulty of family.difficultyProfiles) {
+    try { family.generate({ seed: 0, caseId, difficulty }); return difficulty; }
+    catch (error) {
+      if (!/Unbekannter Fall .* für Profil|Unbekanntes Profil/.test(error.message)) throw error;
+    }
+  }
+  return null;
+}
+
+function checkHintSeeds(entry, scene, family, caseId, fixedProjection) {
+  let profiles = 0;
+  for (const difficulty of family.difficultyProfiles) {
+    try { family.generate({ seed: 0, caseId, difficulty }); }
+    catch (error) {
+      if (/Unbekannter Fall .* für Profil|Unbekanntes Profil/.test(error.message)) continue;
+      throw error;
+    }
+    profiles += 1;
+    for (let seed = 0; seed < 50; seed += 1) {
+      const instance = EXERCISE_FAMILIES.instantiate(entry.familyId, seed, difficulty, caseId);
+      const projection = checkHintCase(entry, scene, family, instance);
+      if (entry.source === 'neighbor') {
+        const key = JSON.stringify(canonicalize(projection));
+        const projectionKey = `${entry.familyId}:${entry.scene}`;
+        const prior = fixedProjection.get(projectionKey);
+        if (prior !== undefined && prior.key !== key) {
+          const changed = [...new Set([...Object.keys(prior.projection), ...Object.keys(projection)])]
+            .filter((field) => JSON.stringify(canonicalize(prior.projection[field])) !== JSON.stringify(canonicalize(projection[field])));
+          throw new Error(`${entry.familyId}:${caseId}: neighbor hint changed with target instance or case (${changed.join(', ')})`);
+        }
+        fixedProjection.set(projectionKey, { key, projection });
+      }
+    }
+  }
+  if (!profiles) throw new Error(`${caseId}: kein prüfbares Hinweisprofil`);
+}
+
+function checkHintCase(entry, scene, family, instance) {
+  if (family.taskArchetype === 'tag-after-line') return assertTraceHintPrefixSafety(entry, scene, instance);
+  if (entry.safety?.kind === 'figure-hint-parameters' && entry.safety.source === 'case') {
+    assertCaseHintProjection(entry, scene, instance);
+  }
+  if (family.taskArchetype === 'choice-diagnose' && family.familyId === 'classify-training-curve') {
+    return checkCategoricalHintCase(entry, scene, family, instance);
+  }
+  return checkNumericHintCase(entry, scene, family, instance);
+}
+
+function checkCategoricalHintCase(entry, scene, family, instance) {
+  if (entry.source !== 'neighbor' || entry.safety?.source !== 'neighbor') {
+    throw new Error(`${entry.familyId}: nichtnumerische Klassifikationshinweise brauchen einen festen Neighbor`);
+  }
+  const labels = ['Underfitting', 'Stabil', 'Overfitting'];
+  const spec = hintSpec(entry, scene, instance);
+  const model = scene.model(spec.params, { mode: 'hint' });
+  const projection = { spec, model, displayNumbers: scene.displayNumbers?.(model), points: [] };
+  for (const [index, beat] of spec.beats.entries()) {
+    const duration = scene.beatDuration(beat.id);
+    for (const time of [0, duration / 2, duration]) {
+      const pose = scene.pose(model, index, time, 'hint');
+      const items = scene.build(model, pose, 'hint');
+      const texts = [spec.title, spec.caption, beat.caption, scene.readout(model, pose, 'hint'), scene.describe(model, index, 'hint'), ...hintTexts(items)];
+      const visible = texts.join(' ');
+      if (labels.some((label) => !visible.includes(label))) {
+        throw new Error(`${entry.familyId}:${entry.caseId}: Neighbor muss alle drei Diagnoseformen gleichberechtigt zeigen`);
+      }
+      projection.points.push({ texts, items, targets: scene.selectionTargets?.(model, index) ?? [] });
+    }
+  }
+  return projection;
+}
+
+function hintAnswerValues(family, instance, entry) {
+  if (family.hintAnswers !== undefined && typeof family.hintAnswers !== 'function') {
+    throw new Error(`${entry.familyId}: hintAnswers muss eine Funktion sein`);
+  }
+  const solved = family.hintAnswers ? family.hintAnswers(instance.parameters) : family.solve(instance.parameters);
+  const answers = answerNumbers(solved);
+  if (!answers.length) throw new Error(`${entry.familyId}: keine prüfbare Solverantwort`);
+  return answers;
+}
+
+function checkNumericHintCase(entry, scene, family, instance) {
+  const spec = hintSpec(entry, scene, instance);
+  const m = scene.model(spec.params, { mode: 'hint' });
+  const answers = hintAnswerValues(family, instance, entry);
+  return checkNumericHintBeats(entry, scene, spec, m, answers);
+}
+
+function checkNumericHintBeats(entry, scene, spec, model, answers) {
+  const projection = { spec, points: [] };
+  for (const [index, beat] of spec.beats.entries()) {
+    const duration = scene.beatDuration(beat.id);
+    for (const time of [0, duration / 2, duration]) {
+      const pose = scene.pose(model, index, time, 'hint');
+      const items = scene.build(model, pose, 'hint');
+      const texts = [spec.title, spec.caption, beat.caption, scene.readout(model, pose, 'hint'), scene.describe(model, index, 'hint'), ...hintTexts(items)];
+      assertNoHintLeak(texts, answers, `${entry.familyId}:${entry.caseId ?? 'curated'}:${beat.id}`);
+      projection.points.push({ texts, items, targets: scene.selectionTargets?.(model, index) ?? [] });
+    }
+  }
+  return projection;
+}
+
+function assertFigurePredict(predict, scene, figureModel, label) {
+  const { beat, ...checkpoint } = predict;
+  if (!scene.beatIds.includes(beat)) throw new Error(`${label}: Predict-Beat ${beat} gehört nicht zur Szene`);
+  assertVizCheckpointContract(checkpoint, label);
+  const actual = scene.predictValue(figureModel, beat);
+  const expected = checkpoint.expected;
+  const tolerance = checkpoint.tolerance ?? 1e-6;
+  const mismatch = Array.isArray(expected)
+    ? !Array.isArray(actual) || expected.length !== actual.length || expected.some((v, i) => Math.abs(v - actual[i]) > tolerance)
+    : Math.abs(actual - expected) > tolerance;
+  if (mismatch) throw new Error(`${label}: Predict-Erwartungswert ${JSON.stringify(expected)} widerspricht dem Szenenwert ${JSON.stringify(actual)}`);
+}
+
+// Numbers a learner reads must be model-derived. Index notation (_x and
+// _{...}) is stripped first; U+2212 and decimal commas are accepted.
+function extractDisplayNumbers(text) {
+  const values = [];
+  const rest = String(text)
+    .replace(/_\{[^}]*\}|_[a-zA-Z0-9]/g, ' ')
+    .replace(/−/g, '-');
+  rest
+    .replace(/-?\d+[.,]\d+/g, (m) => { values.push(parseFloat(m.replace(',', '.'))); return ' '; })
+    .replace(/-?\d+\s*\/\s*\d+/g, (m) => { const [n, d] = m.split('/'); values.push(Number(n) / Number(d)); return ' '; })
+    .replace(/-?\d+/g, (m) => { values.push(Number(m)); return ' '; });
+  return values;
+}
+
+function assertFigureNumbers(spec, scene, figureModel, label) {
+  const allowed = scene.displayNumbers(figureModel);
+  const texts = [spec.title, spec.caption, spec.hint, ...(spec.beats || []).map((beat) => beat.caption)];
+  if (spec.predict) texts.push(spec.predict.prompt);
+  if (spec.kind !== 'hint' && scene.selectionTargets) {
+    texts.push(...scene.beatIds.flatMap((_, index) => scene.selectionTargets(figureModel, index).flatMap(target => [target.label, target.description])));
+  }
+  for (const text of texts) {
+    for (const value of extractDisplayNumbers(text)) {
+      if (!allowed.some((candidate) => Math.abs(candidate - value) <= 1e-9)) {
+        throw new Error(`${label}: Zahl ${value} in "${String(text).slice(0, 60)}" ist nicht in displayNumbers der Szene`);
+      }
+    }
+  }
+}
+
+function compileFigureBlock(block, lesson, contentRoot, projectRoot, figureIds) {
+  if (!block.contentRef.endsWith('.fig.json')) throw new Error(`${lesson.lessonId}: Figurenreferenz muss auf .fig.json zeigen`);
+  const specPath = resolveContentPath(contentRoot, block.contentRef, ['.fig.json']);
+  const sourceSpec = readJson(specPath);
+  validateSourceDocument('figure', sourceSpec, projectRoot);
+  const spec = expandFigureTrace(sourceSpec, `${lesson.lessonId}:${block.contentRef}`, projectRoot);
+  const figureId = block.contentRef.split('/').pop().slice(0, -'.fig.json'.length);
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(figureId)) throw new Error(`${lesson.lessonId}: Ungültige Figuren-ID ${figureId}`);
+  const previousFigure = figureIds.get(figureId);
+  if (previousFigure) throw new Error(`Figuren-ID ${figureId} doppelt: ${previousFigure} und ${lesson.lessonId}`);
+  figureIds.set(figureId, lesson.lessonId);
+  validateFigureSpec(spec, `${lesson.lessonId}:${figureId}`);
+  return { ...block, html: '', fig: spec, figureId };
+}
+
 function compileLessonContent(contentRoot, lessons, projectRoot, families, markdownSources = new Map()) {
   for (const lesson of lessons) markdownSources.set(lesson.lessonId, []);
   const visualizationIds = new Map();
-  return lessons.map((lesson) => ({
+  const figureIds = new Map();
+  const compiled = lessons.map((lesson) => ({
     ...lesson,
     blocks: lesson.blocks.map((block) => {
+      if (block.type === 'figure') return compileFigureBlock(block, lesson, contentRoot, projectRoot, figureIds);
       if (block.type === 'visualization') {
         if (!block.contentRef.endsWith('.viz.json')) throw new Error(`${lesson.lessonId}: Visualisierungsreferenz muss auf .viz.json zeigen`);
         const specPath = resolveContentPath(contentRoot, block.contentRef, ['.viz.json']);
@@ -307,7 +1001,7 @@ function compileLessonContent(contentRoot, lessons, projectRoot, families, markd
         validateVisualizationExpressions(spec, lesson.lessonId, visualizationId);
         return { ...block, html: '', viz: spec, visualizationId };
       }
-      if (!block.contentRef.endsWith('.md')) throw new Error(`${lesson.lessonId}: Content-Referenz muss auf Markdown oder .viz.json zeigen`);
+      if (!block.contentRef.endsWith('.md')) throw new Error(`${lesson.lessonId}: Content-Referenz muss auf Markdown, .viz.json oder .fig.json zeigen`);
       const source = readFileSync(resolveContentPath(contentRoot, block.contentRef, ['.md']), 'utf8');
       markdownSources.get(lesson.lessonId)?.push(source);
       const html = renderMarkdown(source)
@@ -316,6 +1010,19 @@ function compileLessonContent(contentRoot, lessons, projectRoot, families, markd
       return { ...block, html };
     }),
   }));
+  for (const lesson of compiled) validateLessonFigures(lesson);
+  return compiled;
+}
+
+export function validateLessonFigures(lesson) {
+  const figures = lesson.blocks.filter((block) => block.fig);
+  const heavy = figures.filter((block) => ['beats', 'explore'].includes(block.fig.kind));
+  if (heavy.length > 2) throw new Error(`${lesson.lessonId}: höchstens zwei beats/explore-Figuren`);
+  for (let i = 1; i < lesson.blocks.length; i += 1) {
+    if (lesson.blocks[i].fig?.kind === 'inline' && lesson.blocks[i - 1].fig?.kind === 'inline') {
+      throw new Error(`${lesson.lessonId}: keine benachbarten inline-Figuren`);
+    }
+  }
 }
 
 // Fail-closed: every `#/glossary/<id>` link in lesson markup must resolve
@@ -585,7 +1292,7 @@ const LEARNER_TEXT_ALLOWED_TAGS = new Set([
 const LEARNER_TEXT_KEYS = new Set([
   'prompt', 'text', 'hint', 'hints', 'fullSolution', 'typicalError',
   'typicalErrors', 'then', 'objective', 'objectives', 'title', 'subtitle',
-  'description', 'summary', 'label', 'must',
+  'description', 'summary', 'label', 'must', 'caption',
 ]);
 
 // Non-prose subtrees: code, expected answers, parameters and structural
@@ -782,7 +1489,7 @@ function compileInputFingerprint(projectRoot) {
     })(codeRoot);
     codeFiles.sort();
   }
-  for (const dir of ['content', 'schemas', 'assets/js/core', 'assets/js/domain']) {
+  for (const dir of ['content', 'schemas', 'assets/js/core', 'assets/js/domain', 'assets/js/figures']) {
     const base = join(projectRoot, dir);
     if (!existsSync(base)) { hash.update(dir); continue; }
     const paths = [];
@@ -806,6 +1513,7 @@ function compileInputFingerprint(projectRoot) {
 }
 
 export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo' } = {}) {
+  assertPythonTraceCorpus(traceSnapshots.records, projectRoot);
   let fingerprint = null;
   if (cache === 'memo') {
     fingerprint = compileInputFingerprint(projectRoot);
@@ -827,6 +1535,9 @@ export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo
   validateLoadedCatalog(contentRoot, catalog, files, entities);
   filterPublicEntities(entities);
   const bundle = compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion, entities);
+  const figureHints = readJson(join(contentRoot, 'figure-hints.json'));
+  validateSourceDocument('figure-hints', figureHints, projectRoot);
+  validateFigureHints(figureHints, entities.families);
   validateCompiledContent(bundle);
   const hashInput = { ...bundle, contentVersion: undefined };
   bundle.contentVersion = createHash('sha256').update(JSON.stringify(canonicalize(hashInput))).digest('hex');
@@ -835,7 +1546,8 @@ export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo
 }
 
 function discoverCatalogFiles(contentRoot, catalog) {
-  const lessonFiles = discoverJson(contentRoot, catalogRoot(catalog, 'lessons')).filter((file) => !file.endsWith('.viz.json'));
+  const lessonFiles = discoverJson(contentRoot, catalogRoot(catalog, 'lessons'))
+    .filter((file) => !file.endsWith('.viz.json') && !file.endsWith('.fig.json'));
   return {
     ...Object.fromEntries(Object.keys(CATALOG_ROOTS).map((key) => [key, discoverJson(contentRoot, catalogRoot(catalog, key))])),
     ...Object.fromEntries(Object.keys(CATALOG_OBJECTS).map((key) => [key, discoverJson(contentRoot, catalogRoot(catalog, CATALOG_OBJECTS[key][0]))])),
@@ -885,10 +1597,62 @@ function loadFamilyDocument(contentRoot, file, projectRoot) {
 
 function validateLoadedCatalog(contentRoot, catalog, files, entities) {
   configureExerciseFamilies(entities.families);
+  validateTraceTagFamilyInstances();
   validateProjectPackages(contentRoot, files.projects, entities.projects);
   assertUniqueCheckpoints(entities.lessons);
   assertCatalogRoots(contentRoot, catalog, files);
   assertCatalogOrphans(contentRoot, catalog, files, entities);
+}
+
+// Public compilation exercises every trace family case against its frozen
+// CPython snapshot. This keeps the catalog metadata-only: expected bindings
+// come from the procedural solver, never a placeholder stored in a case.
+function validateTraceTagFamilyInstances() {
+  const family = EXERCISE_FAMILIES.get('trace-tag-after-line');
+  if (!family) return;
+  for (const { caseId } of family.caseTypes) validateTraceCaseInstances(family, caseId);
+}
+
+function validateTraceCaseInstances(family, caseId) {
+  for (let seed = 0; seed < 16; seed += 1) assertTraceTagInstance(family, caseId, seed);
+}
+
+function assertTraceTagInstance(family, caseId, seed) {
+  const instance = EXERCISE_FAMILIES.instantiate('trace-tag-after-line', seed, 'core', caseId);
+  const task = instance.parameters?.tagTask;
+  const record = traceSnapshots.records[task?.traceKey];
+  const event = record?.events?.[task?.target?.eventOrdinal];
+  const expected = instance.expectedAnswer;
+  assertTraceTagExpectedState(caseId, task, record, event, expected, family.solve(instance.parameters));
+  assertTraceTagBindings(caseId, event, expected);
+}
+
+function assertTraceTagExpectedState(caseId, task, record, event, expected, solved) {
+  assertTraceTagRecordEvent(caseId, task, record, event);
+  assertTraceTagExpectedAnswer(caseId, record, event, expected, solved);
+}
+
+function assertTraceTagRecordEvent(caseId, task, record, event) {
+  if (!record || !event || task.sourceHash !== record.sourceHash
+      || event.event === 'start' || !Object.keys(event.bindings).length) {
+    throw new Error(`trace-tag-after-line:${caseId}: Instanz muss einen echten CPython-Zustand mit Bindungen verwenden`);
+  }
+}
+
+function assertTraceTagExpectedAnswer(caseId, record, event, expected, solved) {
+  if (!expected?.states?.length || !expected.states[0].bindings?.length
+      || JSON.stringify(expected) !== JSON.stringify(solved)
+      || expected.states[0].lineId !== `trace:${record.programId}:${event.ordinal}`) {
+    throw new Error(`trace-tag-after-line:${caseId}: Solverantwort muss zum echten CPython-Zustand passen`);
+  }
+}
+
+function assertTraceTagBindings(caseId, event, expected) {
+  const actual = Object.entries(event.bindings).sort(([left], [right]) => left.localeCompare(right))
+    .map(([name, objectId]) => ({ name, objectId }));
+  if (JSON.stringify(expected.states[0].bindings) !== JSON.stringify(actual)) {
+    throw new Error(`trace-tag-after-line:${caseId}: Solverantwort weicht vom CPython-Zustand ab`);
+  }
 }
 
 function assertCatalogRoots(contentRoot, catalog, files) {
@@ -984,7 +1748,7 @@ const SAFE_CHUNK_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,96}$/;
 const GENERIC_ACTIVITY_TITLES = new Set([
   'Aufgabe', 'Konzeptfrage', 'Auswahlaufgabe', 'Rechenaufgabe', 'Programmieraufgabe',
   'Ablauf nachvollziehen', 'Code ordnen', 'Begründung', 'Mehrfachauswahl',
-  'Fehlerdiagnose', 'Lückentext',
+  'Fehlerdiagnose', 'Lückentext', 'Szene konstruieren',
 ]);
 
 export function assertCaseTitle(title, ref) {

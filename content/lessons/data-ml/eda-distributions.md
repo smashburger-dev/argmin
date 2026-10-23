@@ -22,7 +22,6 @@ $$
 - Bin 2 ist $[4, 9]$: die Werte $4, 4, 4, 5, 5, 7, 9$, also 7 Werte.
 
 Das Ergebnis ist `[1 7]`. Die Bin-Breite ändert die Form: feine Bins zeigen Details und Rauschen, grobe Bins glätten Struktur weg. Erzähle nie aus einem einzigen Bin-Setup eine Geschichte, die bei anderen Kanten verschwindet.
-
 ## Median, Quartile, Schiefe
 
 Der **Median** ist der Wert in der Mitte der sortierten Liste. Für $x$ oben (Länge 8, gerade) ist er das Mittel der beiden mittleren Werte:

@@ -25,9 +25,11 @@
     },
     {
       "blockId": "gauss-viz",
-      "type": "visualization",
-      "contentRef": "lessons/linear-algebra/row-operation.viz.json"
-    }
+      "type": "figure",
+      "contentRef": "lessons/linear-algebra/receipt-elimination.fig.json"
+    },
+    { "blockId": "gauss-details", "type": "worked-example", "contentRef": "lessons/linear-algebra/gauss-details.md" },
+    { "blockId": "gauss-echelon-figure", "type": "figure", "contentRef": "lessons/linear-algebra/receipt-echelon-3x3.fig.json" }
   ],
   "sourceRefs": [
     {

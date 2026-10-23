@@ -1,0 +1,21 @@
+{
+  "answerRetained": true,
+  "flatAzimuth": {
+    "before": "0.0",
+    "after": "0.0"
+  },
+  "restoredBeat": "1",
+  "touchAzimuth": {
+    "before": "32.0",
+    "after": "75.2"
+  },
+  "verticalScroll": {
+    "before": 7555,
+    "after": 7809
+  },
+  "touchAction": "pan-y",
+  "outsideUserSelect": "auto",
+  "eta0.005": "η = 0,005, Schritt 12. w = 1,057, b = 0,441. MSE = 6,865. ∂w = -11,665, ∂b = -4,889, |∇L| = 12,648.",
+  "eta0.05": "η = 0,05, Schritt 12. w = 2,049, b = 0,881. MSE = 0,003. ∂w = 0,016, ∂b = -0,041, |∇L| = 0,044.",
+  "eta0.25": "η = 0,25, Schritt 12. w = -4.985,573, b = -2.064,979. MSE = 169.864.555,603. ∂w = -58.139,643, ∂b = -24.082,249, |∇L| = 62.929,903. Die Spur hat den Ausschnitt verlassen. Verlust wächst seit drei Schritten, erkannt bei Schritt 3."
+}

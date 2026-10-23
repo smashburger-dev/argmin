@@ -24,6 +24,8 @@
       "type": "worked-example",
       "contentRef": "lessons/genai-systems/genai-prototype.md"
     },
+    { "blockId": "house-ablation-figure", "type": "figure", "contentRef": "lessons/genai-systems/house-ablation.fig.json" },
+    { "blockId": "genai-prototype-s7-after", "type": "worked-example", "contentRef": "lessons/genai-systems/genai-prototype-s7-after.md" },
     {
       "blockId": "genai-prototype-check",
       "type": "checkpoint",

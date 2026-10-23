@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-figuren-s6b-archive",
+  "version": 1,
+  "locale": "de",
+  "title": "Archiv der ersetzten Figuren S6b",
+  "objectives": ["Ersetzte Visualisierungen bis zur Freigabe aufbewahren"],
+  "competencyIds": ["c-linalg-matrices", "c-numpy-basics", "c-dl-attention"],
+  "requires": [],
+  "estimatedMinutes": 1,
+  "blocks": [
+    { "blockId": "archive-column-picture", "type": "visualization", "contentRef": "lessons/linear-algebra/column-picture.viz.json" },
+    { "blockId": "archive-matrix-transform", "type": "visualization", "contentRef": "lessons/linear-algebra/matrix-transform.viz.json" },
+    { "blockId": "archive-softmax-temperature", "type": "visualization", "contentRef": "lessons/transformer-llm/softmax-temperature.viz.json" }
+  ],
+  "sourceRefs": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "local-only"
+}

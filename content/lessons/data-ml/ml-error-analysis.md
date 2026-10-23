@@ -13,7 +13,6 @@ Wo der Vergleich hinkt: Beim Fluss siehst du die Tiefe nicht, ohne hineinzugehen
 Die erste Frage der Fehleranalyse lautet: Für wen ist das Modell gut, für wen schlecht? Teile die Testdaten in **Teilgruppen** (Altersbänder, Regionen, Gerätetypen) und rechne die **Fehlerrate** pro Gruppe: die Anzahl der Fehler geteilt durch die Gruppengröße. Der **Lückenwert** ist der Unterschied zwischen bester und schlechtester Gruppe in Prozentpunkten, nicht in Prozent relativ.
 
 Beispiel: Eine Klassifikation trifft auf Gruppe „jung“ 95 % und auf Gruppe „alt“ 78 %. Die Gesamttrefferquote 90 % verdeckt die Lücke von 17 Prozentpunkten. Berichtet wird die Lücke zusammen mit den Einzelwerten; die Gesamtzahl allein ist keine Verteidigung.
-
 ## Fehlertypen getrennt zählen
 
 Nicht jeder Fehler kostet gleich viel. Ein **Fehlalarm** (englisch *false positive*) schlägt an, obwohl nichts ist; ein **übersehener Fall** (englisch *false negative*) lässt einen echten Fall durch. Je nach Anwendung ist das eine harmlos und das andere teuer. Rechne die Fehlertypen pro Teilgruppe getrennt; eine Gruppe kann viele Fehlalarme und eine andere viele übersehene Fälle haben, bei gleicher Gesamtzahl.

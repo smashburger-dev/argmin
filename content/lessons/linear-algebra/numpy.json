@@ -27,8 +27,13 @@
     },
     {
       "blockId": "numpy-viz",
-      "type": "visualization",
-      "contentRef": "lessons/linear-algebra/matrix-transform.viz.json"
+      "type": "figure",
+      "contentRef": "lessons/linear-algebra/plug-adapter.fig.json"
+    },
+    {
+      "blockId": "numpy-f2-after",
+      "type": "worked-example",
+      "contentRef": "lessons/linear-algebra/numpy-f2-after.md"
     }
   ],
   "sourceRefs": [

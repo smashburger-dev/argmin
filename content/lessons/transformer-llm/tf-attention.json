@@ -14,7 +14,8 @@
   "estimatedMinutes": 75,
   "blocks": [
     { "blockId": "tf-attention-core", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-attention.md" },
-    { "blockId": "tf-attention-viz", "type": "visualization", "contentRef": "lessons/transformer-llm/softmax-temperature.viz.json" },
+    { "blockId": "tf-attention-viz", "type": "figure", "contentRef": "lessons/transformer-llm/library-attention.fig.json" },
+    { "blockId": "tf-attention-f2-after", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-attention-f2-after.md" },
     { "blockId": "tf-attention-check", "type": "checkpoint", "contentRef": "lessons/transformer-llm/tf-attention-checkpoint.md" }
   ],
   "sourceRefs": [

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "early-stopping-flag",
+  "title": "Das beste Modell behalten",
+  "caption": "Der letzte Trainingsschritt ist nicht zwingend das beste Modell für neue Daten.",
+  "hint": "Die Lektüre erklärt das Beispiel und seine Grenzen.",
+  "params": {
+    "patience": 3
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Training und Validierung verbessern sich zunächst gemeinsam. Die Kurven sind ein schematisches Beispiel."
+    },
+    {
+      "id": "step-1",
+      "caption": "Die Validierung steigt wieder. Die Übertragungsfrage setzt die Kurve bei t = 10 ungebremst fort."
+    },
+    {
+      "id": "step-2",
+      "caption": "Nach der Patience stoppt der Lauf. Die Fahne markiert das behaltene Modell, nicht den letzten Zustand."
+    }
+  ],
+  "predict": {
+    "beat": "step-1",
+    "prompt": "Setze t = 10. Welchen Validierungsfehler zeigt der rote Punkt?",
+    "input": "numeric",
+    "expected": 0.45,
+    "tolerance": 0.01,
+    "hints": [
+      "Val(t) = e^(−0,3t) + 0,004·t² — rechne beide Terme bei t = 10 aus."
+    ],
+    "typicalErrors": [
+      {
+        "match": 0.05,
+        "feedback": "Das ist nur der Trainingsanteil e^(−3). Der Overfitting-Term 0,004·t² = 0,4 fehlt."
+      },
+      {
+        "match": 0.09,
+        "feedback": "Der Overfitting-Term ist 0,004·t² — quadriert, nicht linear in t."
+      }
+    ]
+  }
+}

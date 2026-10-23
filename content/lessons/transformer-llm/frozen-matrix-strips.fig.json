@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "kind": "beats",
+  "engine": "argmin-figure",
+  "scene": "frozen-matrix-strips",
+  "title": "Eingefrorene Matrix, trainierbare Faktoren",
+  "caption": "Die großen Blöcke bezeichnen Formen. Das kleine Beispiel zeigt die exakte LoRA-Rechnung.",
+  "hint": "Das feste Beispiel ergänzt die Rechnung in der Lektüre.",
+  "params": {},
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die große Gewichtsmatrix bleibt eingefroren. Der Block bezeichnet ihre Form und zeigt keine einzelnen Zellen."
+    },
+    {
+      "id": "step-1",
+      "caption": "Nur die beiden Faktoren werden trainiert. Ihr gemeinsamer schmaler Index ist der Rang, nicht die Batch-Achse."
+    },
+    {
+      "id": "step-2",
+      "caption": "Das Produkt BA hat wieder die Form von W. Die Umrandung bezeichnet ein Update, keine messbare Schichtdicke."
+    },
+    {
+      "id": "step-3",
+      "caption": "Ein separates Mini-Beispiel macht die Arithmetik exakt sichtbar. Alpha geteilt durch Rang skaliert das Produkt."
+    },
+    {
+      "id": "step-4",
+      "caption": "Das Update wird addiert. W bleibt als Ausgangsmatrix erhalten; W plus Delta ist die effektive Gewichtsmatrix."
+    }
+  ]
+}

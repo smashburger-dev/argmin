@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ki-lernplattform.local/schemas/figure.schema.json",
+  "title": "Figure specification",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "kind", "engine", "scene", "title", "caption", "hint", "params", "beats"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "kind": { "enum": ["beats", "explore", "compare", "static", "inline", "hint", "task"] },
+    "explore": {
+      "type": "object", "additionalProperties": false,
+      "required": ["parameter", "min", "max", "step", "input"],
+      "properties": {
+        "parameter": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "min": { "type": "number" }, "max": { "type": "number" },
+        "step": { "type": "number", "exclusiveMinimum": 0 },
+        "input": { "const": "number" }
+      }
+    },
+    "compare": {
+      "type": "object", "additionalProperties": false, "required": ["a", "b"],
+      "properties": {
+        "a": { "type": "object" }, "b": { "type": "object" },
+        "beat": { "type": "string", "minLength": 1 },
+        "labels": {
+          "type": "object", "additionalProperties": false, "required": ["a", "b"],
+          "properties": { "a": { "type": "string", "minLength": 1 }, "b": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "engine": { "const": "argmin-figure" },
+    "scene": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "caption": { "type": "string", "minLength": 1 },
+    "hint": { "type": "string", "minLength": 1 },
+    "params": { "type": "object" },
+    "beats": {
+      "oneOf": [
+        { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/beat" } },
+        { "type": "object", "additionalProperties": false, "required": ["from"], "properties": { "from": { "const": "trace" } } }
+      ]
+    },
+    "predict": { "$ref": "#/$defs/predict" }
+  },
+  "$defs": {
+    "beat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "caption"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "caption": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "cameraTransition": { "enum": ["travel", "cut"] }
+      }
+    },
+    "predict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["beat", "prompt", "input", "expected"],
+      "properties": {
+        "beat": { "type": "string", "minLength": 1 },
+        "prompt": { "type": "string", "minLength": 1 },
+        "input": { "enum": ["numeric", "vector"] },
+        "expected": {
+          "anyOf": [
+            { "type": "number" },
+            { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } }
+          ]
+        },
+        "tolerance": { "type": "number", "exclusiveMinimum": 0, "default": 1e-6 },
+        "hints": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "typicalErrors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/checkpointTypicalError" }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "input": { "const": "numeric" } },
+            "required": ["input"]
+          },
+          "then": { "properties": { "expected": { "type": "number" } } }
+        },
+        {
+          "if": {
+            "properties": { "input": { "const": "vector" } },
+            "required": ["input"]
+          },
+          "then": {
+            "properties": {
+              "expected": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } }
+            }
+          }
+        }
+      ]
+    },
+    "checkpointTypicalError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["match", "feedback"],
+      "properties": {
+        "match": {
+          "anyOf": [
+            { "type": "number" },
+            { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "feedback": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

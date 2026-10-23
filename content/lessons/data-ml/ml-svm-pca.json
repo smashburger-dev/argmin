@@ -35,8 +35,13 @@
     },
     {
       "blockId": "ml-svm-pca-viz",
-      "type": "visualization",
-      "contentRef": "lessons/data-ml/pca-axis.viz.json"
+      "type": "figure",
+      "contentRef": "lessons/data-ml/pca-shadow.fig.json"
+    },
+    {
+      "blockId": "ml-svm-pca-kmeans-viz",
+      "type": "figure",
+      "contentRef": "lessons/data-ml/kmeans-pizza.fig.json"
     }
   ],
   "sourceRefs": [

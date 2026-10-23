@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kind": "inline",
+  "engine": "argmin-figure",
+  "scene": "evidence-cards",
+  "title": "Konsistenz zwischen drei Karten",
+  "caption": "Drei Karten teilen denselben Projektnamen. Pflichtfelder und Versionen bleiben zusätzlich zu prüfen.",
+  "hint": "Die Figur zeigt das feste Lektionsbeispiel.",
+  "params": {
+    "card": "cards"
+  },
+  "beats": [
+    {
+      "id": "step-0",
+      "caption": "Die festen Felder machen den dokumentierten Zusammenhang sichtbar."
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "throttle": 4,
+  "results": [
+    {
+      "style": "a1",
+      "viewport": "375",
+      "scenario": "beat",
+      "ticks": 189,
+      "frames": 368,
+      "scriptMedian": 0.7,
+      "scriptP95": 1.2,
+      "scriptMax": 1.8,
+      "buildMedian": 0.1,
+      "sortMedian": 0.1,
+      "paintMedian": 0.2,
+      "faces": 19,
+      "frameMedian": 8.3,
+      "frameP95": 9.2,
+      "longFrames": 0
+    },
+    {
+      "style": "a1",
+      "viewport": "375",
+      "scenario": "drag",
+      "ticks": 470,
+      "frames": 501,
+      "scriptMedian": 1.2,
+      "scriptP95": 1.8,
+      "scriptMax": 6.4,
+      "buildMedian": 0,
+      "sortMedian": 0.3,
+      "paintMedian": 0.8,
+      "faces": 19,
+      "frameMedian": 8.3,
+      "frameP95": 9.2,
+      "longFrames": 0
+    },
+    {
+      "style": "a1",
+      "viewport": "375",
+      "scenario": "board",
+      "ticks": 190,
+      "frames": 367,
+      "scriptMedian": 0.6,
+      "scriptP95": 1.1,
+      "scriptMax": 1.5,
+      "buildMedian": 0.1,
+      "sortMedian": 0,
+      "paintMedian": 0.1,
+      "faces": 19,
+      "frameMedian": 8.3,
+      "frameP95": 9.1,
+      "longFrames": 0
+    }
+  ],
+  "scene": "solution-cases-3d",
+  "run": 3
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ki-lernplattform.local/schemas/figure-hint-parameters.schema.json",
+  "title": "Independent figure hint parameters v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "schemaVersion", "source", "parameterKeys"],
+  "properties": {
+    "kind": { "const": "figure-hint-parameters" },
+    "schemaVersion": { "const": 1 },
+    "source": { "enum": ["neighbor", "case"] },
+    "familyId": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "caseId": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "parameterKeys": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+  },
+  "allOf": [
+    { "if": { "properties": { "source": { "const": "case" } }, "required": ["source"] }, "then": { "properties": { "familyId": {}, "caseId": {} }, "required": ["familyId", "caseId"] } }
+  ]
+}

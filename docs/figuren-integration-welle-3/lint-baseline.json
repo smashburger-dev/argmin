@@ -1,0 +1,13 @@
+{
+  "checkedProductCommit": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+  "file": "tests/lesson_content_transformer.test.mjs",
+  "function": "validateAgainstSchema",
+  "reportedComplexity": 36,
+  "configuredMaximum": 10,
+  "baselineCommit": "1e017b749f0269ae738c967602225764b28f2688",
+  "functionBodyUnchanged": true,
+  "comparison": "Exact UTF-8 equality from function declaration through its top-level closing brace, with newline separators and no final newline.",
+  "sha256": "aa5a2eeafc6e5109b9cd278143283bdd84e42b54d6f42007e6e1a6e2894177bc",
+  "rawLocalLog": "/private/tmp/figuren-integration-welle-3/lint-1.log",
+  "resolution": "Existing complexity retained; no lint suppression or unrelated refactor. New permanent tests were not added."
+}

@@ -107,5 +107,5 @@ test('golden corpus coverage delta against canonical families is explicit', () =
   assert.deepEqual(missing, [
     'reflect-error-journal-rationale',
   ], `stille Drift im Golden-Korpus, fehlend: ${missing.join(', ')}`);
-  assert.deepEqual(extra, ['classify-shape-contract', 'construct-error-journal-order'], `stille Drift im Golden-Korpus, extra: ${extra.join(', ')}`);
+  assert.deepEqual(extra, ['balance-solve', 'classify-shape-contract', 'construct-error-journal-order', 'mix-to-target', 'pick-learning-rate', 'trace-tag-after-line'], `stille Drift im Golden-Korpus, extra: ${extra.join(', ')}`);
 });

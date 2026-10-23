@@ -1,0 +1,1179 @@
+{
+  "head": "d2f1171be06031c28546b8b2942b5a35946a6b24",
+  "baseline": "1e017b749f0269ae738c967602225764b28f2688",
+  "integrationCommitsOldestFirst": [
+    "7c30e7a45a96f551d05ca8b8085896e3ce6da7aa Merge feature/figuren-s2b into feature/figuren",
+    "8172c3e82599d5aad2ae1e5291905dd9c480451f figuren: Gemeinsame Verträge und Zustandsrückkehr integrieren",
+    "4582be981ffceab71b8e5320532f83630a52817b Merge feature/figuren-s6b into feature/figuren",
+    "a18e84950de5c7497eec2a5e23fd5c14b4941169 figuren: Bestandsprüfungen an F2-Lektionsfluss anbinden",
+    "7c3a07f652a5561f47d4c5eb79839f8a3cc7da6c Merge feature/figuren-s7 into feature/figuren",
+    "61835ff99d5586ee72a9cb8feba00d7ce5c07fc4 figuren: GenAI-Bestandsprüfung für Figuren erhalten",
+    "9c0d9ef6c75725102694ca7b55bfec4972f1d960 Merge feature/figuren-s8a into feature/figuren",
+    "2947c6695f68362a119f2edb551834098f1e7cfe Merge feature/figuren-s8b into feature/figuren",
+    "31fa9a2b4d3621a6770d49cc826ae53068bd9bf0 figuren: Familienfragmente und offene Nachläufe zuordnen",
+    "bc1ef8f646a6d7ed90532ec32f299f33c73a5f13 figuren: Glossartext beim Öffnen kontraststark halten",
+    "bc17db6353860d8fd8a6149cc192582c9a106c0a figuren: Tourtext während des Einblendens lesbar halten",
+    "d2f1171be06031c28546b8b2942b5a35946a6b24 figuren: Öffentliche Matrixverweise auf integrierte Lektion führen"
+  ],
+  "registry": {
+    "pure": 53,
+    "browser": 53,
+    "missingFromBrowser": [],
+    "missingFromPure": [],
+    "duplicates": []
+  },
+  "allowlist": {
+    "entries": 399,
+    "duplicates": 0,
+    "missingSource": [],
+    "intentionallyRetiredReleaseFiles": [
+      "content/lessons/linear-algebra/column-picture.viz.json"
+    ],
+    "unexpectedlyMissingFromFinalRelease": []
+  },
+  "fragments": {
+    "s7OriginalProsePreserved": true,
+    "s8aProseIncluded": true,
+    "s8aSpecByteEqual": true,
+    "ragByteEqual": true,
+    "freezeByteEqual": true,
+    "dataCleaningBeatFigures": 2
+  },
+  "unchangedOldVisualizationSources": true,
+  "sharedChangesSinceCheckedContract": "",
+  "checkedContract": "8172c3e82599d5aad2ae1e5291905dd9c480451f",
+  "visualSourceParity": {
+    "comparedWith": "bc17db6353860d8fd8a6149cc192582c9a106c0a",
+    "figureSpecs": [
+      {
+        "lessonId": "l-data-cleaning",
+        "ref": "lessons/data-ml/cleaning-line.fig.json",
+        "kind": "beats",
+        "scene": "cleaning-line",
+        "sha256": "186cc6bb2929949fe528b90d0bd2db3a203c18e5d121e0b3c87b47e7a93b013b",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-data-cleaning",
+        "ref": "lessons/data-ml/missing-high-sales.fig.json",
+        "kind": "beats",
+        "scene": "missing-high-sales",
+        "sha256": "1fb359d1d0e5cbb0b75e4cb2039571340387734d6ce77e397e8dc79f42e7ed7b",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-eda-distributions",
+        "ref": "lessons/data-ml/distribution-points.fig.json",
+        "kind": "beats",
+        "scene": "distribution-points",
+        "sha256": "022e94341d0fbffff14302fc01ea4569ec593395c5db6b577f2b46c2770a894b",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-grad-regression",
+        "ref": "lessons/data-ml/mse-section.fig.json",
+        "kind": "beats",
+        "scene": "mse-section",
+        "sha256": "00d9b3efc42f3d7ed85292dc132d8fa20d186100cdc9d53eb7ccb4cfc8def66e",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-grad-regression",
+        "ref": "lessons/data-ml/mse-landscape.fig.json",
+        "kind": "explore",
+        "scene": "mse-landscape",
+        "sha256": "46d90c26d2d36f56bdf84e6f30c2adf408b0bfa2cd2e48e8aacf5a335ecd34fb",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-ml-baseline",
+        "ref": "lessons/data-ml/baseline-sorter.fig.json",
+        "kind": "beats",
+        "scene": "baseline-sorter",
+        "sha256": "d1e636ab49a7adb4c47b70f6308c2e2be35f0c78515acf75bdb7b076547d57a6",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-ml-cv",
+        "ref": "lessons/data-ml/fold-rotation.fig.json",
+        "kind": "beats",
+        "scene": "fold-rotation",
+        "sha256": "d79a0661d02fa6ffe3c962159c178892478da93e84cf448c510480f5b097525b",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-ml-ensembles",
+        "ref": "lessons/data-ml/tree-vote-field.fig.json",
+        "kind": "beats",
+        "scene": "tree-vote-field",
+        "sha256": "da5cb114520ca8e5cbd9a1434b6c9e736692e386f8fbd7af459572b3f2077bde",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-ml-error-analysis",
+        "ref": "lessons/data-ml/subgroup-river.fig.json",
+        "kind": "beats",
+        "scene": "subgroup-river",
+        "sha256": "fc5a00877da5b219b9f2398dbbb82c96960c85a99216fe33cb74045895995773",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-ml-linear",
+        "ref": "lessons/data-ml/residual-springs.fig.json",
+        "kind": "beats",
+        "scene": "residual-springs",
+        "sha256": "f4fccc8b35002d1a2433e873f475b2aa795dd4fbd7a123a3d147b37b6f86fd60",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-ml-logistic",
+        "ref": "lessons/data-ml/logistic-sorter.fig.json",
+        "kind": "beats",
+        "scene": "logistic-sorter",
+        "sha256": "51ad4e23874589343e7efea5d8098afccf31e6c0a17133879b5d4dbfde43a693",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-ml-regularization",
+        "ref": "lessons/data-ml/rubber-band-coefficients.fig.json",
+        "kind": "compare",
+        "scene": "rubber-band-coefficients",
+        "sha256": "d02422e811ac6ac2d4ae3d54ec08afc5f8279f9e8409d3e47fba157290f8219c",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-ml-repro",
+        "ref": "lessons/data-ml/seed-ribbon.fig.json",
+        "kind": "beats",
+        "scene": "seed-ribbon",
+        "sha256": "3ca49166199358fd19ae8375a4e4ffa91935c56050f436e9494bb2d201b5dde3",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-dl-autograd",
+        "ref": "lessons/deep-learning/backprop-network.fig.json",
+        "kind": "beats",
+        "scene": "backprop-network",
+        "sha256": "10d0cd04988b33fe41ee4642447b897846905969e68baad968300ec8625a1e76",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-dl-regularization",
+        "ref": "lessons/deep-learning/team-mask.fig.json",
+        "kind": "beats",
+        "scene": "team-mask",
+        "sha256": "23ea3424e59cd5ea1fd2f881d9bbcf9237f5b11ab2af336191bc5122341ae7b5",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-dl-regularization",
+        "ref": "lessons/deep-learning/early-stopping-flag.fig.json",
+        "kind": "beats",
+        "scene": "early-stopping-flag",
+        "sha256": "36a15ca642b635eaabbb3e666e6aa4c011fb71ae8a612c1787daa1c028f5d1aa",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-dl-tensors",
+        "ref": "lessons/deep-learning/tensor-address.fig.json",
+        "kind": "beats",
+        "scene": "tensor-address",
+        "sha256": "baff9f61ac3b7209ce4026b0aed0582d2ed95ea86b65d550a49fae28eb9de31a",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-dl-training",
+        "ref": "lessons/deep-learning/training-book.fig.json",
+        "kind": "beats",
+        "scene": "training-book",
+        "sha256": "2a06eb526343a4ab05c102074d6a99fb46e0dd289d7aa0fdc8959fdab329e01d",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-algebra-transformations",
+        "ref": "lessons/foundations/bag-unpack.fig.json",
+        "kind": "beats",
+        "scene": "bag-unpack",
+        "sha256": "e2f94fc9b1627c0290c66a320213f0cc52ac162002b8e08243b695db3e6df02e",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-algebra",
+        "ref": "lessons/foundations/balance-isolate.fig.json",
+        "kind": "beats",
+        "scene": "balance-isolate",
+        "sha256": "975ee3cff2cf1dd283f7035629107d2d1673811d5d5daf4f03c1b364189f5daa",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-algebra",
+        "ref": "lessons/foundations/power-stack.fig.json",
+        "kind": "beats",
+        "scene": "power-stack",
+        "sha256": "37e170180561e5e39cb4cb7a8aa4e8314aaf2ec328b5aeb6fb63334f3de903d4",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-code-reading",
+        "ref": "lessons/foundations/ledger.fig.json",
+        "kind": "beats",
+        "scene": "ledger",
+        "sha256": "cc17e34fed9a8fa7333890c46fb718af97fee97007d08996c8f0e4bc3a5ac2f5",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-collections",
+        "ref": "lessons/foundations/two-tags-one-list.fig.json",
+        "kind": "beats",
+        "scene": "two-tags-one-list",
+        "sha256": "20fae6073b947753ed3c381b9c7f79e4c4d769c58738ffc823beb248aca408ca",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-control-flow",
+        "ref": "lessons/foundations/bouncer.fig.json",
+        "kind": "beats",
+        "scene": "bouncer",
+        "sha256": "093fb8aa16acccace2f9004e86c2b92a07c94bc15187102471fcd96453302efd",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-files-errors",
+        "ref": "lessons/foundations/goods-in.fig.json",
+        "kind": "beats",
+        "scene": "goods-in",
+        "sha256": "9a69d81297967a1cf382502c5b0d740d79cb5c3a59528a32ff602928e34976a2",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-functions",
+        "ref": "lessons/foundations/vending-frame.fig.json",
+        "kind": "beats",
+        "scene": "vending-frame",
+        "sha256": "6143d8af996968a6a9f90fe22e2e2714a3664f10951c45a6b1a6e3a97e00a1f6",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-git",
+        "ref": "lessons/foundations/git-snapshots.fig.json",
+        "kind": "beats",
+        "scene": "git-snapshots",
+        "sha256": "19f8e992818507d4c5dd01580e53471235b0980b6e564f9483d4c9d74973af7e",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-learning",
+        "ref": "lessons/foundations/journal-card.fig.json",
+        "kind": "inline",
+        "scene": "evidence-cards",
+        "sha256": "74f1db3db2eb971940a73e98f564b6c24585b1353e1f2916adbe9ef95d9e76dd",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-learning",
+        "ref": "lessons/foundations/review-timeline.fig.json",
+        "kind": "inline",
+        "scene": "evidence-cards",
+        "sha256": "b63b125062a25e0c59706829955724e4026a0378baf34fa3296f943b6d0940d2",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-python-state",
+        "ref": "lessons/foundations/name-tags.fig.json",
+        "kind": "beats",
+        "scene": "name-tags",
+        "sha256": "abe71b7c6e0c9535678131ce6361582e15f3ed12f04903a6d6a5a3ec9b695ea5",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-foundations-testing-debugging",
+        "ref": "lessons/foundations/smoke-detector.fig.json",
+        "kind": "beats",
+        "scene": "smoke-detector",
+        "sha256": "aee1a228a4c84a4122250262cbb43c01fb2deace5e7002c46267b28b2e01e8e2",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-genai-eval",
+        "ref": "lessons/genai-systems/evaluation-sorter.fig.json",
+        "kind": "beats",
+        "scene": "evaluation-sorter",
+        "sha256": "ed338dd026bad33b9d90637ad3737237cb3019d4f67fed7e0421aa3c25c34db3",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-genai-prototype",
+        "ref": "lessons/genai-systems/house-ablation.fig.json",
+        "kind": "beats",
+        "scene": "house-ablation",
+        "sha256": "559b2b407ee330e33e72bc039e0b175e8c1007047efcfd5bb2f09bbf46384587",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-genai-security",
+        "ref": "lessons/genai-systems/mail-sorter.fig.json",
+        "kind": "beats",
+        "scene": "mail-sorter",
+        "sha256": "791cbb7e681481432747dda509e57ca4f4c9cb209c270d42b0d39fa15f677048",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-genai-rag",
+        "ref": "lessons/genai-systems/chunk-windows.fig.json",
+        "kind": "beats",
+        "scene": "chunk-windows",
+        "sha256": "c1afd7e59a118b5f2de64e9beb0784064f70cb66e07a9b36e51ed106df14a430",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-genai-rag",
+        "ref": "lessons/genai-systems/retrieval-handoffs.fig.json",
+        "kind": "inline",
+        "scene": "retrieval-handoffs",
+        "sha256": "a9593e128fd70975e5a9ee38e0fe818a1218e37f68b79a4f980f5ef05e0ea70c",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-linalg-gauss",
+        "ref": "lessons/linear-algebra/receipt-elimination.fig.json",
+        "kind": "beats",
+        "scene": "receipt-elimination",
+        "sha256": "a7a9ec1255cf8abcf883ee777997934f7adb5f2e496fc05737e6418b4ce7ff9e",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-linalg-gauss",
+        "ref": "lessons/linear-algebra/receipt-echelon-3x3.fig.json",
+        "kind": "beats",
+        "scene": "receipt-echelon-3x3",
+        "sha256": "e800ab7a11e393858d6f9c31357bc87201dde52ff259d73ef0234fab4ad11f82",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-linalg-independence",
+        "ref": "lessons/linear-algebra/span-carpet.fig.json",
+        "kind": "beats",
+        "scene": "span-carpet",
+        "sha256": "45b5956d310c0a839aa85374100ddfe9d933d5bc1fbe0705b7957ccb4371c4b3",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-linalg-independence",
+        "ref": "lessons/linear-algebra/solution-cases-3d.fig.json",
+        "kind": "beats",
+        "scene": "solution-cases-3d",
+        "sha256": "20cf5f22889004a3100d14367381fd3bf377846f0500c0089fb0ecfd66dacd11",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-linalg-matrices",
+        "ref": "lessons/linear-algebra/order-times-prices.fig.json",
+        "kind": "beats",
+        "scene": "order-times-prices",
+        "sha256": "4acd18c9e2deb24dabf0f3ba8fa4ee351b38f83e4a7aeb6f19e65827a9a159ae",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-numpy-shape-contracts",
+        "ref": "lessons/linear-algebra/plug-adapter.fig.json",
+        "kind": "beats",
+        "scene": "plug-adapter",
+        "sha256": "f19f6e257c07c73dcd6c8cbadc5f80299ad29255eb855d581d90a2056aaa5ea8",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-linalg-systems",
+        "ref": "lessons/linear-algebra/smoothie.fig.json",
+        "kind": "beats",
+        "scene": "smoothie-column-picture",
+        "sha256": "74091868469491b4dffb236183d9c419875a77ed94a8f0b94247aba6abbc0e06",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-linalg-systems",
+        "ref": "lessons/linear-algebra/smoothie-row-and-column.fig.json",
+        "kind": "beats",
+        "scene": "smoothie-row-and-column",
+        "sha256": "de35c6671a6ee17d25b6df5675517b02bc2834612a5b6522ada590b2b14f6ca1",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-capstone-acceptance",
+        "ref": "lessons/research/acceptance-record.fig.json",
+        "kind": "inline",
+        "scene": "evidence-cards",
+        "sha256": "b4a5302e193136b284d154d7673d13bace5ef4a9921c2655cff636be53372a73",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-capstone-baseline",
+        "ref": "lessons/research/sha256-seal.fig.json",
+        "kind": "beats",
+        "scene": "sha256-seal",
+        "sha256": "58a57ffcb38a0271b146715d62cbe96b32035e1568924b4a4065f706f58bc8cf",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-capstone-freeze",
+        "ref": "lessons/research/freeze-order.fig.json",
+        "kind": "beats",
+        "scene": "freeze-order",
+        "sha256": "84b835a34d55fc596f65a7f6b33a324d2f4ad5328606bda24d2f0ac8a7571007",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-capstone-regression",
+        "ref": "lessons/research/regression-record.fig.json",
+        "kind": "inline",
+        "scene": "evidence-cards",
+        "sha256": "d26afabb3c66dbbe52f8bb62db49917944a16a95d4719cd0c8b34f742bb0d8c5",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-capstone-repro",
+        "ref": "lessons/research/reproduction-record.fig.json",
+        "kind": "inline",
+        "scene": "evidence-cards",
+        "sha256": "090c47a8fed67d89055cb5e37883c82fe0d6ff509b4a807a7e3dc79c5e2bf1f1",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-capstone-runner",
+        "ref": "lessons/research/trades-stopwatch.fig.json",
+        "kind": "beats",
+        "scene": "trades-stopwatch",
+        "sha256": "ccc178627f4da0a95c6aba539e3d6863b9e6b5bcd047f38c769c14f16c98ff23",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-research-cards",
+        "ref": "lessons/research/consistent-cards.fig.json",
+        "kind": "inline",
+        "scene": "evidence-cards",
+        "sha256": "796820a832c5883a06561e76d01170e75485cc3da64b13c54d8c9c14e771512a",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-research-question",
+        "ref": "lessons/research/preregistered-question.fig.json",
+        "kind": "inline",
+        "scene": "evidence-cards",
+        "sha256": "5a65d6bb8a3816e972a62b32081470085b7dbccafdbf1d7749cb5e18464ab356",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-responsible-ai",
+        "ref": "lessons/research/responsible-sorter.fig.json",
+        "kind": "beats",
+        "scene": "responsible-sorter",
+        "sha256": "c4f42e633c796b584333399c57167382bb1550ff243cf9b482d8f3158c0b051a",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-tf-attention",
+        "ref": "lessons/transformer-llm/library-attention.fig.json",
+        "kind": "beats",
+        "scene": "library-attention",
+        "sha256": "928260448efc09c9ef0f55c5c79a11a5ce1ae013e1a6fd66aab84e9a24881d2e",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-tf-finetuning",
+        "ref": "lessons/transformer-llm/frozen-matrix-strips.fig.json",
+        "kind": "beats",
+        "scene": "frozen-matrix-strips",
+        "sha256": "05fe4061847b11d5ad28d4380d1fe75a8de686d72c5e8db5ce7ba2727f4aa46f",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-tf-inference",
+        "ref": "lessons/transformer-llm/token-conveyor.fig.json",
+        "kind": "beats",
+        "scene": "token-conveyor",
+        "sha256": "012c8a702527b6cec93261566a5ac0d23e428716fb26fc7ce351da1998c228f4",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-tf-papers",
+        "ref": "lessons/transformer-llm/claim-evidence-card.fig.json",
+        "kind": "inline",
+        "scene": "evidence-cards",
+        "sha256": "6977c24e3215e040a13d4f95ea00c65bf3a262777f4a55ccfdfd936def444755",
+        "unchangedSinceVisualReview": true
+      },
+      {
+        "lessonId": "l-tf-tokenizer",
+        "ref": "lessons/transformer-llm/bpe-letterpress.fig.json",
+        "kind": "beats",
+        "scene": "bpe-letterpress",
+        "sha256": "60459a3a63272c783185462e33a40b9f1baa73ac20676a3df0a507ce1a021a76",
+        "unchangedSinceVisualReview": true
+      }
+    ],
+    "allFigureSpecsUnchanged": true,
+    "explanation": "Final consumer repair changes only public navigation and its existing assertion/allowlist; rendered figure specifications and shared runtime remain unchanged."
+  },
+  "publicMatrixConsumer": {
+    "route": {
+      "toolId": "t-matrix-column-visualization",
+      "title": "Matrixprodukt A·x",
+      "summary": "Die Matrixlektion führt ein festes Beispiel für A·x Schritt für Schritt von den Eingaben zum Ergebnis.",
+      "kind": "visualization",
+      "competencyIds": [
+        "c-linalg-systems",
+        "c-linalg-matrices"
+      ],
+      "routes": [
+        {
+          "label": "Matrixlektion öffnen",
+          "href": "#/lesson/l-linalg-matrices",
+          "type": "internal"
+        }
+      ],
+      "sourceRefs": [
+        "mit-ocw-18-06sc",
+        "wikibooks-mfnf"
+      ],
+      "capabilities": [
+        "Matrix und Eingabevektor zuordnen",
+        "Zeilenprodukte Schritt für Schritt nachrechnen",
+        "Ergebnisvektor mit den Eingaben vergleichen"
+      ],
+      "limitations": [
+        "Die Beispiele verwenden feste Matrizen und Vektoren",
+        "Visualisierung ersetzt keinen unabhängigen Nachweis"
+      ],
+      "availability": "public",
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "browser-verified"
+    },
+    "retiredRouteAbsentFromPublicBundle": true,
+    "retiredVisualizationAbsentFromRelease": true,
+    "sourceRetained": true,
+    "proseChanged": true
+  },
+  "coverage": {
+    "totalLessons": 50,
+    "lessonsWithFigure": 49,
+    "figureSpecifications": 58,
+    "kinds": {
+      "beats": 47,
+      "explore": 1,
+      "compare": 1,
+      "inline": 9
+    },
+    "missingLessons": [
+      "l-ml-svm-pca"
+    ],
+    "lessons": [
+      {
+        "lessonId": "l-data-cleaning",
+        "figures": [
+          {
+            "scene": "cleaning-line",
+            "ref": "lessons/data-ml/cleaning-line.fig.json",
+            "kind": "beats"
+          },
+          {
+            "scene": "missing-high-sales",
+            "ref": "lessons/data-ml/missing-high-sales.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-eda-distributions",
+        "figures": [
+          {
+            "scene": "distribution-points",
+            "ref": "lessons/data-ml/distribution-points.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": [
+          "lessons/data-ml/normal-density.viz.json"
+        ]
+      },
+      {
+        "lessonId": "l-grad-regression",
+        "figures": [
+          {
+            "scene": "mse-section",
+            "ref": "lessons/data-ml/mse-section.fig.json",
+            "kind": "beats"
+          },
+          {
+            "scene": "mse-landscape",
+            "ref": "lessons/data-ml/mse-landscape.fig.json",
+            "kind": "explore"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-ml-baseline",
+        "figures": [
+          {
+            "scene": "baseline-sorter",
+            "ref": "lessons/data-ml/baseline-sorter.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-ml-cv",
+        "figures": [
+          {
+            "scene": "fold-rotation",
+            "ref": "lessons/data-ml/fold-rotation.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": [
+          "lessons/data-ml/bias-variance.viz.json"
+        ]
+      },
+      {
+        "lessonId": "l-ml-ensembles",
+        "figures": [
+          {
+            "scene": "tree-vote-field",
+            "ref": "lessons/data-ml/tree-vote-field.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-ml-error-analysis",
+        "figures": [
+          {
+            "scene": "subgroup-river",
+            "ref": "lessons/data-ml/subgroup-river.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-ml-linear",
+        "figures": [
+          {
+            "scene": "residual-springs",
+            "ref": "lessons/data-ml/residual-springs.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-ml-logistic",
+        "figures": [
+          {
+            "scene": "logistic-sorter",
+            "ref": "lessons/data-ml/logistic-sorter.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-ml-regularization",
+        "figures": [
+          {
+            "scene": "rubber-band-coefficients",
+            "ref": "lessons/data-ml/rubber-band-coefficients.fig.json",
+            "kind": "compare"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-ml-repro",
+        "figures": [
+          {
+            "scene": "seed-ribbon",
+            "ref": "lessons/data-ml/seed-ribbon.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-ml-svm-pca",
+        "figures": [],
+        "visualizations": [
+          "lessons/data-ml/eigen-direction.viz.json",
+          "lessons/data-ml/pca-axis.viz.json"
+        ]
+      },
+      {
+        "lessonId": "l-dl-autograd",
+        "figures": [
+          {
+            "scene": "backprop-network",
+            "ref": "lessons/deep-learning/backprop-network.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-dl-regularization",
+        "figures": [
+          {
+            "scene": "team-mask",
+            "ref": "lessons/deep-learning/team-mask.fig.json",
+            "kind": "beats"
+          },
+          {
+            "scene": "early-stopping-flag",
+            "ref": "lessons/deep-learning/early-stopping-flag.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-dl-tensors",
+        "figures": [
+          {
+            "scene": "tensor-address",
+            "ref": "lessons/deep-learning/tensor-address.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": [
+          "lessons/deep-learning/activations.viz.json"
+        ]
+      },
+      {
+        "lessonId": "l-dl-training",
+        "figures": [
+          {
+            "scene": "training-book",
+            "ref": "lessons/deep-learning/training-book.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-foundations-algebra-transformations",
+        "figures": [
+          {
+            "scene": "bag-unpack",
+            "ref": "lessons/foundations/bag-unpack.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-foundations-algebra",
+        "figures": [
+          {
+            "scene": "balance-isolate",
+            "ref": "lessons/foundations/balance-isolate.fig.json",
+            "kind": "beats"
+          },
+          {
+            "scene": "power-stack",
+            "ref": "lessons/foundations/power-stack.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": [
+          "lessons/foundations/linear-function.viz.json"
+        ]
+      },
+      {
+        "lessonId": "l-foundations-code-reading",
+        "figures": [
+          {
+            "scene": "ledger",
+            "ref": "lessons/foundations/ledger.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-foundations-collections",
+        "figures": [
+          {
+            "scene": "two-tags-one-list",
+            "ref": "lessons/foundations/two-tags-one-list.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": [
+          "lessons/foundations/running-sum.viz.json"
+        ]
+      },
+      {
+        "lessonId": "l-foundations-control-flow",
+        "figures": [
+          {
+            "scene": "bouncer",
+            "ref": "lessons/foundations/bouncer.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": [
+          "lessons/foundations/threshold-branch.viz.json"
+        ]
+      },
+      {
+        "lessonId": "l-foundations-files-errors",
+        "figures": [
+          {
+            "scene": "goods-in",
+            "ref": "lessons/foundations/goods-in.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-foundations-functions",
+        "figures": [
+          {
+            "scene": "vending-frame",
+            "ref": "lessons/foundations/vending-frame.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": [
+          "lessons/foundations/function-composition.viz.json"
+        ]
+      },
+      {
+        "lessonId": "l-foundations-git",
+        "figures": [
+          {
+            "scene": "git-snapshots",
+            "ref": "lessons/foundations/git-snapshots.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-foundations-learning",
+        "figures": [
+          {
+            "scene": "evidence-cards",
+            "ref": "lessons/foundations/journal-card.fig.json",
+            "kind": "inline"
+          },
+          {
+            "scene": "evidence-cards",
+            "ref": "lessons/foundations/review-timeline.fig.json",
+            "kind": "inline"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-foundations-python-state",
+        "figures": [
+          {
+            "scene": "name-tags",
+            "ref": "lessons/foundations/name-tags.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-foundations-testing-debugging",
+        "figures": [
+          {
+            "scene": "smoke-detector",
+            "ref": "lessons/foundations/smoke-detector.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-genai-eval",
+        "figures": [
+          {
+            "scene": "evaluation-sorter",
+            "ref": "lessons/genai-systems/evaluation-sorter.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-genai-prototype",
+        "figures": [
+          {
+            "scene": "house-ablation",
+            "ref": "lessons/genai-systems/house-ablation.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-genai-security",
+        "figures": [
+          {
+            "scene": "mail-sorter",
+            "ref": "lessons/genai-systems/mail-sorter.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-genai-rag",
+        "figures": [
+          {
+            "scene": "chunk-windows",
+            "ref": "lessons/genai-systems/chunk-windows.fig.json",
+            "kind": "beats"
+          },
+          {
+            "scene": "retrieval-handoffs",
+            "ref": "lessons/genai-systems/retrieval-handoffs.fig.json",
+            "kind": "inline"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-linalg-gauss",
+        "figures": [
+          {
+            "scene": "receipt-elimination",
+            "ref": "lessons/linear-algebra/receipt-elimination.fig.json",
+            "kind": "beats"
+          },
+          {
+            "scene": "receipt-echelon-3x3",
+            "ref": "lessons/linear-algebra/receipt-echelon-3x3.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-linalg-independence",
+        "figures": [
+          {
+            "scene": "span-carpet",
+            "ref": "lessons/linear-algebra/span-carpet.fig.json",
+            "kind": "beats"
+          },
+          {
+            "scene": "solution-cases-3d",
+            "ref": "lessons/linear-algebra/solution-cases-3d.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-linalg-matrices",
+        "figures": [
+          {
+            "scene": "order-times-prices",
+            "ref": "lessons/linear-algebra/order-times-prices.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-numpy-shape-contracts",
+        "figures": [
+          {
+            "scene": "plug-adapter",
+            "ref": "lessons/linear-algebra/plug-adapter.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-linalg-systems",
+        "figures": [
+          {
+            "scene": "smoothie-column-picture",
+            "ref": "lessons/linear-algebra/smoothie.fig.json",
+            "kind": "beats"
+          },
+          {
+            "scene": "smoothie-row-and-column",
+            "ref": "lessons/linear-algebra/smoothie-row-and-column.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-capstone-acceptance",
+        "figures": [
+          {
+            "scene": "evidence-cards",
+            "ref": "lessons/research/acceptance-record.fig.json",
+            "kind": "inline"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-capstone-baseline",
+        "figures": [
+          {
+            "scene": "sha256-seal",
+            "ref": "lessons/research/sha256-seal.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-capstone-freeze",
+        "figures": [
+          {
+            "scene": "freeze-order",
+            "ref": "lessons/research/freeze-order.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-capstone-regression",
+        "figures": [
+          {
+            "scene": "evidence-cards",
+            "ref": "lessons/research/regression-record.fig.json",
+            "kind": "inline"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-capstone-repro",
+        "figures": [
+          {
+            "scene": "evidence-cards",
+            "ref": "lessons/research/reproduction-record.fig.json",
+            "kind": "inline"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-capstone-runner",
+        "figures": [
+          {
+            "scene": "trades-stopwatch",
+            "ref": "lessons/research/trades-stopwatch.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-research-cards",
+        "figures": [
+          {
+            "scene": "evidence-cards",
+            "ref": "lessons/research/consistent-cards.fig.json",
+            "kind": "inline"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-research-question",
+        "figures": [
+          {
+            "scene": "evidence-cards",
+            "ref": "lessons/research/preregistered-question.fig.json",
+            "kind": "inline"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-responsible-ai",
+        "figures": [
+          {
+            "scene": "responsible-sorter",
+            "ref": "lessons/research/responsible-sorter.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-tf-attention",
+        "figures": [
+          {
+            "scene": "library-attention",
+            "ref": "lessons/transformer-llm/library-attention.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-tf-finetuning",
+        "figures": [
+          {
+            "scene": "frozen-matrix-strips",
+            "ref": "lessons/transformer-llm/frozen-matrix-strips.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": [
+          "lessons/transformer-llm/lr-warmup-cosine.viz.json"
+        ]
+      },
+      {
+        "lessonId": "l-tf-inference",
+        "figures": [
+          {
+            "scene": "token-conveyor",
+            "ref": "lessons/transformer-llm/token-conveyor.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-tf-papers",
+        "figures": [
+          {
+            "scene": "evidence-cards",
+            "ref": "lessons/transformer-llm/claim-evidence-card.fig.json",
+            "kind": "inline"
+          }
+        ],
+        "visualizations": []
+      },
+      {
+        "lessonId": "l-tf-tokenizer",
+        "figures": [
+          {
+            "scene": "bpe-letterpress",
+            "ref": "lessons/transformer-llm/bpe-letterpress.fig.json",
+            "kind": "beats"
+          }
+        ],
+        "visualizations": []
+      }
+    ]
+  }
+}

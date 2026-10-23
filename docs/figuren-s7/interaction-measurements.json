@@ -1,0 +1,66 @@
+[
+  {
+    "name": "logistic",
+    "questionHiddenInitially": true,
+    "gated": true,
+    "correctFeedback": true,
+    "retained": true,
+    "keyboard": "1",
+    "flatAzimuthStable": true,
+    "touchScroll": 363,
+    "selectable": "auto",
+    "svgNoSelect": "none",
+    "layout": [
+      {
+        "text": "Prüfen",
+        "height": 44,
+        "width": 66.1875,
+        "bottomInset": 161
+      },
+      {
+        "text": "Zurück",
+        "height": 44,
+        "width": 82.703125,
+        "bottomInset": 17
+      },
+      {
+        "text": "Weiter",
+        "height": 44,
+        "width": 104,
+        "bottomInset": 17
+      }
+    ]
+  },
+  {
+    "name": "eval",
+    "questionHiddenInitially": true,
+    "gated": true,
+    "correctFeedback": true,
+    "retained": true,
+    "keyboard": "1",
+    "flatAzimuthStable": true,
+    "touchScroll": 348,
+    "selectable": "auto",
+    "svgNoSelect": "none",
+    "layout": [
+      {
+        "text": "Prüfen",
+        "height": 44,
+        "width": 66.1875,
+        "bottomInset": 161
+      },
+      {
+        "text": "Zurück",
+        "height": 44,
+        "width": 82.703125,
+        "bottomInset": 17
+      },
+      {
+        "text": "Weiter",
+        "height": 44,
+        "width": 104,
+        "bottomInset": 17
+      }
+    ]
+  }
+]
