@@ -6,6 +6,7 @@ export interface SelectionTarget {
   id: string;
   itemId: string;
   primKey?: string;
+  primKeys?: string[];
   label: string;
   description: string;
 }
@@ -33,7 +34,8 @@ export function FigureSelection({ scene, model, beat, mode, stageRef }: {
       const element = event.target as Element;
       const itemId = element.closest('[data-item]')?.getAttribute('data-item');
       const primKey = element.closest('[data-prim]')?.getAttribute('data-prim');
-      const target = targets.find(t => t.itemId === itemId && (!t.primKey || t.primKey === primKey));
+      const target = targets.find(t => t.itemId === itemId && (!t.primKey && !t.primKeys
+        || t.primKey === primKey || t.primKeys?.includes(primKey ?? '')));
       if (target) select(target.id);
     };
     stage.addEventListener('click', click);

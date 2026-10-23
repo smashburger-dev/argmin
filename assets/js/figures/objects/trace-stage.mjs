@@ -199,6 +199,7 @@ function selectionTargets(m, index) {
         id: `binding:${name}`,
         itemId: 'trace-board',
         primKey: `name-box-${names.indexOf(name)}`,
+        primKeys: [`name-${names.indexOf(name)}`],
         label: displayBindingName(name),
         description: `${displayBindingName(name)} ist an ${s.bindings[name]} gebunden.`,
       };
@@ -209,6 +210,7 @@ function selectionTargets(m, index) {
         id: `binding:frame:${frameByScope.get(scope)}:${variable}`,
         itemId: 'trace-board',
         primKey: `name-box-${names.indexOf(name)}`,
+        primKeys: [`name-${names.indexOf(name)}`],
         label: displayBindingName(name),
         description: `${displayBindingName(name)} ist an ${s.bindings[name]} gebunden.`,
       };
@@ -217,13 +219,15 @@ function selectionTargets(m, index) {
       id: identity.startsWith('object:') ? identity : `object:${identity}`,
       itemId: 'trace-board',
       primKey: `object-box-${identities.indexOf(identity)}`,
+      primKeys: [`object-${identities.indexOf(identity)}`],
       label: identity,
       description: `Objektmarke ${identity}.`,
     })),
   ];
-  if (s.output.trim()) targets.push({ id: `output:${index}`, itemId: 'trace-board', primKey: 'output-box', label: 'Ausgabe', description: 'Sichtbare Programmausgabe.' });
+  if (s.output.trim()) targets.push({ id: `output:${index}`, itemId: 'trace-board', primKey: 'output-box', primKeys: ['output'], label: 'Ausgabe', description: 'Sichtbare Programmausgabe.' });
   if (s.result) targets.push({
     id: `return:${s.result}`, itemId: 'trace-board', primKey: `object-box-${identities.indexOf(s.result)}`,
+    primKeys: [`object-${identities.indexOf(s.result)}`],
     label: `Rückgabe ${s.result}`, description: `Rückgabewert des aktuellen Aufrufs: Objektmarke ${s.result}.`,
   });
   return targets;
