@@ -171,9 +171,10 @@
         "classify-control-construct",
         "classify-string-immutability",
         "construct-guarded-loop",
-        "trace-collection-state"
+        "trace-collection-state",
+        "trace-tag-after-line"
       ],
-      "placedCaseCount": 7,
+      "placedCaseCount": 8,
       "seededFamilyCount": 0
     },
     {
@@ -257,9 +258,10 @@
         "optimize-mse-gradient-closed-form",
         "optimize-sgd-step-pure-update",
         "optimize-training-primitive-contract",
+        "pick-learning-rate",
         "trace-assignment-state"
       ],
-      "placedCaseCount": 10,
+      "placedCaseCount": 11,
       "seededFamilyCount": 0
     },
     {

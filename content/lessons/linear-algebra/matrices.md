@@ -98,7 +98,7 @@ Ein Vektor ist eine Matrix mit nur einer Spalte. Multiplizierst du die Bestellma
 
 $$3\begin{pmatrix}2\\1\end{pmatrix}+2\begin{pmatrix}1\\2\end{pmatrix}+4\begin{pmatrix}0\\1\end{pmatrix}=\begin{pmatrix}8\\11\end{pmatrix}.$$
 
-Das sind genau Adas und Bens Rechnungen bei Nord. Allgemein gilt für $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$ und $x=(3,-1)$:
+Das sind genau Adas und Bens Rechnungen bei Nord. Dasselbe mit anderen Zahlen, für $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$ und $x=(3,-1)$:
 
 $$Ax=3\begin{pmatrix}2\\1\end{pmatrix}+(-1)\begin{pmatrix}1\\3\end{pmatrix}=\begin{pmatrix}5\\0\end{pmatrix}.$$
 

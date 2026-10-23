@@ -14,6 +14,7 @@ import { SearchView } from './SearchView';
 import { GlossaryView } from './GlossaryView';
 import { Button } from './Button';
 import { BrandWordmark } from './Brand';
+import { DitherBackground } from './DitherBackground';
 import { SponsorSlots } from './Sponsor';
 import { OnboardingOverlay } from './OnboardingOverlay';
 import { TourOverlay } from './TourOverlay';
@@ -370,12 +371,16 @@ export function App() {
 
   return (
     <div class="app-shell">
+      <DitherBackground />
       <header class="topbar">
         <div class="topbar-left">
           <Button variant="ghost" size="sm" class="nav-drawer-toggle" aria-label="Navigation öffnen" aria-expanded={navDrawerOpen} onClick={() => setNavDrawerOpen(true)}>
             {navToggleIcon(true)}
           </Button>
-          <span class="local-status"><span aria-hidden="true" />Lokal</span>
+          <a class="repo-link" href="https://github.com/smashburger-dev/argmin" target="_blank" rel="noreferrer">
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z" /></svg>
+            <span class="repo-link-label">GitHub-Repo</span>
+          </a>
         </div>
         <SponsorSlots />
         <a class="brand" href="#/today" aria-label="argmin, zur Heute-Ansicht">
@@ -390,7 +395,6 @@ export function App() {
             <Button variant="ghost" size="sm" class="nav-toggle" aria-label={navCollapsed ? 'Navigation ausklappen' : 'Navigation einklappen'} aria-expanded={!navCollapsed} onClick={toggleNav}>{navToggleIcon(navCollapsed)}</Button>
             {navLinks(!navCollapsed)}
           </div>
-          <div class="nav-footer">Katalog {catalog.version}</div>
         </nav>
         <main id="main-content" ref={mainRef} tabIndex={-1}>{view}</main>
       </div>
@@ -412,15 +416,9 @@ export function App() {
               </Button>
             </div>
             {navLinks(true)}
-            <div class="nav-footer">Katalog {catalog.version}</div>
           </div>
         </div>
       ) : null}
-      <footer class="mobile-context" aria-label="Lokaler Status">
-        <span>Local-first</span>
-        <span>{catalog.competencies.length} Kompetenzen</span>
-        <nav class="mobile-more" aria-label="Mehr" data-tour="nav-more">{navigation.filter((item) => item.secondary).map((item) => <a key={item.route} href={`#/${item.route}`}>{item.label}</a>)}</nav>
-      </footer>
       {showOnboarding ? (
         <OnboardingOverlay
           catalog={catalog}

@@ -48,7 +48,7 @@ Die Karten sind nicht abstrakte Dokumentation, sie sind ein Netz aus Verweisen. 
 
 ## Semver: Versionen, die etwas bedeuten
 
-Semver ist nicht nur ein Format, es ist ein Kommunikationsvertrag. `patch` heißt „Bugfix oder Klarstellung, keine neue Bedeutung“; `minor` heißt „rückwärtskompatibel erweitert“; `major` heißt „bedeutender Bruch, Verbraucher müssen migrieren“. Wer eine Datenkarte um ein neues Split-Verhältnis erweitert und nur `patch` hochzieht, lügt implizit; `minor` ist richtig. Wer den Metrik-Vertrag bricht, muss `major` hochziehen.
+Semver ist nicht nur ein Format, es ist ein Kommunikationsvertrag. `patch` heißt „Bugfix oder Klarstellung, keine neue Bedeutung“; `minor` heißt „rückwärtskompatibel erweitert“; `major` heißt „bedeutender Bruch, Verbraucher müssen migrieren“. Von `1.2.3` aus heißt das: Ein korrigierter Tippfehler ergibt `1.2.4`, ein neues optionales Feld `1.3.0`, ein umbenanntes Pflichtfeld `2.0.0`. Wer eine Datenkarte um ein neues Split-Verhältnis erweitert und nur `patch` hochzieht, lügt implizit; `minor` ist richtig. Wer den Metrik-Vertrag bricht, muss `major` hochziehen.
 
 Falsche Versionssprünge sind kein kleiner Fehler: Konsumenten einer Karte (z. B. dein eigenes Skript, das die Karte einliest) verlassen sich auf `major` und `minor`. Ein `patch`, der eigentlich `major` ist, bricht Code ohne Warnung.
 

@@ -17,3 +17,98 @@ Das **Residuum** (englisch *residual*) ist der Schätzfehler einer einzelnen Woh
 Wo der Vergleich hinkt: Echte Preise wachsen nicht linear, eine Wohnung im Zentrum kostet pro m² mehr als eine am Rand, und einzelne Ausreißer können das Bild verzerren.
 
 Die folgende Figur verwendet vier kleine Zahlenpaare statt Wohnungspreise. Jede Feder misst ein vertikales Residuum. Wandert der letzte Punkt nach oben, verändert sich auch die beste Gerade. Die Federenergie steht für das Quadrat des Residuums; echte Federn bewegen sich nicht wie ein Optimierungsalgorithmus.
+## Design-Matrix und geschlossene Lösung
+
+Um den Achsenabschnitt $w_0$ mitzurechnen, wird aus der Datentabelle die **Design-Matrix**: Eine [Matrix](#/glossary/matrix) $A$, deren erste Spalte nur Einsen enthält und deren übrige Spalten die Merkmale sind. Für vier Wohnungen mit 40, 60, 80 und 100 m² sieht sie so aus:
+
+$$
+A = \begin{pmatrix}1 & 40\\ 1 & 60\\ 1 & 80\\ 1 & 100\end{pmatrix}.
+$$
+
+Zeile $i$ mal $(w_0, w_1)$ ergibt $w_0 \cdot 1 + w_1 \cdot x_i$, also genau die Vorhersage für Wohnung $i$. Die Einsen-Spalte sorgt dafür, dass der Grundpreis in jeder Zeile einmal dazukommt.
+
+Die beste Gerade im Sinne der kleinsten Quadrate liefert `np.linalg.lstsq` direkt, ohne Iteration. Hinter ihr steht die **Normalgleichung** $X^{T}X\hat{w} = X^{T}y$, wobei $X$ hier die Design-Matrix ist. Formal gelöst heißt sie $\hat{w} = (X^{T}X)^{-1}X^{T}y$. Die Inverse $(X^{T}X)^{-1}$ existiert nur, wenn die Spalten von $X$ unabhängig sind. Zwei Spalten wie „Fläche in m²“ und „Fläche in cm²“ verletzen das, ebenso mehr Merkmale als Wohnungen.
+
+## Fehlermaße von Hand
+
+Gegeben vier Testpunkte mit Ziel $y$ und Vorhersage $\hat{y}$:
+
+| $i$ | $y_i$ | $\hat{y}_i$ | Residuum $r_i = y_i - \hat{y}_i$ |
+|---|---|---|---|
+| 1 | 2 | 3 | $-1$ |
+| 2 | 4 | 3 | $1$ |
+| 3 | 6 | 7 | $-1$ |
+| 4 | 8 | 7 | $1$ |
+
+Der **MSE** ist der Mittelwert der quadrierten Residuen:
+
+$$
+\mathit{MSE} = \tfrac{1}{4}\left((-1)^2 + 1^2 + (-1)^2 + 1^2\right) = 1.
+$$
+
+Der **RMSE** ist die Quadratwurzel des MSE und liegt damit wieder in der Einheit des Ziels: $\mathit{RMSE} = \sqrt{1} = 1$ Euro, Sekunde, was auch immer das Ziel misst. Für das **Bestimmtheitsmaß** $R^2$ brauchst du den Mittelwert $\bar{y} = 5$ (sprich: y quer):
+
+$$
+\mathit{SS}_{\text{tot}} = (2-5)^2 + (4-5)^2 + (6-5)^2 + (8-5)^2 = 9+1+1+9 = 20.
+$$
+
+Dabei ist $\mathit{SS}_{\text{tot}}$ die Streuung der wahren Werte um ihren Mittelwert und $\mathit{SS}_{\text{res}}$ die Summe der quadrierten Residuen:
+
+$$
+\mathit{SS}_{\text{res}} = (-1)^2 + 1^2 + (-1)^2 + 1^2 = 4.
+$$
+
+Damit gilt:
+
+$$
+R^2 = 1 - \frac{\mathit{SS}_{\text{res}}}{\mathit{SS}_{\text{tot}}} = 1 - \frac{4}{20} = 0{,}8.
+$$
+
+So liest du die 0,8: Ein Modell, das für jede Wohnung den Mittelwert 5 rät, hätte die Fehlerquadratsumme 20. Dieses Modell kommt auf 4. Es beseitigt also 16 von 20 Einheiten Fehler, das sind 80 %. Gerechnet wird das auf dem Testset, nicht auf den Trainingsdaten.
+
+## Fit mit lstsq
+
+Für Punkte $(1,3), (2,5), (3,7), (4,9)$ liegt die Gerade $y = 1 + 2x$ exakt auf allen Punkten. Mit NumPy:
+
+```python
+A = np.hstack([np.ones((4, 1)), X])      # Design-Matrix mit Einsen-Spalte
+w, _, _, _ = np.linalg.lstsq(A, y, rcond=None)
+# w = [1., 2.]
+```
+
+`lstsq` löst das Kleinste-Quadrate-Problem direkt. Vergleiche das Ergebnis mit deinem [Gradientenabstieg](#/glossary/gradient) aus der Lektion [Gradienten von Hand herleiten](#/lesson/l-grad-regression): Beide müssen auf dasselbe $w$ konvergieren.
+
+## Residuenanalyse
+
+Ein Zahlenwert allein zeigt nicht, *wo* das Modell systematisch scheitert. Trage die Residuen gegen die Vorhersage auf und suche Muster:
+
+- **Trend**: Die Residuen liegen für kleine Vorhersagen systematisch unter null und für große darüber (oder umgekehrt), das Modell ist zu einfach, ein Term fehlt.
+- **Trichterform**: Die Residuen fächern mit wachsender Vorhersage auf, die Fehlerstreuung ist nicht konstant, und der MSE wird von großen Werten dominiert.
+- **Ausreißer**: Einzelne extrem große Residuen ziehen MSE und RMSE stark; prüfe sie einzeln, bevor du das Modell änderst.
+
+## Wo dir das in der KI begegnet
+
+Eine [lineare Schicht](#/glossary/lineare-schicht) ist lineare Regression mit vielen Ausgängen. Die letzte Schicht von GPT-2 bildet die 768 Zahlen eines Tokens auf 50 257 Werte ab, einen pro möglichem nächsten Token.
+
+## Typische Fehler
+
+- MSE und RMSE verwechseln und die Einheit des Fehlers falsch angeben: Der MSE ist quadriert, der RMSE nicht.
+- $R^2$ auf den Trainingsdaten berechnen und als Generalisierung ausgeben.
+- Den Achsenabschnitt vergessen und ohne Einsen-Spalte fitten.
+- Nur den MSE-Wert betrachten und das Residuen-Diagramm weglassen.
+- Ausreißer kommentarlos löschen, obwohl sie Datenfehler oder gerade die interessanten Fälle sein können.
+
+## Direkter Check
+
+Berechne in einer Einstiegsaufgabe einen MSE aus Residuen und in einer weiteren Einstiegsaufgabe ein $R^2$ in Prozent. Die volle Kette Fit, RMSE und $R^2$ implementierst du in der [Kernaufgabe: fit-rmse-r2-Kette](#/family/fit-predict-metrics/linear-fit-lstsq/0/core), und die [Vertiefungsaufgabe: Regressionsbericht](#/family/fit-predict-metrics/regression-report/0/stretch) verlangt einen Regressionsbericht mit Train/Test-Vergleich und Residuenmittel.
+
+## Begriffe auf einen Blick
+
+- **Achsenabschnitt** (englisch *intercept*): Grundpreis des Modells $w_0$, der Wert bei allen Merkmalen gleich null.
+- **Koeffizient** (englisch *coefficient*): die Zahl, die vor einer Variablen steht und sie multipliziert.
+- **Design-Matrix**: Datentabelle plus Einsen-Spalte, damit der Achsenabschnitt mitgerechnet wird.
+- **Residuum** (englisch *residual*): Abstand $y_i - \hat{y}_i$ eines Punkts von der Vorhersage.
+- **MSE** (englisch *mean squared error*): mittlerer quadratischer Fehler, $\frac{1}{n}\sum_i (\hat y_i - y_i)^2$.
+- **RMSE** (englisch *root mean squared error*): Quadratwurzel des MSE; liegt wieder in der Einheit des Ziels.
+- **Bestimmtheitsmaß $R^2$**: Anteil der Streuung, den das Modell gegenüber dem Mittelwert erklärt; $1 - \mathit{SS}_{\text{res}}/\mathit{SS}_{\text{tot}}$.
+- **Normalgleichung** (englisch *normal equation*): Bedingung $X^{T}X\hat{w} = X^{T}y$ der Kleinste-Quadrate-Lösung; formal $\hat{w} = (X^{T}X)^{-1}X^{T}y$.

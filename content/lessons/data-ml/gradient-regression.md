@@ -4,7 +4,7 @@ Jedes Sprachmodell wird mit einer Variante des Verfahrens aus dieser Lektion tra
 
 ## Das Bild dahinter: Wanderer im Nebel
 
-Stell dir einen Wanderer im Nebel auf einem Hang vor. Er sieht das Tal nicht, spürt aber unter den Füßen, in welcher Richtung es bergauf geht: Das ist der Gradient. Er geht ein Stück bergab und misst neu. Wie groß seine Schritte sind, bestimmt die Lernrate. Für die lineare Regression mit dem mittleren quadrierten Fehler ist die Landschaft eine Schüssel: Es gibt genau ein Tal, und jeder bergab gerichtete Weg führt dorthin.
+Stell dir einen Wanderer im Nebel auf einem Hang vor. Er sieht das Tal nicht, spürt aber unter den Füßen, in welcher Richtung es bergauf geht: Das ist der Gradient. Er geht ein Stück bergab und misst neu. Wie groß seine Schritte sind, bestimmt die Lernrate. Der Ort des Wanderers ist eine Wahl der Modellzahlen, bei einer Geraden also Steigung $w$ und Achsenabschnitt $b$. Die Höhe an diesem Ort ist der Fehler, den die Gerade mit genau diesen Zahlen macht. Für die lineare Regression mit dem mittleren quadrierten Fehler ist die Landschaft eine Schüssel: Es gibt genau ein Tal, und jeder bergab gerichtete Weg führt dorthin.
 
 Wo der Vergleich hinkt: Bei neuronalen Netzen ist die Landschaft keine Schüssel, es gibt viele Täler, und statt zwei Richtungen gibt es Millionen. Der Wanderer findet ein Tal, nicht unbedingt das beste.
 

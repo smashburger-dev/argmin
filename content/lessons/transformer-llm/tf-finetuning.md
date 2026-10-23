@@ -20,7 +20,13 @@ $$
 W' = W + \Delta W, \qquad \Delta W = \frac{\alpha}{r}\,BA.
 $$
 
-Dabei hat $B$ die Form $d_{\text{out}}\times r$ und $A$ die Form $r\times d_{\text{in}}$, mit [Rang](#/glossary/rang) $r \ll \min(d_{\text{in}}, d_{\text{out}})$ (sprich: r viel kleiner als das Minimum der beiden Dimensionen). $\alpha/r$ ist eine feste Skalierung. Beim Einsatz wird $\Delta W$ einmal in $W$ eingerechnet: **keine zusätzliche Inferenzzeit**, der wesentliche Unterschied zu Adapter-Schichten, die als eigene Schicht im Pfad bleiben.
+Dabei hat $B$ die Form $d_{\text{out}}\times r$ und $A$ die Form $r\times d_{\text{in}}$, mit [Rang](#/glossary/rang) $r \ll \min(d_{\text{in}}, d_{\text{out}})$ (sprich: r viel kleiner als das Minimum der beiden Dimensionen). $\alpha/r$ ist eine feste Skalierung. Ein Mini-Beispiel mit $d_{\text{in}} = d_{\text{out}} = 3$ und $r = 1$: Aus der Spalte $B = (1, 0, 2)^\top$ und der Zeile $A = (1, 1, 0)$ entsteht
+
+$$
+BA = \begin{pmatrix}1&1&0\\0&0&0\\2&2&0\end{pmatrix}.
+$$
+
+Eine volle $3\times3$-Änderung hätte 9 freie Zahlen, $B$ und $A$ zusammen nur 6. Jede Zeile von $BA$ ist ein Vielfaches von $(1, 1, 0)$, der Rang ist 1. Bei echten Schichten mit 512 oder mehr Zeilen wird dieser Unterschied riesig, wie die Tabelle unten zeigt. Beim Einsatz wird $\Delta W$ einmal in $W$ eingerechnet: **keine zusätzliche Inferenzzeit**, der wesentliche Unterschied zu Adapter-Schichten, die als eigene Schicht im Pfad bleiben.
 
 ## Parameter zählen statt behaupten
 

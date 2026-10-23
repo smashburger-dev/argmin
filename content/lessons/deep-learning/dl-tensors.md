@@ -10,11 +10,16 @@ Wo der Vergleich hinkt: Ab 4 Achsen gibt es kein Alltagsbild mehr. Die Regel ble
 
 ## Der Dimensionsvertrag der Matrizenmultiplikation
 
-Eine **lineare Schicht** mit **Gewichtsmatrix** $W \in \mathbb{R}^{d \times h}$ (sprich: W Element der reellen d-mal-h-Matrizen; $\in$ heißt „Element von“) und **Bias** $b \in \mathbb{R}^{h}$, hier ist Bias der Verschiebungsvektor der Schicht, nicht die statistische Verzerrung, rechnet
+Eine **lineare Schicht** hat zwei Bausteine:
+
+- eine **Gewichtsmatrix** $W \in \mathbb{R}^{d \times h}$ (sprich: W Element der reellen d-mal-h-Matrizen; $\in$ heißt „Element von“), also eine Tabelle mit $d$ Zeilen und $h$ Spalten,
+- einen **Bias** $b \in \mathbb{R}^{h}$, eine Liste aus $h$ Zahlen. Bias heißt hier der Verschiebungsvektor der Schicht, nicht die statistische Verzerrung.
+
+Mit der Eingabematrix $X \in \mathbb{R}^{n \times d}$ rechnet die Schicht:
 
 $$H = XW + b.$$
 
-Dabei ist $X \in \mathbb{R}^{n \times d}$ die Eingabematrix. Der [Vertrag](#/glossary/vertrag): Die Spaltenzahl von $X$ muss gleich der Zeilenzahl von $W$ sein, $d$ trifft $d$. Das Ergebnis $H$ hat die Form $(n, h)$: Die Batch-Dimension $n$ bleibt außen erhalten, die Merkmalsdimension wird von $d$ auf $h$ umprojiziert. In NumPy:
+Ein Beispiel mit einem Beispiel ($n = 1$), zwei Merkmalen ($d = 2$) und drei Ausgängen ($h = 3$): Für $X = (1, 2)$, $W = \begin{pmatrix}1&0&1\\0&1&1\end{pmatrix}$ und $b = (0, 0, 1)$ ist $XW = (1, 2, 3)$ und $H = (1, 2, 4)$. Aus zwei Zahlen pro Beispiel werden drei. Der [Vertrag](#/glossary/vertrag): Die Spaltenzahl von $X$ muss gleich der Zeilenzahl von $W$ sein, $d$ trifft $d$. Das Ergebnis $H$ hat die Form $(n, h)$: Die Batch-Dimension $n$ bleibt außen erhalten, die Merkmalsdimension wird von $d$ auf $h$ umprojiziert. In NumPy:
 
 ```python
 H = X @ W + b   # (n, d) @ (d, h) -> (n, h); b (h,) broadcastet zeilenweise

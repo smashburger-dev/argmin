@@ -16,7 +16,7 @@ $$w \leftarrow w - \mathrm{lr} \cdot (g + \lambda w).$$
 
 ($\mathrm{lr}$ ist die [Lernrate](#/glossary/lernrate), in anderen Texten oft $\eta$ geschrieben.)
 
-Diese Form, Weight Decay, zieht die Gewichte in jedem Schritt proportional zu ihrem Betrag Richtung null, unabhängig vom Datengradienten. Der Bias wird üblicherweise **nicht** regularisiert: Er verschiebt nur, er skaliert nicht. Wähle $\lambda$ klein (etwa $10^{-4}$ bis $10^{-2}$). Zu große Werte ziehen das Modell so stark Richtung null, dass es fast nur noch den Bias vorhersagt.
+Diese Form, Weight Decay, zieht die Gewichte in jedem Schritt proportional zu ihrem Betrag Richtung null, unabhängig vom Datengradienten. Mit $\mathrm{lr} = 0{,}1$ und $\lambda = 0{,}01$ verliert jedes Gewicht pro Schritt zusätzlich $0{,}1 \cdot 0{,}01 = 0{,}1\,\%$ seines Werts. Der Bias wird üblicherweise **nicht** regularisiert: Er verschiebt nur, er skaliert nicht. Wähle $\lambda$ klein (etwa $10^{-4}$ bis $10^{-2}$). Zu große Werte ziehen das Modell so stark Richtung null, dass es fast nur noch den Bias vorhersagt.
 
 ## Dropout mit fester Maske
 
@@ -26,4 +26,49 @@ Invertierte Skalierung heißt: Erhaltene Aktivierungen werden mit $1/p$ multipli
 
 $$\tilde{a}_i = M_i \cdot \frac{a_i}{p}.$$
 
-So bleibt der Erwartungswert über die [Masken](#/glossary/maske) unverändert. Im Inference-Pass braucht es dann **keine** Maske und keine Skalierung mehr. In dieser Plattform ist Dropout ein kontrolliertes Konzept: Maske einmal ziehen (Seed), Weiterrechnen exakt nachvollziehen.
+Ein Beispiel mit $p = 0{,}5$: Aus den Aktivierungen $(2, 4, 6, 8)$ und der Maske $(1, 0, 0, 1)$ wird $(4, 0, 0, 16)$. Im Mittel überlebt jede Aktivierung mit Wahrscheinlichkeit $0{,}5$ und wird dann verdoppelt, also kommt im Mittel $0{,}5 \cdot 2a = a$ heraus. So bleibt der Erwartungswert über die [Masken](#/glossary/maske) unverändert. Im Inference-Pass braucht es dann **keine** Maske und keine Skalierung mehr. In dieser Plattform ist Dropout ein kontrolliertes Konzept: Maske einmal ziehen (Seed), Weiterrechnen exakt nachvollziehen.
+
+## Faire Ablation
+
+Eine Ablation ändert **genau eine** Variable. Alles andere bleibt fix: Daten, Split, Initialisierung, Lernrate, [Epochenzahl](#/glossary/epoche). Das funktioniert nur mit festen Seeds: Erzeuge Daten und Split aus `np.random.default_rng(seed)` und initialisiere die Gewichte aus einem davon getrennten, ebenfalls geseedeten Generator. Dann gilt: $\lambda = 0$ gegen $\lambda = 0{,}05$ bei gleichem Seed misst die Wirkung der Strafe, nicht des Zufalls. Zwei Läufe mit gleichem Seed müssen bitgleich sein; das ist der Reproduzierbarkeits-[Nachweis](#/glossary/nachweis).
+
+## Early Stopping
+
+Notiere den Validierungsverlust pro Epoche. Early Stopping mit Patience $k$: Merke die beste Epoche (kleinster Validierungsverlust) und brich ab, sobald $k$ Epochen ohne Verbesserung vergangen sind; zurück kommt die beste Epoche, nicht die letzte. Das ist Regularisierung durch Modellwahl, und der billigste [Hyperparameter](#/glossary/hyperparameter), den es gibt.
+
+## Save/Load als NumPy/JSON
+
+Ein Modellzustand ist ein [Dictionary](#/glossary/dictionary) `{'W1': array, 'b1': array, ...}`. JSON speichert keine [Arrays](#/glossary/array); also serialisieren über Listen:
+
+```python
+state = {name: arr.tolist() for name, arr in model.items()}   # speicherbar
+model = {name: np.asarray(value, dtype=np.float64) for name, value in state.items()}
+```
+
+Zurückgeladen ergeben sich gleiche Formen und exakt gleiche Werte (`np.array_equal`), Voraussetzung für Fortsetzen und Vergleichen.
+
+## Wo dir das in der KI begegnet
+
+Der ursprüngliche Transformer nutzte Dropout mit Rate 0,1. Trainingsläufe speichern regelmäßig Checkpoints, um nach Abbrüchen fortzusetzen. Ablationen sind der Standardnachweis in Papers: Eine Änderung, ein Vergleich, ein Ergebnis.
+
+## Typische Fehler
+
+- Zwei Dinge gleichzeitig ändern und die Wirkung nicht mehr zuordnen können.
+- Dropout ohne Skalierung oder mit Skalierung zur falschen Zeit (Inferenz).
+- Weight Decay auf den Bias anwenden.
+- Early Stopping auf dem Trainingsverlust statt auf Validierung.
+- Zustände speichern, aber Seeds vergessen, dann ist „geladen“ nicht „reproduziert“.
+
+## Direkter Check
+
+Zähle in einer Einstiegsaufgabe Masken in Ganzzahlen. Lies in der [Kernaufgabe: Dropout-Maske lesen](#/family/trace-assignment-state/fixed-dropout-mask-trace/0/core) eine feste Maske als Ausgabe vorher. In der [Kernaufgabe: Dropout und Weight Decay](#/family/optimize-training-primitive-contract/dropout-weight-decay-primitives/0/core) implementierst du Dropout-Forward und Weight-Decay-Update exakt; die [Vertiefungsaufgabe: Early Stopping und Save/Load](#/family/fit-early-stopping-roundtrip/early-stopping-roundtrip/0/stretch) baut Early Stopping und Save/Load, und die [Herausforderung](#/family/fit-weight-decay-ablation/weight-decay-ablation/0/challenge) fährt eine faire Ablation mit fixem Seed und Split.
+
+## Begriffe auf einen Blick
+
+- **L2-Strafe** (englisch *L2 penalty*): Zusatzterm $\frac{\lambda}{2}\|w\|^2$ im Verlust, der große Gewichte bestraft.
+- **Weight Decay**: Update $w \leftarrow w - \mathrm{lr}\,(g + \lambda w)$; zieht Gewichte proportional Richtung null.
+- **Dropout**: zufälliges Nullen von Aktivierungen im Training; hier mit Behaltewahrscheinlichkeit $p$.
+- **Invertierte Skalierung** (englisch *inverted scaling*): erhaltene Aktivierungen werden mit $1/p$ multipliziert, damit der Erwartungswert stimmt.
+- **Ablation**: kontrollierter Vergleich, bei dem genau eine Variable geändert wird.
+- **Early Stopping**: Abbruch nach $k$ Epochen ohne Verbesserung des Validierungsverlusts; zurück kommt die beste Epoche.
+- **Checkpoint**: gespeicherter Modellzustand, aus dem ein Lauf fortgesetzt werden kann.

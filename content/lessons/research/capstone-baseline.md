@@ -48,11 +48,11 @@ Der wichtigste Vertrag dieser Lektion: **Messwerte ohne Protokoll, Karten und Fe
 
 ## Typische Fehlvorstellungen
 
-- „Der Hash sichert das Set ab.“, doch er, er beweist nur seinen Zustand; sichern musst du das Set selbst (Versionierung, Freeze).
-- „Ein paar abgeänderte Gold-Antworten sind okay.“, denn jede Änderung nach dem Freeze ist eine neue Studie; der Hash macht das sichtbar, nicht unschädlich.
-- „Die naive Genauigkeit reicht, Hauptsache ehrlich.“, denn ehrlich ist nur das Paar: bereinigt und naiv zusammen zeigen, wo der Fehler tatsächlich entsteht.
-- „Reproduzierbarkeit sieht man an gleichen Zahlen.“, denn gesehen wird sie erst durch den Vergleichs-Assert im Lauf selbst; Gleichheit von Hand abgetippter Zahlen ist keine Prüfung.
-- „Ohne Karten sind die Zahlen trotzdem gültig.“, denn ohne Karten und Fehlerliste weiß niemand, was gemessen wurde; der Bericht verweigert deshalb komplett statt teilweise.
+- „Der Hash sichert das Set ab.“ Falsch, er beweist nur seinen Zustand; sichern musst du das Set selbst (Versionierung, Freeze).
+- „Ein paar abgeänderte Gold-Antworten sind okay.“ Falsch, denn jede Änderung nach dem Freeze ist eine neue Studie; der Hash macht das sichtbar, nicht unschädlich.
+- „Die naive Genauigkeit reicht, Hauptsache ehrlich.“ Falsch, denn ehrlich ist nur das Paar: bereinigt und naiv zusammen zeigen, wo der Fehler tatsächlich entsteht.
+- „Reproduzierbarkeit sieht man an gleichen Zahlen.“ Falsch, denn gesehen wird sie erst durch den Vergleichs-Assert im Lauf selbst; Gleichheit von Hand abgetippter Zahlen ist keine Prüfung.
+- „Ohne Karten sind die Zahlen trotzdem gültig.“ Falsch, denn ohne Karten und Fehlerliste weiß niemand, was gemessen wurde; der Bericht verweigert deshalb komplett statt teilweise.
 
 ## Wo dir das in der KI begegnet
 

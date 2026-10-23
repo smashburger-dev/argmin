@@ -7,6 +7,8 @@ on:
 jobs:
   checks:
     runs-on: ubuntu-latest
+    # A normal run takes about one minute; the GitHub default would be six hours.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -14,6 +16,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Fails within seconds when a derived artifact was not regenerated,
+      # and names the command that fixes it.
+      - run: npm run check:derived
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -24,6 +29,8 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    # A normal run takes about three minutes; the GitHub default would be six hours.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,7 +45,11 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
-      - run: npx playwright install --with-deps chromium
+      # No --with-deps: ubuntu-latest already ships Chromium's shared libraries,
+      # and the extra apt fonts/upgrades stalled for minutes on slow runner mirrors.
+      - name: Install Playwright Chromium
+        timeout-minutes: 5
+        run: npx playwright install chromium
       # Frischer Vertragsbeleg ueberspringt den Pyodide-Browser-Run; der
       # Cache-Key deckt alle Eingaben ab, die den runtimeHash beeinflussen.
       - uses: actions/cache@v4

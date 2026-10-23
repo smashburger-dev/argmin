@@ -8,7 +8,7 @@ $$
 \mathrm{tfidf}(t, d) = \frac{\mathrm{tf}(t,d)}{|d|} \cdot \left(\log\frac{n+1}{\mathrm{df}(t)+1} + 1\right).
 $$
 
-Dabei ist $\mathrm{df}(t)$ die Anzahl der Dokumente, die den Term $t$ enthalten (sprich: Dokumentfrequenz). Das +1 verhindert Division durch null; überall vorkommende Terme ($\mathrm{df} = n$) fallen nicht auf Gewicht null, sondern werden auf das idf-Floor 1 gesenkt, also deutlich reduziert, aber positiv. Ob TF-IDF-Kosinus oder Bag-of-Words-Kosinus: beides ist eine deterministische Baseline, genau das willst du zuerst, bevor du an Embeddings denkst.
+Dabei ist $\mathrm{df}(t)$ die Anzahl der Dokumente, die den Term $t$ enthalten (sprich: Dokumentfrequenz), und $\log$ der natürliche Logarithmus. Das +1 im Nenner verhindert Division durch null. Ein Beispiel mit $n = 3$ Chunks: Das Wort „kündigung“ steht in einem Chunk, also $\log\frac{4}{2} + 1 \approx 1{,}69$. Das Wort „der“ steht in allen drei, also $\log\frac{4}{4} + 1 = 1$. Seltene Wörter zählen damit stärker als Allerweltswörter, und kein Wort fällt ganz auf Gewicht null. Ob TF-IDF-Kosinus oder Bag-of-Words-Kosinus: beides ist eine deterministische Baseline, genau das willst du zuerst, bevor du an Embeddings denkst.
 
 ## Ranking, top-k und Tie-Break
 
@@ -18,9 +18,7 @@ $$
 \cos(q, d) = \frac{q \cdot d}{\lVert q \rVert \, \lVert d \rVert}.
 $$
 
-Dabei ist $\lVert v \rVert$ die **Norm**, die Länge des Vektors; in NumPy rechnet `np.linalg.norm(v)` sie.
-
-Sprich: Skalarprodukt von q und d durch das Produkt ihrer Längen; das Ergebnis liegt zwischen −1 und 1 und misst den Winkel, nicht die Länge. Das System gibt die **top-$k$** ähnlichsten Chunks zurück. Bei Gleichheit entscheidet ein deterministischer Tie-Break (kleinster Index zuerst); ohne feste Regel wäre selbst die Baseline nicht reproduzierbar.
+Sprich: Skalarprodukt von q und d durch das Produkt ihrer Längen. Dabei ist $\lVert v \rVert$ die **Norm**, die Länge des Vektors; in NumPy rechnet `np.linalg.norm(v)` sie. Das Ergebnis liegt zwischen −1 und 1 und misst den Winkel, nicht die Länge. Ein Beispiel: Für $q = (1, 1, 0)$ und $d = (1, 0, 0)$ ist $q \cdot d = 1$, $\lVert q \rVert = \sqrt{2}$ und $\lVert d \rVert = 1$, also $\cos = 1/\sqrt{2} \approx 0{,}71$. Ein doppelt so langes $d = (2, 0, 0)$ ergibt denselben Wert, weil nur die Richtung zählt. Das System gibt die **top-$k$** ähnlichsten Chunks zurück. Bei Gleichheit entscheidet ein deterministischer Tie-Break (kleinster Index zuerst); ohne feste Regel wäre selbst die Baseline nicht reproduzierbar.
 
 ## Retrieval messen: Golden Set, Recall@k, MRR
 
@@ -36,7 +34,9 @@ $$
 \mathrm{MRR} = \frac{1}{|Q|}\sum_{q \in Q} \frac{1}{\mathrm{rank}_q}.
 $$
 
-Sprich: MRR ist der Mittelwert über die Anfragen von eins durch Rang des ersten Treffers. Ob die daraufhin geformte Antwort gut ist, ist eine zweite, getrennte Evaluation in [Fragenkataloge einfrieren und messen](#/lesson/l-genai-eval).
+Sprich: MRR ist der Mittelwert über die Anfragen von eins durch Rang des ersten Treffers.
+
+Beide Metriken an einem Beispiel: Für Anfrage 1 sind die Chunks $\{2, 5\}$ relevant, das System liefert die top-3 $(1, 2, 7)$. Ein relevanter von zwei ist dabei, also $\mathrm{Recall}@3 = 1/2$. Der erste Treffer steht auf Rang 2, der Kehrwert ist $1/2$. Bei Anfrage 2 steht der erste Treffer auf Rang 1, Kehrwert $1$. Der MRR über beide Anfragen ist $(0{,}5 + 1)/2 = 0{,}75$. Ob die daraufhin geformte Antwort gut ist, ist eine zweite, getrennte Evaluation in [Fragenkataloge einfrieren und messen](#/lesson/l-genai-eval).
 
 ## Warum die Trennung zählt
 

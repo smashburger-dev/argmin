@@ -16,7 +16,7 @@ $$X = \begin{pmatrix}1&1\\2&2\\3&3\end{pmatrix}\;\xrightarrow{\text{zentriert}}\
 
 $$C = \frac{1}{3-1}\begin{pmatrix}2&2\\2&2\end{pmatrix} = \begin{pmatrix}1&1\\1&1\end{pmatrix}.$$
 
-Eigenwerte: $\lambda_1 = 2$, $\lambda_2 = 0$. Die erste Hauptkomponente ist die Diagonale $(1/\sqrt{2},\,1/\sqrt{2})$ und erklärt $2/(2+0) = 100\,\%$ der Varianz, die zweite Richtung ist exakt abhängig, wie in der Lektion [Lineare Unabhängigkeit und Rang verstehen](#/lesson/l-linalg-independence).
+Eigenwerte: $\lambda_1 = 2$, $\lambda_2 = 0$. Die erste Hauptkomponente ist die Diagonale $(1/\sqrt{2},\,1/\sqrt{2})$ und erklärt $2/(2+0) = 100\,\%$ der Varianz. Entlang der zweiten Richtung $(1,-1)$ streuen die Daten gar nicht, ihr Eigenwert ist 0. Der Grund: Die zweite Spalte von $X$ ist eine Kopie der ersten, die Spalten sind abhängig wie in der Lektion [Lineare Unabhängigkeit und Rang verstehen](#/lesson/l-linalg-independence).
 
 ## k-Means: Pizzafilialen am Schwerpunkt platzieren
 
