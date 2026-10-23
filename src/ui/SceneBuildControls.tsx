@@ -159,7 +159,7 @@ function taskSpec(exercise: SceneExercise, answer: SceneAnswer, preview: SceneFe
   const tagTask = exercise.parameters.tagTask as TagTask | undefined;
   if (tagTask) return { schemaVersion: 1, kind: 'task', engine: 'argmin-figure', scene: 'python-trace-tag',
     title: 'Programmzustände zuordnen', caption: 'Ordne Bindungen den sichtbaren Zeilenzuständen zu.', hint: 'Namen und Objekte werden unabhängig ausgewählt.',
-    params: { tagTask }, beats: [{ id: 'state', caption: 'Die Szene zeigt ausschließlich die quelltextbasierten Programmzeilen.' }] };
+    params: { tagTask }, beats: [{ id: 'step-0', caption: 'Die Szene zeigt ausschließlich die quelltextbasierten Programmzeilen.' }] };
   return {
     schemaVersion: 1, kind: 'task', engine: 'argmin-figure', scene: balance ? 'balance-solve' : 'mix-to-target',
     title: balance ? 'Deine Waage' : 'Deine Linearkombination', caption: balance ? equationText(answer.form.equation) : 'Die Szene zeigt deine eingegebenen Portionen.', hint: 'Prüfe den Formularzustand.',

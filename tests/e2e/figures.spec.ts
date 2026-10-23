@@ -408,29 +408,44 @@ test.describe('figure block', () => {
       expect(Math.abs((await azimuthOf(stage)) - az0)).toBeGreaterThan(10);
 
       // Vertical swipe on the stage must scroll the page, not rotate.
+      await stage.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+      const gestureBox = (await stage.boundingBox())!;
       const az1 = await azimuthOf(stage);
       const sy0 = await page.evaluate(() => window.scrollY);
-      const canScrollDown = await page.evaluate(() =>
-        document.documentElement.scrollHeight - (window.scrollY + window.innerHeight) >= window.scrollY,
-      );
-      const distance = canScrollDown ? -400 : 400;
-      try {
-        await cdp.send('Input.synthesizeScrollGesture', {
-          x: Math.round(box.x + box.width / 2), y: Math.round(y),
-          yDistance: distance, gestureSourceType: 'touch', speed: 800,
-        });
-      } catch {
-        // Older CDP lacks synthesizeScrollGesture: raw touch events instead.
-        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: tp(box.x + box.width / 2, y) });
-        for (let i = 1; i <= 10; i += 1) {
-          await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: tp(box.x + box.width / 2, y + i * Math.sign(distance) * 30) });
-        }
-        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+      const { downRoom, upRoom, viewportHeight } = await page.evaluate(() => ({
+        downRoom: document.documentElement.scrollHeight - (window.scrollY + window.innerHeight),
+        upRoom: window.scrollY,
+        viewportHeight: window.innerHeight,
+      }));
+      const touchX = gestureBox.x + gestureBox.width / 2;
+      const touchY = Math.min(viewportHeight - 32, Math.max(32, gestureBox.y + gestureBox.height / 2));
+      const directions = [
+        { finger: -1, room: Math.min(downRoom, touchY - 12) },
+        { finger: 1, room: Math.min(upRoom, viewportHeight - touchY - 12) },
+      ];
+      const swipe = directions.sort((a, b) => b.room - a.room)[0]!;
+      const swipeDistance = Math.min(240, swipe.room);
+      expect(swipeDistance, 'stage should have a visible touch path and document scroll room').toBeGreaterThan(60);
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: tp(touchX, touchY) });
+      for (let i = 1; i <= 10; i += 1) {
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: tp(touchX, touchY + i * swipe.finger * swipeDistance / 10) });
+        await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
       }
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
       await page.waitForTimeout(600);
       const sy1 = await page.evaluate(() => window.scrollY);
       const az2 = await azimuthOf(stage);
-      expect(sy1).not.toBe(sy0);
+      const gestureContext = await page.evaluate(({ x, y: pointY, start }) => {
+        const target = document.elementFromPoint(x, pointY);
+        const rect = document.querySelector('[aria-roledescription="Figur"]')?.getBoundingClientRect();
+        return {
+          viewport: { width: innerWidth, height: innerHeight },
+          scroll: { start, end: scrollY, max: document.documentElement.scrollHeight - innerHeight },
+          point: { x, y: pointY, target: target?.outerHTML.slice(0, 180) },
+          stage: rect && { top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right },
+        };
+      }, { x: touchX, y: touchY, start: sy0 });
+      expect(sy1, JSON.stringify(gestureContext, null, 2)).not.toBe(sy0);
       expect(Math.abs(az2 - az1)).toBeLessThanOrEqual(1);
     });
   });

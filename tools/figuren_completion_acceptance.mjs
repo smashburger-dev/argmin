@@ -527,14 +527,28 @@ async function openTask(page, baseUrl, route, mode, label, viewport, theme, moti
   return card;
 }
 
-async function configureRateTask(page, label, errors, states) {
+async function configureRateTask(page, label, errors, states, card) {
   const select = page.getByLabel('Lernrate η');
   await select.waitFor({ state: 'visible' });
   const candidates = await select.locator('option').evaluateAll((items) => items.map((item) => item.value).filter(Boolean));
   if (candidates.length < 2) saveFailure(errors, `${label}: weniger als zwei Lernraten`);
   if (candidates.length) {
     await select.selectOption(candidates.at(-1));
-    await page.getByRole('button', { name: 'Von vorn', exact: true }).click();
+    const stage = card.locator(STAGE);
+    await waitSettled(stage);
+    const beatLabel = await card.locator('.figure-step').getAttribute('aria-label');
+    const beatCount = Number(beatLabel?.match(/von (\d+)/i)?.[1] ?? 1);
+    for (let beat = 0; beat < beatCount - 1; beat += 1) {
+      await expect(stage).toHaveAttribute('data-beat', String(beat));
+      const next = card.getByRole('button', { name: 'Weiter', exact: true });
+      await expect(next).toBeEnabled();
+      await next.click();
+      await expect(stage).toHaveAttribute('data-beat', String(beat + 1));
+      await waitSettled(stage);
+    }
+    await card.getByRole('button', { name: 'Von vorn', exact: true }).click();
+    await expect(stage).toHaveAttribute('data-beat', '0');
+    await waitSettled(stage);
     if (await select.inputValue() !== candidates[0]) saveFailure(errors, `${label}: Zurücksetzen stellt die Start-Lernrate nicht her`);
     states.push(`${label}: Antwortformular zurückgesetzt`);
   }
@@ -815,7 +829,7 @@ async function returnFromTask(page, label, states) {
 async function taskFlow(page, baseUrl, route, mode, label, viewport, theme, motion, evidence, errors, states, taskKind) {
   const taskCard = await openTask(page, baseUrl, route, mode, label, viewport, theme, motion, evidence, errors);
   let rateCandidates = [];
-  if (taskKind === 'rate') rateCandidates = await configureRateTask(page, label, errors, states);
+  if (taskKind === 'rate') rateCandidates = await configureRateTask(page, label, errors, states, taskCard);
   else await configureTraceTask(page, label, viewport, errors, states);
   await showTaskHint(page, mode, label, taskKind, viewport, theme, motion, evidence, errors, taskCard);
   await showTaskFeedback(page, label, taskKind, rateCandidates, errors, mode, viewport, theme, motion, evidence, taskCard);
